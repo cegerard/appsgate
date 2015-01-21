@@ -17,10 +17,11 @@
   "dependancy": {
         "refresh-data" : "Refresh data",
         "search-label" : "Search : ",
+	  	"search-button": "OK",
+	  	"search-example": "(Example : '__entity__')",
 		"entities-filter": "Entities filter",
 		"relations-filter": "Relations filter",
-		"unfix-node": "Unfix All",
-		"search-example": "(Example : '__entity__')",
+		"unfix-node": "Cancel the repositionings",
 	  	"caption": {
 			"title": "Caption",
 			"stopped-program": "Deactivated program",
@@ -176,6 +177,7 @@
 		"newFace" : "someone shows __myVar__ of Domicube",
 		"leaveFace" : "someone leaves __myVar__ of Domicube",
 		"face" : "Domicube is on __myVar__ face"
+        "turn" : "Domicube turns __myVar__"
       },
       "keyboard": {
         "west": "West",
@@ -184,7 +186,8 @@
 		"newFace" : "someone shows __myVar__ of Domicube",
 		"leaveFace" : "someone leaves __myVar__ of Domicube",
 		"face" : "Domicube is on __myVar__ face",
-        "oneface" : "top face"
+        "oneface" : "top face",
+        "turn" : "Domicube turns"
       },
       "white-face": {
         "first-elem": "White",
@@ -246,12 +249,15 @@
     },
     "clock": {
       "keyboard": {
-        "checkCurrentTimeOfDay": "current hour is between __myVar__ and __myVar2__",
+        "checkCurrentTimeOfDay": "current hour is ",
         "before" : "hour 1",
         "after" : "hour 2"
       },
       "language": {
-        "checkCurrentTimeOfDay": "current hour is between ",
+        "checkCurrentTimeOfDay": "current hour is ",
+        "between" : "between",
+        "before" : "before",
+        "after" : "after",
         "and" : "and"
       }
     },

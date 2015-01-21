@@ -170,7 +170,7 @@ define([
           }));
 
           v.methodName = "checkCurrentTimeOfDay";
-          v.phrase = "devices.clock.language.checkCurrentTimeOfDay";
+          v.phrase = "devices.clock.language.checkCurrentTimeOfDay.between";
             v.args = [{
             "type": "long",
             "value": 11*60*60*1000

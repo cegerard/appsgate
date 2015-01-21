@@ -8,59 +8,110 @@
                 for (i = 10; i < 60; i++) {
                     minutes.push(i);
                 }
+var timeAfter = param.node.args[0].value;
+var timeBefore = param.node.args[1].value;
 
-                var timeBefore = param.node.args[0].value;
-                var timeAfter = param.node.args[1].value;
-
-                if(timeBefore>=(23*(60+58)*60*1000)) {
-                    timeBefore = 23*(60+58)*60*1000;
-                }
-
-                if(timeAfter<= timeBefore) {
-                    timeAfter = timeBefore+60*1000;
-                }
-
-                selectedBeforeMinute = (timeBefore/(1000*60))%60;
-                selectedBeforeHour = (timeBefore-(selectedBeforeMinute*60*1000))/(1000*60*60);
-
-                selectedAfterMinute = (timeAfter/(1000*60))%60;
-                selectedAfterHour = (timeAfter-(selectedAfterMinute*60*1000))/(1000*60*60);
-                }
+}
 %>
 <div class="btn btn-default btn-prog btn-prog-action" id="<%= node.iid %>">
         <% if (typeof node.phrase !== 'undefined') { %>
-            <span data-i18n='<%=node.phrase%>'></span>
+            <span data-i18n='devices.clock.language.checkCurrentTimeOfDay'></span>
+    <select id="clock-before-after-<%= node.iid %>" class="clock-before-after-picker"  target-id="<%= node.iid %>">
+        <option <% if (node.phrase === "devices.clock.language.checkCurrentTimeOfDay.between") { %>selected<% } %> value="devices.clock.language.checkCurrentTimeOfDay.between" data-i18n="devices.clock.language.between"></option>
+        <option <% if (node.phrase === "devices.clock.language.checkCurrentTimeOfDay.before") { %>selected<% } %> value="devices.clock.language.checkCurrentTimeOfDay.before" data-i18n="devices.clock.language.before"></option>
+        <option <% if (node.phrase === "devices.clock.language.checkCurrentTimeOfDay.after") { %>selected<% } %> value="devices.clock.language.checkCurrentTimeOfDay.after" data-i18n="devices.clock.language.after"></option>
+    </select>
+    <%if (node.phrase === "devices.clock.language.checkCurrentTimeOfDay.between") {
 
-            <%if (node.phrase === 'devices.clock.language.checkCurrentTimeOfDay') {  %>
-                <select id="clock-before-hour-<%= node.iid %>" class="hour-before-picker"  target-id="<%= node.iid %>">
-                    <% _.each(hours, function(h) { v=parseInt(h);%>
-                        <option <% if (selectedBeforeHour === v) { %>selected<% } %> value="<%= v %>"><%= h %>h</option>
-                    <% }); %>
-                </select>
+    if(timeAfter<0) {
+        timeAfter = 0;
+    }
 
-                <select id="clock-before-minute-<%= node.iid %>" class="minute-before-picker"  target-id="<%= node.iid %>">
-                    <% _.each(minutes, function(m) { v=parseInt(m);%>
-                        <option <% if (selectedBeforeMinute === v) { %>selected<% } %> value="<%= v %>"><%= m %>m</option>
-                    <% }); %>
-                </select>
+    if(timeBefore<=timeAfter ) {
+    timeBefore = timeAfter+60*1000;
+    }
+
+    selectedBeforeMinute = (timeBefore/(1000*60))%60;
+    selectedBeforeHour = (timeBefore-(selectedBeforeMinute*60*1000))/(1000*60*60);
+
+    selectedAfterMinute = (timeAfter/(1000*60))%60;
+    selectedAfterHour = (timeAfter-(selectedAfterMinute*60*1000))/(1000*60*60);
+    %>
+
+
+    <select id="clock-after-hour-<%= node.iid %>" class="hour-after-picker"  target-id="<%= node.iid %>">
+        <% _.each(hours, function(h) { v=parseInt(h);%>
+        <option <% if (selectedAfterHour === v) { %>selected<% } %> value="<%= v %>"><%= h %>h</option>
+        <% }); %>
+    </select>
+
+    <select id="clock-after-minute-<%= node.iid %>" class="minute-after-picker"  target-id="<%= node.iid %>">
+        <% _.each(minutes, function(m) { v=parseInt(m);%>
+        <option <% if (selectedAfterMinute === v) { %>selected<% } %> value="<%= v %>"><%= m %>m</option>
+        <% }); %>
+    </select>
+
 
                 <span data-i18n='devices.clock.language.and'></span>
+    <select id="clock-before-hour-<%= node.iid %>" class="hour-before-picker"  target-id="<%= node.iid %>">
+        <% _.each(hours, function(h) { v=parseInt(h);%>
+        <option <% if (selectedBeforeHour === v) { %>selected<% } %> value="<%= v %>"><%= h %>h</option>
+        <% }); %>
+    </select>
 
-                <select id="clock-after-hour-<%= node.iid %>" class="hour-after-picker"  target-id="<%= node.iid %>">
-                    <% _.each(hours, function(h) { v=parseInt(h);%>
-                    <option <% if (selectedAfterHour === v) { %>selected<% } %> value="<%= v %>"><%= h %>h</option>
-                    <% }); %>
-                </select>
+    <select id="clock-before-minute-<%= node.iid %>" class="minute-before-picker"  target-id="<%= node.iid %>">
+        <% _.each(minutes, function(m) { v=parseInt(m);%>
+        <option <% if (selectedBeforeMinute === v) { %>selected<% } %> value="<%= v %>"><%= m %>m</option>
+        <% }); %>
+    </select>
 
-                <select id="clock-after-minute-<%= node.iid %>" class="minute-after-picker"  target-id="<%= node.iid %>">
-                    <% _.each(minutes, function(m) { v=parseInt(m);%>
-                    <option <% if (selectedAfterMinute === v) { %>selected<% } %> value="<%= v %>"><%= m %>m</option>
-                    <% }); %>
-                </select>
+    <% } else if (node.phrase === "devices.clock.language.checkCurrentTimeOfDay.before") {
 
 
-            <% } %>
-        <% } else { %>
+    if(timeBefore<0) {
+    timeBefore = 12*60*60*1000;
+    }
+
+    timeAfter=-1;
+    selectedBeforeMinute = (timeBefore/(1000*60))%60;
+    selectedBeforeHour = (timeBefore-(selectedBeforeMinute*60*1000))/(1000*60*60);
+    %>
+    <select id="clock-before-hour-<%= node.iid %>" class="hour-before-picker"  target-id="<%= node.iid %>">
+        <% _.each(hours, function(h) { v=parseInt(h);%>
+        <option <% if (selectedBeforeHour === v) { %>selected<% } %> value="<%= v %>"><%= h %>h</option>
+        <% }); %>
+    </select>
+
+    <select id="clock-before-minute-<%= node.iid %>" class="minute-before-picker"  target-id="<%= node.iid %>">
+        <% _.each(minutes, function(m) { v=parseInt(m);%>
+        <option <% if (selectedBeforeMinute === v) { %>selected<% } %> value="<%= v %>"><%= m %>m</option>
+        <% }); %>
+    </select>
+
+    <% } else if (node.phrase === "devices.clock.language.checkCurrentTimeOfDay.after") {
+
+    if(timeAfter<0) {
+    timeAfter = 12*60*60*1000;
+    }
+
+    timeBefore=-1;
+    selectedAfterMinute = (timeAfter/(1000*60))%60;
+    selectedAfterHour = (timeAfter-(selectedAfterMinute*60*1000))/(1000*60*60);
+    %>
+    <select id="clock-after-hour-<%= node.iid %>" class="hour-after-picker"  target-id="<%= node.iid %>">
+        <% _.each(hours, function(h) { v=parseInt(h);%>
+        <option <% if (selectedAfterHour === v) { %>selected<% } %> value="<%= v %>"><%= h %>h</option>
+        <% }); %>
+    </select>
+
+    <select id="clock-after-minute-<%= node.iid %>" class="minute-after-picker"  target-id="<%= node.iid %>">
+        <% _.each(minutes, function(m) { v=parseInt(m);%>
+        <option <% if (selectedAfterMinute === v) { %>selected<% } %> value="<%= v %>"><%= m %>m</option>
+        <% }); %>
+    </select>
+    <% } %>
+
+    <% } else { %>
         UNKNOWN CLOCK PROPERTY
         <% } %>
     </span>
