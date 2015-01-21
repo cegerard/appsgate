@@ -3617,9 +3617,9 @@
             this.stateFn = function (d) {
                 try {
                     if (d.timestamp) {
-                        return parseBoolean(d.data.event.state.state);
+                        return parseBoolean(d.data.event.state.value);
                     } else {
-                        return parseBoolean(d.event.state.state);
+                        return parseBoolean(d.event.state.value);
                     }
                 } catch (e) {
                     return false;

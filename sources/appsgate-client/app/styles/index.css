@@ -1078,22 +1078,38 @@ fieldset[disabled] .btn {
 	cursor: pointer;
 }
 
-#graph g>.circle-device-state-true {
+.shape-program {
+	stroke: black;
+}
+
+#graph g>.circle-device-state-true, .circle-device-state-true {
 	fill: #ffff00;
 }
 
-#graph g>.circle-device-state-false {
+#graph g>.circle-device-state-false, .circle-device-state-false {
 	fill: #777;
+}
+
+#graph-caption {
+	margin-top: 20px;
+}
+
+#graph-action {
+	margin-bottom: 0px;
 }
 
 .caption-label {
 	vertical-align: super;
 }
 
-.shape-program {
-	stroke: black;
+.help-div {
+	font-style : normal;
+	text-align: left;
+	font-size: 14px;
 }
 
-.help-div {
-	font-style : italic;
-}
+.help-div-title {
+	font-size: 18px;
+	font-style: normal;
+	font-weight: bold;
+} 
