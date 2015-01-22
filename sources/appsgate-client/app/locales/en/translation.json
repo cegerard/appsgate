@@ -19,8 +19,6 @@
         "search-label" : "Search : ",
 	  	"search-button": "OK",
 	  	"search-example": "(Example : '__entity__')",
-		"entities-filter": "Entities filter",
-		"relations-filter": "Relations filter",
 		"unfix-node": "Cancel the repositionings",
 	  	"caption": {
 			"title": "Caption",
@@ -73,6 +71,26 @@
 				"isPlanified": "Planning",
 				"denotes": "Denotation"
 			}
+		},
+	  	"filters-label": {
+				"entity": {
+					"title": "Filter by type of entity",
+					"place": "$t(dependancy.type.entity.place)",
+					"program": "$t(dependancy.type.entity.program)",
+					"service": "$t(dependancy.type.entity.service)",
+					"time": "$t(dependancy.type.entity.time)",
+					"device": "$t(dependancy.type.entity.device)",
+					"selector": "$t(dependancy.type.entity.selector.default)"
+				},
+				"relation": {
+					"title": "Filter by type of relation",
+					"reference": "Referenced entities",
+					"reference-WRITING": "To perform an action",
+					"reference-READING": "To check a state",
+					"isLocatedIn": "Localized device(s)",
+					"isPlanified": "Planified program(s)",
+					"denotes": "Device(s) in selector"
+				}
 		}
   },
   "devices": {

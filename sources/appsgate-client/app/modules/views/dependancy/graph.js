@@ -715,12 +715,7 @@ define([
 						})
 					d3.select(this).append("span")
 						.text(function (d) {
-							// exception for the selector
-							if (d === "selector") {
-								return $.i18n.t("dependancy.type.entity.selector.filter-label");
-							} else {
-								return $.i18n.t("dependancy.type.entity." + d);
-							}
+							return $.i18n.t("dependancy.filters-label.entity." + d);
 						});
 				});
 
@@ -746,7 +741,7 @@ define([
 						})
 					d3.select(this).append("span")
 						.text(function (d) {
-							return $.i18n.t("dependancy.type.relation." + d);
+							return $.i18n.t("dependancy.filters-label.relation." + d);
 						});
 
 					if (d === "reference") {
@@ -777,7 +772,7 @@ define([
 										return f === "WRITING";
 									})
 									.text(function (d) {
-										return $.i18n.t("dependancy.type.relation.reference-" + d2);
+										return $.i18n.t("dependancy.filters-label.relation.reference-" + d2);
 									});
 							});
 					}

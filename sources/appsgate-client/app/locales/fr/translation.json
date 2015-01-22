@@ -19,8 +19,6 @@
         "search-label" : "Chercher : ",
 	  	"search-button": "OK",
 	  	"search-example": "(Exemple : '__entity__')",
-		"entities-filter": "Filtre entités",
-		"relations-filter": "Filtre relations",
 		"unfix-node": "Annuler les repositionnements",
 	  	"caption": {
 			"title": "Légende",
@@ -73,6 +71,26 @@
 				"isPlanified": "Planification",
 				"denotes": "Sélection"
 			}
+		},
+	  	"filters-label": {
+				"entity": {
+					"title": "Filtres par type d'entités",
+					"place": "$t(dependancy.type.entity.place)",
+					"program": "$t(dependancy.type.entity.program)",
+					"service": "$t(dependancy.type.entity.service)",
+					"time": "$t(dependancy.type.entity.time)",
+					"device": "$t(dependancy.type.entity.device)",
+					"selector": "$t(dependancy.type.entity.selector.default)"
+				},
+				"relation": {
+					"title": "Filtres par type de relations",
+					"reference": "Entité(s) référencée(s)",
+					"reference-WRITING": "Pour faire une action",
+					"reference-READING": "Pour vérifier un état",
+					"isLocatedIn": "Equipement(s) localisé(s)",
+					"isPlanified": "Programme(s) planifié(s)",
+					"denotes": "Equipement(s) dans une sélection"
+				}
 		}
   },
     "devices": {
