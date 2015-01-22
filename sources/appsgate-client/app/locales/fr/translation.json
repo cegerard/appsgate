@@ -67,6 +67,8 @@
 			},
 			"relation": {
 				"reference": "Référence",
+				"reference-WRITING": "Ecriture",
+				"reference-READING": "Lecture",
 				"isLocatedIn": "Localisation",
 				"isPlanified": "Planification",
 				"denotes": "Sélection"

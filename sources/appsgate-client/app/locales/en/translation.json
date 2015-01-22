@@ -67,6 +67,8 @@
 			},
 			"relation": {
 				"reference": "Reference",
+				"reference-WRITING": "Reading",
+				"reference-READING": "Writing",
 				"isLocatedIn": "Location",
 				"isPlanified": "Planning",
 				"denotes": "Denotation"

@@ -20,8 +20,10 @@ define([
 				mapDepthNeighbors: {},
 				entitiesTypes: ["place", "program", "service", "time", "device", "selector"],
 				relationsTypes: ["reference", "isLocatedIn", "isPlanified", "denotes"],
+				relationsReferenceTypes: ["WRITING", "READING"],
 				currentEntitiesTypes: ["place", "program", "service", "time", "device", "selector"],
-				currentRelationsTypes: ["reference", "isLocatedIn", "isPlanified", "denotes"]
+				currentRelationsTypes: ["reference", "isLocatedIn", "isPlanified", "denotes"],
+				currentRelationsReferenceTypes: ["WRITING", "READING"]
 			});
 
 			self.on("change:rootNode", function (model) {
@@ -305,7 +307,18 @@ define([
 		},
 
 		updateArrayTypes: function (array, type, checked) {
-			var arrayUpdated = (array === "entities") ? this.get("currentEntitiesTypes") : this.get("currentRelationsTypes");
+			var self = this;
+			//			var arrayUpdated = (array === "entities") ? this.get("currentEntitiesTypes") : this.get("currentRelationsTypes");
+			var arrayUpdated = function (arrayParam) {
+				if (arrayParam === "entities") {
+					return self.get("currentEntitiesTypes");
+				} else if (arrayParam === "relations") {
+					return self.get("currentRelationsTypes");
+				} else {
+					return self.get("currentRelationsReferenceTypes");
+				}
+			}(array);
+
 			if (checked) {
 				arrayUpdated.push(type);
 			} else {
@@ -493,7 +506,49 @@ define([
 					return n === e.target;
 				})[0];
 
-			if (typeof sourceNode !== 'undefined' && typeof targetNode !== 'undefined' && _.contains(self.get("currentRelationsTypes"), e.type)) {
+			// Test if the source and the target are not undefined
+			var areSourceAndTargetDefined = typeof sourceNode !== 'undefined' && typeof targetNode !== 'undefined';
+			
+			// Test if the type of the link is shonw = in the currentRelationsTypes
+			var isTypeShown = _.contains(self.get("currentRelationsTypes"), e.type);
+			
+			// Special test for the reference type. Test if one of its type of reference is to show
+			var isReferenceShown = function () {
+				// Test type reference and if it has reference data
+				if (e.type === "reference" && e.referenceData) {
+					// function to test if the a reference of type : typeToText exists in the reference data
+					var testTypeRef = function (typeToTest) {
+						var index;
+						for (index = 0; index < e.referenceData.length; index++) {
+							if (e.referenceData[index].referenceType === typeToTest) {
+								return true;
+							}
+						}
+						return false;
+					};
+
+					// Test writing type reference
+					var getWritingRefToShow = false;
+					if (testTypeRef("WRITING")) {
+						// If it contains writing type reference, checl if they have to be shown
+						getWritingRefToShow = _.contains(self.get("currentRelationsReferenceTypes"), "WRITING");
+					}
+					
+					// Test reading type reference
+					var getReadingRefToShow = false;
+					if (testTypeRef("READING")) {
+						// If it contains reading type reference, checl if they have to be shown
+						getReadingRefToShow = _.contains(self.get("currentRelationsReferenceTypes"), "READING");
+					}
+
+					return getWritingRefToShow || getReadingRefToShow;
+				} else {
+					return false;
+				}
+			}();
+
+			//			if (typeof sourceNode !== 'undefined' && typeof targetNode !== 'undefined' && _.contains(self.get("currentRelationsTypes"), e.type)) {
+			if (areSourceAndTargetDefined && (isTypeShown || isReferenceShown)) {
 				if (e.referenceData) {
 					newLinks.push({
 						source: sourceNode,
