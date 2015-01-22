@@ -150,14 +150,14 @@ public class PaceTVGogoShellCommand {
 	}
 	
 	@Descriptor("command: notify, notify a message on the STB")
-	public void notify(@Descriptor("id sender message ") String... args) {
+	public void notify(@Descriptor("id sender message") String... args) {
 		
 		CoreTVSpec service = getCoreTVSpec();
 		if(service != null) {
 			if(args.length == 3 ) {
 				service.notify(Integer.parseInt(args[0]),
 						args[1],
-						args[2]);
+						args[2],false, 5, null);
 			} else {
 				out.println("wrong number of arguments : id id sender message");
 			}
