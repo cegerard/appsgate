@@ -273,7 +273,7 @@ public class NodeValue extends Node implements INodeList, ICanBeEvaluated {
     protected void buildReferences(ReferenceTable table, HashMap<String,String> args) {
         switch (this.type) {
             case PROGRAMCALL:
-                table.addProgram(value);
+                table.addProgram(value, args);
                 break;
             case SERVICE:
             case DEVICE:

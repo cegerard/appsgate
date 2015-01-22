@@ -107,8 +107,8 @@ public class GraphManager {
                     }
                 }
                 
-                for (String rProgram : references.getProgramsId()) {
-                    addLink(REFERENCE_LINK, pid, rProgram);
+                for (ProgramReferences rProgram : references.getProgramsReferences()) {
+                    addLink(REFERENCE_LINK, pid, rProgram.getProgramId(), rProgram.getReferencesData());
                 }
 
                 if (addSelector(pid, references, selectorsSaved, idSelector)) {

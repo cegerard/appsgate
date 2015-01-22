@@ -73,7 +73,7 @@ public class ReferenceTable {
     /**
      *
      */
-    private final HashMap<String, STATUS> programs;
+    private final ArrayList<ProgramReferences> programs;
 
     /**
      *
@@ -87,7 +87,7 @@ public class ReferenceTable {
      */
     public ReferenceTable(EUDEInterpreter interpreter, String pid) {
         devices = new ArrayList<DeviceReferences>();
-        programs = new HashMap<String, STATUS>();
+        programs = new ArrayList<ProgramReferences>();
         nodes = new ArrayList<SelectReferences>();
         this.interpreter = interpreter;
         this.state = STATUS.UNKNOWN;
@@ -103,7 +103,28 @@ public class ReferenceTable {
             LOGGER.debug("The program is self referenced (do not need to add it in the reference table.");
             return;
         }
-        programs.put(programId, STATUS.UNKNOWN);
+        programs.add(new ProgramReferences(programId, STATUS.UNKNOWN));
+    }
+    
+    /**
+     *
+     * @param programId
+     * @param refData - data about reference
+     */
+    public void addProgram(String programId, HashMap<String,String> refData) {
+        if (programId.equalsIgnoreCase(myProgId)) {
+            LOGGER.debug("The program is self referenced (do not need to add it in the reference table.");
+            return;
+        }
+        
+        ProgramReferences pRef = getProgramFromId(programId);
+        if (pRef != null) {
+            pRef.addReferencesData(refData);
+        } else {
+            ArrayList<HashMap<String,String>> newRefData = new ArrayList<HashMap<String, String>>();
+            newRefData.add(refData);
+            programs.add(new ProgramReferences(programId, STATUS.UNKNOWN, newRefData));
+        }
     }
 
     /**
@@ -168,8 +189,10 @@ public class ReferenceTable {
      * @param newStatus
      */
     public void setProgramStatus(String programId, STATUS newStatus) { // VOID
-        if (programs.containsKey(programId)) {
-            programs.put(programId, newStatus);
+        for (ProgramReferences pRef : this.programs) {
+            if (pRef.getProgramId().equals(programId)) {
+                pRef.setProgramStatus(newStatus);
+            }
         }
     }
 
@@ -179,11 +202,28 @@ public class ReferenceTable {
      * @return
      */
     public Set<String> getProgramsId() {
-        return programs.keySet();
+        Set<String> programsId = new HashSet<String>();
+        for (ProgramReferences pRef : this.programs) {
+            programsId.add(pRef.getProgramId());
+        }
+        return programsId;
+    }
+    
+     public ProgramReferences getProgramFromId (String id) {
+        for (ProgramReferences pRef : this.programs) {
+            if (pRef.getProgramId().equals(id)) {
+                return pRef;
+            }
+        }
+        return null;
     }
     
     public ArrayList<DeviceReferences> getDevicesReferences() {
         return this.devices;
+    }
+    
+    public ArrayList<ProgramReferences> getProgramsReferences() {
+        return this.programs;
     }
 
     /**
@@ -206,7 +246,7 @@ public class ReferenceTable {
         }
         return null;
     }
-
+    
     public ArrayList<SelectReferences> getSelectors() {
         return nodes;
     }
@@ -228,20 +268,20 @@ public class ReferenceTable {
      *
      */
     private void retrieveReferences() {
-        for (String k : programs.keySet()) {
-            NodeProgram prog = interpreter.getNodeProgram(k);
-            LOGGER.trace("retrieveReferences(), program " + k + ", status " + programs.get(k));
+        for (ProgramReferences pRef : programs) {
+            NodeProgram prog = interpreter.getNodeProgram(pRef.getProgramId());
+            LOGGER.trace("retrieveReferences(), program " + pRef.getProgramId() + ", status " + pRef.getProgramStatus());
             if (prog != null) {
                 if (!prog.isValid()) {
-                    LOGGER.error("The program {} is not valid.", k);
-                    setProgramStatus(k, STATUS.INVALID);
+                    LOGGER.error("The program {} is not valid.", pRef.getProgramId());
+                    setProgramStatus(pRef.getProgramId(), STATUS.INVALID);
                 } else if (prog.getReferences().state != STATUS.OK) {
-                    LOGGER.warn("The program {} is not stable.", k);
-                    setProgramStatus(k, STATUS.UNSTABLE);
+                    LOGGER.warn("The program {} is not stable.", pRef.getProgramId());
+                    setProgramStatus(pRef.getProgramId(), STATUS.UNSTABLE);
                 }
             } else {
-                LOGGER.error("The program {} does not exist anymore.", k);
-                setProgramStatus(k, STATUS.MISSING);
+                LOGGER.error("The program {} does not exist anymore.", pRef.getProgramId());
+                setProgramStatus(pRef.getProgramId(), STATUS.MISSING);
             }
         }
         // Services && devices are treated the same way
@@ -270,16 +310,16 @@ public class ReferenceTable {
             LOGGER.trace("The table is empty, so the program is empty and no empty program is considered as valid");
             this.state=STATUS.INVALID;
         }
-        for (String k : programs.keySet()) {
-            LOGGER.trace("computeStatus(), program " + k + ", status :" + programs.get(k));
-            switch (programs.get(k)) {
+        for (ProgramReferences pRef : programs) {
+            LOGGER.trace("computeStatus(), program " + pRef.getProgramId() + ", status :" + pRef.getProgramStatus());
+            switch (pRef.getProgramStatus()) {
                 case MISSING:
                     setState(STATUS.INVALID);
-                    this.err = ErrorMessagesFactory.getMessageFromMissingProgram(k);
+                    this.err = ErrorMessagesFactory.getMessageFromMissingProgram(pRef.getProgramId());
                     return this.state;
                 case INVALID:
                 case UNSTABLE:
-                    this.err = ErrorMessagesFactory.getMessageFromInvalidProgram(k);
+                    this.err = ErrorMessagesFactory.getMessageFromInvalidProgram(pRef.getProgramId());
                     setState(STATUS.UNSTABLE);
                     break;
             }
