@@ -559,6 +559,7 @@
   },
   "keyboard": {
     "clock-event": "AppsGate clock shows ",
+    "clock-getTime": "It is ",
     "time-placeholder": "hh:mm:ss",
     "false": "False",
     "if-keyword": "If",
@@ -601,6 +602,7 @@
     },
     "clock-event": "AppsGate clock shows ",
     "clock-status": "AppsGate clock shows ",
+    "clock-getTime": "It is ",
     "contact-assembled-event": "together",
     "contact-disassembled-event": "is disassembles",
     "else-keyword": "otherwise",
@@ -678,7 +680,6 @@
     "name-empty": "The program name must be entered.",
     "name-label": "Name",
     "name-placeholder": "Program Name",
-    "title": "New Program",
     "title": "New Program",
     "unable-to-parse": "Unable to read file"
   },
@@ -961,6 +962,7 @@
     "changevalue" : "__var__ : __text__",
     "appear" : "device __name__ appeared",
     "remove" : "device __name__ disappeared",
+	"defaultMessage" : "default message",
     "ColorLight" : {
 	  "change" : {
 		"value" : "lamp is on : __text__",

@@ -963,7 +963,6 @@
     "appear" : "l'équipement __name__ est apparu",
     "remove" : "l'équipement __name__ a été enlevé",
 	"defaultMessage" : "Une ligne de programme a été exécutée",
-	
     "ColorLight" : {
 	  "change" : {
 		"value" : "la lampe est allumée : __text__",
