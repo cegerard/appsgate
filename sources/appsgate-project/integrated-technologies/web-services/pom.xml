@@ -21,5 +21,6 @@
         <module>WeatherAdapterSpec</module>
 		<module>yahoo-services</module>
         <module>WeatherObserverImpl</module>
-    </modules>
+        <module>YakitomeTTS</module>
+	</modules>
 </project>
