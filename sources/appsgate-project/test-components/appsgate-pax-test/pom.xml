@@ -53,6 +53,11 @@
             <artifactId>GoogleAdapter</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>MailAdapter</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         
         <dependency>
             <groupId>appsgate.components</groupId>
