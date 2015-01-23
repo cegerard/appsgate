@@ -350,7 +350,7 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
             bri = String.valueOf(BRI_DEFAULT);
             sat = String.valueOf(SAT_DEFAULT);
             newColor.put("rgbcolor", getHTMLColor());
-            notifyChanges("colorChanged", oldColor.toString(), getJSONColor().toString());
+            notifyChanges("colorChanged", oldColor.toString(), newColor.toString());
             return true;
         }
 
