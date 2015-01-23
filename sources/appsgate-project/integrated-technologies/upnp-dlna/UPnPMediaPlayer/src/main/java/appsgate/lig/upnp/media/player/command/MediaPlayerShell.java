@@ -40,7 +40,7 @@ public class MediaPlayerShell {
 	@ServiceProperty(name = "osgi.command.function", value = "{}")
 	    String[] gogoShell_groupCommands = new String[] {
 	    "players",
-	    "playMedia)",
+	    "playMedia",
 	    "resume",
 	    "pause",
 	    "stop",
