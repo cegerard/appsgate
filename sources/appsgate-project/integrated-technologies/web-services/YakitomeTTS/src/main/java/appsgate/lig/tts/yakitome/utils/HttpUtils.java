@@ -2,9 +2,14 @@ package appsgate.lig.tts.yakitome.utils;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.net.UnknownHostException;
 import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -140,5 +145,50 @@ public class HttpUtils {
 			return null;
 		}
 	}	
+	
+	
+	/**
+	 * Testing if URL is reachable (if host and port responds correctly)
+	 * @param url the url to test
+	 * @param timeout a specific timeout value in milliseconds
+	 * @return
+	 */
+	public static boolean testURLTimeout(String stringUrl, int timeout) {
+		logger.trace("testURLTimeout(URL url : "+stringUrl+")");
+
+		if(stringUrl == null ) {
+			logger.warn("testURLTimeout(...), url is null");
+			return false;
+		}
+		
+		try {
+			URL url = new URL(stringUrl);
+			
+			
+			String host = url.getHost();
+			int port = url.getPort();
+
+			if (port == -1) // Using default HTTP Port
+				port = 80;
+			
+			Socket testSocket  = new Socket();
+			testSocket.connect(new InetSocketAddress(host, port), timeout);
+			logger.trace("testURLTimeout(...), socket successfully connected");
+			testSocket.close();
+			return true;
+			
+		} catch (SocketTimeoutException e) {
+			logger.warn("testURLTimeout(...), SocketTimeoutException, "+e.getMessage());
+			return false;
+		} catch (UnknownHostException e) {
+			logger.warn("testURLTimeout(...), UnknownHostException, "+e.getMessage());
+			return false;
+		} catch (IOException e) {
+			logger.warn("testURLTimeout(...), IOException, "+e.getMessage());
+			return false;
+		} catch (Exception e) {
+			logger.warn("testURLTimeout(...), Exception, "+e.getMessage());
+			return false;
+		}	}
 
 }
