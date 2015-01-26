@@ -156,6 +156,7 @@ define([
         appRouter.navigate("#programs/" + this.model.get("id"), {trigger: true});
       },
       onClickCancelEdit: function(e) {
+        this.refreshing = true;
         if(this.model.get("isNew") === "true"){
           this.model.destroy();
           appRouter.navigate("#programs", {trigger: true});
@@ -165,6 +166,7 @@ define([
           appRouter.navigate("#programs", {trigger: true});
           appRouter.navigate("#programs/" + this.model.get("id"), {trigger: true});
         }
+        this.refreshing = false;
       },
       /**
        * Method to handle event on a button on the keyboard
