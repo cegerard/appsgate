@@ -74,7 +74,7 @@
 		},
 	  	"filters-label": {
 				"entity": {
-					"title": "Filter by type of entity",
+					"title": "Filter for entities",
 					"place": "$t(dependancy.type.entity.place)",
 					"program": "$t(dependancy.type.entity.program)",
 					"service": "$t(dependancy.type.entity.service)",
@@ -83,13 +83,13 @@
 					"selector": "$t(dependancy.type.entity.selector.default)"
 				},
 				"relation": {
-					"title": "Filter by type of relation",
+					"title": "Filter for relations",
 					"reference": "Referenced entities",
-					"reference-WRITING": "To perform an action",
-					"reference-READING": "To check a state",
-					"isLocatedIn": "Localized device(s)",
-					"isPlanified": "Planified program(s)",
-					"denotes": "Device(s) in selector"
+					"reference-WRITING": "State change",
+					"reference-READING": "State consultation",
+					"isLocatedIn": "Location",
+					"isPlanified": "Scheduling",
+					"denotes": "Designation"
 				}
 		}
   },
