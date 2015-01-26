@@ -161,10 +161,19 @@ define([
         /**
          * @return Array of the devices of a given type
          */
-        getDevicesByType: function() {
-            return this.groupBy(function(device) {
-                return device.get("type");
-            });
+        getDevicesByType: function(type) {
+            var array = this.groupBy(function(device) {
+                    return device.get("type");
+                });
+            if (type === undefined) {
+                return array;
+            } else {
+                if (array[type] != undefined) {
+                    return array[type];
+                }
+                return Array();
+                
+            }
         },
         /**
          * Retrieves all devices of a given type (excludes the clock, mail and weather)

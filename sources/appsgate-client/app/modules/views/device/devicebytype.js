@@ -25,7 +25,7 @@ define([
       initialize: function() {
         var self = this;
         self.listenTo(devices, "add", self.reload);
-        devices.getDevicesByType()[this.id].forEach(function(device) {
+        devices.getDevicesByType(this.id).forEach(function(device) {
           if(device.get("type") != 21) {
             self.listenTo(device, "change", self.autoupdate);
             self.listenTo(device, "remove", self.render);
@@ -37,7 +37,7 @@ define([
       * @param e JS mouse event
       */
       onGroupOnButton: function(e) {
-        devices.getDevicesByType()[this.id].forEach(function(device) {
+        devices.getDevicesByType(this.id).forEach(function(device) {
           device.remoteControl("on", []);
         });
       },
@@ -46,7 +46,7 @@ define([
       * @param e JS mouse event
       */
       onGroupOffButton: function(e) {
-        devices.getDevicesByType()[this.id].forEach(function(device) {
+        devices.getDevicesByType(this.id).forEach(function(device) {
           device.remoteControl("off", []);
         });
       },
@@ -249,7 +249,7 @@ define([
           if (this.id == 6) {
             state = "plugState";
           }
-          devices.getDevicesByType()[this.id].forEach(function(device) {
+          devices.getDevicesByType(this.id).forEach(function(device) {
             if (device.get(state) === "true" || device.get(state) === true) {
               allOff = false;
             } else if (device.get(state) === "false" || device.get(state) === false) {
@@ -268,7 +268,7 @@ define([
       },
       reload: function() {
         var self = this;
-        devices.getDevicesByType()[this.id].forEach(function(device) {
+        devices.getDevicesByType(this.id).forEach(function(device) {
           self.listenTo(device, "change", self.autoupdate);
           self.listenTo(device, "remove", self.render);
         });
@@ -279,6 +279,7 @@ define([
       * Render the list
       */
       render: function() {
+        
         if (!appRouter.isModalShown) {
           this.$el.html(this.tpl({
             type: this.id,
@@ -290,7 +291,7 @@ define([
           if (this.id == 6) {
             state = "plugState";
           }
-          devices.getDevicesByType()[this.id].forEach(function(device) {
+          devices.getDevicesByType(this.id).forEach(function(device) {
             if (device.get(state) === "true" || device.get(state) === true) {
               allOff = false;
             } else if (device.get(state) === "false" || device.get(state) === false) {
@@ -309,6 +310,7 @@ define([
 
           return this;
         }
+        return null;
       }
     });
     return DeviceByTypeView;
