@@ -331,12 +331,12 @@ define([
 		 * Method to know if a target is targeted more than one time by executing program
 		 * @param: target to search
 		 */
-		isTargetMultipleTargeted: function (target) {
+		isMultipleTargeted: function (target) {
 			var self = this;
 			var targetedOneTime = false;
 			for (var i = 0; i < self.get("currentRelations").length; i++) {
 				var relation = self.get("currentRelations")[i];
-				// Test si le target est le bon
+				// Test si le target est le bon : Program - Entity
 				if (target === relation.target && relation.source.type === "program") {
 					// Test si la source est un programme en cours d'execution : Mis en com' car changement d'avis  
 					//					if (relation.source.state === "PROCESSING" || relation.source.state === "LIMPING") {
@@ -356,9 +356,77 @@ define([
 						}
 					}
 					//					}
+				} else if (target === relation.target && relation.source.type === "selector") {
+					// Test si le target est le bon : Selector - Entity
+					var nbWritingRefToSelector = self.getNbWritingSelector(relation.source);
+					if (nbWritingRefToSelector > 1) {
+						// Si plus de deux références en écriture au selecteur on peut sortir en vrai
+						return true;
+					} else if (nbWritingRefToSelector === 1) {
+						if (targetedOneTime) {
+							// Pareil si on a déjà eu une ref en écriture avant et qu'un seul ref vers le selecteur
+							return true;
+						} else {
+							targetedOneTime = true;
+						}
+
+					}
 				}
 			}
 			return false;
+		},
+
+		/**
+		 * Method to know if all reference to selector are 'Writing'
+		 * @param: link denotes of one selector
+		 */
+		isWritingDenote: function (linkDenote) {
+			var self = this;
+			var selector = linkDenote.source;
+			for (var i = 0; i < self.get("currentRelations").length; i++) {
+				var relation = self.get("currentRelations")[i];
+				if (relation.type === "reference" && relation.target.id === selector.id) {
+					// Vérification qu'on ait bien des infos sur la relation
+					if (relation.referenceData) {
+						for (var j = 0; j < relation.referenceData.length; j++) {
+							var refData = relation.referenceData[j];
+							// Test que la référence est en écriture
+							if (refData.referenceType === "WRITING") {
+								// Si au moins une référence vers le selecteur est en écriture alors on met cette relation en rouge
+								return true;
+							}
+						}
+					}
+				}
+			}
+
+			return false;
+		},
+
+		/**
+		 * Method to know the number of writing reference to a selector
+		 * @param: selector entity
+		 */
+		getNbWritingSelector: function (selector) {
+			var self = this;
+			var nbWritingReferences = 0;
+			for (var i = 0; i < self.get("currentRelations").length; i++) {
+				var relation = self.get("currentRelations")[i];
+				if (relation.type === "reference" && relation.target.id === selector.id) {
+					// Vérification qu'on ait bien des infos sur la relation
+					if (relation.referenceData) {
+						for (var j = 0; j < relation.referenceData.length; j++) {
+							var refData = relation.referenceData[j];
+							// Test que la référence est en écriture
+							if (refData.referenceType === "WRITING") {
+								nbWritingReferences++;
+							}
+						}
+					}
+				}
+			}
+
+			return nbWritingReferences;
 		}
 
 	});
@@ -508,10 +576,10 @@ define([
 
 			// Test if the source and the target are not undefined
 			var areSourceAndTargetDefined = typeof sourceNode !== 'undefined' && typeof targetNode !== 'undefined';
-			
+
 			// Test if the type of the link is shonw = in the currentRelationsTypes
 			var isTypeShown = _.contains(self.get("currentRelationsTypes"), e.type);
-			
+
 			// Special test for the reference type. Test if one of its type of reference is to show
 			var isReferenceShown = function () {
 				// Test type reference and if it has reference data
@@ -533,7 +601,7 @@ define([
 						// If it contains writing type reference, checl if they have to be shown
 						getWritingRefToShow = _.contains(self.get("currentRelationsReferenceTypes"), "WRITING");
 					}
-					
+
 					// Test reading type reference
 					var getReadingRefToShow = false;
 					if (testTypeRef("READING")) {

@@ -491,7 +491,7 @@ define([
 
 			nodeEntity.selectAll("circle")
 				.classed("program-multiple-writing-reference", function (d) {
-					return self.model.isTargetMultipleTargeted(d);
+					return self.model.isMultipleTargeted(d);
 				})
 
 			nodeEntity.selectAll(".circle-device-state")
@@ -559,28 +559,35 @@ define([
 									return true;
 								}
 							}
+						} else if (link.type === "denotes") {
+							// If denotes, red if all references to the selector are writing type
+							return self.model.isWritingDenote(link);
 						}
 						return false;
 					}(d);
 					// Target focus and mutliple target -> RED / ARROW
-					if (d.target === self.model.get("rootNode") && d.type === "reference" && isWritingReference)
+					if (d.target === self.model.get("rootNode") && isWritingReference)
 						return "url(#targetingRefFocus)";
 					// Target focus -> ARROW
 					else if (d.target === self.model.get("rootNode"))
 						return "url(#targetingFocus)";
 					// Multiple target -> RED
-					else if (isWritingReference && d.type === "reference")
+					else if (isWritingReference)
 						return "url(#targeting)";
 					else
 						return "url(#" + d.type + ")";
 				})
 				.classed("important-path", function (d) {
 					if (d.referenceData) {
+						// If reference, red if writing type
 						for (var index = 0; index < d.referenceData.length; index++) {
 							if (d.referenceData[index].referenceType === "WRITING") {
 								return true;
 							}
 						}
+					} else if (d.type === "denotes") {
+						// If denotes, red if all references to the selector are writing type
+						return self.model.isWritingDenote(d);
 					}
 					return false;
 				});
@@ -768,7 +775,7 @@ define([
 										self.updateCheckAllRelations();
 									})
 								d3.select(this).append("span")
-									.classed("reference-filter", function (f){
+									.classed("reference-filter", function (f) {
 										return f === "WRITING";
 									})
 									.text(function (d) {
