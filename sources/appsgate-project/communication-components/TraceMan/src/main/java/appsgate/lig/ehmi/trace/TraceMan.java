@@ -1058,6 +1058,12 @@ public class TraceMan implements TraceManSpec {
         if (descr.getType().equalsIgnoreCase("WeatherObserver")) {
             return false;
         }
+        if (descr.getType().equalsIgnoreCase("MediaPlayer")) {
+            return false;
+        }
+        if (descr.getType().equalsIgnoreCase("Clock")) {
+            return false;
+        }
         //Trace not filtered
         return true;
     }
