@@ -199,7 +199,9 @@ define([
 
 
                 break;
-
+            case 32:
+                $("#device-" + device.cid + "-value").text(device.get("value"));
+                break;
             case 124: //CoreTV : 124
 
 

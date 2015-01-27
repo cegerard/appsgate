@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.ubikit.PhysicalEnvironmentItem;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 /**
@@ -29,7 +30,9 @@ public class ItemInstanciation implements Runnable {
     }
 
     public void run() {
+        logger.debug("Instantiating Adapter for Enocean. Total of Items: {}",itemList.size());
         for (PhysicalEnvironmentItem item : itemList) {
+            logger.debug("Item UID {} Type {}",item.getUID(),item.getType(), Arrays.asList(item.getCapabilities()));
             logger.debug("creating instance of : "+item.getUID());
             adapter.instanciateItem(item);
         }

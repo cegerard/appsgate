@@ -36,6 +36,27 @@
 			</tr>
 			<% } %>
 
+			<!-- getCO2Sensors sensors -->
+			<% if (place.getCO2Sensors().length > 0) { %>
+			<tr>
+				<td>
+					<% if (place.getCO2Sensors().length === 1) { %>
+					<span data-i18n="devices.co2.name.singular"></span>
+					<% } else { %>
+					<span data-i18n="devices.co2.name.plural"></span>
+					<% } %>
+				<span class="label-value">
+					<%= place.getAverageCO2Sensor() %> ppm
+				</span>
+				</td>
+				<td>
+				<span class="badge">
+					<%= place.getCO2Sensors().length %>
+				</span>
+				</td>
+			</tr>
+			<% } %>
+
 			<!-- illumination sensors -->
 			<% if (place.getIlluminationSensors().length > 0) { %>
 			<tr>

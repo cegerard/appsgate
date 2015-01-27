@@ -125,6 +125,14 @@ define([
             return this.getAverageValue(this.getTemperatureSensors(),999);
         },
         /**
+         * Compute the average co2 of the place from the co2 sensors in the place
+         *
+         * @return Average co2 of the place if any temperature sensor, undefined otherwise
+         */
+        getAverageCO2Sensor: function() {
+            return this.getAverageValue(this.getCO2Sensors(),-1);
+        },
+        /**
          * Compute the average illumination of the place from the illumination sensors in the place
          *
          * @return Average illumination of the place if any illumination sensor, undefined otherwise
@@ -235,6 +243,9 @@ define([
          */
         getARDLock: function() {
             return this.getTypeSensors(5);
+        },
+        getCO2Sensors: function() {
+            return this.getTypeSensors(32);
         },
         /**
          * @returns Array of plugs in the place

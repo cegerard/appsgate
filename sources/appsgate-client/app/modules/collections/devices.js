@@ -6,6 +6,7 @@ define([
     "text!templates/program/nodes/defaultPropertyNode.html",
     "text!templates/program/nodes/defaultStateNode.html",
     "models/device/temperaturesensor",
+    "models/device/co2sensor",
     "models/device/illuminationsensor",
     "models/device/switchsensor",
     "models/device/contactsensor",
@@ -19,7 +20,7 @@ define([
     "models/device/mediabrowser",
     "models/device/coretv",
     "models/device/coreclock"
-], function(App, Device, ActionTemplate, EventTemplate, PropertyTemplate, StateTemplate, TemperatureSensor, IlluminationSensor, SwitchSensor, ContactSensor, KeyCardSensor, ARDLock, Plug, PhillipsHue, Actuator, DomiCube, MediaPlayer, MediaBrowser, CoreTV, CoreClock) {
+], function(App, Device, ActionTemplate, EventTemplate, PropertyTemplate, StateTemplate, TemperatureSensor, CO2Sensor, IlluminationSensor, SwitchSensor, ContactSensor, KeyCardSensor, ARDLock, Plug, PhillipsHue, Actuator, DomiCube, MediaPlayer, MediaBrowser, CoreTV, CoreClock) {
 
     var Devices = {};
 
@@ -115,6 +116,9 @@ define([
                     break;
                 case 31:
                     device = new MediaPlayer(brick);
+                    break;
+                case 32:
+                    device = new CO2Sensor(brick);
                     break;
                 case 36:
                     device = new MediaBrowser(brick);
@@ -233,7 +237,9 @@ define([
                 i18="devices.actuator.name.";
             } else if (type == "31") {
                 i18="devices.mediaplayer.name.";
-            } else if (type == "124") {
+            } else if (type == "32") {
+                i18="devices.co2.name.";
+            }else if (type == "124") {
                 i18="devices.tv.name.";
             } else if (type == "210") {
                 i18="devices.domicube.name.";
@@ -257,6 +263,12 @@ define([
          */
         getSwitches: function() {
             return devices.where({type: 2});
+        },
+        /**
+         * @return Array of the switches
+         */
+        getCO2Sensors: function() {
+            return devices.where({type: 32});
         },
         /**
          * @return Array of the contact sensors

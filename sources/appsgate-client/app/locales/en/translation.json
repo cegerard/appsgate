@@ -516,6 +516,24 @@
         "singular": "Temperature sensor"
       }
     },
+    "co2": {
+      "caption": {
+        "intern": "Capteur de CO2"
+      },
+      "keyboard": {
+        "get": "la CO2 du __myVar__",
+        "change": "la CO2 mesurée par le __myVar__ change",
+        "sensor": "capteur de CO2"
+      },
+      "language": {
+        "get": "la CO2 de __myVar__",
+        "change": "la CO2 mesurée par __myVar__ change"
+      },
+      "name": {
+        "plural": "Capteurs de CO2",
+        "singular": "Capteur de CO2"
+      }
+    },
     "type-label": "Type",
     "value-label": "Value"
   },

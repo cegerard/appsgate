@@ -5,6 +5,12 @@
     <% } else { %>
     <span data-i18n="devices.temperature.name.plural"></span>
     <% } %>
+    <% } else if (type === "32") {%>
+    <% if (devices.where({type : 32}).length === 1) { %>
+    <span data-i18n="devices.co2.name.singular"></span>
+    <% } else { %>
+    <span data-i18n="devices.co2.name.plural"></span>
+    <% } %>
     <% } else if (type === "1") { %>
     <% if (devices.where({type : 1}).length === 1) { %>
     <span data-i18n="devices.illumination.name.singular"></span>
@@ -218,7 +224,8 @@
                     <span id="selectedMedia" class="label label-default" data-i18n="devices.mediaplayer.status.selected">Select a media</span>
                     <% } %>
 
-
+                    <% } else if (type === "32") { %>
+                        <span id="device-<%= s.cid %>-value" class="label-value"><%= s.getValue() %></span>
                     <% } else if (type === "210") { %>
                     <% if(s.get("activeFace") === "1") { %>
                       <img id="device-<%= s.cid %>-value" src='app/img/domicube-work.svg' width='18px' class="img-responsive">
@@ -310,6 +317,8 @@
                     <% } %>
                     <% if (type === "0") { %>
                             <span id="device-<%= s.cid %>-value" class="label-value"><%= s.getValue() %> &deg;C</span>
+                    <% } else if (type === "32") { %>
+                            <span id="device-<%= s.cid %>-value" class="label-value"><%= s.getValue() %></span>
                     <% } else if (type === "1") { %>
                     <span id="device-<%= s.cid %>-value" class="label-value"><%= $.i18n.t("devices.illumination.scale." + s.get("label")) %></span>
                     <% } else if (type === "2") { %>

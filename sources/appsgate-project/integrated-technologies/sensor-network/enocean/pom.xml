@@ -28,5 +28,6 @@
 		<module>UbikitAdapter</module>
 		<module>EnoceanPlugImpl</module>
 		<module>UbikitAdapterSpec</module>
+		<module>EnoceanCO2SensorImpl</module>
 	</modules>
 </project>

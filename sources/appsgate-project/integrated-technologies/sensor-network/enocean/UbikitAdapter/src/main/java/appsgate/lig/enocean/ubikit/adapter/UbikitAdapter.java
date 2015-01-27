@@ -11,6 +11,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import appsgate.lig.enocean.ubikit.adapter.source.event.*;
 import fr.imag.adele.apam.impl.ComponentBrokerImpl;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,15 +30,6 @@ import org.ubikit.service.RootPhysicalEnvironmentModelService;
 import appsGate.lig.manager.client.communication.service.send.SendWebsocketsService;
 import appsGate.lig.manager.client.communication.service.subscribe.ListenerService;
 import appsgate.lig.enocean.ubikit.adapter.listeners.EnOceanCommandListener;
-import appsgate.lig.enocean.ubikit.adapter.source.event.ContactEvent;
-import appsgate.lig.enocean.ubikit.adapter.source.event.KeyCardEvent;
-import appsgate.lig.enocean.ubikit.adapter.source.event.LumEvent;
-import appsgate.lig.enocean.ubikit.adapter.source.event.MeteringEvent;
-import appsgate.lig.enocean.ubikit.adapter.source.event.MotionEvent;
-import appsgate.lig.enocean.ubikit.adapter.source.event.PairingModeEvent;
-import appsgate.lig.enocean.ubikit.adapter.source.event.SetPointEvent;
-import appsgate.lig.enocean.ubikit.adapter.source.event.SwitchEvent;
-import appsgate.lig.enocean.ubikit.adapter.source.event.TempEvent;
 import appsgate.lig.enocean.ubikit.adapter.spec.EnOceanPairingService;
 import appsgate.lig.enocean.ubikit.adapter.spec.UbikitAdapterService;
 import fr.imag.adele.apam.CST;
@@ -146,6 +138,9 @@ public class UbikitAdapter implements
         eventGate.addListener(new PEMSimpleListener(sendToClientService, this));
         logger.info("Simple listener registered");
 
+		eventGate.addListener(new CO2Event(this));
+		eventGate.addListener(new VOCEvent(this));
+		eventGate.addListener(new HumidityEvent(this));
 		eventGate.addListener(new TempEvent(this));
 		eventGate.addListener(new SwitchEvent(this));
 		eventGate.addListener(new LumEvent(this));

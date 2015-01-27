@@ -100,6 +100,49 @@
 </div>
 <% } %>
 
+	<!-- co2 sensors -->
+	<% if (place.getCO2Sensors().length > 0) { %>
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">
+				<% if (place.getCO2Sensors().length === 1) { %>
+				<span data-i18n="devices.co2.name.singular"></span>
+				<% } else { %>
+				<span data-i18n="devices.co2.name.plural"></span>
+				<% } %>
+			<span class="badge pull-right">
+				<%= place.getCO2Sensors().length %>
+			</span>
+			</h3>
+		</div>
+		<div class="list-group">
+			<% place.getCO2Sensors().forEach(function(s) { %>
+			<a href="#devices/<%= s.get('id') %>" class="list-group-item">
+				<span id="device-<%= s.cid %>-name">
+				<% if (s.get("name") !== "") { %>
+					<%= s.get("name") %>
+				<% } else { %>
+					<%= $.i18n.t("places-details.body.device-no-name") %>
+				<% } %>
+				</span>
+				<div class="pull-right">
+					<i class="glyphicon glyphicon-chevron-right"></i>
+				</div>
+				<br>
+				<% if (s.get("status") === "0") { %>
+				<span id="device-<%= s.cid %>-status" class="label label-danger" data-i18n="devices.status.disconnected"></span>
+				<% } else if (s.get("status" === "1")) { %>
+				<span id="device-<%= s.cid %>-status" class="label label-warning" data-i18n="devices.status.waiting"></span>
+				<% } else { %>
+				<span id="device-<%= s.cid %>-status" class="label label-success" data-i18n="devices.status.connected"></span>
+				<% } %>
+				<span id="device-<%= s.cid %>-value" class="label-value"><%= s.getValue() %></span>
+			</a>
+			<% }) %>
+		</div>
+	</div>
+	<% } %>
+
 <!-- illumination sensors -->
 <% if (place.getIlluminationSensors().length > 0) { %>
 <div class="panel panel-default">

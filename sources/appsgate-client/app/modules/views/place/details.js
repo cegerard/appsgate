@@ -63,6 +63,9 @@ define([
               case 0:
                 $("#device-" + device.cid + "-value").text(device.getValue() + " &deg;C");
                 break;
+              case 32:
+                  $("#device-" + device.cid + "-value").text(device.getValue());
+                  break;
               case 1:
                 $("#device-" + device.cid + "-value").attr("data-i18n", "devices.illumination.scale." + device.get("label"));
                 break;
