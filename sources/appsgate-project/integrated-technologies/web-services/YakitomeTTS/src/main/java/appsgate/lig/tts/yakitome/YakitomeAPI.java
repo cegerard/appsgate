@@ -4,6 +4,8 @@ import org.json.JSONObject;
 import org.osgi.framework.ServiceException;
 
 public interface YakitomeAPI {
+	
+	public static final String TEXT_KEY = "text";
 
 	public static final String HTTP_STATUS_RESPONSE_KEY = "http_status";
 	public static final String MSG_RESPONSE_KEY = "msg";
@@ -55,16 +57,20 @@ public interface YakitomeAPI {
 	JSONObject textToSpeech(String text)
 			throws ServiceException;
 
-	JSONObject getSpeechTextStatus(String speechTextId)
+	/**
+	 * This one does not throws service exception as error codes may be interesting
+	 * @param speechTextId
+	 * @return
+	 */
+	JSONObject getSpeechTextStatus(int speechTextId);;
+
+	JSONObject getAudioFileURL(int speechTextId)
 			throws ServiceException;
 
-	JSONObject getAudioFileURL(String speechTextId)
-			throws ServiceException;
-
-	JSONObject deleteSpeechText(String speechTextId)
+	JSONObject deleteSpeechText(int speechTextId)
 			throws ServiceException;
 	
-	 SpeechTextItem waitForTTS(String book_id);
+	JSONObject waitForTTS(int book_id);
 
 
 }

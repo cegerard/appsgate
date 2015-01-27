@@ -46,7 +46,6 @@ public class YakitomeAPIClient implements YakitomeAPI {
 
 	public static final String API_KEY_PARAM = "api_key=";
 	public static final String VOICE_PARAM = "voice=";
-	public static final String TEXT_KEY = "text";
 	public static final String TEXT_PARAM = TEXT_KEY+"=";
 	public static final String SPEED_PARAM = "speed=";
 	public static final String BOOK_ID_PARAM = "book_id=";
@@ -249,7 +248,7 @@ public class YakitomeAPIClient implements YakitomeAPI {
 
 		YakitomeAPI testing = new YakitomeAPIClient();
 		testing.configure("5otuvhvboadAgcLPwy69P", null, -1);
-		testing.getSpeechTextStatus("0");
+		testing.getSpeechTextStatus(0);
 	}
 
 	/* (non-Javadoc)
@@ -273,27 +272,26 @@ public class YakitomeAPIClient implements YakitomeAPI {
 	 * @see appsgate.lig.tts.yakitome.YakitomeAPI#getSpeechTextStatus(java.lang.String)
 	 */
 	@Override
-	public JSONObject getSpeechTextStatus(String speechTextId)
-			throws ServiceException {
+	public JSONObject getSpeechTextStatus(int speechTextId) {
 		Map<String, String> urlParameters = new LinkedHashMap<String, String>();
 		urlParameters.put(API_KEY_PARAM, api_key_value);
-		urlParameters.put(PARAM_SEPARATOR + BOOK_ID_PARAM, speechTextId);
+		urlParameters.put(PARAM_SEPARATOR + BOOK_ID_PARAM, String.valueOf(speechTextId));
 
 		String result = HttpUtils.sendHttpsPost(YAKITOME_JSON_URL
 				+ STATUS_SERVICE, initHeaders(), urlParameters, null);
 
-		return checkResponse(result);
+		return new JSONObject(result);
 	}
 	
 	/* (non-Javadoc)
 	 * @see appsgate.lig.tts.yakitome.YakitomeAPI#getAudioFileURL(java.lang.String)
 	 */
 	@Override
-	public JSONObject getAudioFileURL(String speechTextId)
+	public JSONObject getAudioFileURL(int speechTextId)
 			throws ServiceException {
 		Map<String, String> urlParameters = new LinkedHashMap<String, String>();
 		urlParameters.put(API_KEY_PARAM, api_key_value);
-		urlParameters.put(PARAM_SEPARATOR + BOOK_ID_PARAM, speechTextId);
+		urlParameters.put(PARAM_SEPARATOR + BOOK_ID_PARAM, String.valueOf(speechTextId));
 		urlParameters.put(PARAM_SEPARATOR + FORMAT_PARAM, FORMAT_MP3_VALUE);
 
 		String result = HttpUtils.sendHttpsPost(YAKITOME_JSON_URL
@@ -306,11 +304,11 @@ public class YakitomeAPIClient implements YakitomeAPI {
 	 * @see appsgate.lig.tts.yakitome.YakitomeAPI#deleteSpeechText(java.lang.String)
 	 */
 	@Override
-	public JSONObject deleteSpeechText(String speechTextId)
+	public JSONObject deleteSpeechText(int speechTextId)
 			throws ServiceException {
 		Map<String, String> urlParameters = new LinkedHashMap<String, String>();
 		urlParameters.put(API_KEY_PARAM, api_key_value);
-		urlParameters.put(PARAM_SEPARATOR + BOOK_ID_PARAM, speechTextId);
+		urlParameters.put(PARAM_SEPARATOR + BOOK_ID_PARAM, String.valueOf(speechTextId));
 
 		String result = HttpUtils.sendHttpsPost(YAKITOME_JSON_URL
 				+ DELETE_SERVICE, initHeaders(), urlParameters, null);
@@ -322,11 +320,10 @@ public class YakitomeAPIClient implements YakitomeAPI {
 	 * @see appsgate.lig.tts.yakitome.YakitomeAPI#waitForTTS(String book_id)
 	 */
 	@Override
-	public SpeechTextItem waitForTTS(String book_id) {
-		logger.trace("waitForTTS(), step one generation of Text To speech for id : "+book_id);
+	public JSONObject waitForTTS(int book_id) {
+		JSONObject response = null;
 		int testCounter = 0;
 		boolean found = false;
-		JSONObject response=new JSONObject();
 		while(testCounter<MAX_COUNTER && !found) {
 			try {
 				Thread.sleep(SLEEP_PERIOD);
@@ -361,6 +358,7 @@ public class YakitomeAPIClient implements YakitomeAPI {
 		logger.trace("waitForTTS(), step two generation of audio file for id : "+book_id);
 
 		found = false;
+		testCounter=0;
 		while(testCounter<MAX_COUNTER && !found) {
 			try {
 				Thread.sleep(SLEEP_PERIOD);
@@ -394,17 +392,7 @@ public class YakitomeAPIClient implements YakitomeAPI {
 			return null;
 		}
 		
-		SpeechTextItem item;
-		try {
-			item = new SpeechTextItem(response);
-			return item;
-		} catch (Exception e) {
-			logger.warn("run(), error when creating the Speech Text Item : "+e.getMessage());
-			return null;
-		}
+		return response;
 	}
-	
-
-
 
 }
