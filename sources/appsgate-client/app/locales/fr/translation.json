@@ -1006,6 +1006,11 @@
 	"SmartPlug" : {
 		"on" : "Allumer la prise",
 		"off" : "Eteindre la prise"
-	}
+	},
+    "DomiCube" : {
+      "change" : {
+         "activeFace" : "Nouvelle face du DomiCube"
+      }
+    }
   }
 }
