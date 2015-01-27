@@ -11,6 +11,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
 
+import appsgate.lig.tts.yakitome.impl.YakitomeAPIClient;
 import ch.qos.logback.classic.Logger;
 
 public class YakitomeAPIClientTest {

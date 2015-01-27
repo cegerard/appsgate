@@ -10,9 +10,13 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import appsgate.lig.tts.yakitome.impl.TTSServiceImpl;
+import appsgate.lig.tts.yakitome.impl.YakitomeAPIClient;
+import appsgate.lig.tts.yakitome.impl.YakitomeAdapter;
+
 public class YakitomeAdapterTest {
 
-	YakitomeAdapter testing;
+	TTSServiceImpl testing;
 	String sample = "Le petit chat est mort";
 
 
@@ -30,7 +34,7 @@ public class YakitomeAdapterTest {
 		// api key registered for smarthome.inria at gmail.com
 		api.configure("5otuvhvboadAgcLPwy69P", "Juliette", -1);
 
-		testing = new YakitomeAdapter();
+		testing = new TTSServiceImpl();
 		testing.configure(api);
 
 	}

@@ -1,8 +1,12 @@
-package appsgate.lig.tts.yakitome;
+package appsgate.lig.tts.yakitome.impl;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import appsgate.lig.tts.yakitome.SpeechTextItem;
+import appsgate.lig.tts.yakitome.TTSItemsListener;
+import appsgate.lig.tts.yakitome.YakitomeAPI;
 
 public class TTSGenerationMonitor extends Thread {
 	/**

@@ -1,5 +1,4 @@
-package appsgate.lig.tts.yakitome;
-
+package appsgate.lig.tts.yakitome.impl;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -13,21 +12,47 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import appsgate.lig.core.object.spec.CoreObjectSpec;
+import appsgate.lig.tts.CoreTTSService;
+import appsgate.lig.tts.yakitome.SpeechTextItem;
+import appsgate.lig.tts.yakitome.TTSItemsListener;
+import appsgate.lig.tts.yakitome.YakitomeAPI;
 import appsgate.lig.tts.yakitome.utils.HttpUtils;
 
-public class YakitomeAdapter implements TTSItemsListener, CoreTTSService, CoreObjectSpec {
+/**
+ * This class holds the CoreObjectSpec and TTS business functions
+ * @author thibaud
+ *
+ */
+public class TTSServiceImpl implements TTSItemsListener, CoreTTSService, CoreObjectSpec{
 	
-	private static Logger logger = LoggerFactory
-			.getLogger(YakitomeAdapter.class);	
 	
 	Map<Integer, SpeechTextItem> ttsItems = new HashMap<Integer, SpeechTextItem>();
 	YakitomeAPI apiClient;
 	
+	int coreObjectStatus = 0;
 	
+	
+	/**
+	 * This method should be accessible only by the adapter
+	 * @param apiClient
+	 */
 	public void configure(YakitomeAPI apiClient) {
 		this.apiClient = apiClient;
+		testStatus();
 	}
-
+	
+	private void testStatus() {
+		if(apiClient!= null && apiClient.testService()) {
+			coreObjectStatus = 2;
+		} else {
+			coreObjectStatus = 0;
+		}
+		
+	}
+	
+	private static Logger logger = LoggerFactory
+			.getLogger(CoreTTSService.class);	
+	
 	/* (non-Javadoc)
 	 * @see appsgate.lig.tts.yakitome.CoreTTSService#getTTSItemMatchingSentence(java.lang.String)
 	 */
@@ -58,13 +83,6 @@ public class YakitomeAdapter implements TTSItemsListener, CoreTTSService, CoreOb
 		}
 		logger.debug("getTTSItemMatchingSentence(...), no item matching the sentence found, returning 0");
 		return 0;	
-	}
-	
-	
-	@Override
-	public void onTTSItemAdded(SpeechTextItem item) {
-		logger.trace("onTTSItemAdded(SpeechTextItem item : {})",item.toJSON());
-		ttsItems.put(item.getSpeechTextId(), item);
 	}
 	
 	/* (non-Javadoc)
@@ -103,6 +121,7 @@ public class YakitomeAdapter implements TTSItemsListener, CoreTTSService, CoreOb
 			logger.trace("... asynchronousTTSGeneration(...), monitor launched, waiting for the callback");
 		} catch (Exception e) {
 			logger.trace("asynchronousTTSGeneration(...), Exception occured : "+e.getMessage());
+			testStatus();
 		}
 		return book_id;
 	}
@@ -145,6 +164,7 @@ public class YakitomeAdapter implements TTSItemsListener, CoreTTSService, CoreOb
 			}
 		} catch (Exception e) {
 			logger.warn("waitForTTSGeneration(...), Exception occured : "+e.getMessage());
+			testStatus();
 		}
 		return book_id;
 	}
@@ -159,8 +179,9 @@ public class YakitomeAdapter implements TTSItemsListener, CoreTTSService, CoreOb
 		try {
 			response = apiClient.deleteSpeechText(book_id);
 			logger.trace("deleteSpeechText(...), removed from the server");
-		} catch (ServiceException e) {
+		} catch (Exception e) {
 			logger.warn("deleteSpeechText(...), Error occured when trying to delete TTS from server : "+e.getMessage());
+			testStatus();
 		}
 		logger.trace("deleteSpeechText(...), trying to remove from local list");
 		ttsItems.remove(book_id);
@@ -184,12 +205,17 @@ public class YakitomeAdapter implements TTSItemsListener, CoreTTSService, CoreOb
 				ttsItems.remove(book_id);
 			}
 
-		} catch (ServiceException e) {
+		} catch (Exception e) {
 			logger.warn("getSpeechTextStatus(...), Error occured calling getStatus on server : "+e.getMessage());
+			testStatus();
 		}
-		
-		
 		return response;
+	}
+	
+	@Override
+	public void onTTSItemAdded(SpeechTextItem item) {
+		logger.trace("onTTSItemAdded(SpeechTextItem item : {})",item.toJSON());
+		ttsItems.put(item.getSpeechTextId(), item);
 	}
 
 	@Override
@@ -212,7 +238,7 @@ public class YakitomeAdapter implements TTSItemsListener, CoreTTSService, CoreOb
 
 	@Override
 	public String getPictureId() {
-		// Deprecated
+		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -224,12 +250,14 @@ public class YakitomeAdapter implements TTSItemsListener, CoreTTSService, CoreOb
 
 	@Override
 	public void setPictureId(String pictureId) {
-		// Deprecated
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	public CORE_TYPE getCoreType() {
-		return CORE_TYPE.SERVICE;
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
@@ -237,6 +265,4 @@ public class YakitomeAdapter implements TTSItemsListener, CoreTTSService, CoreOb
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	
 }

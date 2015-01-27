@@ -71,6 +71,6 @@ public interface YakitomeAPI {
 			throws ServiceException;
 	
 	JSONObject waitForTTS(int book_id);
-
-
+	
+	public boolean testService();
 }

@@ -1,4 +1,4 @@
-package appsgate.lig.tts.yakitome;
+package appsgate.lig.tts.yakitome.impl;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -11,6 +11,7 @@ import org.osgi.framework.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import appsgate.lig.tts.yakitome.YakitomeAPI;
 import appsgate.lig.tts.yakitome.utils.HttpUtils;
 
 /**
@@ -82,7 +83,11 @@ public class YakitomeAPIClient implements YakitomeAPI {
 	 */
 	private static boolean isAvailable = false;
 
-	boolean testService() {
+	/* (non-Javadoc)
+	 * @see appsgate.lig.tts.yakitome.YakitomeAPI#testService()
+	 */
+	@Override	
+	public boolean testService() {
 		logger.trace("testService()");
 		
 		if(!HttpUtils.testURLTimeout(YAKITOME_API_URL,3000)) {

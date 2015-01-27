@@ -1,4 +1,4 @@
-package appsgate.lig.tts.yakitome;
+package appsgate.lig.tts;
 
 import org.json.JSONObject;
 
