@@ -36,8 +36,8 @@ define([
       var v = this.getJSONProperty("mandatory");
       switch (property) {
         case "value":
-          $(btn).append("<span>" + $.i18n.t('devices.temperature.keyboard.get', {
-            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.temperature.keyboard.sensor') + "</span>",
+          $(btn).append("<span>" + $.i18n.t('devices.co2.keyboard.get', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.co2.keyboard.sensor') + "</span>",
           }));
           v.methodName = "getCO2Concentration";
           v.returnType = "number";
@@ -46,7 +46,7 @@ define([
           $(btn).attr("json", JSON.stringify(v));
           break;
         default:
-          console.error("unexpected device state found for temperature sensor: " + property);
+          console.error("unexpected device state found for co2 sensor: " + property);
           btn = null;
           break;
       }

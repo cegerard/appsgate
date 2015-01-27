@@ -40,7 +40,7 @@ public class CO2Event implements CO2ConcentrationEvent.Listener {
 
 	@Override
 	public void onEvent(CO2ConcentrationEvent co2ConcentrationEvent) {
-		logger.info("CO2 concentration event received {} ",co2ConcentrationEvent.getSourceItemUID());
+		logger.info("CO2 concentration event received {} with the value {} ",co2ConcentrationEvent.getSourceItemUID(),co2ConcentrationEvent.getCO2Concentration());
 		Instance instRef = enocean.getSensorInstance(co2ConcentrationEvent.getSourceItemUID());
 		instRef.setProperty("concentration", co2ConcentrationEvent.getCO2Concentration());
 	}
