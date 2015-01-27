@@ -85,8 +85,8 @@
 				"relation": {
 					"title": "Filtres sur les relations",
 					"reference": "Entité(s) référencée(s)",
-					"reference-WRITING": "Modification d'état",
-					"reference-READING": "Consultation d'état",
+					"WRITING": "Modification d'état",
+					"READING": "Consultation d'état",
 					"isLocatedIn": "Localisation",
 					"isPlanified": "Planification",
 					"denotes": "Désignation"
