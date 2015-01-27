@@ -307,6 +307,7 @@ define([
 					// TEXT
 					d3.select(this).append("text")
 						.attr("class", "label-name")
+						.attr("opacity", 0)
 						.text(function (d) {
 							if (d.type === "selector")
 								return $.i18n.t("dependancy.type.entity.selector.type-" + d.name);
@@ -342,6 +343,7 @@ define([
 					if (a.type === "device" && a.deviceState !== undefined) {
 						d3.select(this).append("circle")
 							.attr("class", "circle-device-state")
+							.attr("opacity", 0)
 							.attr("r", 7);
 					}
 				});
@@ -349,12 +351,14 @@ define([
 			nEnter.select("circle").transition().duration(800).attr("r", 14);
 			nEnter.select("image").transition().duration(1000).style("opacity", 1);
 			nEnter.select(".shape-program").transition().duration(800).style("opacity", 1);
+			nEnter.select(".circle-device-state").transition().duration(800).style("opacity", 1);
 			nEnter.select("text").transition().duration(800).style("opacity", 1);
 
 			nodeEntity.exit().select("image").transition().duration(600).style("opacity", 0);
 			nodeEntity.exit().select("text").transition().duration(700).style("opacity", 0);
 			nodeEntity.exit().select("circle").transition().duration(700).attr("r", 0);
 			nodeEntity.exit().select(".shape-program").transition().duration(700).style("opacity", 0);
+			nodeEntity.exit().select(".circle-device-state").transition().duration(700).style("opacity", 0);
 			nodeEntity.exit().transition().duration(800).remove();
 
 
@@ -378,6 +382,7 @@ define([
 						.attr("marker-end", function (d) {
 							return "url(#" + d.type + ")";
 						})
+						
 						.attr("refX", -30);
 					// PATH TEXT
 					d3.select(this).append("svg:path")

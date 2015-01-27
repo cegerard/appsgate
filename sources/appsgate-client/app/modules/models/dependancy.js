@@ -621,7 +621,7 @@ define([
 						source: sourceNode,
 						target: targetNode,
 						type: e.type,
-						referenceData: e.referenceData
+						referenceData: checkFilterReferenceData.bind(self)(e.referenceData)
 					});
 				} else {
 					newLinks.push({
@@ -669,6 +669,28 @@ define([
 
 		return newLinks;
 	};
+
+	/**
+	 * Method to get the reference data according to the filter on the references
+	 * It is used for the special case of the reference with the 2 types of reference.
+	 */
+	function checkFilterReferenceData(refData) {
+		var self = this;
+		var setReadingRef = _.contains(self.get("currentRelationsTypes"), "READING");
+		var setWritingRef = _.contains(self.get("currentRelationsTypes"), "WRITING");
+
+		var newRefData = [];
+		_.forEach(refData, function (ref) {
+			if ((ref.referenceType === "WRITING" && setWritingRef) || (ref.referenceType === "READING" && setReadingRef)) {
+				newRefData.push({
+					method: ref.method,
+					referenceType: ref.referenceType
+				});
+			}
+		});
+
+		return newRefData;
+	}
 
 	// Return the reference to the Dependancy constructor
 	return Dependancy;
