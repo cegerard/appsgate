@@ -1056,7 +1056,7 @@ public class TraceMan implements TraceManSpec {
         if (descr.getType().equalsIgnoreCase("Illumination") && varName.contentEquals("label")) {
             return false;
         }
-        if (descr.getType().equalsIgnoreCase("Domicube") && varName.contentEquals("newDimValue")) {
+        if (descr.getType().equalsIgnoreCase("Domicube") && ! varName.contentEquals("activeFace")) {
             return false;
         }
         if (descr.getType().equalsIgnoreCase("Temperature") && varName.contentEquals("change")) {
