@@ -750,39 +750,6 @@ define([
 						.text(function (d) {
 							return $.i18n.t("dependancy.filters-label.relation." + d);
 						});
-
-					if (d === "reference") {
-
-						d3.select(this).selectAll("div")
-							.data(model.get("relationsReferenceTypes"))
-							.enter()
-							.append("div")
-							.attr("class", "checkbox-container")
-							.append("label")
-							.each(function (d2) {
-								// create checkbox for each data
-								d3.select(this).append("input")
-									.attr("type", "checkbox")
-									.attr("id", function (d2) {
-										return "chk_link_ref_" + d2;
-									})
-									.property("checked", function (d2) {
-										return _.contains(self.model.get("currentRelationsReferenceTypes"), d2);
-									})
-									.on("click", function (d2, i) {
-										// register on click event
-										self.applyFilter("relationsReference", d2, this.checked);
-										self.updateCheckAllRelations();
-									})
-								d3.select(this).append("span")
-									.classed("reference-filter", function (f) {
-										return f === "WRITING";
-									})
-									.text(function (d) {
-										return $.i18n.t("dependancy.filters-label.relation.reference-" + d2);
-									});
-							});
-					}
 				});
 
 		},

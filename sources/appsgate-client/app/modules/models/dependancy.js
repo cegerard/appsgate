@@ -18,12 +18,10 @@ define([
 				height: 800,
 				width: 960,
 				mapDepthNeighbors: {},
-				entitiesTypes: ["place", "program", "service", "time", "device", "selector"],
-				relationsTypes: ["reference", "isLocatedIn", "isPlanified", "denotes"],
-				relationsReferenceTypes: ["WRITING", "READING"],
+				entitiesTypes: ["time", "place", "device", "service", "program", "selector"],
+				relationsTypes: ["isPlanified", "isLocatedIn", "READING", "WRITING", "denotes"],
 				currentEntitiesTypes: ["place", "program", "service", "time", "device", "selector"],
-				currentRelationsTypes: ["reference", "isLocatedIn", "isPlanified", "denotes"],
-				currentRelationsReferenceTypes: ["WRITING", "READING"]
+				currentRelationsTypes: ["isPlanified", "isLocatedIn", "READING", "WRITING", "denotes"],
 			});
 
 			self.on("change:rootNode", function (model) {
@@ -314,8 +312,6 @@ define([
 					return self.get("currentEntitiesTypes");
 				} else if (arrayParam === "relations") {
 					return self.get("currentRelationsTypes");
-				} else {
-					return self.get("currentRelationsReferenceTypes");
 				}
 			}(array);
 
@@ -562,6 +558,9 @@ define([
 		});
 	};
 
+	/*
+	 * Method to create the relation according to the present entities
+	 */
 	function buildLinksFromNodesShown() {
 		var self = this;
 		var newLinks = [];
@@ -577,14 +576,14 @@ define([
 			// Test if the source and the target are not undefined
 			var areSourceAndTargetDefined = typeof sourceNode !== 'undefined' && typeof targetNode !== 'undefined';
 
-			// Test if the type of the link is shonw = in the currentRelationsTypes
+			// Test if the type of the link is shown = in the currentRelationsTypes
 			var isTypeShown = _.contains(self.get("currentRelationsTypes"), e.type);
 
 			// Special test for the reference type. Test if one of its type of reference is to show
 			var isReferenceShown = function () {
 				// Test type reference and if it has reference data
 				if (e.type === "reference" && e.referenceData) {
-					// function to test if the a reference of type : typeToText exists in the reference data
+					// function to test if the a reference of type : typeToTest exists in the reference data
 					var testTypeRef = function (typeToTest) {
 						var index;
 						for (index = 0; index < e.referenceData.length; index++) {
@@ -598,15 +597,15 @@ define([
 					// Test writing type reference
 					var getWritingRefToShow = false;
 					if (testTypeRef("WRITING")) {
-						// If it contains writing type reference, checl if they have to be shown
-						getWritingRefToShow = _.contains(self.get("currentRelationsReferenceTypes"), "WRITING");
+						// If it contains writing type reference, check if they have to be shown
+						getWritingRefToShow = _.contains(self.get("currentRelationsTypes"), "WRITING");
 					}
 
 					// Test reading type reference
 					var getReadingRefToShow = false;
 					if (testTypeRef("READING")) {
-						// If it contains reading type reference, checl if they have to be shown
-						getReadingRefToShow = _.contains(self.get("currentRelationsReferenceTypes"), "READING");
+						// If it contains reading type reference, check if they have to be shown
+						getReadingRefToShow = _.contains(self.get("currentRelationsTypes"), "READING");
 					}
 
 					return getWritingRefToShow || getReadingRefToShow;
