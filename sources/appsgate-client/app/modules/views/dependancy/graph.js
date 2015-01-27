@@ -750,6 +750,29 @@ define([
 						.text(function (d) {
 							return $.i18n.t("dependancy.filters-label.relation." + d);
 						});
+					d3.select(this).append("svg")
+						.attr("class", "filter-svg-arrow")
+						.append("svg:defs").append("svg:marker")
+						.attr("id", "markerArrow")
+						.attr("viewBox", "0 -5 10 10")
+						.attr("markerWidth", 4)
+						.attr("markerHeight", 4)
+						.attr("orient", "auto")
+						.append("svg:path")
+						.classed("reference-filter", function (f) {
+							return f === "WRITING";
+						})
+						.attr("d", "M0,-5L10,0L0,5");
+					d3.select(this).select("svg").append("svg:line")
+						.attr("class", "filter-arrow")
+						.classed("reference-filter", function (f) {
+							return f === "WRITING";
+						})
+						.attr("x1", "0")
+						.attr("y1", "5")
+						.attr("x2", "10")
+						.attr("y2", "5")
+						.attr("marker-end", "url(#markerArrow)");
 				});
 
 		},
