@@ -308,6 +308,7 @@ public class ReferenceTable {
         this.state = STATUS.OK;
         if (programs.size() + devices.size() + nodes.size() == 0) {
             LOGGER.trace("The table is empty, so the program is empty and no empty program is considered as valid");
+            this.err = ErrorMessagesFactory.getEmptyProgramMessage();
             this.state=STATUS.INVALID;
         }
         for (ProgramReferences pRef : programs) {

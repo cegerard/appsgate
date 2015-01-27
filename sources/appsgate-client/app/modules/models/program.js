@@ -111,9 +111,9 @@ define([
 			}
 			err = this.get("errorMessage");
 			if (err == undefined|| err.msg == undefined) {
-				return $.i18n.t('programs.state.'+this.getState())+ "\n" + $.i18n.t("programs.error.noMessage");
+				return $.i18n.t('programs.state.'+this.getState());
 			}
-			return $.i18n.t('programs.state.'+this.getState()) + "\n" + $.i18n.t(err.msg, err);
+			return $.i18n.t('programs.state.'+this.getState()) + ": " + $.i18n.t(err.msg, err);
 		},
         // override its synchronization method to send a notification on the network
         sync: function(method, model) {

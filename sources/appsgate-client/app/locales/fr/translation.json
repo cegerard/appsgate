@@ -74,7 +74,7 @@
 		},
 	  	"filters-label": {
 				"entity": {
-					"title": "Filtres par type d'entités",
+					"title": "Filtres sur les entités",
 					"place": "$t(dependancy.type.entity.place)",
 					"program": "$t(dependancy.type.entity.program)",
 					"service": "$t(dependancy.type.entity.service)",
@@ -83,13 +83,13 @@
 					"selector": "$t(dependancy.type.entity.selector.default)"
 				},
 				"relation": {
-					"title": "Filtres par type de relations",
+					"title": "Filtres sur les relations",
 					"reference": "Entité(s) référencée(s)",
-					"reference-WRITING": "Pour faire une action",
-					"reference-READING": "Pour vérifier un état",
-					"isLocatedIn": "Equipement(s) localisé(s)",
-					"isPlanified": "Programme(s) planifié(s)",
-					"denotes": "Equipement(s) dans une sélection"
+					"WRITING": "Modification d'état",
+					"READING": "Consultation d'état",
+					"isLocatedIn": "Localisation",
+					"isPlanified": "Planification",
+					"denotes": "Désignation"
 				}
 		}
   },
@@ -981,7 +981,6 @@
     "appear" : "l'équipement __name__ est apparu",
     "remove" : "l'équipement __name__ a été enlevé",
 	"defaultMessage" : "Une ligne de programme a été exécutée",
-	
     "ColorLight" : {
 	  "change" : {
 		"value" : "la lampe est allumée : __text__",

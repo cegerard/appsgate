@@ -1,15 +1,9 @@
 package appsgate.lig.tts.yakitome;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
-import javax.net.ssl.HttpsURLConnection;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Map;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -17,65 +11,70 @@ import org.slf4j.LoggerFactory;
 
 import appsgate.lig.tts.yakitome.utils.HttpUtils;
 
-public class YakitomeAdapter {
-	public YakitomeAdapter(String api_key_value) {
-		
-		this.api_key_value = api_key_value;
-	}
+public class YakitomeAdapter implements TTSItemsListener {
+	
+	private static Logger logger = LoggerFactory
+			.getLogger(YakitomeAdapter.class);	
+	
+	Map<String, SpeechTextItem> ttsItems;
+	YakitomeAPI apiClient;
 
-	private static Logger logger = LoggerFactory.getLogger(YakitomeAdapter.class);
-		
-	public static final String YAKITOME_API_URL = "https://www.yakitome.com/api/";
-	public static final String YAKITOME_JSON_URL = YAKITOME_API_URL+"call/json/";
-	public static final String YAKITOME_REST_URL = YAKITOME_API_URL+"rest/";
-	public static final String YAKITOME_XML_URL = YAKITOME_API_URL+"call/xml/";
-	
-
-	public static final String TTS_SERVICE = "tts?";
-	public static final String STATUS_SERVICE = "status?";
-	public static final String DELETE_SERVICE = "delete?";
-
-	public static final String PARAM_SEPARATOR = "&";
-	
-	public static final String API_KEY_PARAM = "api_key=";
-	public static final String VOICE_PARAM = "voice=";
-	public static final String TEXT_PARAM = "text=";
-	public static final String SPEED_PARAM = "speed=";
-	public static final String BOOK_ID_PARAM = "book_id=";
-	
-	private static String api_key_value;
-	
-	
-	
-	
 	/**
-	 * for experimentation, testing and debugging purposes
-	 * @param args
+	 * Check if a TTS item matching the desired sentence already exists
+	 * (used for optimization as TTS generation can takes long time)
 	 */
-	public static void main(String[] args) {
-				
-		YakitomeAdapter testing = new YakitomeAdapter("5otuvhvboadAgcLPwy69P");
-		testing.getSpeechTextStatus("0");
+	public String getTTSItemMatchingSentence(String sentence) {
+		logger.trace("getTTSItemMatchingSentence(String sentence : {})",sentence);
 		
+		String encodedSentence;
+		try {
+			encodedSentence = URLEncoder.encode(sentence, HttpUtils.DEFAULT_ENCODING);
+		} catch (UnsupportedEncodingException e) {
+			logger.warn("getTTSItemMatchingSentence(...), "
+					+ "error while getting encoded sentence, returning null, exception : "+e.getMessage());
+			return null;
+		}
+		if(encodedSentence == null ||encodedSentence.isEmpty()) {
+			logger.warn("getTTSItemMatchingSentence(...), "
+					+ "empty or null sentence, returning null");
+			return null;
+		}
+		
+		for(String ttsId : ttsItems.keySet()) {
+			SpeechTextItem tmp = ttsItems.get(ttsId);
+			if(tmp!= null && encodedSentence.equals(tmp.getEncodedSentence())) {
+				logger.trace("getTTSItemMatchingSentence(...), found matching sentence, with id : "+tmp.getSpeechTextId());
+				return tmp.getSpeechTextId();
+			}
+		}
+		logger.debug("getTTSItemMatchingSentence(...), no item matchnig the sentence found, returning null");
+		return null;	
 	}
 	
-	public JSONObject getSpeechTextStatus(String speechTextId) {
-		Map<String,String> urlParameters = new LinkedHashMap<String, String>();
-		urlParameters.put(API_KEY_PARAM, api_key_value);
-		urlParameters.put(PARAM_SEPARATOR+BOOK_ID_PARAM, speechTextId);
-		
-		String result = HttpUtils.sendHttpsPost(YAKITOME_JSON_URL+STATUS_SERVICE, initHeaders(), urlParameters, null);
-		return new JSONObject(result);
+	@Override
+	public void onTTSItemAdded(SpeechTextItem item) {
+		logger.trace("onTTSItemAdded(SpeechTextItem item : {})",item);
+		ttsItems.put(item.getSpeechTextId(), item);
 	}
-
-	static Map<String, String> initHeaders() {
-		Map<String, String> requestProperties= new HashMap<String, String>();
-		requestProperties.put("Content-type", "application/x-www-form-urlencoded");
-		requestProperties.put("Accept", "text/plain");
-		// This one seems mandatory to be accepted by the server (otherwise we get a 403) 
-		requestProperties.put("user-agent","Mozilla/5.0");
+	
+	public String asynchronousTTSGeneration(String text) {
+		logger.trace("asynchronousTTSGeneration(String text : {})",text);
+		String id = getTTSItemMatchingSentence(text);
+		if(id != null) {
+			logger.trace("asynchronousTTSGeneration(...), Text to speech already generated : "+id);
+			return id;
+		}
 		
-		return requestProperties;
-	}
+		try {
+			logger.trace("asynchronousTTSGeneration(...), Launching TTS...");
+			JSONObject responseTTS = apiClient.textToSpeech(text);
+			String book_id = String.valueOf(responseTTS.getInt(YakitomeAPIClient.BOOK_ID_RESPONSE_KEY));
+			logger.trace("... asynchronousTTSGeneration(...), TTS id :"+book_id);
 
+			
+		
+		} catch (Exception e) {
+		}	
+		return null;
+	}
 }
