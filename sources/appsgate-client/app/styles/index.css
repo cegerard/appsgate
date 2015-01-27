@@ -1060,8 +1060,21 @@ fieldset[disabled] .btn {
 	margin-right: 5px;
 }
 
+.filter-svg-arrow {
+	width: 20px;
+	height: 10px;
+	margin-left: 15px;
+}
+
+.filter-arrow {
+	stroke-width: 2px;
+	stroke: black;
+	margin-left: 15px;
+}
+
 .reference-filter {
-	color: red;
+	stroke: red;
+	fill: red;
 }
 
 #graph g>circle.program-invalid, .program-invalid {

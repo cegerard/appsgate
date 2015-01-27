@@ -80,13 +80,13 @@
 					"service": "$t(dependancy.type.entity.service)",
 					"time": "$t(dependancy.type.entity.time)",
 					"device": "$t(dependancy.type.entity.device)",
-					"selector": "$t(dependancy.type.entity.selector.default)"
+					"selector": "$t(dependancy.type.entity.selector.filter-label)"
 				},
 				"relation": {
 					"title": "Filter for relations",
 					"reference": "Referenced entities",
-					"reference-WRITING": "State change",
-					"reference-READING": "State consultation",
+					"WRITING": "State change",
+					"READING": "State consultation",
 					"isLocatedIn": "Location",
 					"isPlanified": "Scheduling",
 					"denotes": "Designation"
