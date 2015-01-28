@@ -19,25 +19,27 @@
         "search-label" : "Search : ",
 	  	"search-button": "OK",
 	  	"search-example": "(Example : '__entity__')",
-		"unfix-node": "Cancel the repositionings",
+		"unfix-node": "Cancel the repositioning",
 	  	"caption": {
 			"title": "Caption",
-			"stopped-program": "Deactivated program",
-			"running-program": "Activated program",
-			"valid-program": "Valid program",
-			"incomplete-program": "Unstable program",
-			"invalid-program": "Invalid program",
-			"device-on": "Device turned On or with contact",
-			"device-off": "Device turned Off or without contact"
+			"title-program": "Program State",
+			"title-device": "Device State",
+			"stopped-program": "Stopped",
+			"running-program": "Active",
+			"valid-program": "Ready",
+			"incomplete-program": "Unstable",
+			"invalid-program": "Invalid",
+			"device-on": "Device On",
+			"device-off": "Device Off"
 		},
 	  	"help" : {
 			"title": "Help",
-			"click": "Click on entity : Cancel its repositioning",
+			"click": "Click an entity : Cancel its repositioning",
 			"click-move": "Drag-Move: Reposition the entity",
-			"double-click": "Double Click on entity : Focus or Unfocus it",
+			"double-click": "Double Click an entity : Focus/Unfocus an entity",
 			"maj-click": "Shift + Click : Go to the entity's detailed page",
 			"hovering-entity": "Hovering an entity : Highlight its relations",
-			"click-relation": "Click on relation : Get information about it"
+			"click-relation": "Click a relation : Get information about a relation"
 		},
 	  	"type": {
 			"entity": {

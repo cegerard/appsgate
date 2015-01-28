@@ -22,22 +22,24 @@
 		"unfix-node": "Annuler les repositionnements",
 	  	"caption": {
 			"title": "Légende",
-			"stopped-program": "Programme désactivé",
-			"running-program": "Programme activé",
-			"valid-program": "Programme valide",
-			"incomplete-program": "Programme instable",
-			"invalid-program": "Programme invalide",
-			"device-on": "Equipement allumé ou avec contact",
-			"device-off": "Equipement éteint ou sans contact"
+			"title-program": "Status de programme",
+			"title-device": "Status d'équipement",
+			"stopped-program": "Stoppé",
+			"running-program": "Activé",
+			"valid-program": "Valide",
+			"incomplete-program": "Instable",
+			"invalid-program": "Invalide",
+			"device-on": "Equipement allumé",
+			"device-off": "Equipement éteint"
 		},
 	  	"help" : {
 			"title" : "Aide",
 			"click": "Clic entité : Annuler son repositionnement",
 			"click-move": "Glisser-Déposer : Repositionner l'entité",
-			"double-click": "Double clic sur entité : Mettre ou retirer le focus sur elle",
+			"double-click": "Double clic sur entité : Mettre/Retirer le focus sur une entité",
 			"maj-click": "Maj. + Clic entité : Aller à la page détaillée de l'entité",
 			"hovering-entity": "Survol entité : Mettre en avant ses relations",
-			"click-relation": "Clic relation : Obtenir informations sur elle"
+			"click-relation": "Clic relation : Obtenir informations sur une relation"
 		},
 	  	"type": {
 			"entity": {
