@@ -11,6 +11,7 @@ import org.osgi.framework.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.tts.CoreTTSService;
 import appsgate.lig.tts.yakitome.AdapterListener;
@@ -24,8 +25,9 @@ import appsgate.lig.tts.yakitome.utils.HttpUtils;
  * @author thibaud
  *
  */
-public class TTSServiceImpl implements TTSItemsListener, CoreTTSService, CoreObjectSpec{
+public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListener, CoreTTSService, CoreObjectSpec{
 	
+	public final static String TTS_IMPLEM_NAME = "TTSServiceImpl";
 	
 	Map<Integer, SpeechTextItem> ttsItems = new HashMap<Integer, SpeechTextItem>();
 	YakitomeAPI apiClient;
@@ -221,57 +223,68 @@ public class TTSServiceImpl implements TTSItemsListener, CoreTTSService, CoreObj
 		return response;
 	}
 	
+	public static final String userType = "104";
+	
 	@Override
 	public void onTTSItemAdded(SpeechTextItem item) {
 		logger.trace("onTTSItemAdded(SpeechTextItem item : {})",item.toJSON());
 		ttsItems.put(item.getSpeechTextId(), item);
 	}
 
-	@Override
-	public String getAbstractObjectId() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	@Override
-	public String getUserType() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public int getObjectStatus() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public String getPictureId() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	String serviceId;
 
 	@Override
 	public JSONObject getDescription() throws JSONException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		JSONObject descr = new JSONObject();
+		descr.put("id", getAbstractObjectId());
+		descr.put("type", getUserType()); // 104 for TTS
+		descr.put("status", getObjectStatus());
 
-	@Override
-	public void setPictureId(String pictureId) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public CORE_TYPE getCoreType() {
-		// TODO Auto-generated method stub
-		return null;
+		return descr;
 	}
 
 	@Override
 	public JSONObject getBehaviorDescription() {
-		// TODO Auto-generated method stub
+		return super.getBehaviorDescription();
+	}
+	
+	@Override
+	public String getAbstractObjectId() {
+		
+		return serviceId;
+	}	
+	
+	@Override
+	public CORE_TYPE getCoreType() {
+		return CORE_TYPE.SERVICE;
+	}	
+	
+	@Override
+	public String getUserType() {
+		return userType;
+	}
+
+	@Override
+	public int getObjectStatus() {
+		return coreObjectStatus;
+	}	
+	
+	/**
+	 * @deprecated
+	 */
+	@Override
+	public String getPictureId() {
+		// Will be removed
 		return null;
 	}
+
+	/**
+	 * @deprecated
+	 */
+	@Override
+	public void setPictureId(String pictureId) {
+		// will be removed
+	}
+	
 }

@@ -12,6 +12,9 @@
     
 	<implementation name="TTSServiceImpl" specification="CoreTTSService"
 	    classname="appsgate.lig.tts.yakitome.impl.TTSServiceImpl">
+	            <definition name="serviceId" type="string" field="serviceId"/>
+	            <property name="serviceId" value="$this$name"/>
+	           
     </implementation>
     
    

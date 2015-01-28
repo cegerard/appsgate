@@ -2,12 +2,6 @@ package appsgate.lig.tts.yakitome.utils;
 
 import java.io.PrintStream;
 
-
-
-
-
-
-
 import org.apache.felix.ipojo.annotations.Instantiate;
 import org.apache.felix.ipojo.annotations.Provides;
 import org.apache.felix.ipojo.annotations.Requires;
@@ -21,6 +15,7 @@ import fr.imag.adele.apam.Instance;
 import org.apache.felix.service.command.Descriptor;
 
 import appsgate.lig.tts.CoreTTSService;
+import appsgate.lig.tts.yakitome.impl.TTSServiceImpl;
 import appsgate.lig.tts.yakitome.impl.YakitomeAdapter;
 
 /**
@@ -50,15 +45,15 @@ public class YakitomeCommand {
     PrintStream out = System.out;
     
     private CoreTTSService getTTSInst() {
-		Implementation implementation = CST.apamResolver.findImplByName(null,YakitomeAdapter.TTS_IMPLEM_NAME);
+		Implementation implementation = CST.apamResolver.findImplByName(null,TTSServiceImpl.TTS_IMPLEM_NAME);
 		if(implementation == null) {
-			System.out.println(YakitomeAdapter.TTS_IMPLEM_NAME+" Implementation not found");
+			System.out.println(TTSServiceImpl.TTS_IMPLEM_NAME+" Implementation not found");
 			return null;
 		}		
 		Instance inst = implementation.getInst();
 		
 		if(inst == null) {
-			System.out.println(YakitomeAdapter.TTS_IMPLEM_NAME+" Instance not found");
+			System.out.println(TTSServiceImpl.TTS_IMPLEM_NAME+" Instance not found");
 			return null;
 		}
 		

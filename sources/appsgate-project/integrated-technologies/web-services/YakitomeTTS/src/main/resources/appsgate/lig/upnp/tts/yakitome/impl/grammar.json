@@ -1,0 +1,13 @@
+{
+    "friendlyName": "TTS",
+    "typename": "TTS",
+    "properties": [],
+    "states": [],
+    "commands" : {
+        "getTTSItemMatchingSentence" : {"params" : [{"name" : "sentence"}]},
+        "asynchronousTTSGeneration" : {"params" : [{"name" : "text"}]},
+        "waitForTTSGeneration" : {"params" : [{"name" : "text"}]},
+        "deleteSpeechText" : {"params" : [{"name" : "book_id"}]},
+        "getSpeechTextStatus" : {"params" : [{"name" : "book_id"}]}
+    }
+}

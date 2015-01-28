@@ -35,7 +35,6 @@ public class YakitomeAdapter extends Thread implements AdapterListener{
 	YakitomeAPI apiClient;
 	
 	Instance ttsInstance;
-	public final static String TTS_IMPLEM_NAME = "TTSServiceImpl";
 	
 	@Override
 	public void run() {
@@ -76,7 +75,7 @@ public class YakitomeAdapter extends Thread implements AdapterListener{
 			logger.trace("checkAndUpdateTTSInstance(), Yakitome is (still ?) available");
 			if(ttsInstance != null
 				&& ttsInstance.getName() != null
-				&& ttsInstance.getName().equals(TTS_IMPLEM_NAME+"-"+apiClient.getConfigurationHashkey())) {
+				&& ttsInstance.getName().equals(TTSServiceImpl.TTS_IMPLEM_NAME+"-"+apiClient.getConfigurationHashkey())) {
 				logger.trace("checkAndUpdateTTSInstance(),"
 						+ "ApAM instance already existing with the same configuration : does nothing");
 			} else {
@@ -98,13 +97,13 @@ public class YakitomeAdapter extends Thread implements AdapterListener{
 		//Just in case, try to erase the previous existing instance
 		// (only one instance at the time)
 		destroyTTSInstance();
-		Implementation implem = CST.apamResolver.findImplByName(null,TTS_IMPLEM_NAME);
+		Implementation implem = CST.apamResolver.findImplByName(null,TTSServiceImpl.TTS_IMPLEM_NAME);
 		if(implem == null) {
 			return;
 		}
 		logger.trace("createTTSInstance(), implem found");
 		Map<String, String> properties = new HashMap<String, String>();
-		properties.put("instance.name", TTS_IMPLEM_NAME+"-"+apiClient.getConfigurationHashkey());
+		properties.put("instance.name", TTSServiceImpl.TTS_IMPLEM_NAME+"-"+apiClient.getConfigurationHashkey());
 		ttsInstance = implem.createInstance(null, properties);
 		if(ttsInstance == null) {
 			return;
