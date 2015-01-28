@@ -35,7 +35,7 @@
 	  	"help" : {
 			"title": "Help",
 			"click": "Click an entity : Cancel its repositioning",
-			"click-move": "Drag-Move: Reposition the entity",
+			"click-move": "Drag-Move an entity: Reposition an entity",
 			"double-click": "Double Click an entity : Focus/Unfocus an entity",
 			"maj-click": "Shift + Click : Go to the entity's detailed page",
 			"hovering-entity": "Hovering an entity : Highlight its relations",

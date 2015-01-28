@@ -22,8 +22,8 @@
 		"unfix-node": "Annuler les repositionnements",
 	  	"caption": {
 			"title": "Légende",
-			"title-program": "Status de programme",
-			"title-device": "Status d'équipement",
+			"title-program": "Etat de programme",
+			"title-device": "Etat d'équipement",
 			"stopped-program": "Stoppé",
 			"running-program": "Activé",
 			"valid-program": "Valide",
@@ -35,11 +35,11 @@
 	  	"help" : {
 			"title" : "Aide",
 			"click": "Clic entité : Annuler son repositionnement",
-			"click-move": "Glisser-Déposer : Repositionner l'entité",
-			"double-click": "Double clic sur entité : Mettre/Retirer le focus sur une entité",
+			"click-move": "Glisser-Déposer une entité: Repositionner une entité",
+			"double-click": "Double clic sur une entité : Mettre/Retirer le focus sur une entité",
 			"maj-click": "Maj. + Clic entité : Aller à la page détaillée de l'entité",
-			"hovering-entity": "Survol entité : Mettre en avant ses relations",
-			"click-relation": "Clic relation : Obtenir informations sur une relation"
+			"hovering-entity": "Survol entité : Mettre en avant ses voisins",
+			"click-relation": "Clic une relation : Obtenir informations sur une relation"
 		},
 	  	"type": {
 			"entity": {
