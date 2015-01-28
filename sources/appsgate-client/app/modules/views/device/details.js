@@ -436,7 +436,7 @@ define([
                         this.$el.html(this.template({
                             device: this.model,
                             sensorImg: ["app/img/sensors/enoceanNanoSenseE4000.jpg"],
-                            sensorCaption: [$.i18n.t("devices.co2.caption.intern"), $.i18n.t("devices.co2.caption.extern")],
+                            sensorCaption: [$.i18n.t("devices.co2.caption.intern")],
                             sensorType: $.i18n.t("devices.co2.name.singular"),
                             places: places,
                             deviceDetails: this.tplCo2

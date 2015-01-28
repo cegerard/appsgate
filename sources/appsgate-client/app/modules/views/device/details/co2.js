@@ -11,7 +11,7 @@ define([
       initialize: function() {
         var self = this;
         CO2SensorView.__super__.initialize.apply(this, arguments);
-
+        this.listenTo(this.model, "change", this.render);
         $.extend(self.__proto__.events, CO2SensorView.__super__.events);
       },
       autoupdate: function() {

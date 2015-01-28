@@ -55,14 +55,24 @@ public class EnoceanCO2SensorImpl extends CoreObjectBehavior implements CoreObje
 	private String signal;
 
 	/**
-	 * The current temperature = the last value received from this sensor
+	 * The current concentration = the last value received from this sensor
 	 */
 	private Integer concentration;
+
+	/**
+	 * The current temperature = the last value received from this sensor
+	 */
+	private Float temperature;
 	
+	/**
+	 * The last concentration value;
+	 */
+	private float lastConcentration;
+
 	/**
 	 * The last temperature value;
 	 */
-	private float lastConcentration;
+	private float lastTemperature;
 
 	/**
 	 * The type for user of this sensor
@@ -155,6 +165,7 @@ public class EnoceanCO2SensorImpl extends CoreObjectBehavior implements CoreObje
 		descr.put("type", userType);
 		descr.put("status", status);
 		descr.put("value", concentration);
+		descr.put("temperature", temperature);
         descr.put("change", "true");
 		descr.put("deviceType", sensorType);
 		
@@ -198,6 +209,16 @@ public class EnoceanCO2SensorImpl extends CoreObjectBehavior implements CoreObje
 			notifyChanges("change", "true");
 		}
 	}
+
+	public void temperatureChanged(String newValue) {
+		logger.info("New Temperature value obtained from {} with the name {} value {}",sensorId,sensorName,newValue);
+		Float currentTemperature = getTemperature();
+		if(currentTemperature != lastConcentration){
+			lastTemperature = currentTemperature;
+			notifyChanges("temperature", Float.toString(temperature));
+			notifyChanges("change", "true");
+		}
+	}
 	
 	/**
 	 * Called by ApAM when the status value changed
@@ -229,5 +250,9 @@ public class EnoceanCO2SensorImpl extends CoreObjectBehavior implements CoreObje
 	@Override
 	public int getCO2Concentration() {
 		return concentration;
+	}
+
+	public Float getTemperature(){
+		return temperature;
 	}
 }

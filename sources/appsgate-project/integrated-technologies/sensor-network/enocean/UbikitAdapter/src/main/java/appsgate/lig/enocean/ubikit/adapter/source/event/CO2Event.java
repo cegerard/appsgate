@@ -5,6 +5,7 @@ import fr.imag.adele.apam.Instance;
 import fr.immotronic.ubikit.pems.enocean.event.out.CO2ConcentrationEvent;
 import fr.immotronic.ubikit.pems.enocean.event.out.ContactCloseEvent;
 import fr.immotronic.ubikit.pems.enocean.event.out.ContactOpenEvent;
+import fr.immotronic.ubikit.pems.enocean.event.out.TemperatureEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +17,7 @@ import org.slf4j.LoggerFactory;
  * @version 1.0.0
  * 
  */
-public class CO2Event implements CO2ConcentrationEvent.Listener {
+public class CO2Event implements CO2ConcentrationEvent.Listener, TemperatureEvent.Listener {
 
 	/**
 	 * class logger member
@@ -45,4 +46,10 @@ public class CO2Event implements CO2ConcentrationEvent.Listener {
 		instRef.setProperty("concentration", co2ConcentrationEvent.getCO2Concentration());
 	}
 
+	@Override
+	public void onEvent(TemperatureEvent temperatureEvent) {
+		logger.info("CO2 temperature event received {} with the value {} ",temperatureEvent.getSourceItemUID(),temperatureEvent.getTemperature());
+		Instance instRef = enocean.getSensorInstance(temperatureEvent.getSourceItemUID());
+		instRef.setProperty("temperature", temperatureEvent.getTemperature());
+	}
 }

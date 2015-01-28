@@ -16,11 +16,20 @@ define([
      */
     initialize: function() {
       CO2Sensor.__super__.initialize.apply(this, arguments);
-
+      var self = this;
       // setting default friendly name if none exists
       if (typeof this.get("name") === "undefined" || this.get("name") === "") {
         this.generateDefaultName($.i18n.t("devices.co2.name.singular"));
       }
+
+      dispatcher.on(this.get("id"), function(co2Data) {
+        if(co2Data["varName"]=="temperature"){
+          temperature=co2Data.value;
+          self.set("temperature",temperature);
+        }
+
+      });
+
     },
     /**
      * return the list of available properties
@@ -77,6 +86,15 @@ define([
 
       if (value != -1) {
         return value.toString().concat(" ppm");
+      }
+
+      return $.i18n.t("devices.no-value");
+    },
+    getTemperature: function() {
+      value = parseFloat(this.get("temperature"));
+
+      if (value != parseFloat(999)) {
+        return value.toFixed(1);
       }
 
       return $.i18n.t("devices.no-value");

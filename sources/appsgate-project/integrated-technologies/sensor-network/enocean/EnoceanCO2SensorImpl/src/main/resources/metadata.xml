@@ -25,6 +25,7 @@
 		
 		<!-- device specific meta data -->
 		<definition name="concentration" type="integer" default="-1" 		   field="concentration" method="concentrationChanged"/>
+		<definition name="temperature" type="float" default="999" 		   field="temperature" method="temperatureChanged"/>
 		
 	</implementation>
 

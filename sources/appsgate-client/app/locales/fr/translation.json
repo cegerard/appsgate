@@ -518,7 +518,8 @@
     },
     "co2": {
       "caption": {
-        "intern": "Capteur de CO2"
+        "intern": "Capteur de CO2",
+        "temperature": "Temperature"
       },
       "keyboard": {
         "get": "la CO2 du __myVar__",
