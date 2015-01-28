@@ -1007,6 +1007,11 @@
 	"SmartPlug" : {
 		"on" : "Switch plug on",
 		"off" : "Switch plug off"
-	}
+	},
+    "DomiCube" : {
+      "change" : {
+         "activeFace" : "New face for the DomiCube"
+      }
+    }
   }
 }

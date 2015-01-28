@@ -289,7 +289,9 @@ public class TraceMan implements TraceManSpec {
                 JSONObject jsonState = getDeviceState(srcId, varName, value);
 
                 if (event.getString("type").equalsIgnoreCase("update")) {
-                    event.put("picto", Trace.getPictoState(desc.getType(), varName, value, jsonState));
+                    String pictoState = Trace.getPictoState(desc.getType(), varName, value, jsonState);
+                    event.put("picto", pictoState);
+                    JDecoration.put("picto", pictoState);
                 }
 
                 event.put("state", jsonState);
@@ -361,7 +363,7 @@ public class TraceMan implements TraceManSpec {
             if (place != null) {
                 location.put("name", place.getName());
             } else {
-                LOGGER.warn("Place not found for this device {}", srcId);
+                LOGGER.trace("Place not found for this device {}", srcId);
             }
 
             objectNotif.put("location", location);
@@ -382,10 +384,13 @@ public class TraceMan implements TraceManSpec {
     public synchronized void coreUpdateNotify(long timeStamp, String srcId, String coreType,
             String userType, String name, JSONObject description, String eventType) {
 
-        if (coreType.equalsIgnoreCase("newService")){
+        if (coreType.equalsIgnoreCase("newService")) {
             return;
         }
-        
+        if (!filterType(userType)) {
+            return;
+        }
+
         JSONObject event = new JSONObject();
         JSONObject cause = new JSONObject();
         try {
@@ -1036,7 +1041,7 @@ public class TraceMan implements TraceManSpec {
      */
     private boolean applyFilters(GrammarDescription descr, String srcId, String varName, String value) {
         //Filter on those conditions
-        
+
         if (descr.getType().equalsIgnoreCase("ColorLight")) {
             if (varName.contentEquals("x")
                     || varName.contentEquals("y")
@@ -1044,12 +1049,14 @@ public class TraceMan implements TraceManSpec {
                     || varName.contentEquals("speed")
                     || varName.contentEquals("mode")) {
                 return false;
-            }
-            else {
+            } else {
                 return true;
             }
         }
         if (descr.getType().equalsIgnoreCase("Illumination") && varName.contentEquals("label")) {
+            return false;
+        }
+        if (descr.getType().equalsIgnoreCase("Domicube") && ! varName.contentEquals("activeFace")) {
             return false;
         }
         if (descr.getType().equalsIgnoreCase("Temperature") && varName.contentEquals("change")) {
@@ -1221,6 +1228,26 @@ public class TraceMan implements TraceManSpec {
      */
     public long getCurrentTimeInMillis() {
         return EHMIProxy.getCurrentTimeInMillis();
+    }
+
+    // TODO: do something cleaner than that
+    private boolean filterType(String userType) {
+        Integer type = Integer.getInteger(userType, 0);
+        switch (type) {
+            case 1: // temperature sensor
+            case 2: // light sensor
+            case 210: // domicube
+            case 3: // switch
+            case 4: // contact sensor
+            case 5: // key card reader
+            case 6: // plug
+            case 7: // lamp
+                return false;
+            default: //Otherwise filter it
+                return true;
+
+        }
+
     }
 
 }

@@ -2,7 +2,16 @@
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
                               
-	<implementation name="YakitomeAdapter" classname="appsgate.lig.tts.yakitome.YakitomeAdapter">
+	<implementation name="YakitomeAdapter" classname="appsgate.lig.tts.yakitome.impl.YakitomeAdapter">
 	</implementation>
+	
+	<specification name="CoreTTSService" 
+	    interfaces="appsgate.lig.tts.CoreTTSService, appsgate.lig.core.object.spec.CoreObjectSpec">
+    </specification>
+    
+	<implementation name="TTSServiceImpl" specification="CoreTTSService"
+	    classname="appsgate.lig.tts.yakitome.impl.TTSServiceImpl">
+    </implementation>
+    
    
 </apam>

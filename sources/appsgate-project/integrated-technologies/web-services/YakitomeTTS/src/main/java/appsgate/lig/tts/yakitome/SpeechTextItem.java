@@ -8,6 +8,7 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import appsgate.lig.tts.yakitome.impl.YakitomeAPIClient;
 import appsgate.lig.tts.yakitome.utils.HttpUtils;
 
 /**
@@ -24,9 +25,9 @@ public class SpeechTextItem {
 	 * @param wordCount
 	 * @param audioURLs
 	 */
-	public SpeechTextItem(String speechTextId, String sentence,
+	public SpeechTextItem(int speechTextId, String sentence,
 			int wordCount, List<String> audioURLs) {
-		if(speechTextId == null ||speechTextId.isEmpty() ) {
+		if(speechTextId < 1 ) {
 			throw new NullPointerException("speechTextId = null");
 		} else {
 			this.speechTextId = speechTextId;
@@ -56,13 +57,13 @@ public class SpeechTextItem {
 	}
 	
 	public SpeechTextItem(JSONObject json) {
+		System.out.println("SpeechTextItem(JSONObject json : "+json.toString());
 		
 		if(!json.has(YakitomeAPIClient.BOOK_ID_RESPONSE_KEY)
-				||json.getString(YakitomeAPIClient.BOOK_ID_RESPONSE_KEY) == null
-				||json.getString(YakitomeAPIClient.BOOK_ID_RESPONSE_KEY).length()<1) {
+				||json.getInt(YakitomeAPIClient.BOOK_ID_RESPONSE_KEY) ==0) {
 			throw new NullPointerException("speechTextId = null");
 		} else {
-			this.speechTextId = json.getString(YakitomeAPIClient.BOOK_ID_RESPONSE_KEY);
+			this.speechTextId = json.getInt(YakitomeAPIClient.BOOK_ID_RESPONSE_KEY);
 		}
 		
 		if(!json.has(YakitomeAPIClient.TEXT_KEY)
@@ -70,14 +71,18 @@ public class SpeechTextItem {
 				||json.getString(YakitomeAPIClient.TEXT_KEY).length()<1) {
 			throw new NullPointerException("sentence = null");
 		} else {
-			encodedSentence = json.getString(YakitomeAPIClient.TEXT_KEY);
+			try {
+				this.encodedSentence = URLEncoder.encode(json.getString(YakitomeAPIClient.TEXT_KEY), HttpUtils.DEFAULT_ENCODING);
+			} catch (UnsupportedEncodingException e) {
+				throw new NullPointerException("Unable to encode sentence, "+e.getMessage());
+			}
 		}
 		
 		if(!json.has(YakitomeAPIClient.WORD_CNT_RESPONSE_KEY)
 				||json.getInt(YakitomeAPIClient.WORD_CNT_RESPONSE_KEY) <1) {
 			throw new NullPointerException("wordCount < 1");
 		} else {
-			encodedSentence = json.getString(YakitomeAPIClient.TEXT_KEY);
+			wordCount = json.getInt(YakitomeAPIClient.WORD_CNT_RESPONSE_KEY);
 		}
 		
 		if(!json.has(YakitomeAPIClient.AUDIOS_RESPONSE_KEY)
@@ -93,7 +98,7 @@ public class SpeechTextItem {
 		}
 	}	
 	
-	public String getSpeechTextId() {
+	public int getSpeechTextId() {
 		return speechTextId;
 	}
 	public String getEncodedSentence() {
@@ -114,7 +119,7 @@ public class SpeechTextItem {
 		}
 	}
 
-	private String speechTextId;
+	private int speechTextId;
 	private String encodedSentence;
 	private int wordCount;
 	private List<String> audioURLs;

@@ -11,6 +11,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
 
+import appsgate.lig.tts.yakitome.impl.YakitomeAPIClient;
 import ch.qos.logback.classic.Logger;
 
 public class YakitomeAPIClientTest {
@@ -55,16 +56,15 @@ public class YakitomeAPIClientTest {
 	}	
 	
 	
-	public void testCheckStatus(String book_id) {
+	public void testCheckStatus(int book_id) {
 		JSONObject response= testing.getSpeechTextStatus(book_id);
 		Assert.assertTrue("Status for book_id should exists", response.has(YakitomeAPIClient.STATUS_RESPONSE_KEY));
 
 	}	
 
 	
-	@Test
+	// Test disabled as it takes too much time @Test
 	public void testCheckVoice() {
-	
 		
 		for(String voice:someValidVoices) {
 			Assert.assertTrue("Voice should exists : "+voice, testing.checkVoice(voice));					
@@ -82,6 +82,7 @@ public class YakitomeAPIClientTest {
 	 * 4° to finally delete corresponding book_id
 	 * (test disabled because it may take between 15secs and 1 minute to complete)
 	 */
+	// Test disabled as it takes too much time @Test
 	public void fullTestTTS() {
 		try {
 			
@@ -92,7 +93,7 @@ public class YakitomeAPIClientTest {
 			Assert.assertTrue("There should be a words count in the sample sentence", responseOne.has(YakitomeAPIClient.WORD_CNT_RESPONSE_KEY));
 			Assert.assertEquals("There should be 5 words in the sample sentence", 5, responseOne.getInt(YakitomeAPIClient.WORD_CNT_RESPONSE_KEY));
 			
-			String book_id = String.valueOf(responseOne.getInt(YakitomeAPIClient.BOOK_ID_RESPONSE_KEY));
+			int book_id = responseOne.getInt(YakitomeAPIClient.BOOK_ID_RESPONSE_KEY);
 			
 			logger.debug("\n\n*** Step Two : Checking TTS status ***");			
 			int testCounter = 0;
