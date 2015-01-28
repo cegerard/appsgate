@@ -30,7 +30,8 @@
 			"incomplete-program": "Instable",
 			"invalid-program": "Invalide",
 			"device-on": "Equipement allumé",
-			"device-off": "Equipement éteint"
+			"device-off": "Equipement éteint",
+			"device-multiple-reference": "Multiples changements d'état"
 		},
 	  	"help" : {
 			"title" : "Aide",

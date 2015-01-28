@@ -30,7 +30,8 @@
 			"incomplete-program": "Unstable",
 			"invalid-program": "Invalid",
 			"device-on": "Device On",
-			"device-off": "Device Off"
+			"device-off": "Device Off",
+			"device-multiple-reference": "Multiple state change"
 		},
 	  	"help" : {
 			"title": "Help",
