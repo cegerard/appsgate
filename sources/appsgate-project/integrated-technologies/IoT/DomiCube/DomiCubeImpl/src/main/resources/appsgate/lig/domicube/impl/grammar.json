@@ -1,7 +1,7 @@
 {
     "friendlyName": "DomiCube",
     "typename": "DomiCube",
-    "varDesc": ["activeFace", "batteryLevel", "dimValue"],
+    "traceDesc": ["activeFace", "batteryLevel", "dimValue"],
     "properties": ["activeFace", "batteryLevel", "dimValue"],
     "states": [
         {

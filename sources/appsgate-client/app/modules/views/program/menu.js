@@ -97,7 +97,16 @@ define([
          * @return false if the typed name already exists, true otherwise
          */
         checkProgramName: function() {
-            // name is empty
+            // Check the length of the name
+            if ($("#add-program-modal input:text").val().length > App.MAX_NAME_LENGTH) {
+                $("#add-program-modal .text-danger")
+                        .text($.i18n.t("modal-add-program.name-empty"))
+                        .removeClass("hide");
+                $("#add-program-modal .valid-button").addClass("disabled");
+                $("#add-program-modal .valid-button").addClass("valid-disabled");
+
+                return false;
+            }
             if ($("#add-program-modal input:text").val() === "") {
                 $("#add-program-modal .text-danger")
                         .text($.i18n.t("modal-add-program.name-empty"))

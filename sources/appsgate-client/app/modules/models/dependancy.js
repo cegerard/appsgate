@@ -18,10 +18,10 @@ define([
 				height: 800,
 				width: 960,
 				mapDepthNeighbors: {},
-				entitiesTypes: ["place", "program", "service", "time", "device", "selector"],
-				relationsTypes: ["reference", "isLocatedIn", "isPlanified", "denotes"],
-				currentEntitiesTypes: ["place", "program", "service", "time", "device"],
-				currentRelationsTypes: ["reference", "isLocatedIn", "isPlanified", "denotes"]
+				entitiesTypes: ["time", "place", "device", "service", "program", "selector"],
+				relationsTypes: ["isPlanified", "isLocatedIn", "READING", "WRITING", "denotes"],
+				currentEntitiesTypes: ["place", "program", "service", "time", "device", "selector"],
+				currentRelationsTypes: ["isPlanified", "isLocatedIn", "READING", "WRITING", "denotes"],
 			});
 
 			self.on("change:rootNode", function (model) {
@@ -41,7 +41,7 @@ define([
 			});
 
 			/**** Event binding to have dynamic update ****/
-			
+
 			dispatcher.on("updatePlace", function (place) {
 				console.log("updatePlace");
 				var placeUpdated = _.find(self.get("entities"), function (e) {
@@ -69,6 +69,16 @@ define([
 
 			dispatcher.on("moveDevice", function (messageData) {
 				console.log("moveDevice");
+				dispatcher.trigger("UpdateGraphLoad");
+			});
+
+			dispatcher.on("newDevice", function (messageData) {
+				console.log("newDevice");
+				dispatcher.trigger("UpdateGraphLoad");
+			});
+
+			dispatcher.on("removeDevice", function (messageData) {
+				console.log("removeDevice");
 				dispatcher.trigger("UpdateGraphLoad");
 			});
 
@@ -129,6 +139,7 @@ define([
 				neighbors = buildNeighborsMap(relations);
 
 			console.log("Entities loaded : %o", entities);
+			console.log("Relations loaded : %o", relations);
 
 			// Once data structure are built, set them in the modele
 			this.set({
@@ -138,7 +149,7 @@ define([
 				currentEntities: entities,
 				currentRelations: relations
 			});
-			
+
 			// Bind event ID
 			_.each(this.get("currentEntities"), function (e) {
 				dispatcher.on(e.id, function () {
@@ -294,7 +305,16 @@ define([
 		},
 
 		updateArrayTypes: function (array, type, checked) {
-			var arrayUpdated = (array === "entities") ? this.get("currentEntitiesTypes") : this.get("currentRelationsTypes");
+			var self = this;
+			//			var arrayUpdated = (array === "entities") ? this.get("currentEntitiesTypes") : this.get("currentRelationsTypes");
+			var arrayUpdated = function (arrayParam) {
+				if (arrayParam === "entities") {
+					return self.get("currentEntitiesTypes");
+				} else if (arrayParam === "relations") {
+					return self.get("currentRelationsTypes");
+				}
+			}(array);
+
 			if (checked) {
 				arrayUpdated.push(type);
 			} else {
@@ -304,23 +324,105 @@ define([
 		},
 
 		/**
-		 * Method to know if a target is targeted more than one time
+		 * Method to know if a target is targeted more than one time by executing program
 		 * @param: target to search
 		 */
-		isTargetMultipleTargeted: function (target) {
+		isMultipleTargeted: function (target) {
 			var self = this;
 			var targetedOneTime = false;
 			for (var i = 0; i < self.get("currentRelations").length; i++) {
-				if (self.get("currentRelations")[i].type === "reference" && target === self.get("currentRelations")[i].target) {
-					// If the target has already seen one time, then multiple time target and return true
-					if (targetedOneTime) {
+				var relation = self.get("currentRelations")[i];
+				// Test si le target est le bon : Program - Entity
+				if (target === relation.target && relation.source.type === "program") {
+					// Test si la source est un programme en cours d'execution : Mis en com' car changement d'avis  
+					//					if (relation.source.state === "PROCESSING" || relation.source.state === "LIMPING") {
+					// Vérification qu'on ait bien des infos sur la relation
+					if (relation.referenceData) {
+						for (var j = 0; j < relation.referenceData.length; j++) {
+							var refData = relation.referenceData[j];
+							// Test que la référence est en écriture
+							if (refData.referenceType === "WRITING") {
+								// If the target has already seen one time, then return true
+								if (targetedOneTime) {
+									return true;
+								} else {
+									targetedOneTime = true;
+								}
+							}
+						}
+					}
+					//					}
+				} else if (target === relation.target && relation.source.type === "selector") {
+					// Test si le target est le bon : Selector - Entity
+					var nbWritingRefToSelector = self.getNbWritingSelector(relation.source);
+					if (nbWritingRefToSelector > 1) {
+						// Si plus de deux références en écriture au selecteur on peut sortir en vrai
 						return true;
-					} else {
-						targetedOneTime = true;
+					} else if (nbWritingRefToSelector === 1) {
+						if (targetedOneTime) {
+							// Pareil si on a déjà eu une ref en écriture avant et qu'un seul ref vers le selecteur
+							return true;
+						} else {
+							targetedOneTime = true;
+						}
+
 					}
 				}
 			}
 			return false;
+		},
+
+		/**
+		 * Method to know if all reference to selector are 'Writing'
+		 * @param: link denotes of one selector
+		 */
+		isWritingDenote: function (linkDenote) {
+			var self = this;
+			var selector = linkDenote.source;
+			for (var i = 0; i < self.get("currentRelations").length; i++) {
+				var relation = self.get("currentRelations")[i];
+				if (relation.type === "reference" && relation.target.id === selector.id) {
+					// Vérification qu'on ait bien des infos sur la relation
+					if (relation.referenceData) {
+						for (var j = 0; j < relation.referenceData.length; j++) {
+							var refData = relation.referenceData[j];
+							// Test que la référence est en écriture
+							if (refData.referenceType === "WRITING") {
+								// Si au moins une référence vers le selecteur est en écriture alors on met cette relation en rouge
+								return true;
+							}
+						}
+					}
+				}
+			}
+
+			return false;
+		},
+
+		/**
+		 * Method to know the number of writing reference to a selector
+		 * @param: selector entity
+		 */
+		getNbWritingSelector: function (selector) {
+			var self = this;
+			var nbWritingReferences = 0;
+			for (var i = 0; i < self.get("currentRelations").length; i++) {
+				var relation = self.get("currentRelations")[i];
+				if (relation.type === "reference" && relation.target.id === selector.id) {
+					// Vérification qu'on ait bien des infos sur la relation
+					if (relation.referenceData) {
+						for (var j = 0; j < relation.referenceData.length; j++) {
+							var refData = relation.referenceData[j];
+							// Test que la référence est en écriture
+							if (refData.referenceType === "WRITING") {
+								nbWritingReferences++;
+							}
+						}
+					}
+				}
+			}
+
+			return nbWritingReferences;
 		}
 
 	});
@@ -390,11 +492,27 @@ define([
 
 			// !!!!!!!!! On ne met pas une relation si une des entités de la relation est indéfinie, donc potentiellement on enlève de l'info
 			if (typeof sourceNode !== 'undefined' && typeof targetNode !== 'undefined') {
-				relations.push({
-					source: sourceNode,
-					target: targetNode,
-					type: e.type
-				});
+				if (e.referenceData) {
+					var refData = [];
+					e.referenceData.forEach(function (ref) {
+						var newReference = {};
+						newReference.referenceType = ref.referenceType;
+						newReference.method = ref.method;
+						refData.push(newReference);
+					});
+					relations.push({
+						source: sourceNode,
+						target: targetNode,
+						type: e.type,
+						referenceData: refData
+					});
+				} else {
+					relations.push({
+						source: sourceNode,
+						target: targetNode,
+						type: e.type
+					});
+				}
 			}
 
 		});
@@ -440,6 +558,9 @@ define([
 		});
 	};
 
+	/*
+	 * Method to create the relation according to the present entities
+	 */
 	function buildLinksFromNodesShown() {
 		var self = this;
 		var newLinks = [];
@@ -452,12 +573,63 @@ define([
 					return n === e.target;
 				})[0];
 
-			if (typeof sourceNode !== 'undefined' && typeof targetNode !== 'undefined' && _.contains(self.get("currentRelationsTypes"), e.type)) {
-				newLinks.push({
-					source: sourceNode,
-					target: targetNode,
-					type: e.type
-				});
+			// Test if the source and the target are not undefined
+			var areSourceAndTargetDefined = typeof sourceNode !== 'undefined' && typeof targetNode !== 'undefined';
+
+			// Test if the type of the link is shown = in the currentRelationsTypes
+			var isTypeShown = _.contains(self.get("currentRelationsTypes"), e.type);
+
+			// Special test for the reference type. Test if one of its type of reference is to show
+			var isReferenceShown = function () {
+				// Test type reference and if it has reference data
+				if (e.type === "reference" && e.referenceData) {
+					// function to test if the a reference of type : typeToTest exists in the reference data
+					var testTypeRef = function (typeToTest) {
+						var index;
+						for (index = 0; index < e.referenceData.length; index++) {
+							if (e.referenceData[index].referenceType === typeToTest) {
+								return true;
+							}
+						}
+						return false;
+					};
+
+					// Test writing type reference
+					var getWritingRefToShow = false;
+					if (testTypeRef("WRITING")) {
+						// If it contains writing type reference, check if they have to be shown
+						getWritingRefToShow = _.contains(self.get("currentRelationsTypes"), "WRITING");
+					}
+
+					// Test reading type reference
+					var getReadingRefToShow = false;
+					if (testTypeRef("READING")) {
+						// If it contains reading type reference, check if they have to be shown
+						getReadingRefToShow = _.contains(self.get("currentRelationsTypes"), "READING");
+					}
+
+					return getWritingRefToShow || getReadingRefToShow;
+				} else {
+					return false;
+				}
+			}();
+
+			//			if (typeof sourceNode !== 'undefined' && typeof targetNode !== 'undefined' && _.contains(self.get("currentRelationsTypes"), e.type)) {
+			if (areSourceAndTargetDefined && (isTypeShown || isReferenceShown)) {
+				if (e.referenceData) {
+					newLinks.push({
+						source: sourceNode,
+						target: targetNode,
+						type: e.type,
+						referenceData: checkFilterReferenceData.bind(self)(e.referenceData)
+					});
+				} else {
+					newLinks.push({
+						source: sourceNode,
+						target: targetNode,
+						type: e.type
+					});
+				}
 			}
 		});
 
@@ -497,6 +669,28 @@ define([
 
 		return newLinks;
 	};
+
+	/**
+	 * Method to get the reference data according to the filter on the references
+	 * It is used for the special case of the reference with the 2 types of reference.
+	 */
+	function checkFilterReferenceData(refData) {
+		var self = this;
+		var setReadingRef = _.contains(self.get("currentRelationsTypes"), "READING");
+		var setWritingRef = _.contains(self.get("currentRelationsTypes"), "WRITING");
+
+		var newRefData = [];
+		_.forEach(refData, function (ref) {
+			if ((ref.referenceType === "WRITING" && setWritingRef) || (ref.referenceType === "READING" && setReadingRef)) {
+				newRefData.push({
+					method: ref.method,
+					referenceType: ref.referenceType
+				});
+			}
+		});
+
+		return newRefData;
+	}
 
 	// Return the reference to the Dependancy constructor
 	return Dependancy;

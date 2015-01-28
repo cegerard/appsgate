@@ -341,7 +341,11 @@
                                     <artifactId>EnoceanUndefinedSensorImpl</artifactId>
                                     <version>${project.version}</version>
                                 </artifactItem>
-
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
+                                    <artifactId>EnoceanCO2SensorImpl</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>
                                 <artifactItem>
                                     <groupId>appsgate.components</groupId>
                                     <artifactId>CoreObjectSpec</artifactId>

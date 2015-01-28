@@ -7,6 +7,7 @@ import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
+import java.util.HashMap;
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -151,12 +152,12 @@ public class NodeWhen extends Node implements INodeRule{
 
     }
     @Override
-    protected void buildReferences(ReferenceTable table) {
+    protected void buildReferences(ReferenceTable table, HashMap<String,String> args) {
         if (this.seqEventNode != null) {
-            seqEventNode.buildReferences(table);
+            seqEventNode.buildReferences(table, null);
         }
         if (this.seqRules != null) {
-            seqRules.buildReferences(table);
+            seqRules.buildReferences(table, null);
         }
     }
 

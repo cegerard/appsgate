@@ -4,5 +4,11 @@
     "traceDesc": ["value"],
     "properties": ["clockValue"],
     "states": [
-    ]
+    ],
+    "commands": {
+        "checkCurrentTimeOfDay" : {"params" : [
+        {"name" : "isAfter"},
+        {"name" : "isBefore"}]}
+    }
+    
 }

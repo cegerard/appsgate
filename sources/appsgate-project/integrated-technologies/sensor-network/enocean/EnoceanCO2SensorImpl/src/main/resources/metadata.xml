@@ -1,0 +1,32 @@
+<apam xmlns="fr.imag.adele.apam" xmlns:ipojo="org.apache.felix.ipojo"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
+                          org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
+
+	<implementation name="EnoceanCO2SensorImpl"
+		classname="appsgate.lig.co2.sensor.enocean.impl.EnoceanCO2SensorImpl" specification="CoreCO2SensorSpec" push="notifyChanges">
+		<callback onInit="newInst" onRemove="deleteInst" />
+		
+		<relation field="enoceanProxy" resolve="exist" />
+		
+		<!-- device kernel meta data -->
+		<definition name="deviceName" 		  type="string" default="Unknown" 	   field="sensorName"/>
+		<definition name="deviceId" 		  type="string" default="000000"		   field="sensorId"/>
+		<definition name="deviceType" 		  type="string" default="EnOcean_DEVICE" field="sensorType"/>
+		
+		<!-- device client meta data -->
+		<definition name="pictureId" 		  type="string"						   field="pictureId"/>
+		<definition name="userType" 		  type="string" default="32" 			   field="userType"/>
+		<definition name="status" 			  type="string" default="2" 			   field="status" 			  method="statusChanged"/>
+		
+		<!-- Sensor network meta data -->
+		<definition name="isPaired" 		  type="string" default="false" 		   field="isPaired" 		  method="isPairedChanged"/>
+		<definition name="signal"		 type="string" default="0" 		  	  field="signal" 		method="signalChanged"/>
+		
+		<!-- device specific meta data -->
+		<definition name="concentration" type="integer" default="-1" 		   field="concentration" method="concentrationChanged"/>
+		<definition name="temperature" type="float" default="999" 		   field="temperature" method="temperatureChanged"/>
+		
+	</implementation>
+
+</apam>

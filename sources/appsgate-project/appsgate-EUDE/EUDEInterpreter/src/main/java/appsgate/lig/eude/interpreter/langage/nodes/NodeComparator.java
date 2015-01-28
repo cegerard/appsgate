@@ -10,6 +10,7 @@ import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.SpokParser;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
+import java.util.HashMap;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -206,12 +207,12 @@ public class NodeComparator extends Node implements ICanBeEvaluated {
     }
     
     @Override
-    protected void buildReferences(ReferenceTable table) {
+    protected void buildReferences(ReferenceTable table, HashMap<String,String> args) {
         if (leftNode != null) {
-            leftNode.buildReferences(table);
+            leftNode.buildReferences(table, null);
         }
         if (rightNode != null) {
-            rightNode.buildReferences(table);
+            rightNode.buildReferences(table, null);
         }
     }
 

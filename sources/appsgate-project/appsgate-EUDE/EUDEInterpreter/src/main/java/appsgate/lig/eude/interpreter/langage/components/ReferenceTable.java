@@ -10,6 +10,7 @@ import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeSelect;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,20 +60,25 @@ public class ReferenceTable {
         MISSING,
         UNKNOWN
     };
+    
+    public enum REFERENCE_TYPE {
+        WRITING,
+        READING
+    };
 
     /**
      *
      */
-    private final HashMap<String, STATUS> devices;
+    private final ArrayList<DeviceReferences> devices;
     /**
      *
      */
-    private final HashMap<String, STATUS> programs;
+    private final ArrayList<ProgramReferences> programs;
 
     /**
      *
      */
-    private final ArrayList<NodeSelect> nodes;
+    private final ArrayList<SelectReferences> nodes;
 
     /**
      *
@@ -80,9 +86,9 @@ public class ReferenceTable {
      * @param pid
      */
     public ReferenceTable(EUDEInterpreter interpreter, String pid) {
-        devices = new HashMap<String, STATUS>();
-        programs = new HashMap<String, STATUS>();
-        nodes = new ArrayList<NodeSelect>();
+        devices = new ArrayList<DeviceReferences>();
+        programs = new ArrayList<ProgramReferences>();
+        nodes = new ArrayList<SelectReferences>();
         this.interpreter = interpreter;
         this.state = STATUS.UNKNOWN;
         this.myProgId = pid;
@@ -97,7 +103,28 @@ public class ReferenceTable {
             LOGGER.debug("The program is self referenced (do not need to add it in the reference table.");
             return;
         }
-        programs.put(programId, STATUS.UNKNOWN);
+        programs.add(new ProgramReferences(programId, STATUS.UNKNOWN));
+    }
+    
+    /**
+     *
+     * @param programId
+     * @param refData - data about reference
+     */
+    public void addProgram(String programId, HashMap<String,String> refData) {
+        if (programId.equalsIgnoreCase(myProgId)) {
+            LOGGER.debug("The program is self referenced (do not need to add it in the reference table.");
+            return;
+        }
+        
+        ProgramReferences pRef = getProgramFromId(programId);
+        if (pRef != null) {
+            pRef.addReferencesData(refData);
+        } else {
+            ArrayList<HashMap<String,String>> newRefData = new ArrayList<HashMap<String, String>>();
+            newRefData.add(refData);
+            programs.add(new ProgramReferences(programId, STATUS.UNKNOWN, newRefData));
+        }
     }
 
     /**
@@ -105,14 +132,42 @@ public class ReferenceTable {
      * @param deviceId
      */
     public void addDevice(String deviceId) {
-        devices.put(deviceId, STATUS.UNKNOWN);
+        devices.add(new DeviceReferences(deviceId, STATUS.UNKNOWN));
+    }
+    
+     /**
+     *
+     * @param deviceId
+     * @param refData - data about reference
+     */
+    public void addDevice(String deviceId, HashMap<String,String> refData) {
+        DeviceReferences dRef = getDeviceFromId(deviceId);
+        if (dRef != null) {
+            dRef.addReferencesData(refData);
+        } else {
+            ArrayList<HashMap<String,String>> newRefData = new ArrayList<HashMap<String, String>>();
+            newRefData.add(refData);
+            devices.add(new DeviceReferences(deviceId, STATUS.UNKNOWN, newRefData));
+        }
+        
     }
 
     /**
      * @param aThis
+     * @param refData - data about reference
      */
-    public void addNodeSelect(NodeSelect aThis) {
-        nodes.add(aThis);
+    public void addNodeSelect(NodeSelect aThis, HashMap<String,String> refData) {
+        boolean refDataAdded = false;
+        for (SelectReferences sRef : this.nodes) {
+            if (sRef.getNodeSelect() == aThis) {
+                refDataAdded = sRef.addReferencesData(refData);
+            }
+        }
+        if (!refDataAdded) {
+            ArrayList<HashMap<String,String>> newRefData = new ArrayList<HashMap<String, String>>();
+            newRefData.add(refData);
+            nodes.add(new SelectReferences(aThis, newRefData));
+        }
     }
 
     /**
@@ -121,8 +176,10 @@ public class ReferenceTable {
      * @param newStatus
      */
     public void setDeviceStatus(String deviceId, STATUS newStatus) {
-        if (devices.containsKey(deviceId)) {
-            devices.put(deviceId, newStatus);
+        for (DeviceReferences device : this.devices) {
+            if (device.getDeviceId().equals(deviceId)) {
+                device.setDeviceStatus(newStatus);
+            }
         }
     }
 
@@ -132,8 +189,10 @@ public class ReferenceTable {
      * @param newStatus
      */
     public void setProgramStatus(String programId, STATUS newStatus) { // VOID
-        if (programs.containsKey(programId)) {
-            programs.put(programId, newStatus);
+        for (ProgramReferences pRef : this.programs) {
+            if (pRef.getProgramId().equals(programId)) {
+                pRef.setProgramStatus(newStatus);
+            }
         }
     }
 
@@ -143,7 +202,28 @@ public class ReferenceTable {
      * @return
      */
     public Set<String> getProgramsId() {
-        return programs.keySet();
+        Set<String> programsId = new HashSet<String>();
+        for (ProgramReferences pRef : this.programs) {
+            programsId.add(pRef.getProgramId());
+        }
+        return programsId;
+    }
+    
+     public ProgramReferences getProgramFromId (String id) {
+        for (ProgramReferences pRef : this.programs) {
+            if (pRef.getProgramId().equals(id)) {
+                return pRef;
+            }
+        }
+        return null;
+    }
+    
+    public ArrayList<DeviceReferences> getDevicesReferences() {
+        return this.devices;
+    }
+    
+    public ArrayList<ProgramReferences> getProgramsReferences() {
+        return this.programs;
     }
 
     /**
@@ -151,10 +231,23 @@ public class ReferenceTable {
      * @return
      */
     public Set<String> getDevicesId() {
-        return devices.keySet();
+        Set<String> devicesId = new HashSet<String>();
+        for (DeviceReferences device : this.devices) {
+            devicesId.add(device.getDeviceId());
+        }
+        return devicesId;
     }
-
-    public ArrayList<NodeSelect> getSelectors() {
+    
+    public DeviceReferences getDeviceFromId (String id) {
+        for (DeviceReferences device : this.devices) {
+            if (device.getDeviceId().equals(id)) {
+                return device;
+            }
+        }
+        return null;
+    }
+    
+    public ArrayList<SelectReferences> getSelectors() {
         return nodes;
     }
 
@@ -175,30 +268,30 @@ public class ReferenceTable {
      *
      */
     private void retrieveReferences() {
-        for (String k : programs.keySet()) {
-            NodeProgram prog = interpreter.getNodeProgram(k);
-            LOGGER.trace("retrieveReferences(), program " + k + ", status " + devices.get(k));
+        for (ProgramReferences pRef : programs) {
+            NodeProgram prog = interpreter.getNodeProgram(pRef.getProgramId());
+            LOGGER.trace("retrieveReferences(), program " + pRef.getProgramId() + ", status " + pRef.getProgramStatus());
             if (prog != null) {
                 if (!prog.isValid()) {
-                    LOGGER.error("The program {} is not valid.", k);
-                    setProgramStatus(k, STATUS.INVALID);
+                    LOGGER.error("The program {} is not valid.", pRef.getProgramId());
+                    setProgramStatus(pRef.getProgramId(), STATUS.INVALID);
                 } else if (prog.getReferences().state != STATUS.OK) {
-                    LOGGER.warn("The program {} is not stable.", k);
-                    setProgramStatus(k, STATUS.UNSTABLE);
+                    LOGGER.warn("The program {} is not stable.", pRef.getProgramId());
+                    setProgramStatus(pRef.getProgramId(), STATUS.UNSTABLE);
                 }
             } else {
-                LOGGER.error("The program {} does not exist anymore.", k);
-                setProgramStatus(k, STATUS.MISSING);
+                LOGGER.error("The program {} does not exist anymore.", pRef.getProgramId());
+                setProgramStatus(pRef.getProgramId(), STATUS.MISSING);
             }
         }
         // Services && devices are treated the same way
-        for (String k : devices.keySet()) {
-            LOGGER.trace("retrieveReferences(), device " + k + ", status " + devices.get(k));
-            JSONObject device = interpreter.getContext().getDevice(k);
+        for (DeviceReferences device : devices) {
+            LOGGER.trace("retrieveReferences(), device " + device.getDeviceId() + ", status " + device.getDeviceStatus());
+            JSONObject deviceJSON = interpreter.getContext().getDevice(device.getDeviceId());
             try {
-                if (device == null || !device.has("status") || !device.getString("status").equals("2")) {
-                    LOGGER.warn("The device {} is missing.", k);
-                    setDeviceStatus(k, STATUS.MISSING);
+                if (deviceJSON == null || !deviceJSON.has("status") || !deviceJSON.getString("status").equals("2")) {
+                    LOGGER.warn("The device {} is missing.", device.getDeviceId());
+                    setDeviceStatus(device.getDeviceId(), STATUS.MISSING);
                 }
             } catch (JSONException ex) {
             }
@@ -215,37 +308,38 @@ public class ReferenceTable {
         this.state = STATUS.OK;
         if (programs.size() + devices.size() + nodes.size() == 0) {
             LOGGER.trace("The table is empty, so the program is empty and no empty program is considered as valid");
+            this.err = ErrorMessagesFactory.getEmptyProgramMessage();
             this.state=STATUS.INVALID;
         }
-        for (String k : programs.keySet()) {
-            LOGGER.trace("computeStatus(), program " + k + ", status :" + programs.get(k));
-            switch (programs.get(k)) {
+        for (ProgramReferences pRef : programs) {
+            LOGGER.trace("computeStatus(), program " + pRef.getProgramId() + ", status :" + pRef.getProgramStatus());
+            switch (pRef.getProgramStatus()) {
                 case MISSING:
                     setState(STATUS.INVALID);
-                    this.err = ErrorMessagesFactory.getMessageFromMissingProgram(k);
+                    this.err = ErrorMessagesFactory.getMessageFromMissingProgram(pRef.getProgramId());
                     return this.state;
                 case INVALID:
                 case UNSTABLE:
-                    this.err = ErrorMessagesFactory.getMessageFromInvalidProgram(k);
+                    this.err = ErrorMessagesFactory.getMessageFromInvalidProgram(pRef.getProgramId());
                     setState(STATUS.UNSTABLE);
                     break;
             }
         }
         // Services && devices are treated the same way
-        for (String k : devices.keySet()) {
-            LOGGER.trace("computeStatus(), device " + k + ", status " + devices.get(k));
-            switch (devices.get(k)) {
+        for (DeviceReferences device : devices) {
+            LOGGER.trace("computeStatus(), device " + device.getDeviceId() + ", status " + device.getDeviceStatus());
+            switch (device.getDeviceStatus()) {
                 case MISSING:
-                    this.err = ErrorMessagesFactory.getMessageFromMissingDevice(k);
+                    this.err = ErrorMessagesFactory.getMessageFromMissingDevice(device.getDeviceId());
                     setState(STATUS.UNSTABLE);
                     break;
             }
         }
-        for (NodeSelect s : nodes) {
-            if (s.isEmptySelection()) {
-                LOGGER.warn("Select node {} is empty.", s);
+        for (SelectReferences s : nodes) {
+            if (s.getNodeSelect().isEmptySelection()) {
+                LOGGER.warn("Select node {} is empty.", s.getNodeSelect());
                 setState(STATUS.UNSTABLE);
-                this.err = ErrorMessagesFactory.getMessageFromEmptySelect(s);
+                this.err = ErrorMessagesFactory.getMessageFromEmptySelect(s.getNodeSelect());
             }
         }
         return this.state;

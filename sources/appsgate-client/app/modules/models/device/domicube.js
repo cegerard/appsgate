@@ -32,7 +32,7 @@ define([
      * return the list of available events
      */
     getEvents: function() {
-      return ["getNewFace", "leaveFace", "change"];
+      return ["getNewFace", "leaveFace", "change", "turn"];
     },
     /**
      * return the keyboard code for a given event
@@ -55,7 +55,7 @@ define([
             myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.domicube.keyboard.oneface') + "</span>",
           }));
           v.eventName = "newFace";
-          v.param = {"type": "param", "iid": "X", "deviceType": this.get("type"), "param" : "event", "mandatory" : true};
+          v.param = {"type": "param", "iid": "X", "deviceType": this.get("type"), "param" : "faceEvent", "mandatory" : true};
           v.phrase = "devices.domicube.language.newFace";
           
           $(btn).attr("json", JSON.stringify(v));
@@ -65,7 +65,7 @@ define([
             myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.domicube.keyboard.oneface') + "</span>",
           }));
           v.eventName = "leaveFace";
-          v.param = {"type": "param", "iid": "X", "deviceType": this.get("type"), "param" : "event", "mandatory" : true};
+          v.param = {"type": "param", "iid": "X", "deviceType": this.get("type"), "param" : "faceEvent", "mandatory" : true};
           v.phrase = "devices.domicube.language.leaveFace";
           
           $(btn).attr("json", JSON.stringify(v));
@@ -75,6 +75,14 @@ define([
           v.eventName = "leaveFace";
           v.eventValue = "*";
           v.phrase = "devices.domicube.language.change";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        case "turn":
+          $(btn).append("<span>" + $.i18n.t('devices.domicube.keyboard.turn'));
+          v.eventName = "newDirection";
+          v.param = {"type": "param", "iid": "X", "deviceType": this.get("type"), "param" : "turnEvent", "mandatory" : true};
+          v.phrase = "devices.domicube.language.turn";
+          
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "west":
@@ -110,7 +118,6 @@ define([
         //case
         case "state":
           return ["face"];
-//          return ["Music", "Meal", "Question", "Lan", "Night", "inactivate"];
         default:
           return [];
       }
@@ -153,7 +160,11 @@ define([
      * Return the list of params for a given type of params
      */
     getParams: function(type) {
-          return ["Music", "Meal", "Question", "Lan", "Night", "inactivate"];
+      console.error("Param: " + type);
+      if (type == "turnEvent") {
+        return ["west", "east"];
+      }
+      return ["Music", "Meal", "Question", "Lan", "Night", "inactivate"];
     },
 
     getKeyboardForParam: function(which) {
@@ -185,6 +196,14 @@ define([
         case "inactivate":
           v.value = "2";
           v.icon = "app/img/domicube-white.svg";
+          break;
+        case "west":
+          v.icon = "app/img/cube-turn-left.png";
+          v.value = "west";
+          break;
+        case "east":
+          v.value = "east";
+          v.icon = "app/img/cube-turn-right.png";
           break;
         default:
           console.error("unexpected state found for Domicube: " + state);

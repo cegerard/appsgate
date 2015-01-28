@@ -33,30 +33,32 @@ define([
 				self.update(self.model);
 				force.start();
 			});
-			
+
 			// TODO = Improvements -> Sometimes more than one message is processed
 
 			// Update the graph when the modifications does not need to reload it to build new data structures (ie rename place)
 			dispatcher.on("UpdateGraph", function (place) {
-				console.log("graph update");
-				force.stop();
-				self.update(self.model);
-				force.start();
+				//				console.log("graph update");
+				//				force.stop();
+				//				self.update(self.model);
+				//				force.start();
 			});
 
 			// Update the graph when the modifications need to reload it to build new data structures (ie new entity)
 			dispatcher.on("UpdateGraphLoad", function (place) {
-				if (appRouter.currentView === self) {
-					console.log("graph reload for update");
-					// Reload this page to refresh data
-					appRouter.dependancies();
-				}
+				//				if (appRouter.currentView === self) {
+				//					console.log("graph reload for update");
+				//					// Reload this page to refresh data
+				//					appRouter.dependancies();
+				//				}
 			});
 
 			// Zoom variables
 			savedScale = 1;
 			savedTranslate = [0, 0];
 			onMouseDownNode = false;
+			// Used to hide the popups relations
+			onCircleRelation = false;
 		},
 
 		onRefreshButton: function () {
@@ -67,35 +69,42 @@ define([
 		},
 
 		onSearchButton: function (e) {
+			e.preventDefault();
 
-			if (e.type === "keyup") {
-				e.preventDefault();
+			var nameSearched = $(".search-input-text").val();
+			var nodesFound = [];
 
-				var nameSearched = $(".search-input-text").val();
-				var nodesFound = [];
+			// Comparing the string entered to the name of the entities
+			force.nodes().forEach(function (d) {
+				if (d.name.toLowerCase().indexOf(nameSearched.toLowerCase()) >= 0) {
+					nodesFound.push(d);
+				}
+			});
 
-				// Comparing the string entered to the name of the entities
-				force.nodes().forEach(function (d) {
-					if (d.name.toLowerCase().indexOf(nameSearched.toLowerCase()) >= 0) {
-						nodesFound.push(d);
-					}
+			if (nodesFound.length === 0 || nodesFound.length === force.nodes().length) {
+				nodeEntity.classed("neighborNodeOver", false);
+				$($(".search-button")[0]).removeClass("btn-success");
+				$(".search-button").prop('disabled', true);
+			} else {
+				// If there is node containing the string searched, highlight them
+				nodeEntity.classed("neighborNodeOver", function (d) {
+					return nodesFound.indexOf(d) !== -1;
 				});
 
-				if (nodesFound.length === 0 || nodesFound.length === force.nodes().length) {
-					nodeEntity.classed("neighborNodeOver", false);
-				} else {
-					// If there is node containing the string searched, highlight them
-					nodeEntity.classed("neighborNodeOver", function (d) {
-						return nodesFound.indexOf(d) !== -1;
-					});
-
-					// There is only one result, typing enter select it
-					if (e.keyCode === 13 && nodesFound.length === 1) {
+				// There is only one result, typing enter select it
+				if (nodesFound.length === 1) {
+					$(".search-button").prop('disabled', false);;
+					$($(".search-button")[0]).addClass("btn-success");
+					if ((e.type === "keyup" && e.keyCode === 13) || (e.type === "click" && e.target.className === "btn btn-default search-button btn-success")) {
 						force.stop();
 						this.selectAndMoveRootNode(nodesFound[0]);
 						$(".search-input-text").select();
+						nodeEntity.classed("neighborNodeOver", false);
 						force.start();
 					}
+				} else {
+					$($(".search-button")[0]).removeClass("btn-success");
+					$(".search-button").prop('disabled', true);
 				}
 			}
 		},
@@ -140,6 +149,14 @@ define([
 					// When pan/zoom change cursor if no on mouse
 					if (!onMouseDownNode) {
 						$("body").css("cursor", "move");
+					}
+					// Temporaire : Hide all popovers if pan ...
+					if (!onCircleRelation) {
+						$('.popover').each(function (pop) {
+							if ($(this).is(":visible")) {
+								$(this).popover('hide');
+							}
+						});
 					}
 				})
 				.on("zoomend", function () {
@@ -192,6 +209,9 @@ define([
 			// Call update to update the state of the force (node/link)
 			this.update(this.model);
 
+			// Initialize all the popover one time
+			$('[data-toggle="popover"]').popover();
+
 			force.start();
 
 			// translate the view
@@ -205,7 +225,6 @@ define([
 
 			force.nodes(model.get("currentEntities"));
 			force.links(model.get("currentRelations"));
-
 
 			/******* NODES (=Entities) *******/
 
@@ -288,6 +307,7 @@ define([
 					// TEXT
 					d3.select(this).append("text")
 						.attr("class", "label-name")
+						.attr("opacity", 0)
 						.text(function (d) {
 							if (d.type === "selector")
 								return $.i18n.t("dependancy.type.entity.selector.type-" + d.name);
@@ -295,39 +315,50 @@ define([
 								return d.name;
 						})
 
+					// shape STATUS PROGRAMS
 					// Type program, add form to indicate running or not. 
 					if (a.type === "program") {
 						if (a.state === "DEPLOYED" || a.state === "INVALID" || a.state === "INCOMPLETE") {
 							d3.select(this).append("rect")
-								.attr("class", "form-program")
+								.attr("class", "shape-program")
 								.attr("x", function (m) {
 									return 0
 								})
 								.attr("y", function (m) {
 									return 0
 								})
-								.attr("width", 8)
-								.attr("height", 8)
+								.attr("width", 11)
+								.attr("height", 11)
 								.attr('opacity', 0);
 						} else if (a.state === "PROCESSING" || a.state === "LIMPING") {
 							d3.select(this).append("svg:path")
-								.attr("class", "form-program")
-								.attr("d", "M0,-5L10,0L0,5L0,-5")
+								.attr("class", "shape-program")
+								.attr("d", "M0,-7L14,0L0,7L0,-7")
 								.attr('opacity', 0);
 						}
 
+					}
+
+					// shape STATUS DEVICES
+					if (a.type === "device" && a.deviceState !== undefined) {
+						d3.select(this).append("circle")
+							.attr("class", "circle-device-state")
+							.attr("opacity", 0)
+							.attr("r", 7);
 					}
 				});
 
 			nEnter.select("circle").transition().duration(800).attr("r", 14);
 			nEnter.select("image").transition().duration(1000).style("opacity", 1);
-			nEnter.select(".form-program").transition().duration(800).style("opacity", 1);
+			nEnter.select(".shape-program").transition().duration(800).style("opacity", 1);
+			nEnter.select(".circle-device-state").transition().duration(800).style("opacity", 1);
 			nEnter.select("text").transition().duration(800).style("opacity", 1);
 
 			nodeEntity.exit().select("image").transition().duration(600).style("opacity", 0);
 			nodeEntity.exit().select("text").transition().duration(700).style("opacity", 0);
 			nodeEntity.exit().select("circle").transition().duration(700).attr("r", 0);
-			nodeEntity.exit().select(".form-program").transition().duration(700).style("opacity", 0);
+			nodeEntity.exit().select(".shape-program").transition().duration(700).style("opacity", 0);
+			nodeEntity.exit().select(".circle-device-state").transition().duration(700).style("opacity", 0);
 			nodeEntity.exit().transition().duration(800).remove();
 
 
@@ -351,6 +382,7 @@ define([
 						.attr("marker-end", function (d) {
 							return "url(#" + d.type + ")";
 						})
+						
 						.attr("refX", -30);
 					// PATH TEXT
 					d3.select(this).append("svg:path")
@@ -362,30 +394,45 @@ define([
 						});
 					// CIRCLE
 					d3.select(this).append("circle")
-						.attr("class", "circle-information hidden")
-						.attr("r", 5)
+						.attr("class", "circle-information")
+						.attr("r", 2)
 						.attr("fill", "red")
+						.attr("data-container", "#graph")
+						.attr("data-toggle", "popover")
+						.attr("data-content", function (d) {
+							if (d.referenceData !== undefined) {
+								var referenceString = "";
+								d.referenceData.forEach(function (ref) {
+									if (ref.referenceType !== undefined && ref.method !== undefined) {
+										referenceString += ref.referenceType + " : " + ref.method + "<br />";
+									}
+								});
+								return referenceString;
+							} else {
+								return null;
+							}
+						})
+						.attr("data-title", function (d) {
+							return $.i18n.t("dependancy.type.relation." + d.type);
+						})
+						.attr("data-template", function (d) {
+							if (d.referenceData) {
+								return '<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>';
+							} else {
+								return '<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3></div>';
+							}
+						})
+						.attr("data-html", true)
 						.on("mouseover", function (d) {
-							d3.select(this.parentNode).select("text").classed("hidden", false);
+							onCircleRelation = true;
 						})
 						.on("mouseout", function (d) {
-							d3.select(this.parentNode).select("text").classed("hidden", true);
-						});
-					// TEXT
-					d3.select(this).append("text")
-						.attr("class", "linklabel linklabelholder hidden")
-						.style("font-size", "13px")
-						.attr("x", "90")
-						.attr("text-anchor", "middle")
-						.append("textPath")
-						.attr("xlink:href", function (d) {
-							return "#linkID_" + i;
+							onCircleRelation = false;
 						})
-						.text(function (d) {
-							return $.i18n.t("dependancy.type.relation." + d.type);
+						.on("click", function (d)  {
+							$((d3.select(this))[0]).popover();
 						});
 				});
-
 
 			pathLink.exit().remove();
 
@@ -440,10 +487,27 @@ define([
 					return self.model.getDepthNeighbor(d) === 2;
 				})
 				.classed("node-more", function (d) {
-					return self.model.getDepthNeighbor(d) > 2 || self.model.getDepthNeighbor(d) === -1;
+					// Transparence nodes if no depth 0/1/2 and if there is a focus
+					return self.model.get("rootNode") !== "" && (self.model.getDepthNeighbor(d) > 2 || self.model.getDepthNeighbor(d) === -1);
 				})
 				.classed("fixedNode", function (d) {
 					return d !== self.model.get("rootNode") && d.fixed && !$(this).hasClass("nodeOver");
+				});
+
+			nodeEntity.selectAll("circle")
+				.classed("program-multiple-writing-reference", function (d) {
+					return self.model.isMultipleTargeted(d);
+				})
+
+			nodeEntity.selectAll(".circle-device-state")
+				.attr("transform", function (d) {
+					return "translate(5,10)";
+				})
+				.classed("circle-device-state-true", function (d) {
+					return (d.deviceState === true || d.deviceState === "true");
+				})
+				.classed("circle-device-state-false", function (d) {
+					return (d.deviceState === false || d.deviceState === "false");
 				});
 
 			nodeEntity.selectAll("text")
@@ -455,7 +519,10 @@ define([
 					}
 				});
 
-			nodeEntity.selectAll("circle")
+			nodeEntity.selectAll(".shape-program")
+				.attr("transform", function (d) {
+					return "translate(3,10)";
+				})
 				.classed("program-invalid", function (d) {
 					return d.state === "INVALID";
 				})
@@ -470,11 +537,6 @@ define([
 				})
 				.classed("program-incomplete", function (d) {
 					return d.state === "INCOMPLETE";
-				});
-
-			nodeEntity.selectAll(".form-program")
-				.attr("transform", function (d) {
-					return "translate(3,10)";
 				});
 
 
@@ -492,24 +554,47 @@ define([
 				.classed("node-more", function (d) {
 					var isNode1 = (d.source === self.model.get("rootNode") || d.target === self.model.get("rootNode"));
 					var isNode2 = (self.model.getDepthNeighbor(d.source) === 2 && self.model.getDepthNeighbor(d.target) === 1) || (self.model.getDepthNeighbor(d.target) === 2 && self.model.getDepthNeighbor(d.source) === 1);
-					return !isNode1 && !isNode2;
+					return self.model.get("rootNode") !== "" & !isNode1 && !isNode2;
 				})
 				.attr("marker-end", function (d) {
-					var isMultipleTargeted = self.model.isTargetMultipleTargeted(d.target);
+					var isWritingReference = function (link) {
+						if (link.referenceData) {
+							for (var index = 0; index < link.referenceData.length; index++) {
+								if (link.referenceData[index].referenceType === "WRITING") {
+									return true;
+								}
+							}
+						} else if (link.type === "denotes") {
+							// If denotes, red if all references to the selector are writing type
+							return self.model.isWritingDenote(link);
+						}
+						return false;
+					}(d);
 					// Target focus and mutliple target -> RED / ARROW
-					if (d.target === self.model.get("rootNode") && d.type === "reference" && isMultipleTargeted)
+					if (d.target === self.model.get("rootNode") && isWritingReference)
 						return "url(#targetingRefFocus)";
 					// Target focus -> ARROW
 					else if (d.target === self.model.get("rootNode"))
 						return "url(#targetingFocus)";
 					// Multiple target -> RED
-					else if (isMultipleTargeted && d.type === "reference")
+					else if (isWritingReference)
 						return "url(#targeting)";
 					else
 						return "url(#" + d.type + ")";
 				})
 				.classed("important-path", function (d) {
-					return (d.type === "reference" && self.model.isTargetMultipleTargeted(d.target));
+					if (d.referenceData) {
+						// If reference, red if writing type
+						for (var index = 0; index < d.referenceData.length; index++) {
+							if (d.referenceData[index].referenceType === "WRITING") {
+								return true;
+							}
+						}
+					} else if (d.type === "denotes") {
+						// If denotes, red if all references to the selector are writing type
+						return self.model.isWritingDenote(d);
+					}
+					return false;
 				});
 
 			pathLink.select(".linkText")
@@ -520,14 +605,22 @@ define([
 
 
 			pathLink.select("circle")
-				.classed("hidden", function (l) {
-					return !(l.source === self.model.get("rootNode") || l.target === self.model.get("rootNode"));
-				})
 				.attr("cx", function (l) {
 					return (l.source.x + l.target.x) / 2;
 				})
 				.attr("cy", function (l) {
 					return (l.source.y + l.target.y) / 2;
+				})
+				.classed("node-1", function (d) {
+					return (d.source === self.model.get("rootNode") || d.target === self.model.get("rootNode"));
+				})
+				.classed("node-2", function (d) {
+					return (self.model.getDepthNeighbor(d.source) === 2 && self.model.getDepthNeighbor(d.target) === 1) || (self.model.getDepthNeighbor(d.target) === 2 && self.model.getDepthNeighbor(d.source) === 1);
+				})
+				.classed("node-more", function (d) {
+					var isNode1 = (d.source === self.model.get("rootNode") || d.target === self.model.get("rootNode"));
+					var isNode2 = (self.model.getDepthNeighbor(d.source) === 2 && self.model.getDepthNeighbor(d.target) === 1) || (self.model.getDepthNeighbor(d.target) === 2 && self.model.getDepthNeighbor(d.source) === 1);
+					return self.model.get("rootNode") !== "" & !isNode1 && !isNode2;
 				});
 
 
@@ -634,12 +727,7 @@ define([
 						})
 					d3.select(this).append("span")
 						.text(function (d) {
-							// exception for the selector
-							if (d === "selector") {
-								return $.i18n.t("dependancy.type.entity.selector.filter-label");
-							} else {
-								return $.i18n.t("dependancy.type.entity." + d);
-							}
+							return $.i18n.t("dependancy.filters-label.entity." + d);
 						});
 				});
 
@@ -648,8 +736,7 @@ define([
 				.enter()
 				.append("div")
 				.attr("class", "checkbox-container")
-				.append("label")
-				.each(function (d) {
+				.append("label").each(function (d) {
 					// create checkbox for each data
 					d3.select(this).append("input")
 						.attr("type", "checkbox")
@@ -666,8 +753,31 @@ define([
 						})
 					d3.select(this).append("span")
 						.text(function (d) {
-							return $.i18n.t("dependancy.type.relation." + d);
+							return $.i18n.t("dependancy.filters-label.relation." + d);
 						});
+					d3.select(this).append("svg")
+						.attr("class", "filter-svg-arrow")
+						.append("svg:defs").append("svg:marker")
+						.attr("id", "markerArrow")
+						.attr("viewBox", "0 -5 10 10")
+						.attr("markerWidth", 4)
+						.attr("markerHeight", 4)
+						.attr("orient", "auto")
+						.append("svg:path")
+						.classed("reference-filter", function (f) {
+							return f === "WRITING";
+						})
+						.attr("d", "M0,-5L10,0L0,5");
+					d3.select(this).select("svg").append("svg:line")
+						.attr("class", "filter-arrow")
+						.classed("reference-filter", function (f) {
+							return f === "WRITING";
+						})
+						.attr("x1", "0")
+						.attr("y1", "5")
+						.attr("x2", "10")
+						.attr("y2", "5")
+						.attr("marker-end", "url(#markerArrow)");
 				});
 
 		},

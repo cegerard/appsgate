@@ -17,24 +17,27 @@
   "dependancy": {
         "refresh-data" : "Actualiser les données",
         "search-label" : "Chercher : ",
-		"entities-filter": "Filtre entités",
-		"relations-filter": "Filtre relations",
-		"unfix-node": "Défixer tout",
-		"search-example": "(Exemple : '__entity__')",
+	  	"search-button": "OK",
+	  	"search-example": "(Exemple : '__entity__')",
+		"unfix-node": "Annuler les repositionnements",
 	  	"caption": {
 			"title": "Légende",
-			"stopped-program": "Arrêté",
-			"running-program": "En exécution",
-			"valid-program": "Valide",
-			"incomplete-program": "Incomplet",
-			"invalid-program": "Invalide"
+			"stopped-program": "Programme désactivé",
+			"running-program": "Programme activé",
+			"valid-program": "Programme valide",
+			"incomplete-program": "Programme instable",
+			"invalid-program": "Programme invalide",
+			"device-on": "Equipement allumé ou avec contact",
+			"device-off": "Equipement éteint ou sans contact"
 		},
 	  	"help" : {
 			"title" : "Aide",
-			"click": "Clic : Défixer une entité préalablement fixée",
-			"click-move": "Clic + Déplacement : Déplacer une entité et la fixer",
-			"double-click": "Double clic : Mettre / Enlever le focus d'une entité",
-			"maj-click": "Maj. + Clic : Aller à la page détaillée de l'entité"
+			"click": "Clic entité : Annuler son repositionnement",
+			"click-move": "Glisser-Déposer : Repositionner l'entité",
+			"double-click": "Double clic sur entité : Mettre ou retirer le focus sur elle",
+			"maj-click": "Maj. + Clic entité : Aller à la page détaillée de l'entité",
+			"hovering-entity": "Survol entité : Mettre en avant ses relations",
+			"click-relation": "Clic relation : Obtenir informations sur elle"
 		},
 	  	"type": {
 			"entity": {
@@ -62,10 +65,32 @@
 			},
 			"relation": {
 				"reference": "Référence",
+				"reference-WRITING": "Ecriture",
+				"reference-READING": "Lecture",
 				"isLocatedIn": "Localisation",
 				"isPlanified": "Planification",
 				"denotes": "Sélection"
 			}
+		},
+	  	"filters-label": {
+				"entity": {
+					"title": "Filtres sur les entités",
+					"place": "$t(dependancy.type.entity.place)",
+					"program": "$t(dependancy.type.entity.program)",
+					"service": "$t(dependancy.type.entity.service)",
+					"time": "$t(dependancy.type.entity.time)",
+					"device": "$t(dependancy.type.entity.device)",
+					"selector": "$t(dependancy.type.entity.selector.filter-label)"
+				},
+				"relation": {
+					"title": "Filtres sur les relations",
+					"reference": "Entité(s) référencée(s)",
+					"WRITING": "Modification d'état",
+					"READING": "Consultation d'état",
+					"isLocatedIn": "Localisation",
+					"isPlanified": "Planification",
+					"denotes": "Désignation"
+				}
 		}
   },
     "devices": {
@@ -85,7 +110,7 @@
                 "turnedOff": "Eteint",
                 "turnedOn": "Allumé"
             }
-    },
+        },
     "ard": {
       "affirmative": "Oui",
       "true":"Vrai",
@@ -172,7 +197,8 @@
 		"change" : "on change de face du Domicube",
 		"newFace" : "on arrive sur __myVar__ du Domicube",
         "leaveFace": "on quitte __myVar__ du Domicube",
-		"face" : "on est sur __myVar__ du Domicube"
+		"face" : "on est sur __myVar__ du Domicube",
+		"turn" : "on tourne le Domicube __myVar__"
       },
       "keyboard": {
         "west": "l'Ouest",
@@ -181,7 +207,8 @@
 		"newFace" : "on arrive sur __myVar__ du Domicube",
         "leaveFace": "on quitte __myVar__ du Domicube",
 		"face" : "on est sur __myVar__ du Domicube",
-		"oneface" : "la face du dessus"
+		"oneface" : "la face du dessus",
+		"turn" : "on tourne le Domicube"
       },
       "white-face": {
         "first-elem": "Face",
@@ -239,6 +266,20 @@
       "value": {
         "inserted": "Carte insérée",
         "not-inserted": "Pas de carte"
+      }
+    },
+    "clock": {
+      "keyboard": {
+        "checkCurrentTimeOfDay": "l'heure actuelle est",
+        "before" : "heure 1",
+        "after" : "heure 2"
+      },
+      "language": {
+        "checkCurrentTimeOfDay": "l'heure actuelle est ",
+        "between" : "comprise entre",
+        "before" : "avant",
+        "after" : "apres",
+        "and" : "et"
       }
     },
     "lamp": {
@@ -320,10 +361,10 @@
         "STOPPED": "Arrêté : "
       },
       "language": {
-        "volume-event": "Le volume du lecteur change sur __myVar__",
-        "play-event": "On lance/reprend la lecture sur le lecteur __myVar__",
-        "stop-event": "On stoppe la lecture sur le lecteur __myVar__",
-        "pause-event": "On met en pause la lecture sur le lecteur __myVar__",
+        "volume-event": "le volume du lecteur change sur __myVar__",
+        "play-event": "on lance/reprend la lecture sur le lecteur __myVar__",
+        "stop-event": "on stoppe la lecture sur le lecteur __myVar__",
+        "pause-event": "on met en pause la lecture sur le lecteur __myVar__",
         "pause-media-action": "Mettre en pause le media",
         "play-media-action": "Jouer",
         "resume-media-action": "Reprendre la lecture",
@@ -331,10 +372,10 @@
         "stop-media-action": "Stopper"
       },
       "keyboard": {
-        "volume-event": "Le volume du __myVar__ change sur __myVar2__",
-        "play-event": "On lance/reprend la lecture sur le __myVar__",
-        "stop-event": "On stoppe la lecture sur le __myVar__",
-        "pause-event": "On met en pause la lecture sur le __myVar__",
+        "volume-event": "le volume du __myVar__ change sur __myVar2__",
+        "play-event": "on lance/reprend la lecture sur le __myVar__",
+        "stop-event": "on stoppe la lecture sur le __myVar__",
+        "pause-event": "on met en pause la lecture sur le __myVar__",
         "pause-action": "Mettre en pause la lecture sur le __myVar__",
         "play-action": "Lancer la lecture du __myVar__ sur le __myVar2__",
         "resume-action": "Reprendre la lecture sur le __myVar__",
@@ -476,6 +517,25 @@
         "singular": "Capteur de température"
       }
     },
+    "co2": {
+      "caption": {
+        "intern": "Capteur de CO2",
+        "temperature": "Temperature"
+      },
+      "keyboard": {
+        "get": "la CO2 du __myVar__",
+        "change": "la CO2 mesurée par le __myVar__ change",
+        "sensor": "capteur de CO2"
+      },
+      "language": {
+        "get": "la CO2 de __myVar__",
+        "change": "la CO2 mesurée par __myVar__ change"
+      },
+      "name": {
+        "plural": "Capteurs de CO2",
+        "singular": "Capteur de CO2"
+      }
+    },
     "type-label": "Type",
     "value-label": "Valeur"
   },
@@ -519,6 +579,7 @@
   },
   "keyboard": {
     "clock-event": "L'horloge d'AppsGate indique ",
+    "clock-getTime": "L'heure actuelle est ",
     "time-placeholder": "hh:mm:ss",
     "false": "Faux",
     "if-keyword": "Si",
@@ -561,6 +622,7 @@
     },
     "clock-event": "L'horloge d'AppsGate indique ",
     "clock-status": "L'horloge d'AppsGate indique ",
+    "clock-getTime": "L'heure actuelle est ",
     "contact-assembled-event": "s'assemble",
     "contact-disassembled-event": "se desassemble",
     "else-keyword": "sinon",
@@ -622,6 +684,9 @@
     "confirm-password": "Mot de passe de confirmation",
     "password": "Mot de passe",
     "username": "Nom d'identification"
+  },
+  "modal" : {
+    "name-too-long" : "Le nom choisi est trop long"
   },
   "modal-add-place": {
     "place-already-existing": "Nom de la lieu de vie déjà existant.",
@@ -918,7 +983,6 @@
     "appear" : "l'équipement __name__ est apparu",
     "remove" : "l'équipement __name__ a été enlevé",
 	"defaultMessage" : "Une ligne de programme a été exécutée",
-	
     "ColorLight" : {
 	  "change" : {
 		"value" : "la lampe est allumée : __text__",
@@ -944,6 +1008,11 @@
 	"SmartPlug" : {
 		"on" : "Allumer la prise",
 		"off" : "Eteindre la prise"
-	}
+	},
+    "DomiCube" : {
+      "change" : {
+         "activeFace" : "Nouvelle face du DomiCube"
+      }
+    }
   }
 }

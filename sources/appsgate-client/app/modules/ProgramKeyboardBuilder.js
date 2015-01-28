@@ -40,7 +40,7 @@ define([
             this.buildServicesOfType(nodes[0]);
             break;
           case "param":
-            this.buildParamOfType(nodes[0]);
+            this.buildParamOfType(nodes[0], ex.param);
             break;
           default:
             for (t in nodes) {

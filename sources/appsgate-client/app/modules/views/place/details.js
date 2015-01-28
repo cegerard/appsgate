@@ -63,6 +63,9 @@ define([
               case 0:
                 $("#device-" + device.cid + "-value").text(device.getValue() + " &deg;C");
                 break;
+              case 32:
+                  $("#device-" + device.cid + "-value").text(device.getValue());
+                  break;
               case 1:
                 $("#device-" + device.cid + "-value").attr("data-i18n", "devices.illumination.scale." + device.get("label"));
                 break;
@@ -190,6 +193,16 @@ define([
          * @return false if the typed name already exists, true otherwise
          */
         checkPlace: function() {
+            // Check the length of the name
+            if ($("#edit-name-place-modal input").val().length > App.MAX_NAME_LENGTH ) {
+                $("#edit-name-place-modal .text-danger")
+                        .text($.i18n.t("modal.name-too-long"))
+                        .removeClass("hide");
+                $("#edit-name-place-modal .valid-button").addClass("disabled");
+                $("#edit-name-place-modal .valid-button").addClass("valid-disabled");
+
+                return false;
+            }
             // name is empty
             if ($("#edit-name-place-modal input").val() === "") {
                 $("#edit-name-place-modal .text-danger").removeClass("hide");

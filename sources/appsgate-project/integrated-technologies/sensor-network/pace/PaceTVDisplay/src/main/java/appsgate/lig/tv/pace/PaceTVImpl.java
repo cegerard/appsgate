@@ -4,6 +4,7 @@
 package appsgate.lig.tv.pace;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -111,6 +112,9 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 
 	public final static String OSD = "osd";
 	public final static String OSD_SERVICE = "/"+OSD+"?";	
+
+	public final static String JSON = "osd";
+	public final static String JSON_SERVICE = "/"+JSON;		
 	
 	/**
 	 * TV Web service command, first parameter of the REST Command
@@ -127,7 +131,16 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 	public final static String SENDER_PARAM_NAME = "&"+SENDER_PARAM+"=";
 	public final static String MESSAGE_PARAM = "message";
 	public final static String MESSAGE_PARAM_NAME = "&"+MESSAGE_PARAM+"=";
+	public final static String KEYCODE_PARAM = "keycode";
+	public final static String KEYCODE_PARAM_NAME = "&"+KEYCODE_PARAM+"=";
 	
+	public final static String ACK_PARAM="ack";
+	public final static String DURATION_PARAM="duration";
+	public final static String ICON_PARAM="icon";
+	public final static String OSD_PARAM= "osd";
+	
+	
+	public final static String COMMAND_RC = "rc";
 	public final static String COMMAND_CHANNELUP = "channelUp";
 	public final static String COMMAND_CHANNELDOWN = "channelDown";
 	public final static String COMMAND_RESUME = "resume";
@@ -142,6 +155,8 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 	public final static String COMMA_SEPARATOR = ",";
 	
 	public static final String GET = "GET";
+	public static final String POST = "POST";
+
 	public static final int RESP_200 = 200;
 	
 
@@ -150,22 +165,40 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 	}
 
 	@Override
-	public void notify(int id, String sender, String message) {
+	public void notify(int id, String sender, String message, boolean ack, int duration, String icon) {
 		logger.trace("notify(int id : "+id
 				+", String sender : "+sender
 				+", String message : "+message
+				+", boolean ack : "+ack
+				+", int duration : "+duration
+				+", String icon : "+icon
 				+")");
 		if(!checkConfiguration(hostname, port, path)) {
 			logger.warn("TV not available, shutting down the service");
 			factory.removeTVInstance(serviceId);
 			return;
 		}
+		
+		JSONObject payload = new JSONObject();
+		JSONObject command = new JSONObject();
+		
+		command.put(COMMAND_PARAM, COMMAND_NOTIFY);
+		command.put(SENDER_PARAM, sender);
+		command.put(MESSAGE_PARAM, message);
+		command.put(ACK_PARAM, ack);
+		command.put(DURATION_PARAM, duration);
+		command.put(ICON_PARAM, icon);
+		payload.put(OSD_PARAM, command);
+		
+		/*
+		 * Deprecated , TODO transform this in json to send on http post request
 		Map<String,String> urlParameters = new LinkedHashMap<String, String>();
 		urlParameters.put(COMMAND_PARAM_NAME, COMMAND_NOTIFY);
 		urlParameters.put(SENDER_PARAM_NAME, sender);
 		urlParameters.put(MESSAGE_PARAM_NAME, message);
 		urlParameters.put(ID_PARAM_NAME, String.valueOf(id));
-		sendHttpGet(serviceUrl+OSD_SERVICE, null, urlParameters);
+		*/
+		sendHttpPost(serviceUrl+JSON_SERVICE, null, null, payload.toString().getBytes());
 	}
 
 	@Override
@@ -341,6 +374,54 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 	}	
 	
 	/**
+	 * Send an http POST to a REST webservice,
+	 * @param url is a valid URL of a REST service using http protocol
+	 * @param requestProperties additional parameters name=value to send in the request
+	 * @param urlParameters parameters to add in the URL (those will be re-encoded)
+	 * @param payload of the POST request
+	 * @return the response if the connection with the webservice was successfull
+	 */
+	public static String sendHttpPost(String url, 
+			Map<String,String> requestProperties, Map<String,String> urlParameters, byte[] payload)  {
+
+		try {
+			HttpURLConnection httpConnection = httpRequest(url, requestProperties, POST, urlParameters);
+			
+			httpConnection.setDoOutput(true);
+			DataOutputStream wr = new DataOutputStream(httpConnection.getOutputStream());
+			wr.write(payload);
+			
+			wr.flush();
+			wr.close();
+			
+
+			logger.debug("\nSending '+POST' request to URL : " + url);
+			int responseCode = httpConnection.getResponseCode();
+			logger.debug("Response Code : " + responseCode);
+			if(responseCode != RESP_200) {
+				logger.warn("HTTP Response not 200 OK, returning null. Response was : "+responseCode);
+				return null;
+			}
+
+			BufferedReader in = new BufferedReader(
+					new InputStreamReader(httpConnection.getInputStream()));
+			String inputLine;
+			StringBuffer response = new StringBuffer();
+
+			while ((inputLine = in.readLine()) != null) {
+				response.append(inputLine);
+			}
+			in.close();
+			logger.debug("sendHttpPost(...) successfull, returning "+response);
+			return response.toString();
+		} catch (Exception exc) {
+			logger.error("Exception occured during http post : "+exc.getMessage());
+			return null;
+		}
+	}	
+	
+	
+	/**
 	 * Helper method to build an HTTP Connection
 	 */
 	private static HttpURLConnection httpRequest(String url, 
@@ -369,6 +450,33 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 			logger.error("Exception occured during creation of http connection : "+exc.getMessage());
 			return null;
 		}
+	}
+
+	@Override
+	public void sendRCCommand(String keycode) {
+		
+		logger.trace("sendRCCommand(String keycode : "+keycode+")");
+		if(!checkConfiguration(hostname, port, path)) {
+			logger.warn("TV not available, shutting down the service");
+			factory.removeTVInstance(serviceId);
+			return;
+		}
+		
+		try {
+			KeyCode code = KeyCode.valueOf(keycode);
+		} catch (IllegalAccessError exc) {
+			logger.error("Unrecognized command: "+keycode
+					+" exception: "+exc.getMessage());
+			return;
+		} catch (NullPointerException exc) {
+			logger.error("No command provided: "+exc.getMessage());
+			return;
+		}
+		
+		Map<String,String> urlParameters = new LinkedHashMap<String, String>();
+		urlParameters.put(COMMAND_PARAM_NAME, COMMAND_RC);
+		urlParameters.put(KEYCODE_PARAM_NAME, keycode);
+		sendHttpGet(serviceUrl+SYSTEM_SERVICE, null, urlParameters);	
 	}
 
 }

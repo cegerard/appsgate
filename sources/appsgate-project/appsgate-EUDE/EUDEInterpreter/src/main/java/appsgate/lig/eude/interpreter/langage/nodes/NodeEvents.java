@@ -13,6 +13,7 @@ import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -205,9 +206,9 @@ public abstract class NodeEvents extends Node implements INodeEvent{
     abstract void dealWithNormalEvent(NodeEvent e) throws SpokExecutionException;
         
     @Override
-    protected void buildReferences(ReferenceTable table) {
+    protected void buildReferences(ReferenceTable table, HashMap<String,String> args) {
         for (Node n: this.listOfEvent) {
-            n.buildReferences(table);
+            n.buildReferences(table, null);
         }
     }
 

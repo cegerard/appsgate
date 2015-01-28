@@ -12,6 +12,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,7 +61,7 @@ public class GraphManager {
     private final String SERVICE_ENTITY = "service";
     private final String DEVICE_ENTITY = "device";
     private final String SELECTOR_ENTITY = "selector";
-    
+
     private final String CLOCK_ID = "21106637055";
 
     /**
@@ -80,27 +87,28 @@ public class GraphManager {
         this.programsId = interpreter.getListProgramIds(null);
         int idSelector = -2;
         ArrayList<NodeSelect> selectorsSaved = new ArrayList<NodeSelect>();
-        JSONArray programsScheduled = this.interpreter.getContext().checkProgramsScheduled();
+
         for (String pid : programsId) {
             NodeProgram p = interpreter.getNodeProgram(pid);
             if (p != null) {
-                
+
                 // Get the current status of the program
                 HashMap<String, String> optArg = new HashMap<String, String>();
                 optArg.put("state", p.getState().name());
                 addNode(PROGRAM_ENTITY, pid, p.getProgramName(), optArg);
-                
+
                 // Program links : Reference or planified
                 ReferenceTable references = p.getReferences();
-                for (String rdevice : references.getDevicesId()) {
-                    if (rdevice.equals(CLOCK_ID)) {
-                        addLink(PLANIFIED_LINK, pid, rdevice);
+                for (DeviceReferences rdevice : references.getDevicesReferences()) {
+                    if (rdevice.getDeviceId().equals(CLOCK_ID)) {
+                        addLink(PLANIFIED_LINK, pid, rdevice.getDeviceId());
                     } else {
-                        addLink(REFERENCE_LINK, pid, rdevice);
+                        addLink(REFERENCE_LINK, pid, rdevice.getDeviceId(), rdevice.getReferencesData());
                     }
                 }
-                for (String rProgram : references.getProgramsId()) {
-                    addLink(REFERENCE_LINK, pid, rProgram);
+
+                for (ProgramReferences rProgram : references.getProgramsReferences()) {
+                    addLink(REFERENCE_LINK, pid, rProgram.getProgramId(), rProgram.getReferencesData());
                 }
 
                 if (addSelector(pid, references, selectorsSaved, idSelector)) {
@@ -108,11 +116,33 @@ public class GraphManager {
                 }
             }
 
-            // Links program - scheduler
-            if (programsScheduled != null && programsScheduled.toString().contains(pid)) {
-                addLink(PLANIFIED_LINK, pid, CLOCK_ID);
-                //@TODO: if planified more than one time, have more than one relation...
+            // Planification
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+            Callable<Object> task = new Callable<Object>() {
+                public Object call() {
+                    return interpreter.getContext().checkProgramsScheduled();
+                }
+            };
+            Future<Object> future = executor.submit(task);
+            try {
+                JSONArray programsScheduled = (JSONArray) future.get(2, TimeUnit.SECONDS);
+
+                // Links program - scheduler
+                if (programsScheduled != null && programsScheduled.toString().contains(pid)) {
+                    addLink(PLANIFIED_LINK, pid, CLOCK_ID);
+                    //@TODO: if planified more than one time, have more than one relation...
+                }
+            } catch (TimeoutException ex) {
+                LOGGER.error("Time Out trying to reach scheduling service, aborting)");
+                // handle the timeout
+            } catch (InterruptedException e) {
+                // handle the interrupts
+            } catch (ExecutionException e) {
+                // handle other exceptions
+            } finally {
+                future.cancel(true); // may or may not desire this
             }
+
         }
         // Retrieving devices id
         JSONArray devices = this.interpreter.getContext().getDevices();
@@ -120,13 +150,13 @@ public class GraphManager {
             try {
                 JSONObject o = devices.getJSONObject(i);
                 addDevice(o);
-                
+
                 // Don't add the location link of the service Weather and Mail
                 if (!o.getString("type").equals("102") && !o.getString("type").equals("103")) {
                     // Adding location link
                     addLink(LOCATED_LINK, o.getString("id"), o.getString("placeId"));
                 }
-                
+
             } catch (JSONException ex) {
             }
 
@@ -158,14 +188,38 @@ public class GraphManager {
     private void addDevice(JSONObject o) {
         try {
             HashMap<String, String> optArg = new HashMap<String, String>();
-            try {
-                // send the deviceType to be able to recognize services
-                optArg.put("deviceType", o.getString("type"));
-            } catch (JSONException ex) {
-            }
+            String deviceType = "";
             try {
                 // if it is a weather device, it will have a location, which will be used as a name
                 optArg.put("location", o.getString("location"));
+            } catch (JSONException ex) {
+            }
+
+            try {
+                deviceType = o.getString("type");
+                // send the deviceType to be able to recognize services
+                optArg.put("deviceType", deviceType);
+            } catch (JSONException ex) {
+            }
+
+            try {
+                switch (Integer.parseInt(deviceType)) {
+                    case 3: // Contact
+                        optArg.put("deviceState", o.getString("contact"));
+                        break;
+                    case 4: // CardSwitch
+                        optArg.put("deviceState", o.getString("inserted"));
+                        break;
+                    case 6: // Plug
+                        optArg.put("deviceState", o.getString("plugState"));
+                        break;
+                    case 7: // Lamp
+                        optArg.put("deviceState", String.valueOf(o.getBoolean("value")));
+                        break;
+                    default:
+                        break;
+                }
+
             } catch (JSONException ex) {
             }
 
@@ -257,6 +311,38 @@ public class GraphManager {
     }
 
     /**
+     * Method that adds a link to the json object
+     *
+     * @param type the type of link
+     * @param source the id of the source of the link
+     * @param target the id of the source of the target
+     */
+    private void addLink(String type, String source, String target, ArrayList<HashMap<String, String>> optArgs) {
+        try {
+            JSONObject o = new JSONObject();
+            o.put("type", type);
+            o.put("source", source);
+            o.put("target", target);
+            JSONArray refArray = new JSONArray();
+            if (optArgs != null) {
+                for (HashMap<String, String> refOpt : optArgs) {
+                    JSONObject ref = new JSONObject();
+                    if (refOpt != null) {
+                        for (Entry<String, String> arg : refOpt.entrySet()) {
+                            ref.put(arg.getKey(), arg.getValue());
+                        }
+                    }
+                    refArray.put(ref);
+                }
+                o.put("referenceData", refArray);
+            }
+            returnJSONObject.getJSONArray("links").put(o);
+        } catch (JSONException ex) {
+            // Nothing will be raised since there is no null value
+        }
+    }
+
+    /**
      * Init the JSON Object that will be returned
      */
     private void initJSONObject() {
@@ -268,15 +354,15 @@ public class GraphManager {
             // Nothing will be raised since there is no null value
         }
     }
-    
+
     /**
      * Method to check if a selector has already been added to the graph
-     * 
+     *
      * @param selectorsSaved : ArrayList of selector already added
      * @param programSelector : selector to check
      * @return true if programSelector already added
      */
-     private boolean isSelectorAlreadySaved(ArrayList<NodeSelect> selectorsSaved, NodeSelect programSelector) {
+    private boolean isSelectorAlreadySaved(ArrayList<NodeSelect> selectorsSaved, NodeSelect programSelector) {
         for (NodeSelect selSaved : selectorsSaved) {
             try {
                 JSONArray pTypeDevice = (JSONArray) programSelector.getJSONDescription().get("what");
@@ -295,35 +381,38 @@ public class GraphManager {
         return false;
     }
 
-     /**
-      * Method to add the selector presented in a program
-      * 
-      * @param pid : Program Id in which we search the selectors
-      * @param ref : ReferenceTable of the program to get the selectors
-      * @param selectorsSaved
-      * @param idSelector
-      * @return 
-      */
+    /**
+     * Method to add the selector presented in a program
+     *
+     * @param pid : Program Id in which we search the selectors
+     * @param ref : ReferenceTable of the program to get the selectors
+     * @param selectorsSaved
+     * @param idSelector
+     * @return
+     */
     private boolean addSelector(String pid, ReferenceTable ref, ArrayList<NodeSelect> selectorsSaved, int idSelector) {
         boolean ret = false;
         String typeDevices = "";
-        ArrayList<NodeSelect> selectors = ref.getSelectors();
+        ArrayList<SelectReferences> selectors = ref.getSelectors();
         // For each selector present in the program...
-        for (NodeSelect selector : selectors) {
-         
-            HashMap<String, ArrayList<String>> elements = (HashMap<String, ArrayList<String>>) selector.getPlaceDeviceSelector();
-
+        for (SelectReferences selector : selectors) {
+            HashMap<String, ArrayList<String>> elements = (HashMap<String, ArrayList<String>>) selector.getNodeSelect().getPlaceDeviceSelector();
             ArrayList<String> placesSelector = elements.get("placeSelector");
-            String placeId = "";
+
+            // Boolean to know if a selector has already been created
+            boolean isSelectorAlreadySaved = isSelectorAlreadySaved(selectorsSaved, selector.getNodeSelect());
+
+            // If there is no place, it is by default "everywhere"
+            String placeId = "everywhere";
             // Get the id of the selector's place
             if (placesSelector.size() > 0) {
-               placeId =  placesSelector.get(0);
+                placeId = placesSelector.get(0);
             }
-                     
+
             // Get the devices of the selector and link them to the selector
             ArrayList<String> devicesSelector = elements.get("deviceSelector");
             for (String deviceId : devicesSelector) {
-                // Save the type of the devices once
+                // Save the type of the devices once (because they have all the same type, so that avoid to make multiple call to the interpreter)
                 if (typeDevices.equals("")) {
                     try {
                         typeDevices = interpreter.getContext().getDevice(deviceId).getString(("type"));
@@ -331,25 +420,28 @@ public class GraphManager {
                         java.util.logging.Logger.getLogger(GraphManager.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-                addLink(DENOTES_LINKS, "selector-" + typeDevices + "-" + placeId, deviceId);
+                if (!isSelectorAlreadySaved) {
+                    // Add the link "denotes" if the selector isn't already created or we will have more than one link
+                    addLink(DENOTES_LINKS, "selector-" + typeDevices + "-" + placeId, deviceId);
+                }
             }
-            
-            // Add the location link
-            addLink(LOCATED_LINK, "selector-" + typeDevices + "-" + placeId, placeId);
-            // Add the reference
-            addLink(REFERENCE_LINK, pid, "selector-" + typeDevices + "-" + placeId);
-            
-            if (!typeDevices.equals("")){      
+
+            // Add the reference : Program - Selector
+            addLink(REFERENCE_LINK, pid, "selector-" + typeDevices + "-" + placeId, selector.getReferencesData());
+
+            if (!typeDevices.equals("")) {
                 // If the selector hasn't been add to the graph, create the entity
-                if (!isSelectorAlreadySaved(selectorsSaved, selector)) {
+                if (!isSelectorAlreadySaved) {
                     // Add selector : name = type devices selected and add type = selector
                     HashMap<String, String> optArg = new HashMap<String, String>();
                     optArg.put("type", "selector");
                     // id : selector - Type - Place, to be able to link different program to the same selector
                     addNode(SELECTOR_ENTITY, "selector-" + typeDevices + "-" + placeId, typeDevices, optArg);
+                    // Add the location link : Location - Selector. Add one time
+                    addLink(LOCATED_LINK, "selector-" + typeDevices + "-" + placeId, placeId);
                 }
                 // add the selector, to the list of selector added
-                selectorsSaved.add(selector);
+                selectorsSaved.add(selector.getNodeSelect());
                 typeDevices = "";
                 ret = true;
             }

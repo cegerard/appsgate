@@ -110,6 +110,17 @@ define([
          * @return false if the typed name already exists, true otherwise
          */
         checkPlace: function() {
+            // Check the length of the name
+            if ($("#add-place-modal input").val().length > App.MAX_NAME_LENGTH ) {
+                $("#add-place-modal .text-danger")
+                        .text($.i18n.t("modal.name-too-long"))
+                        .removeClass("hide");
+                $("#add-place-modal .valid-button").addClass("disabled");
+                $("#add-place-modal .valid-button").addClass("valid-disabled");
+
+                return false;
+            }
+
             // name is empty
             if ($("#add-place-modal input").val() === "") {
                 $("#add-place-modal .text-danger")

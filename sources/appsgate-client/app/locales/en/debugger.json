@@ -14,6 +14,8 @@
     "colorlight_plural": "$t(translation:devices.lamp.name.plural)",
     "illumination": "$t(translation:devices.illumination.name.singular)",
     "illumination_plural": "$t(translation:devices.illumination.name.plural)",
+    "domicube": "$t(translation:devices.domicube.name.singular)",
+    "domicube_plural": "$t(translation:devices.domicube.name.plural)",
     "program": "Program",
     "program_plural": "Programs",
     "others": "Other",

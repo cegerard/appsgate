@@ -1,8 +1,9 @@
 define([
   "app",
   "models/device/device",
-  "text!templates/program/nodes/clockEventNode.html"
-], function(App, Device, EventTemplate) {
+  "text!templates/program/nodes/clockEventNode.html",
+  "text!templates/program/nodes/clockPropertyNode.html"
+], function(App, Device, EventTemplate, ClockPropertyTemplate) {
 
   var CoreClock = {};
 
@@ -87,7 +88,8 @@ define([
         this.updateClockDisplay();
       }
     },
-    /**
+
+  /**
      * Updates clock display values from internal moment
      */
     updateClockDisplay: function() {
@@ -142,7 +144,62 @@ define([
       clearInterval(this.intervalLocalClockValue);
       clearInterval(this.intervalClockValueLocal);
     },
+
+    getProperties: function() {
+      return ["checkCurrentTimeOfDay"];
+    },
+    getKeyboardForProperty: function(property) {
+      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
+      var v ={
+        "type": "property",
+        "iid": "X",
+        "target": {
+          "iid": "X",
+          'type': 'device',
+          'value': this.get("id"),
+          "deviceType": this.get("type")
+        },
+        "args": []
+      };
+
+      switch (property) {
+        case "checkCurrentTimeOfDay":
+          $(btn).append("<span>" + $.i18n.t('devices.clock.keyboard.checkCurrentTimeOfDay', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.clock.keyboard.before') + "</span>",
+            myVar2: "<span class='highlight-placeholder'>" + $.i18n.t('devices.clock.keyboard.after') + "</span>"
+          }));
+
+          v.methodName = "checkCurrentTimeOfDay";
+          v.phrase = "devices.clock.language.checkCurrentTimeOfDay.between";
+            v.args = [{
+            "type": "long",
+            "value": 11*60*60*1000
+          }, {
+            "type": "long",
+            "value": 12*60*60*1000
+          }];
+          v.returnType = "boolean";
+
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        default:
+          console.error("unexpected device property found for clock: " + property);
+          btn = null;
+          break;
+      }
+      return btn;
+    },
     /**
+     * @returns event template for clock
+     */
+    getTemplateProperty: function() {
+      return _.template(ClockPropertyTemplate);
+    },
+
+
+
+
+      /**
      * return the list of available events
      */
     getEvents: function() {

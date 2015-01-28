@@ -30,6 +30,9 @@ define([
         "change .lamp-input-selector": "onLampInputSelector",
         "change .ard-input-value-selector": "onARDInputValueSelector",
         "change .hour-picker, .minute-picker": "onChangeClockValue",
+        "change .hour-before-picker, .minute-before-picker, .hour-after-picker, .minute-after-picker": "onChangeClockCheckingValue",
+        "change .clock-before-after-picker": "onChangeClockBeforeAfter",
+
         "click .valid-media": "onValidMediaButton",
         "keyup .programNameInput": "validEditName"
       },
@@ -153,6 +156,7 @@ define([
         appRouter.navigate("#programs/" + this.model.get("id"), {trigger: true});
       },
       onClickCancelEdit: function(e) {
+        this.refreshing = true;
         if(this.model.get("isNew") === "true"){
           this.model.destroy();
           appRouter.navigate("#programs", {trigger: true});
@@ -162,6 +166,7 @@ define([
           appRouter.navigate("#programs", {trigger: true});
           appRouter.navigate("#programs/" + this.model.get("id"), {trigger: true});
         }
+        this.refreshing = false;
       },
       /**
        * Method to handle event on a button on the keyboard
@@ -412,6 +417,75 @@ define([
         this.Mediator.setNodeAttribute(iid, "eventValue", devices.getCoreClock().getClockAlarm(hourValue, minuteValue));
 
         // clearing selection
+        this.resetSelection();
+      },
+      onChangeClockValue: function(e) {
+        e.stopPropagation();
+
+        var iid = $(e.currentTarget).attr("target-id");
+
+        var debugH = $("#clock-hour-" + iid);
+        var debugM = $("#clock-minute-" + iid);
+        var hourValue = $("#clock-hour-" + iid)[0].selectedOptions[0].value;
+        var minuteValue = $("#clock-minute-" + iid)[0].selectedOptions[0].value;
+
+        this.Mediator.setNodeAttribute(iid, "eventValue", devices.getCoreClock().getClockAlarm(hourValue, minuteValue));
+
+        // clearing selection
+        this.resetSelection();
+      },
+
+      onChangeClockCheckingValue: function(e) {
+        e.stopPropagation();
+
+        var iid = $(e.currentTarget).attr("target-id");
+
+        if($(e.currentTarget).attr("class") === "hour-before-picker" || $(e.currentTarget).attr("class") === "minute-before-picker") {
+
+          var hourValue = $("#clock-before-hour-" + iid)[0].selectedOptions[0].value;
+          var minuteValue = $("#clock-before-minute-" + iid)[0].selectedOptions[0].value;
+
+          var value = {"type": "long", "value": (hourValue*60*60*1000)+(minuteValue*60*1000)};
+          this.Mediator.setNodeArg(iid, 1, value);
+
+        } else if ($(e.currentTarget).attr("class") === "hour-after-picker" || $(e.currentTarget).attr("class") === "minute-after-picker") {
+
+          var hourValue = $("#clock-after-hour-" + iid)[0].selectedOptions[0].value;
+          var minuteValue = $("#clock-after-minute-" + iid)[0].selectedOptions[0].value;
+
+          var value = {"type": "long", "value": (hourValue*60*60*1000)+(minuteValue*60*1000)};
+          this.Mediator.setNodeArg(iid, 0, value);
+        }
+
+        if($("#clock-before-after-" + iid)[0].selectedOptions[0].value === "devices.clock.language.checkCurrentTimeOfDay.after"){
+          this.Mediator.setNodeArg(iid, 1, undef);
+        } else if($("#clock-before-after-" + iid)[0].selectedOptions[0].value === "devices.clock.language.checkCurrentTimeOfDay.before"){
+          this.Mediator.setNodeArg(iid, 0, undef);
+        }
+
+        // clearing selection
+        this.resetSelection();
+      },
+      onChangeClockBeforeAfter: function(e) {
+        e.stopPropagation();
+        var iid = $(e.currentTarget).attr("target-id");
+        var undef = {"type": "long", "value": -1};
+        this.Mediator.setNodeAttribute(iid, "phrase", $(e.currentTarget)[0].selectedOptions[0].value);
+        if($(e.currentTarget)[0].selectedOptions[0].value === "devices.clock.language.checkCurrentTimeOfDay.before") {
+          this.Mediator.setNodeArg(iid, 0, undef);
+          var hourValue = $("#clock-before-hour-" + iid)[0].selectedOptions[0].value;
+          var minuteValue = $("#clock-before-minute-" + iid)[0].selectedOptions[0].value;
+
+          var value = {"type": "long", "value": (hourValue*60*60*1000)+(minuteValue*60*1000)};
+          this.Mediator.setNodeArg(iid, 1, value);
+        } else if ($(e.currentTarget)[0].selectedOptions[0].value === "devices.clock.language.checkCurrentTimeOfDay.after"){
+          var hourValue = $("#clock-after-hour-" + iid)[0].selectedOptions[0].value;
+          var minuteValue = $("#clock-after-minute-" + iid)[0].selectedOptions[0].value;
+
+          var value = {"type": "long", "value": (hourValue*60*60*1000)+(minuteValue*60*1000)};
+          this.Mediator.setNodeArg(iid, 0, value);
+          this.Mediator.setNodeArg(iid, 1, undef);
+        }
         this.resetSelection();
       },
       resetSelection: function() {

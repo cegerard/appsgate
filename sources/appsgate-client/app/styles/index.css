@@ -203,8 +203,8 @@ body {
   vertical-align: middle;
 }
 .btn-less-large {
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 .row {
   margin-right: 0px;
@@ -265,6 +265,12 @@ body {
   color: black;
   text-decoration: none;
   cursor: pointer;
+}
+#settings-modal>.modal-dialog {
+	position: fixed;
+	bottom: 0px;
+	left: 50px;
+	width: 520px;
 }
 .fundamental-universe {
   position: relative;
@@ -1000,20 +1006,20 @@ fieldset[disabled] .btn {
     opacity: 1;
 }
 .node-2 {
-    opacity: 0.5;
+    opacity: 1;
 }
 .node-more {
-    opacity: 0.2;
+    opacity: 0.25;
 }
 .node-more.nodeOver {
-    opacity: 0.5;
+    opacity: 1;
 }
 .node-more.neighborNodeOver {
-    opacity: 0.5;
+    opacity: 1;
 }
 /* MouseOver */
-#graph g>.nodeGroup.nodeOver>circle {
-    fill: #cfff30;
+#graph g>.nodeGroup.nodeOver>.circleNode {
+    fill: #4ac6dd;
     stroke-width: 2px;
 }
 #graph g>.nodeGroup.nodeOver>text {
@@ -1023,8 +1029,8 @@ fieldset[disabled] .btn {
     cursor: pointer;
 }
 /* MouseOver Neighbors */
-#graph g>.nodeGroup.neighborNodeOver>circle {
-    fill: #7fb725;
+#graph g>.nodeGroup.neighborNodeOver>.circleNode {
+    fill: #4ac6dd;
     stroke-width: 2px;
 /*    stroke-dasharray: 7, 7;*/
 }
@@ -1032,7 +1038,7 @@ fieldset[disabled] .btn {
     font-weight: bold;
 }
 /* Fixed nodes */
-#graph g>.nodeGroup.fixedNode>circle {
+#graph g>.nodeGroup.fixedNode>.circleNode {
     stroke-width: 2px;
     stroke-dasharray: 3;
 }
@@ -1041,13 +1047,35 @@ fieldset[disabled] .btn {
     font-weight: bold;
     font-size: 100%;
 }
+#graph g>circle.circleNode.program-multiple-writing-reference {
+	stroke: red;
+	stroke-width: 2px;
+}
+/* Filters */
 .checkbox-container {
     display: block;
     margin-left: 10px;
 }
 
-#filterContainerNodes>input, #filterContainerNodes>div>label>input, #filterContainerLinks>input, #filterContainerLinks>div>label>input {
+#filterContainerNodes>input, #filterContainerNodes>div>label>input, #filterContainerLinks>input, #filterContainerLinks>div>label>input, #filterContainerLinks>div>label>div>label>input {
 	margin-right: 5px;
+}
+
+.filter-svg-arrow {
+	width: 20px;
+	height: 10px;
+	margin-left: 15px;
+}
+
+.filter-arrow {
+	stroke-width: 2px;
+	stroke: black;
+	margin-left: 15px;
+}
+
+.reference-filter {
+	stroke: red;
+	fill: red;
 }
 
 #graph g>circle.program-invalid, .program-invalid {
@@ -1062,15 +1090,45 @@ fieldset[disabled] .btn {
 	fill: orange;
 }
 
+#graph g>.circle-information {
+	fill: black;
+	stroke: transparent;
+	stroke-width: 10px;
+	cursor: pointer;
+}
+
+.shape-program {
+	stroke: black;
+}
+
+#graph g>.circle-device-state-true, .circle-device-state-true {
+	fill: #ffff00;
+}
+
+#graph g>.circle-device-state-false, .circle-device-state-false {
+	fill: #777;
+}
+
+#graph-caption {
+	margin-top: 20px;
+}
+
+#graph-action {
+	margin-bottom: 0px;
+}
+
 .caption-label {
 	vertical-align: super;
 }
 
-.form-program {
-	stroke: black;
-	fill: white
+.help-div {
+	font-style : normal;
+	text-align: left;
+	font-size: 14px;
 }
 
-.help-div {
-	font-style : italic;
-}
+.help-div-title {
+	font-size: 18px;
+	font-style: normal;
+	font-weight: bold;
+} 

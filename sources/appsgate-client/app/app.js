@@ -21,6 +21,8 @@ define(function(require, exports, module) {
 
   // Initialization of the application
   app.initialize = function() {
+    
+    this.MAX_NAME_LENGTH = 30;
 
     // Initialize the application-wide event dispatcher
     window.dispatcher = _.clone(Backbone.Events);

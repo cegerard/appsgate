@@ -431,8 +431,6 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 					}else if(colorMode.contentEquals("unknown")) {
 						state.setColorMode(PHLightColorMode.COLORMODE_UNKNOWN);
 					}
-				}else{
-					return false;
 				}
 			}catch(JSONException ex) {
 				ex.printStackTrace();

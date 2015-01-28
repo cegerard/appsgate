@@ -286,6 +286,8 @@ define([
                     if (deviceOfNode != undefined) {
                         param.node.rightOperand.scale = deviceOfNode.getScale();
                         param.node.rightOperand.type = param.node.leftOperand.returnType;
+                        if(param.node.leftOperand.returnType !== 'undefined' && param.node.leftOperand.returnType == "boolean")
+                            param.node.rightOperand.value="true";
                         param.node.rightOperand.unit = (param.node.leftOperand.unit) ? param.node.leftOperand.unit: "";
                     }
                 }
@@ -294,6 +296,8 @@ define([
                     if (serviceOfNode != undefined) {
                         param.node.rightOperand.scale = serviceOfNode.getScale();
                         param.node.rightOperand.type = param.node.leftOperand.returnType;
+                        if(param.node.leftOperand.returnType !== 'undefined' && param.node.leftOperand.returnType == "boolean")
+                            param.node.rightOperand.value="true";
                         param.node.rightOperand.unit = (param.node.leftOperand.unit) ? param.node.leftOperand.unit: "";
                     }
                 }
@@ -301,9 +305,12 @@ define([
 
             var rightOp = this.buildInputFromNode(param.node.rightOperand, currentNode);
             // enabling sup/ing comparator if returnType not a scale
-            param.node.comparatorEnabled = (param.node.leftOperand.returnType !== "scale");
-
-            return leftOp + this.tplComparatorNode(param) + rightOp;
+            param.node.comparatorEnabled = (param.node.leftOperand.returnType !== "scale" && param.node.leftOperand.returnType !== "boolean");
+            if(param.node.comparator === '==' && param.node.rightOperand.type === 'boolean' && param.node.rightOperand.value === 'true') {
+                return leftOp;
+            } else {
+                return leftOp + this.tplComparatorNode(param) + rightOp;
+            }
         },
 
         getDeviceName: function(id) {

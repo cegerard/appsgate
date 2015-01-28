@@ -22,11 +22,15 @@ import org.ops4j.pax.exam.spi.reactors.PerMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.imag.adele.apam.Component;
+import fr.imag.adele.apam.Instance;
 import appsgate.lig.clock.sensor.spec.CoreClockSpec;
 import appsgate.lig.google.scheduler.GoogleScheduler;
 import appsgate.lig.google.services.GoogleAdapter;
 import appsgate.lig.google.services.GoogleEvent;
 import appsgate.lig.mail.Mail;
+import appsgate.lig.mail.adapter.MailAdapter;
+import appsgate.lig.test.pax.helpers.ApAMHelper;
 import appsgate.lig.test.pax.helpers.PaxedDistribution;
 import appsgate.lig.weather.spec.WeatherAdapterSpec;
 import appsgate.lig.yahoo.weather.YahooWeather;
@@ -281,14 +285,24 @@ public class TestWebServicesAppsgate extends PaxedDistribution {
 		TestCoreAppsgate.testEmptyAppsgate();
 		logger.debug("This test is for the Configurable Clock");
 		Mail service = (Mail) initGoogleMail();
+		Assert.assertNotNull("Mail service should have been instanciated correctly ", service);
+		//System.out.println("mails: "+service.getMails());
 		
-		// TODO : Test the mail with a valid account (a simple send/receive a mail)
 	}
 	
 	
 	public static Object initGoogleMail() {
-		return PaxedDistribution.testApAMComponent(true, resolveFrom.IMPLEM,"CoreMailSpec",
-				"MailService", null);
+		
+		MailAdapter adapter = (MailAdapter)PaxedDistribution.testApAMComponent(true, resolveFrom.IMPLEM,null,
+				"MailAdapter", null);
+		if (adapter==null) return null;
+		adapter.loadAndCreateMail("conf/mail.cfg");
+		Instance inst = ApAMHelper.waitForInstanceByImplemName(null,
+				"MailService", 3000);
+		if(inst!= null)
+			return inst.getServiceObject();
+		return null;
+		
 	}
 
 	@Configuration

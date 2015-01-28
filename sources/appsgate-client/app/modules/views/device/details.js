@@ -9,6 +9,7 @@ define([
     "text!templates/devices/details/switch.html",
     "text!templates/devices/details/actuator.html",
     "text!templates/devices/details/temperature.html",
+    "text!templates/devices/details/co2.html",
     "text!templates/devices/details/plug.html",
     "text!templates/devices/details/phillipsHue.html",
     "text!templates/devices/details/domicube.html",
@@ -17,7 +18,7 @@ define([
     "colorwheel"
 
 ], function(App, Raphael, deviceDetailsTemplate, contactDetailTemplate, illuminationDetailTemplate, keyCardDetailTemplate,
-        ARDDetailTemplate, switchDetailTemplate, actuatorDetailTemplate, temperatureDetailTemplate,
+        ARDDetailTemplate, switchDetailTemplate, actuatorDetailTemplate, temperatureDetailTemplate,co2DetailTemplate,
         plugDetailTemplate, phillipsHueDetailTemplate, domicubeDetailTemplate, coreClockDetailTemplate,coreTVDetailTemplate) {
 
     var DeviceDetailsView = {};
@@ -31,6 +32,7 @@ define([
         tplSwitch: _.template(switchDetailTemplate),
         tplActuator: _.template(actuatorDetailTemplate),
         tplTemperature: _.template(temperatureDetailTemplate),
+        tplCo2: _.template(co2DetailTemplate),
         tplPlug: _.template(plugDetailTemplate),
         tplPhillipsHue: _.template(phillipsHueDetailTemplate),
         tplDomiCube: _.template(domicubeDetailTemplate),
@@ -290,6 +292,14 @@ define([
                 this.model.set("reset",false);
             }
 
+            // Check whether the name is too long
+            if ($("#edit-device-modal input").val().length > App.MAX_NAME_LENGTH ) {
+                $("#edit-device-modal .text-danger").removeClass("hide");
+                $("#edit-device-modal .text-danger").text($.i18n.t("modal.name-too-long"));
+                $("#edit-device-modal .valid-button").addClass("disabled");
+                $("#edit-device-modal .valid-button").addClass("valid-disabled");
+                return false;
+            }
             // name already exists
             if (devices.where({name: $("#edit-device-modal input").val()}).length > 0) {
                 if (devices.where({name: $("#edit-device-modal input").val()})[0].get("id") !== this.model.get("id")) {
@@ -419,6 +429,17 @@ define([
                             sensorType: $.i18n.t("devices.temperature.name.singular"),
                             places: places,
                             deviceDetails: this.tplTemperature
+                        }));
+                        break;
+
+                    case 32: // CO2 sensor
+                        this.$el.html(this.template({
+                            device: this.model,
+                            sensorImg: ["app/img/sensors/enoceanNanoSenseE4000.jpg"],
+                            sensorCaption: [$.i18n.t("devices.co2.caption.intern")],
+                            sensorType: $.i18n.t("devices.co2.name.singular"),
+                            places: places,
+                            deviceDetails: this.tplCo2
                         }));
                         break;
 

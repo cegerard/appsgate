@@ -43,6 +43,17 @@ public interface CoreClockSpec {
      */
     void setCurrentTimeInMillis(long millis);
     
+    /**
+     * Check if the current time is between isAfter and isBefore
+     * @param isAfter
+     *            the time as UTC milliseconds from the beginning of the day
+     *            check if currentTime is AFTER, if -1 it won't be checked
+     * @param isBefore
+     *            the time as UTC milliseconds from the beginning of the day
+     *            check if currentTime is BEFORE, if -1 it won't be checked
+     * @return true only if current time is both AFTER isAfter and BEFORE isBefore       
+     */
+    boolean checkCurrentTimeOfDay(long isAfter, long isBefore);
     
     /**
      * Sets a date in the future, events between old time and the new one (currentTime + millis) WILL be thrown. 
