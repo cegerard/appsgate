@@ -4,6 +4,7 @@ package appsgate.lig.upnp.media.player.adapter;
 
 import appsgate.lig.core.object.messages.CoreNotificationMsg;
 import appsgate.lig.core.object.messages.NotificationMsg;
+import appsgate.lig.tts.CoreTTSService;
 import appsgate.lig.upnp.adapter.event.UPnPEvent;
 import appsgate.lig.upnp.media.AVTransport;
 import appsgate.lig.upnp.media.ConnectionManager;
@@ -37,6 +38,9 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
 public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlayer, CoreObjectSpec {	
+	
+	
+	CoreTTSService ttsService;
 
 	/**
 	 * The associated UPnP device

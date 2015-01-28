@@ -30,7 +30,7 @@ public class YakitomeCommand {
 	@Requires
 	Apam apam;
 
-	@ServiceProperty(name = "osgi.command.scope", value = "TTS commands")
+	@ServiceProperty(name = "osgi.command.scope", value = "tts")
 	String universalShell_groupName;
 
 	@ServiceProperty(name = "osgi.command.function", value = "{}")

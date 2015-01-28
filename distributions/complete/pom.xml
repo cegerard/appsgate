@@ -433,6 +433,11 @@
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>appsgate.components</groupId>
+                                    <artifactId>CoreTTSSpec</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>                                
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
                                     <artifactId>WeatherAdapterSpec</artifactId>
                                     <version>${project.version}</version>
                                 </artifactItem>
@@ -499,7 +504,13 @@
                                     <groupId>appsgate.components</groupId>
                                     <artifactId>ARDBadgeDoorImpl</artifactId>
                                     <version>${project.version}</version>
-                                </artifactItem>       
+                                </artifactItem>   
+                                
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
+                                    <artifactId>YakitomeTTS</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>                                  
                                 
                             </artifactItems>
                             <outputDirectory>${basedir}/load</outputDirectory>

@@ -39,7 +39,8 @@
 
             <start implementation="WeatherServices" name="WeatherAdapter"></start>
 
-
+            <start implementation="YakitomeServices" name="YakitomeServicesInst"></start>
+            
         </contentMngt>
 
     </composite>
@@ -141,6 +142,10 @@
     </composite>
 
     <composite name="AppsGateDomiCubeServices" singleton="true">
+    </composite>
+    
+    <composite name="YakitomeServices" singleton="true"
+               main="YakitomeAdapter">
     </composite>
 
 </apam>

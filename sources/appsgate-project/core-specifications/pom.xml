@@ -37,6 +37,7 @@
 		<module>CoreARDBadgeDoorSpec</module>
 		<module>CoreMailSpec</module>
 		<module>CoreTVSpec</module>
+        <module>CoreTTSSpec</module>		
 	</modules>
 
 </project>

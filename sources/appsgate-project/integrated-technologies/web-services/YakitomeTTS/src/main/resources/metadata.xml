@@ -5,10 +5,7 @@
 	<implementation name="YakitomeAdapter" classname="appsgate.lig.tts.yakitome.impl.YakitomeAdapter">
 	    <callback onInit="start" onRemove="stopIt"/>
 	</implementation>
-	
-	<specification name="CoreTTSService" 
-	    interfaces="appsgate.lig.tts.CoreTTSService, appsgate.lig.core.object.spec.CoreObjectSpec">
-    </specification>
+
     
 	<implementation name="TTSServiceImpl" specification="CoreTTSService"
 	    classname="appsgate.lig.tts.yakitome.impl.TTSServiceImpl">
