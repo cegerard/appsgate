@@ -11,7 +11,7 @@ define([
       initialize: function() {
         var self = this;
         DomiCubeView.__super__.initialize.apply(this, arguments);
-
+        this.listenTo(this.model, "change", this.render);
         $.extend(self.__proto__.events, DomiCubeView.__super__.events);
       },
       autoupdate: function() {
