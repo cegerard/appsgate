@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.tts.CoreTTSService;
+import appsgate.lig.tts.yakitome.AdapterListener;
 import appsgate.lig.tts.yakitome.SpeechTextItem;
 import appsgate.lig.tts.yakitome.TTSItemsListener;
 import appsgate.lig.tts.yakitome.YakitomeAPI;
@@ -30,14 +31,17 @@ public class TTSServiceImpl implements TTSItemsListener, CoreTTSService, CoreObj
 	YakitomeAPI apiClient;
 	
 	int coreObjectStatus = 0;
+	AdapterListener adapterListener;
+	
 	
 	
 	/**
 	 * This method should be accessible only by the adapter
 	 * @param apiClient
 	 */
-	public void configure(YakitomeAPI apiClient) {
+	public void configure(YakitomeAPI apiClient, AdapterListener adapterListener) {
 		this.apiClient = apiClient;
+		this.adapterListener = adapterListener;
 		testStatus();
 	}
 	
@@ -45,7 +49,12 @@ public class TTSServiceImpl implements TTSItemsListener, CoreTTSService, CoreObj
 		if(apiClient!= null && apiClient.testService()) {
 			coreObjectStatus = 2;
 		} else {
+			
 			coreObjectStatus = 0;
+			if(adapterListener != null) {
+				adapterListener.serviceUnavailable();
+			}
+			
 		}
 		
 	}

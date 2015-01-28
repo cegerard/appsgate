@@ -3,6 +3,7 @@
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
                               
 	<implementation name="YakitomeAdapter" classname="appsgate.lig.tts.yakitome.impl.YakitomeAdapter">
+	    <callback onInit="start" onRemove="stopIt"/>
 	</implementation>
 	
 	<specification name="CoreTTSService" 

@@ -43,6 +43,12 @@ public interface YakitomeAPI {
 	 *            (or the default one)
 	 */
 	public void configure(String api_key_value, String voice, int speed);
+	
+	/**
+	 * Get an unique code (that may be used as identif
+	 * @return
+	 */
+	public String getConfigurationHashkey();
 
 	/**
 	 * Check if the voice name is existing and freely available

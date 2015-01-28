@@ -35,7 +35,7 @@ public class YakitomeAdapterTest {
 		api.configure("5otuvhvboadAgcLPwy69P", "Juliette", -1);
 
 		testing = new TTSServiceImpl();
-		testing.configure(api);
+		testing.configure(api,null);
 
 	}
 
@@ -88,7 +88,6 @@ public class YakitomeAdapterTest {
 		JSONObject response = testing.getSpeechTextStatus(book_id);	
 		Assert.assertTrue("A book id shoud be provided in the response ", response.has(YakitomeAPIClient.BOOK_ID_RESPONSE_KEY));
 		Assert.assertEquals("book_id should be equals to 0 (not existing)",0, response.getInt(YakitomeAPIClient.BOOK_ID_RESPONSE_KEY));		
-
 
 	}
 	

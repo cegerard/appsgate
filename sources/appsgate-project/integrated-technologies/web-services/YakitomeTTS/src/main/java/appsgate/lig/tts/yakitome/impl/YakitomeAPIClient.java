@@ -400,4 +400,17 @@ public class YakitomeAPIClient implements YakitomeAPI {
 		return response;
 	}
 
+	@Override
+	public String getConfigurationHashkey() {
+		logger.trace("getConfigurationHashkey()");
+		if(api_key_value == null) {
+			logger.trace("getConfigurationHashkey(), no api key defined, returning null");
+			return null;
+		}
+		String hash = this.getClass().getName()+api_key_value;
+		hash= String.valueOf(hash.hashCode());
+		logger.trace("getConfigurationHashkey(), returning "+hash);
+		return hash;
+	}
+
 }
