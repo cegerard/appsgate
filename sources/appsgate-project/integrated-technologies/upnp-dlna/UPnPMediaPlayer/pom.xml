@@ -59,7 +59,13 @@
 			<artifactId>CoreMediaPlayerSpec</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
+		
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>CoreTTSSpec</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.gogo.command</artifactId>

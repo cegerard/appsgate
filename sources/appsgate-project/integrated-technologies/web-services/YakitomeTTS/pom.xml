@@ -27,8 +27,14 @@
             <groupId>appsgate.components</groupId>
             <artifactId>CoreObjectSpec</artifactId>
             <version>${project.version}</version>
-        </dependency>        
-        
+        </dependency>  
+              
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>CoreTTSSpec</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+                 
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>

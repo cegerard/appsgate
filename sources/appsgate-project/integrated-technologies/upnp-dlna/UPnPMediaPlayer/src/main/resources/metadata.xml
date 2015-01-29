@@ -1,47 +1,53 @@
-<apam xmlns="fr.imag.adele.apam" xmlns:ipojo="org.apache.felix.ipojo" 
+<apam xmlns="fr.imag.adele.apam" xmlns:ipojo="org.apache.felix.ipojo"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="fr.imag.adele.apam https://raw.github.com/AdeleResearchGroup/ApAM/master/runtime/core/src/main/resources/xsd/ApamCore.xsd">
 
-<implementation 
-	name="MediaPlayer"
-	classname="appsgate.lig.upnp.media.player.adapter.MediaPlayerAdapter"
-	instantiable="false"
-    specification="CoreMediaPlayerSpec"
-    push="stateChanged">
+	<implementation name="MediaPlayer"
+		classname="appsgate.lig.upnp.media.player.adapter.MediaPlayerAdapter"
+		instantiable="false" specification="CoreMediaPlayerSpec" push="stateChanged">
 
-	<callback onInit="initialize" />
+		<callback onInit="initialize" />
 
-    <relation implementation="RenderingControlProxyImpl" resolve="exist" fail="wait" field="renderingControl">
-        <message push="onUPnPEvent"/>
-        <constraints>
-            <instance filter="(UPnP.device.UDN=$.$UPnP\.device\.UDN)"/>
-        </constraints>
-    </relation>
-    <relation implementation="ConnectionManagerProxyImpl" resolve="exist" fail="wait"  field="connectionManager">
-        <message push="onUPnPEvent"/>
-        <constraints>
-            <instance filter="(UPnP.device.UDN=$.$UPnP\.device\.UDN)"/>
-        </constraints>
-    </relation>
-    <relation implementation="AVTransportProxyImpl" resolve="exist" fail="wait" field="aVTransport">
-        <message push="onUPnPEvent"/>
-        <constraints>
-            <instance filter="(UPnP.device.UDN=$.$UPnP\.device\.UDN)"/>
-        </constraints>
-    </relation>
+		<relation specification="CoreTTSService" resolve="exist"
+			field="ttsService">
+		</relation>
 
-	<definition name="UPnP.device.UDN" type="string"/>
-	<definition name="UPnP.device.friendlyName" type="string" field="deviceName"/>
-	
-</implementation>
+		<relation implementation="RenderingControlProxyImpl" resolve="exist"
+			fail="wait" field="renderingControl">
+			<message push="onUPnPEvent" />
+			<constraints>
+				<instance filter="(UPnP.device.UDN=$.$UPnP\.device\.UDN)" />
+			</constraints>
+		</relation>
+		<relation implementation="ConnectionManagerProxyImpl"
+			resolve="exist" fail="wait" field="connectionManager">
+			<message push="onUPnPEvent" />
+			<constraints>
+				<instance filter="(UPnP.device.UDN=$.$UPnP\.device\.UDN)" />
+			</constraints>
+		</relation>
+		<relation implementation="AVTransportProxyImpl" resolve="exist"
+			fail="wait" field="aVTransport">
+			<message push="onUPnPEvent" />
+			<constraints>
+				<instance filter="(UPnP.device.UDN=$.$UPnP\.device\.UDN)" />
+			</constraints>
+		</relation>
 
-<implementation 
-	name="MediaPlayerFactory"
-	classname="appsgate.lig.upnp.media.player.adapter.MediaPlayerFactory">
-	<relation implementation= "RenderingControlProxyImpl" multiple="true" creation="eager" resolve="exist" added="mediaRendererBound" removed="mediaRendererUnbound"  />
-</implementation>
+		<definition name="UPnP.device.UDN" type="string" />
+		<definition name="UPnP.device.friendlyName" type="string"
+			field="deviceName" />
 
-<!-- <apam-instance name="Global-MediaPlayerFactory" implementation="MediaPlayerFactory"> -->
-<!-- </apam-instance> -->
+	</implementation>
+
+	<implementation name="MediaPlayerFactory"
+		classname="appsgate.lig.upnp.media.player.adapter.MediaPlayerFactory">
+		<relation implementation="RenderingControlProxyImpl"
+			multiple="true" creation="eager" resolve="exist" added="mediaRendererBound"
+			removed="mediaRendererUnbound" />
+	</implementation>
+
+	<!-- <apam-instance name="Global-MediaPlayerFactory" implementation="MediaPlayerFactory"> -->
+	<!-- </apam-instance> -->
 
 </apam>
