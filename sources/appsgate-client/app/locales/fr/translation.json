@@ -348,6 +348,7 @@
         "play": "Lancer",
         "resume": "Reprendre",
         "stop": "Arrêter",
+        "audioNotification": "Lire le message",
         "volume": "Volume"
       },
       "name": {
@@ -370,6 +371,7 @@
         "pause-event": "on met en pause la lecture sur le lecteur __myVar__",
         "pause-media-action": "Mettre en pause le media",
         "play-media-action": "Jouer",
+        "audioNotification-action": "Lire le message",
         "resume-media-action": "Reprendre la lecture",
         "set-volume-media-action": "Mettre le volume de",
         "stop-media-action": "Stopper"
@@ -381,6 +383,7 @@
         "pause-event": "on met en pause la lecture sur le __myVar__",
         "pause-action": "Mettre en pause la lecture sur le __myVar__",
         "play-action": "Lancer la lecture du __myVar__ sur le __myVar2__",
+        "audioNotification-action": "Lire le message __myVar__ sur  __myVar2__",
         "resume-action": "Reprendre la lecture sur le __myVar__",
         "set-volume-action": "Mettre le volume du __myVar__ à __myVar2__",
         "stop-action": "Stopper la lecture sur le __myVar__",

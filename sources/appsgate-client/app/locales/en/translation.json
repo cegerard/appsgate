@@ -348,6 +348,7 @@
         "play": "Start",
         "resume": "Resume",
         "stop": "Stop",
+        "audioNotification": "Play message",
         "volume": "Volume"
       },
       "name": {
@@ -368,6 +369,7 @@
         "play-event": "__myVar__ has started/resumed playing",
         "stop-event": "__myVar__ has stopped",
         "pause-event": "__myVar__ is paused",
+        "audioNotification-action": "Play message",
         "pause-media-action": "Pause the media",
         "play-media-action": "Play",
         "resume-media-action": "Resume play",
@@ -376,6 +378,7 @@
       },
       "keyboard": {
         "volume-event": "The volume on a __myVar__ changes to __myVar2__",
+        "audioNotification-action": "Play message __myVar__ on  __myVar2__",
         "play-event": "A __myVar__ has started/resumed playing",
         "stop-event": "A __myVar__ has stopped",
         "pause-event": "A __myVar__ is paused",

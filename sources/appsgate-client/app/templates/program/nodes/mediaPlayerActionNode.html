@@ -27,6 +27,11 @@
     </button>
     <% } %>
 
+    <% if (node.methodName == "audioNotification" ) { %>
+        <input type="text" target-id="<%= node.iid %>" value="<%= node.args[0].value %>" size="40" class="arg-input" target-index="0"/>
+        <span data-i18n='devices.mediaplayer.keyboard.complement'    />
+    <% } %>
+
     <% if (node.methodName == "play" ) { %>
     <span data-i18n='devices.mediaplayer.keyboard.complement' />
     <% } %>

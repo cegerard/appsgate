@@ -14,7 +14,8 @@ define([
         "click button.btn-media-pause": "onPauseMedia",
         "click button.btn-media-stop": "onStopMedia",
         "click button.btn-media-volume": "onSetVolumeMedia",
-        "click button.btn-media-browse": "onBrowseMedia"
+        "click button.btn-media-browse": "onBrowseMedia",
+        "click button.btn-media-audioNotification": "onAudioNotification"
       },
       initialize: function() {
         var self = this;
@@ -91,6 +92,13 @@ define([
       onBrowseMedia: function(e) {
 
         this.model.onBrowseMedia($("#selectedMedia"));
+      },
+      /**
+       * Called when click on AudioNotification
+       */
+      onAudioNotification: function() {
+
+        this.model.onAudioNotification($("#selectedMessage").val());
       },
 
       /**

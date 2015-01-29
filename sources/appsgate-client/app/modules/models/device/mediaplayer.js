@@ -94,7 +94,7 @@ define([
      *return the list of available actions
      */
     getActions: function() {
-      return ["play", "pause", "resume", "stop", "setVolume"];
+      return ["play", "pause", "resume", "stop", "setVolume", "audioNotification"];
     },
     /**
      * return the keyboard code for a given action
@@ -154,6 +154,19 @@ define([
 
           $(btn).attr("json", JSON.stringify(v));
           break;
+        case "audioNotification":
+          $(btn).append("<span>" + $.i18n.t('devices.mediaplayer.keyboard.audioNotification-action', {
+            myVar: "<span class='highlight-placeholder'>message</span>",
+            myVar2: "<span class='highlight-placeholder'>" + $.i18n.t('devices.mediaplayer.keyboard.player') + "</span>"
+          }));
+          v.methodName = "audioNotification";
+          v.phrase = "devices.mediaplayer.language.audioNotification-action";
+          v.args = [{
+            "type": "String",
+            "value": "message"
+          }];
+          $(btn).attr("json", JSON.stringify(v));
+          break;
         default:
           console.error("unexpected action found for Media Player: " + act);
           btn = null;
@@ -205,6 +218,16 @@ define([
       this.remoteControl("setVolume", [{
         "type": "int",
         "value": volume
+      }], this.id);
+    },
+    /**
+     * Send a message to the backend to set the volume to a given level
+     */
+    onAudioNotification: function(message) {
+      console.log("onAudioNotification : ",message);
+      this.remoteControl("audioNotification", [{
+        "type": "String",
+        "value": message
       }], this.id);
     },
     /**
