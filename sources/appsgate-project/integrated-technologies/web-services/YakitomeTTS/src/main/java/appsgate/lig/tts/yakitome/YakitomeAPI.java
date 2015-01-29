@@ -65,15 +65,15 @@ public interface YakitomeAPI {
 
 	/**
 	 * This one does not throws service exception as error codes may be interesting
-	 * @param speechTextId
+	 * @param book_id
 	 * @return
 	 */
-	JSONObject getSpeechTextStatus(int speechTextId);;
+	JSONObject getSpeechTextStatus(int book_id);;
 
-	JSONObject getAudioFileURL(int speechTextId)
+	JSONObject getAudioFileURL(int book_id)
 			throws ServiceException;
 
-	JSONObject deleteSpeechText(int speechTextId)
+	JSONObject deleteSpeechText(int book_id)
 			throws ServiceException;
 	
 	JSONObject waitForTTS(int book_id);

@@ -88,8 +88,8 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 		for(int ttsId : ttsItems.keySet()) {
 			SpeechTextItem tmp = ttsItems.get(ttsId);
 			if(tmp!= null && encodedSentence.equals(tmp.getEncodedSentence())) {
-				logger.trace("getTTSItemMatchingSentence(...), found matching sentence, with id : "+tmp.getSpeechTextId());
-				return tmp.getSpeechTextId();
+				logger.trace("getTTSItemMatchingSentence(...), found matching sentence, with id : "+tmp.getBookId());
+				return tmp.getBookId();
 			}
 		}
 		logger.debug("getTTSItemMatchingSentence(...), no item matching the sentence found, returning 0");
@@ -223,12 +223,28 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 		return response;
 	}
 	
+	@Override
+	public String getAudioURL(int book_id, int track) {
+		logger.trace("getAudioURL(int book_id : {}, int track : {})",book_id, track);
+		if(ttsItems.containsKey(book_id)
+				&& track>=0
+				&& ttsItems.get(book_id) != null
+				&& ttsItems.get(book_id).getAudioURLs() != null
+				&& ttsItems.get(book_id).getAudioURLs().size() > track) {
+			logger.trace("getAudioURL(...), found book_id, audio urls are existing");
+			return ttsItems.get(book_id).getAudioURLs().get(track);
+		} else {
+			logger.warn("getAudioURL(...), book_id does not exists");
+		}
+		return null;
+	}
+	
 	public static final String userType = "104";
 	
 	@Override
 	public void onTTSItemAdded(SpeechTextItem item) {
 		logger.trace("onTTSItemAdded(SpeechTextItem item : {})",item.toJSON());
-		ttsItems.put(item.getSpeechTextId(), item);
+		ttsItems.put(item.getBookId(), item);
 	}
 
 
@@ -286,5 +302,7 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 	public void setPictureId(String pictureId) {
 		// will be removed
 	}
+
+
 	
 }

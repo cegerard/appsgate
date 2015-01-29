@@ -393,5 +393,32 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 		return currentMediaName;
 	}
 
+	@Override
+	public void audioNotification(String message) {
+		logger.trace("audioNotification(String message: {})", message);
+		if(ttsService != null) {
+			logger.trace("audioNotification(...), tts service found");
+
+			int book_id = ttsService.waitForTTSGeneration(message);
+			if(book_id>0) {
+				logger.trace("audioNotification(...), tts generation done, book_id: "+book_id);
+				String url = ttsService.getAudioURL(book_id, 0);
+				if(url != null && !url.isEmpty()) {
+					logger.trace("audioNotification(...), found url : "+url);
+					play(url, "Audio Notification: "+message);
+				} else {
+					logger.warn("audioNotification(...),"
+							+ " url is null");					
+				}
+			} else {
+				logger.warn("audioNotification(...),"
+						+ " problem during tts generation will not play audio file");				
+			}
+		} else {
+			logger.warn("audioNotification(...),"
+					+ " no tts service found, will not play audio file");
+		}
+	}
+
 
 }

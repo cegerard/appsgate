@@ -277,10 +277,10 @@ public class YakitomeAPIClient implements YakitomeAPI {
 	 * @see appsgate.lig.tts.yakitome.YakitomeAPI#getSpeechTextStatus(java.lang.String)
 	 */
 	@Override
-	public JSONObject getSpeechTextStatus(int speechTextId) {
+	public JSONObject getSpeechTextStatus(int book_id) {
 		Map<String, String> urlParameters = new LinkedHashMap<String, String>();
 		urlParameters.put(API_KEY_PARAM, api_key_value);
-		urlParameters.put(PARAM_SEPARATOR + BOOK_ID_PARAM, String.valueOf(speechTextId));
+		urlParameters.put(PARAM_SEPARATOR + BOOK_ID_PARAM, String.valueOf(book_id));
 
 		String result = HttpUtils.sendHttpsPost(YAKITOME_JSON_URL
 				+ STATUS_SERVICE, initHeaders(), urlParameters, null);
@@ -292,11 +292,11 @@ public class YakitomeAPIClient implements YakitomeAPI {
 	 * @see appsgate.lig.tts.yakitome.YakitomeAPI#getAudioFileURL(java.lang.String)
 	 */
 	@Override
-	public JSONObject getAudioFileURL(int speechTextId)
+	public JSONObject getAudioFileURL(int book_id)
 			throws ServiceException {
 		Map<String, String> urlParameters = new LinkedHashMap<String, String>();
 		urlParameters.put(API_KEY_PARAM, api_key_value);
-		urlParameters.put(PARAM_SEPARATOR + BOOK_ID_PARAM, String.valueOf(speechTextId));
+		urlParameters.put(PARAM_SEPARATOR + BOOK_ID_PARAM, String.valueOf(book_id));
 		urlParameters.put(PARAM_SEPARATOR + FORMAT_PARAM, FORMAT_MP3_VALUE);
 
 		String result = HttpUtils.sendHttpsPost(YAKITOME_JSON_URL
@@ -309,11 +309,11 @@ public class YakitomeAPIClient implements YakitomeAPI {
 	 * @see appsgate.lig.tts.yakitome.YakitomeAPI#deleteSpeechText(java.lang.String)
 	 */
 	@Override
-	public JSONObject deleteSpeechText(int speechTextId)
+	public JSONObject deleteSpeechText(int book_id)
 			throws ServiceException {
 		Map<String, String> urlParameters = new LinkedHashMap<String, String>();
 		urlParameters.put(API_KEY_PARAM, api_key_value);
-		urlParameters.put(PARAM_SEPARATOR + BOOK_ID_PARAM, String.valueOf(speechTextId));
+		urlParameters.put(PARAM_SEPARATOR + BOOK_ID_PARAM, String.valueOf(book_id));
 
 		String result = HttpUtils.sendHttpsPost(YAKITOME_JSON_URL
 				+ DELETE_SERVICE, initHeaders(), urlParameters, null);

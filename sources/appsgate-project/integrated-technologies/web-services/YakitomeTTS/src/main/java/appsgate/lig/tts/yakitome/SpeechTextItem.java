@@ -20,17 +20,17 @@ import appsgate.lig.tts.yakitome.utils.HttpUtils;
 public class SpeechTextItem {
 	
 	/**
-	 * @param speechTextId
+	 * @param book_id
 	 * @param encodedSentence
 	 * @param wordCount
 	 * @param audioURLs
 	 */
-	public SpeechTextItem(int speechTextId, String sentence,
+	public SpeechTextItem(int book_id, String sentence,
 			int wordCount, List<String> audioURLs) {
-		if(speechTextId < 1 ) {
-			throw new NullPointerException("speechTextId = null");
+		if(book_id < 1 ) {
+			throw new NullPointerException("book_id = null");
 		} else {
-			this.speechTextId = speechTextId;
+			this.book_id = book_id;
 		}
 		
 		if(sentence == null ||sentence.isEmpty() ) {
@@ -61,9 +61,9 @@ public class SpeechTextItem {
 		
 		if(!json.has(YakitomeAPIClient.BOOK_ID_RESPONSE_KEY)
 				||json.getInt(YakitomeAPIClient.BOOK_ID_RESPONSE_KEY) ==0) {
-			throw new NullPointerException("speechTextId = null");
+			throw new NullPointerException("book_id = null");
 		} else {
-			this.speechTextId = json.getInt(YakitomeAPIClient.BOOK_ID_RESPONSE_KEY);
+			this.book_id = json.getInt(YakitomeAPIClient.BOOK_ID_RESPONSE_KEY);
 		}
 		
 		if(!json.has(YakitomeAPIClient.TEXT_KEY)
@@ -98,8 +98,8 @@ public class SpeechTextItem {
 		}
 	}	
 	
-	public int getSpeechTextId() {
-		return speechTextId;
+	public int getBookId() {
+		return book_id;
 	}
 	public String getEncodedSentence() {
 		return encodedSentence;
@@ -119,14 +119,14 @@ public class SpeechTextItem {
 		}
 	}
 
-	private int speechTextId;
+	private int book_id;
 	private String encodedSentence;
 	private int wordCount;
 	private List<String> audioURLs;
 	
 	public JSONObject toJSON() {
 		JSONObject resp = new JSONObject();
-		resp.put(YakitomeAPIClient.BOOK_ID_RESPONSE_KEY, speechTextId);
+		resp.put(YakitomeAPIClient.BOOK_ID_RESPONSE_KEY, book_id);
 		resp.put(YakitomeAPIClient.TEXT_KEY, encodedSentence);
 		resp.put(YakitomeAPIClient.WORD_CNT_RESPONSE_KEY, wordCount);
 		resp.put(YakitomeAPIClient.AUDIOS_RESPONSE_KEY, new JSONArray(audioURLs).toString());

@@ -45,7 +45,8 @@ public class MediaPlayerShell {
 	    "pause",
 	    "stop",
 	    "getVolume",
-	    "setVolume"
+	    "setVolume",
+	    "audioNotification"
 	    };
 
     PrintStream out = System.out;
@@ -96,6 +97,14 @@ public class MediaPlayerShell {
 	    MediaPlayer myPlayer=retrieveMediaPlayerInstance(args[0]);
 	    if(myPlayer!= null && args!=null && args.length>1) {
 	    	myPlayer.play(args[1]);
+	    }
+	}
+    
+    @Descriptor("Plays an audio notification of the message in parameter (Text To Speech)")
+	public void audioNotification(@Descriptor("none") String... args) {
+	    MediaPlayer myPlayer=retrieveMediaPlayerInstance(args[0]);
+	    if(myPlayer!= null && args!=null && args.length>1) {
+	    	myPlayer.audioNotification(args[1]);
 	    }
 	}
 

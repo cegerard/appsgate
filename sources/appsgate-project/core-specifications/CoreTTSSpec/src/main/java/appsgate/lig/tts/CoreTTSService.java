@@ -13,6 +13,14 @@ public interface CoreTTSService {
 	public int asynchronousTTSGeneration(String text);
 
 	public int waitForTTSGeneration(String text);
+	
+	/**
+	 * Return the Audio URL associated to a book_id if already generated
+	 * @param book_id current book_id (identifier from TTS Generation)
+	 * @param track 0 is the default (the first track, the case mos of the time), 
+	 * @return the URL if generated, null otherwise
+	 */
+	public String getAudioURL(int book_id, int track);
 
 	public JSONObject deleteSpeechText(int book_id);
 

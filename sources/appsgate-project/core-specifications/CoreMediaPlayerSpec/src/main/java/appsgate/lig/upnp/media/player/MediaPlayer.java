@@ -6,6 +6,8 @@ public interface MediaPlayer {
 	public void play(String mediaURL);
 	public void play(String mediaURL, String mediaName);
 	
+	public void audioNotification(String message);
+	
 	public void resume();
 	public void pause();
 	public void stop();
