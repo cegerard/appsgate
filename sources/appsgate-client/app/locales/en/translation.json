@@ -525,21 +525,21 @@
     },
     "co2": {
       "caption": {
-        "intern": "Capteur de CO2",
+        "intern": "CO2 Sensor",
         "temperature": "Temperature"
       },
       "keyboard": {
-        "get": "la CO2 du __myVar__",
-        "change": "la CO2 mesurée par le __myVar__ change",
-        "sensor": "capteur de CO2"
+        "get": "the CO2 sensor __myVar__ indicates",
+        "change": "CO2 measured by __myVar__ changes",
+        "sensor": "CO2 Sensor"
       },
       "language": {
-        "get": "la CO2 de __myVar__",
-        "change": "la CO2 mesurée par __myVar__ change"
+        "get": "the CO2 sensor __myVar__ indicates",
+        "change": "CO2 measured by __myVar__ changes"
       },
       "name": {
-        "plural": "Capteurs de CO2",
-        "singular": "Capteur de CO2"
+        "plural": "CO2 Sensors",
+        "singular": "CO2 Sensor"
       }
     },
     "type-label": "Type",
