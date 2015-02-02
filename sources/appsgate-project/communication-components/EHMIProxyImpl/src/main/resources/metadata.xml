@@ -15,7 +15,7 @@
 		<relation field="userManager" resolve="exist"/>
 		<relation field="interpreter"  resolve="exist"/>
 		<relation field="traceManager" resolve="exist" creation="eager" added="traceManBound"/>
-        <relation field="weatherAdapter" resolve="exist"/>
+        <relation field="weatherAdapter" resolve="exist" fail="wait" />
         <relation field="schedulerService" resolve="exist" />
         
 

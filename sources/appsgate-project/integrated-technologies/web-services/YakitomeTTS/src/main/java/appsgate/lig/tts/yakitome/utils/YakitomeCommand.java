@@ -16,7 +16,6 @@ import org.apache.felix.service.command.Descriptor;
 
 import appsgate.lig.tts.CoreTTSService;
 import appsgate.lig.tts.yakitome.impl.TTSServiceImpl;
-import appsgate.lig.tts.yakitome.impl.YakitomeAdapter;
 
 /**
  * Gogo command that helps show retrieve information from the service without having to implement a client

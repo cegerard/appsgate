@@ -1,18 +1,14 @@
 package appsgate.lig.tts.yakitome;
 
-import static org.junit.Assert.*;
-
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Test;
 
 import appsgate.lig.tts.yakitome.impl.TTSServiceImpl;
 import appsgate.lig.tts.yakitome.impl.YakitomeAPIClient;
-import appsgate.lig.tts.yakitome.impl.YakitomeAdapter;
 
 public class YakitomeAdapterTest {
 
@@ -30,12 +26,12 @@ public class YakitomeAdapterTest {
 
 	@Before
 	public void setUp() throws Exception {
-		YakitomeAPI api = new YakitomeAPIClient();
+		YakitomeAPI api = new YakitomeAPIClient(new AdapterListenerMock());
 		// api key registered for smarthome.inria at gmail.com
 		api.configure("5otuvhvboadAgcLPwy69P", "Juliette", -1);
 
 		testing = new TTSServiceImpl();
-		testing.configure(api,null);
+		testing.configure(api,new DAOSpeechTextItemsMock());
 
 	}
 

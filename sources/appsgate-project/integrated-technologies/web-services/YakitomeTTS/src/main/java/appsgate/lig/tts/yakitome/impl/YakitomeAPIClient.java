@@ -11,6 +11,7 @@ import org.osgi.framework.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import appsgate.lig.tts.yakitome.AdapterListener;
 import appsgate.lig.tts.yakitome.YakitomeAPI;
 import appsgate.lig.tts.yakitome.utils.HttpUtils;
 
@@ -22,10 +23,13 @@ import appsgate.lig.tts.yakitome.utils.HttpUtils;
  *
  */
 public class YakitomeAPIClient implements YakitomeAPI {
-	public YakitomeAPIClient() {
+	public YakitomeAPIClient(AdapterListener adapter) {
 		voice = DEFAULT_VOICE;
 		speed = DEFAULT_SPEED;
+		this.adapter = adapter;
 	}
+	
+	AdapterListener adapter;
 
 	private static Logger logger = LoggerFactory
 			.getLogger(YakitomeAPIClient.class);
@@ -64,9 +68,9 @@ public class YakitomeAPIClient implements YakitomeAPI {
 	public static final int SLEEP_PERIOD = 2*1000;	
 
 
-	private static String api_key_value;
-	private static String voice;
-	private static String speed;
+	private String api_key_value;
+	private String voice;
+	private String speed;
 
 	/**
 	 * flag asserting that configuration (api key and other properties are
@@ -75,7 +79,7 @@ public class YakitomeAPIClient implements YakitomeAPI {
 	 * be set to false only if a new configuration is set and/or an explicit
 	 * "msg": "INVALID API_KEY" is provdided as api response
 	 */
-	private static boolean isProperlyConfigured = false;
+	private boolean isProperlyConfigured = false;
 
 	/**
 	 * This flag is set to true at first connexion with web service, and false,
@@ -93,6 +97,7 @@ public class YakitomeAPIClient implements YakitomeAPI {
 		if(!HttpUtils.testURLTimeout(YAKITOME_API_URL,3000)) {
 			logger.warn("Yakitome service URL unavailable or unreachable");
 			isAvailable= false;
+			adapter.serviceUnavailable();
 			return false;
 		}
 		
@@ -106,6 +111,7 @@ public class YakitomeAPIClient implements YakitomeAPI {
 		} catch (ServiceException e) {
 			logger.warn("Yakitome service not responding correctly");
 		}
+		adapter.serviceUnavailable();
 		return false;
 	}
 
@@ -223,6 +229,7 @@ public class YakitomeAPIClient implements YakitomeAPI {
 				&& response.getInt(HTTP_STATUS_RESPONSE_KEY) != HTTP_STATUS_RESPONSE_VALUE_OK) {
 			logger.warn("checkResponse(...), wrong http status : "
 					+ response.getInt(HTTP_STATUS_RESPONSE_KEY));
+			adapter.serviceUnavailable();
 			throw new ServiceException(
 					"Yakitome service returned wrong http status : "
 							+ response.getInt(HTTP_STATUS_RESPONSE_KEY));
@@ -234,6 +241,7 @@ public class YakitomeAPIClient implements YakitomeAPI {
 					+ response.getInt(ERROR_CODE_RESPONSE_KEY)
 					+ ", error message : "
 					+ response.optString(MSG_RESPONSE_KEY));
+			adapter.serviceUnavailable();
 			throw new ServiceException(
 					"Yakitome service returned error code : "
 							+ response.getInt(ERROR_CODE_RESPONSE_KEY)
@@ -244,17 +252,6 @@ public class YakitomeAPIClient implements YakitomeAPI {
 		return response;
 	}
 
-	/**
-	 * for experimentation, testing and debugging purposes
-	 * 
-	 * @param args
-	 */
-	public static void main(String[] args) {
-
-		YakitomeAPI testing = new YakitomeAPIClient();
-		testing.configure("5otuvhvboadAgcLPwy69P", null, -1);
-		testing.getSpeechTextStatus(0);
-	}
 
 	/* (non-Javadoc)
 	 * @see appsgate.lig.tts.yakitome.YakitomeAPI#textToSpeech(java.lang.String)
@@ -284,6 +281,9 @@ public class YakitomeAPIClient implements YakitomeAPI {
 
 		String result = HttpUtils.sendHttpsPost(YAKITOME_JSON_URL
 				+ STATUS_SERVICE, initHeaders(), urlParameters, null);
+
+		// Does not return the checkResponse to keep the interesting error codes 
+		checkResponse(result);
 
 		return new JSONObject(result);
 	}

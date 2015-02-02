@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.tts.CoreTTSService;
-import appsgate.lig.tts.yakitome.AdapterListener;
+import appsgate.lig.tts.yakitome.DAOSpeechTextItems;
 import appsgate.lig.tts.yakitome.SpeechTextItem;
 import appsgate.lig.tts.yakitome.TTSItemsListener;
 import appsgate.lig.tts.yakitome.YakitomeAPI;
@@ -33,32 +33,43 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 	YakitomeAPI apiClient;
 	
 	int coreObjectStatus = 0;
-	AdapterListener adapterListener;
-	
-	
+	DAOSpeechTextItems dao;
 	
 	/**
 	 * This method should be accessible only by the adapter
 	 * @param apiClient
 	 */
-	public void configure(YakitomeAPI apiClient, AdapterListener adapterListener) {
+	public void configure(YakitomeAPI apiClient,
+			DAOSpeechTextItems dao) {
+		logger.trace("configure(YakitomeAPI apiClient : {}"
+				+ ", DAOSpeechTextItem dao : {})"
+				, apiClient, dao);
+
 		this.apiClient = apiClient;
-		this.adapterListener = adapterListener;
-		testStatus();
+		this.dao = dao;
+		if ( testStatus()) {
+			logger.trace("configure(...), test OK, populating from DB");
+			for(SpeechTextItem item : dao.getSpeechItemsFromDB()) {
+				if (item != null
+						&& item.getBookId()>0
+						&& getSpeechTextStatus(item.getBookId()) != null) {
+					ttsItems.put(item.getBookId(), item);
+				}
+			}		
+		}
 	}
 	
-	private void testStatus() {
-		if(apiClient!= null && apiClient.testService()) {
+	private boolean testStatus() {
+		if(apiClient!= null
+				&& apiClient.testService()
+				&& dao!=null
+				&& dao.testService()) {
 			coreObjectStatus = 2;
+			return true;
 		} else {
-			
 			coreObjectStatus = 0;
-			if(adapterListener != null) {
-				adapterListener.serviceUnavailable();
-			}
-			
+			return false;
 		}
-		
 	}
 	
 	private static Logger logger = LoggerFactory
@@ -89,7 +100,15 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 			SpeechTextItem tmp = ttsItems.get(ttsId);
 			if(tmp!= null && encodedSentence.equals(tmp.getEncodedSentence())) {
 				logger.trace("getTTSItemMatchingSentence(...), found matching sentence, with id : "+tmp.getBookId());
-				return tmp.getBookId();
+				if(getSpeechTextStatus(ttsId) == null) {
+					logger.warn("getTTSItemMatchingSentence(...),"
+							+ " item unknown to Yakitome TTS, removing an returning book id = 0");
+					return 0;
+				} else {
+					logger.trace("getTTSItemMatchingSentence(...),"
+							+ " found book id in Yakitome TTS, returning "+tmp.getBookId());
+					return tmp.getBookId();					
+				}
 			}
 		}
 		logger.debug("getTTSItemMatchingSentence(...), no item matching the sentence found, returning 0");
@@ -196,6 +215,7 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 		}
 		logger.trace("deleteSpeechText(...), trying to remove from local list");
 		ttsItems.remove(book_id);
+		dao.removeSpeechItem(book_id);
 		return response;
 	}
 	
@@ -214,6 +234,7 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 					&& ttsItems.containsKey(book_id)) {
 				logger.trace("getSpeechTextStatus(...), the book id does not exist on the server, removing on local list");
 				ttsItems.remove(book_id);
+				response = null;
 			}
 
 		} catch (Exception e) {
@@ -244,6 +265,7 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 	@Override
 	public void onTTSItemAdded(SpeechTextItem item) {
 		logger.trace("onTTSItemAdded(SpeechTextItem item : {})",item.toJSON());
+		dao.addUpdateSpeechItem(item);
 		ttsItems.put(item.getBookId(), item);
 	}
 
