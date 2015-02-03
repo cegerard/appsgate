@@ -38,7 +38,7 @@ public class YakitomeCommand {
 	    "deleteSpeechText",
 	    "waitForTTSGeneration",
 	    "asynchronousTTSGeneration",
-	    "getTTSItemMatchingSentence"
+	    "getTTSItemMatchingText"
     };
 
     PrintStream out = System.out;
@@ -99,7 +99,7 @@ public class YakitomeCommand {
 	}
     
     @Descriptor("check if a Speech item as already been generated upon the text")
-	public void getTTSItemMatchingSentence(@Descriptor("text") String... args) {
+	public void getTTSItemMatchingText(@Descriptor("text") String... args) {
     	CoreTTSService tts= getTTSInst();
     	
     	if(tts!= null) {

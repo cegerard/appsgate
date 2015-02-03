@@ -1,10 +1,9 @@
 package appsgate.lig.tts.yakitome.impl;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.osgi.framework.ServiceException;
@@ -18,7 +17,6 @@ import appsgate.lig.tts.yakitome.DAOSpeechTextItems;
 import appsgate.lig.tts.yakitome.SpeechTextItem;
 import appsgate.lig.tts.yakitome.TTSItemsListener;
 import appsgate.lig.tts.yakitome.YakitomeAPI;
-import appsgate.lig.tts.yakitome.utils.HttpUtils;
 
 /**
  * This class holds the CoreObjectSpec and TTS business functions
@@ -266,7 +264,6 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 		ttsItems.put(item.getBookId(), item);
 	}
 
-
 	String serviceId;
 
 	@Override
@@ -275,7 +272,7 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 		descr.put("id", getAbstractObjectId());
 		descr.put("type", getUserType()); // 104 for TTS
 		descr.put("status", getObjectStatus());
-
+		descr.put("ttsItems", getSpeechTextItems());
 		return descr;
 	}
 
@@ -322,6 +319,29 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 		// will be removed
 	}
 
+	@Override
+	public JSONObject getSpeechTextItem(int book_id) {
+		logger.trace("getSpeechTextItem(int book_id : {})",book_id);
+		JSONObject response = getSpeechTextStatus(book_id);
+		if(response!=null
+				&& response.has(YakitomeAPI.BOOK_ID_RESPONSE_KEY)
+				&& response.getInt(YakitomeAPI.BOOK_ID_RESPONSE_KEY) >0
+				&& ttsItems.containsKey(book_id)) {
+			logger.trace("getSpeechTextItem(...), book id found, returning "+ttsItems.get(book_id).toJSON());
+			return ttsItems.get(book_id).toJSON();	
+		}
+		logger.warn("getSpeechTextItem(...), book id not found, returning null");
+		return null;
+	}
 
-	
+	@Override
+	public JSONArray getSpeechTextItems() {
+		logger.trace("getSpeechTextItems()");
+		JSONArray response = new JSONArray();
+		for(SpeechTextItem item : ttsItems.values()){
+			logger.trace("getSpeechTextItems(), adding {} to the result", item.toJSON());
+			response.put(item.toJSON());
+		}
+		return response;
+	}
 }

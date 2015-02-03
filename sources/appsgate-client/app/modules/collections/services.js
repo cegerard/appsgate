@@ -6,8 +6,9 @@ define([
     "text!templates/program/nodes/defaultPropertyNode.html",
     "text!templates/program/nodes/defaultStateNode.html",
     "models/service/mail",
-    "models/service/weather"
-], function(App, Service, ActionTemplate, EventTemplate, PropertyTemplate, StateTemplate, Mail, Weather) {
+    "models/service/weather",
+    "models/service/tts"
+], function(App, Service, ActionTemplate, EventTemplate, PropertyTemplate, StateTemplate, Mail, Weather, TTS) {
 
     var Services = {};
 
@@ -61,6 +62,9 @@ define([
                 case 103:
                     service = new Weather(brick);
                     break;
+                case 104:
+                    service = new TTS(brick);
+                    break;
                 default:
                     console.log("unknown type", brick.type, brick);
                     break;
@@ -92,6 +96,12 @@ define([
          */
         getCoreWeather: function() {
             return services.findWhere({type: 103});
+        },
+        /**
+         * @return Core TTS of the home - unique Service
+         */
+        getCoreTTS: function() {
+            return services.findWhere({type: 104});
         },
         /**
          * @returns the template corresponding to the device
