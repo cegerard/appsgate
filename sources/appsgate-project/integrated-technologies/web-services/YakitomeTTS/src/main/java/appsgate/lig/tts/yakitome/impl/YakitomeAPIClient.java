@@ -275,15 +275,21 @@ public class YakitomeAPIClient implements YakitomeAPI {
 	 */
 	@Override
 	public JSONObject getSpeechTextStatus(int book_id) {
+		logger.trace("getSpeechTextStatus(int book_id : {})",book_id);
+
 		Map<String, String> urlParameters = new LinkedHashMap<String, String>();
 		urlParameters.put(API_KEY_PARAM, api_key_value);
 		urlParameters.put(PARAM_SEPARATOR + BOOK_ID_PARAM, String.valueOf(book_id));
 
 		String result = HttpUtils.sendHttpsPost(YAKITOME_JSON_URL
 				+ STATUS_SERVICE, initHeaders(), urlParameters, null);
-
+		
 		// Does not return the checkResponse to keep the interesting error codes 
-		checkResponse(result);
+		try {
+			checkResponse(result);
+		} catch(ServiceException exc) {
+			logger.trace("getSpeechTextStatus(...), service exception occured :"+exc.getMessage());
+		}
 
 		return new JSONObject(result);
 	}

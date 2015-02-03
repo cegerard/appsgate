@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.json.JSONObject;
-import org.osgi.framework.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

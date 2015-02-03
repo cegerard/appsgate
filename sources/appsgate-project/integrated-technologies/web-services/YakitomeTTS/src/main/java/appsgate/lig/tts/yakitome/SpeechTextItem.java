@@ -1,7 +1,5 @@
 package appsgate.lig.tts.yakitome;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,11 +7,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import appsgate.lig.tts.yakitome.impl.YakitomeAPIClient;
-import appsgate.lig.tts.yakitome.utils.HttpUtils;
 
 /**
  * Holder class to represent one Speech to Text Item,
- * containing its id, a string representation of the encoded sentence, the word count, the URL(s) for its MP3 representations
+ * containing its id, the sentence, the word count, the URL(s) for its MP3 representations
  * @author thibaud
  *
  */
@@ -21,11 +18,11 @@ public class SpeechTextItem {
 	
 	/**
 	 * @param book_id
-	 * @param encodedSentence
+	 * @param text
 	 * @param wordCount
 	 * @param audioURLs
 	 */
-	public SpeechTextItem(int book_id, String sentence,
+	public SpeechTextItem(int book_id, String text,
 			int wordCount, List<String> audioURLs) {
 		if(book_id < 1 ) {
 			throw new NullPointerException("book_id = null");
@@ -33,14 +30,10 @@ public class SpeechTextItem {
 			this.book_id = book_id;
 		}
 		
-		if(sentence == null ||sentence.isEmpty() ) {
-			throw new NullPointerException("sentence = null");
+		if(text == null ||text.isEmpty() ) {
+			throw new NullPointerException("text = null");
 		} else {
-			try {
-				this.encodedSentence = URLEncoder.encode(sentence, HttpUtils.DEFAULT_ENCODING);
-			} catch (UnsupportedEncodingException e) {
-				throw new NullPointerException("Unable to encode sentence, "+e.getMessage());
-			}
+			this.text = text;
 		}
 		
 		if(wordCount < 1 ) {
@@ -69,13 +62,9 @@ public class SpeechTextItem {
 		if(!json.has(YakitomeAPIClient.TEXT_KEY)
 				||json.getString(YakitomeAPIClient.TEXT_KEY) == null
 				||json.getString(YakitomeAPIClient.TEXT_KEY).length()<1) {
-			throw new NullPointerException("sentence = null");
+			throw new NullPointerException("text = null");
 		} else {
-			try {
-				this.encodedSentence = URLEncoder.encode(json.getString(YakitomeAPIClient.TEXT_KEY), HttpUtils.DEFAULT_ENCODING);
-			} catch (UnsupportedEncodingException e) {
-				throw new NullPointerException("Unable to encode sentence, "+e.getMessage());
-			}
+			this.text = json.getString(YakitomeAPIClient.TEXT_KEY);
 		}
 		
 		if(!json.has(YakitomeAPIClient.WORD_CNT_RESPONSE_KEY)
@@ -86,8 +75,8 @@ public class SpeechTextItem {
 		}
 		
 		if(!json.has(YakitomeAPIClient.AUDIOS_RESPONSE_KEY)
-				||json.getJSONArray(YakitomeAPIClient.AUDIOS_RESPONSE_KEY) == null
-				||json.getJSONArray(YakitomeAPIClient.AUDIOS_RESPONSE_KEY).length()<1) {
+				||json.optJSONArray(YakitomeAPIClient.AUDIOS_RESPONSE_KEY) == null
+				||json.optJSONArray(YakitomeAPIClient.AUDIOS_RESPONSE_KEY).length()<1) {
 			throw new NullPointerException("audioURLs = null");
 		} else {
 			audioURLs = new ArrayList<String>();
@@ -101,8 +90,8 @@ public class SpeechTextItem {
 	public int getBookId() {
 		return book_id;
 	}
-	public String getEncodedSentence() {
-		return encodedSentence;
+	public String getText() {
+		return text;
 	}
 	public int getWordCount() {
 		return wordCount;
@@ -120,16 +109,16 @@ public class SpeechTextItem {
 	}
 
 	private int book_id;
-	private String encodedSentence;
+	private String text;
 	private int wordCount;
 	private List<String> audioURLs;
 	
 	public JSONObject toJSON() {
 		JSONObject resp = new JSONObject();
 		resp.put(YakitomeAPIClient.BOOK_ID_RESPONSE_KEY, book_id);
-		resp.put(YakitomeAPIClient.TEXT_KEY, encodedSentence);
+		resp.put(YakitomeAPIClient.TEXT_KEY, text);
 		resp.put(YakitomeAPIClient.WORD_CNT_RESPONSE_KEY, wordCount);
-		resp.put(YakitomeAPIClient.AUDIOS_RESPONSE_KEY, new JSONArray(audioURLs).toString());
+		resp.put(YakitomeAPIClient.AUDIOS_RESPONSE_KEY, new JSONArray(audioURLs));
 		
 		return resp;
 	}

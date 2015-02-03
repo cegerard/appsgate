@@ -8,7 +8,7 @@ public interface CoreTTSService {
 	 * Check if a TTS item matching the desired sentence already exists
 	 * (used for optimization as TTS generation can takes long time)
 	 */
-	public int getTTSItemMatchingSentence(String sentence);
+	public int getTTSItemMatchingText(String text);
 
 	public int asynchronousTTSGeneration(String text);
 

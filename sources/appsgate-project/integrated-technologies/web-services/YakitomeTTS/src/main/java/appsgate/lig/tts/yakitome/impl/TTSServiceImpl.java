@@ -50,10 +50,13 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 		if ( testStatus()) {
 			logger.trace("configure(...), test OK, populating from DB");
 			for(SpeechTextItem item : dao.getSpeechItemsFromDB()) {
+				logger.trace("configure(...), trying to add "+item.getBookId());
 				if (item != null
 						&& item.getBookId()>0
 						&& getSpeechTextStatus(item.getBookId()) != null) {
 					ttsItems.put(item.getBookId(), item);
+					logger.trace("configure(...), item added, boook id : {} and text : {}",
+							item.getBookId(), item.getText());
 				}
 			}		
 		}
@@ -76,42 +79,36 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 			.getLogger(CoreTTSService.class);	
 	
 	/* (non-Javadoc)
-	 * @see appsgate.lig.tts.yakitome.CoreTTSService#getTTSItemMatchingSentence(java.lang.String)
+	 * @see appsgate.lig.tts.yakitome.CoreTTSService#getTTSItemMatchingText(java.lang.String)
 	 */
 	@Override
-	public int getTTSItemMatchingSentence(String sentence) {
-		logger.trace("getTTSItemMatchingSentence(String sentence : {})",sentence);
+	public int getTTSItemMatchingText(String text) {
+		logger.trace("getTTSItemMatchingText(String text : {})",text);
 		
-		String encodedSentence;
-		try {
-			encodedSentence = URLEncoder.encode(sentence, HttpUtils.DEFAULT_ENCODING);
-		} catch (UnsupportedEncodingException e) {
-			logger.warn("getTTSItemMatchingSentence(...), "
-					+ "error while getting encoded sentence, returning 0, exception : "+e.getMessage());
-			return 0;
-		}
-		if(encodedSentence == null ||encodedSentence.isEmpty()) {
-			logger.warn("getTTSItemMatchingSentence(...), "
-					+ "empty or null sentence, returning 0");
+		
+		if(text == null ||text.isEmpty()) {
+			logger.warn("getTTSItemMatchingText(...), "
+					+ "empty or null text, returning 0");
 			return 0;
 		}
 		
 		for(int ttsId : ttsItems.keySet()) {
 			SpeechTextItem tmp = ttsItems.get(ttsId);
-			if(tmp!= null && encodedSentence.equals(tmp.getEncodedSentence())) {
-				logger.trace("getTTSItemMatchingSentence(...), found matching sentence, with id : "+tmp.getBookId());
+			logger.trace("getTTSItemMatchingText(...), comparing {} with {}",text,tmp.getText());
+			if(tmp!= null && text.equals(tmp.getText())) {
+				logger.trace("getTTSItemMatchingText(...), found matching text, with id : "+tmp.getBookId());
 				if(getSpeechTextStatus(ttsId) == null) {
-					logger.warn("getTTSItemMatchingSentence(...),"
+					logger.warn("getTTSItemMatchingText(...),"
 							+ " item unknown to Yakitome TTS, removing an returning book id = 0");
 					return 0;
 				} else {
-					logger.trace("getTTSItemMatchingSentence(...),"
+					logger.trace("getTTSItemMatchingText(...),"
 							+ " found book id in Yakitome TTS, returning "+tmp.getBookId());
 					return tmp.getBookId();					
 				}
 			}
 		}
-		logger.debug("getTTSItemMatchingSentence(...), no item matching the sentence found, returning 0");
+		logger.debug("getTTSItemMatchingText(...), no item matching the text found, returning 0");
 		return 0;	
 	}
 	
@@ -121,7 +118,7 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 	@Override
 	public int asynchronousTTSGeneration(String text) {
 		logger.trace("asynchronousTTSGeneration(String text : {})",text);
-		int book_id = getTTSItemMatchingSentence(text);
+		int book_id = getTTSItemMatchingText(text);
 		if(book_id >0) {
 			logger.trace("asynchronousTTSGeneration(...), Text to speech already generated : "+book_id);
 			return book_id;
@@ -162,7 +159,7 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 	@Override
 	public int waitForTTSGeneration(String text) {
 		logger.trace("waitForTTSGeneration(String text : {})",text);
-		int book_id = getTTSItemMatchingSentence(text);
+		int book_id = getTTSItemMatchingText(text);
 		if(book_id >0) {
 			logger.trace("waitForTTSGeneration(...), Text to speech already generated : "+book_id);
 			return book_id;

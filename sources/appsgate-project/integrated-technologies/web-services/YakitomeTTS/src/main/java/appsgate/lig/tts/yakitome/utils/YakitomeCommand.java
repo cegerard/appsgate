@@ -104,7 +104,7 @@ public class YakitomeCommand {
     	
     	if(tts!= null) {
     		if(args.length>=1) {
-        		tts.getTTSItemMatchingSentence(args[0]);
+        		tts.getTTSItemMatchingText(args[0]);
     		} else {
     			System.out.println("no argument provided");
     		}
