@@ -3,6 +3,7 @@ import appsgate.ard.protocol.model.ARDFutureResponse;
 import appsgate.ard.protocol.model.command.ARDRequest;
 import appsgate.ard.protocol.model.command.request.*;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,8 +21,8 @@ public class ARDSuiteTest {
     @Before
     public void before() throws IOException, JSONException {
 
-        String host=System.getProperty("ard.host","192.168.3.110");
-        Integer port=Integer.parseInt(System.getProperty("ard.port","2002"));
+        String host=System.getProperty("ard.host","192.168.1.7");
+        Integer port=Integer.parseInt(System.getProperty("ard.port","2004"));
 
         logger.info("ARD, connecting to the host {}:{}",host,port);
 
@@ -213,6 +214,39 @@ public class ARDSuiteTest {
         Assert.assertTrue(response.getResponse()!=null);
         System.out.println("Response:"+response.getResponse().toString());
 
+        Thread.sleep(2000);
+
+    }
+
+    @Test
+    public void fetch10Elements() throws JSONException, InterruptedException, IOException {
+
+        subscriptionTest();
+
+        for(int index=1;index<2;index++){
+            System.out.println("*** iterating index:"+index);
+            try {
+                JSONObject response=ard.sendSyncRequest(new GetInputRequest(index)).getResponse();
+                //System.out.println("response:"+response.get);
+                /*
+                if(response!=null&&response.getString("name").trim().equals(name)){
+                    System.out.println("name got from response:"+response.getString("name"));
+                    System.out.println("name i ve been looking for:"+name);
+                    System.out.println("*** found index:"+index);
+                    //forceInput(index,state);
+                    return;
+                }
+                */
+            } catch (JSONException e) {
+                logger.error("Failed to recover zones recorded in the HUB ARD");
+            }
+
+        }
+/*
+        ARDFutureResponse response=ard.sendSyncRequest(new DeactivateZoneRequest(1));
+        Assert.assertTrue(response.getResponse()!=null);
+        System.out.println("Response:"+response.getResponse().toString());
+*/
         Thread.sleep(2000);
 
     }

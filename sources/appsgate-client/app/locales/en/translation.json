@@ -120,13 +120,13 @@
       "false":"False",
       "with-the-value":"with value",
       "action": {
-        "zone-activate": "Activate alarm __myVar__",
-        "zone-desactivate": "Desactivate alarm __myVar__",
+        "zone-activate": "Activate alarm on __myVar__",
+        "zone-desactivate": "Desactivate alarm on __myVar__",
         "force-input": "Signal an entry in the central of alarm __myVar__ in zone"
       },
       "keyboard": {
-        "zone-activate": "Activate alarm ...",
-        "zone-desactivate": "Desactivate alarm ...",
+        "zone-activate": "Activate alarm on ...",
+        "zone-desactivate": "Desactivate alarm on ...",
         "force-input": "Signal an entry in the central of alarm in zone ..."
       },
       "event": {

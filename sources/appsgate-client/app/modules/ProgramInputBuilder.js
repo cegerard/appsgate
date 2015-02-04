@@ -119,7 +119,9 @@ define([
                     param.node.validDevice = this.isDeviceValid(param.node.value);
                     this.isComplete = this.isComplete && param.node.validDevice;
                     param.node.name = this.getDeviceName(param.node.value);
-                    input += this.tplDeviceNode(param);
+                    if(!param.node["hideSelector"] || param.node.hideSelector!=true){
+                        input += this.tplDeviceNode(param);
+                    }
                     break;
                 case "select":
                     input += this.tplSelectNode(param);
@@ -130,7 +132,9 @@ define([
                     break;
                 case "event":
                     deletable = true;
-                    input += this.buildEventNode(param);
+                    if(!param.node["hideSelector"] || param.node.hideSelector!=true){
+                        input += this.buildEventNode(param);
+                    }
                     break;
                 case "eventProgram":
                     deletable = true;

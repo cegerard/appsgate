@@ -46,11 +46,37 @@ define([
       }
     },
     getActions: function() {
-      return ["zoneActivate", "zoneDesactivate", "forceInput"];
+      return ["zoneActivate", "zoneDesactivate"]; //"forceInput"
     },
     getKeyboardForAction: function(act) {
       var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
-      var v = this.getJSONAction("mandatory");
+      //var v = this.getJSONAction("mandatory");
+
+      var v = {
+        "type": "action",
+        "target": {
+          "iid": "X",
+          "type": 'device',
+          "hideSelector":true,
+          "deviceType": this.get("type"),
+          "value":this.get("id")
+        },
+        "args": [],
+        "iid": "X"
+      };
+
+      /*
+      var v = {
+        "type": "action",
+        "target": {
+          "iid": "X",
+          "type": "device",
+          "serviceType": this.get("type"),
+          "value": this.get("id")
+        },
+        "iid": "X"
+      };
+      */
 
       switch (act) {
         case "zoneActivate":
@@ -73,6 +99,7 @@ define([
           }];
           $(btn).attr("json", JSON.stringify(v));
           break;
+        /**
         case "forceInput":
           $(btn).append("<span data-i18n='devices.ard.keyboard.force-input'/>");
           v.methodName = "forceInput";
@@ -87,6 +114,7 @@ define([
             }];
           $(btn).attr("json", JSON.stringify(v));
           break;
+         **/
         default:
           console.error("unexpected action found for ARD: " + act);
           btn = null;
@@ -117,7 +145,20 @@ define([
     },
     getKeyboardForEvent: function(evt) {
       var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
-      var v = this.getJSONEvent("mandatory");
+      //var v = this.getJSONEvent("mandatory");
+
+      var v = {
+        "type": "event",
+        "source": {
+          "iid": "X",
+          "type": 'device',
+          "deviceType": this.get("type"),
+          "hideSelector":true,
+          "value":this.get("id")
+        },
+        "iid": "X"
+      };
+
       switch (evt) {
         case "isAuthorized":
           $(btn).append("<span data-i18n='devices.ard.event.authorized'/>");

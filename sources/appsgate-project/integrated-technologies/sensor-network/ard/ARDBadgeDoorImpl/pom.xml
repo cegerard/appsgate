@@ -19,6 +19,11 @@
 	<dependencies>
 		<dependency>
 			<groupId>appsgate.components</groupId>
+			<artifactId>CoreContactSensorSpec</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>appsgate.components</groupId>
 			<artifactId>CoreARDBadgeDoorSpec</artifactId>
 			<version>${project.version}</version>
 		</dependency>

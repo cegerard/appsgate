@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, CoreObjectSpec, CoreARDBadgeDoorSpec { //ARDWatchDogSpec
 
+    private static final Integer ARD_MAX_INDEX_FETCH=10;
     private static Logger logger = LoggerFactory.getLogger(ARDController.ARD_LOGNAME);
     private String sensorName;
     private String sensorId;
@@ -167,12 +168,12 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
 
     @Override
     public void forceInput(int input,boolean value) {
-        logger.info("forceInput invoked: Input to be forced {},", input);
+        logger.info("forceInput invoked: Input to be forced {} with the value {}", value);
         try {
             JSONObject request1=controller.sendSyncRequest(new ForceInputRequest(input,value,false)).getResponse();
             logger.info("Response: {}",request1);
         } catch (JSONException e) {
-            logger.error("Failed invoking zoneActivate for zone {}",input);
+            logger.error("Failed invoking Force Input for zone {}",input);
         }
     }
 
@@ -196,7 +197,7 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
 
         if(zonesCache==null){
             zonesCache=new JSONArray();
-            for(int index=1;index<10;index++){
+            for(int index=1;index<ARD_MAX_INDEX_FETCH;index++){
                 try {
                     JSONObject response=controller.sendSyncRequest(new GetZoneRequest(index)).getResponse();
 
@@ -222,11 +223,30 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
 
     }
 
+    private void syncAppsgateContactWithARDInput(String name,Boolean state){
+        logger.trace("Looking for a ARD input with name {} to set status to {}",name,state);
+        for(int index=1;index<ARD_MAX_INDEX_FETCH;index++){
+            logger.trace("Checking input in the index {}", index);
+            try {
+                JSONObject response=controller.sendSyncRequest(new GetInputRequest(index)).getResponse();
+
+                if(response!=null&&response.getString("name").trim().equals(name)){
+                    logger.trace("Found input with name {} configuring its state to {}", name, state);
+                    forceInput(index,state);
+                    return;
+                }
+            } catch (JSONException e) {
+                logger.error("Failed to recover zones recorded in the HUB ARD");
+            }
+
+        }
+    }
+
     private void fillUpInputs(final JSONObject descr){
 
         if(inputsCache==null){
             inputsCache=new JSONArray();
-            for(int index=1;index<10;index++){
+            for(int index=1;index<ARD_MAX_INDEX_FETCH;index++){
                 try {
                     JSONObject response=controller.sendSyncRequest(new GetInputRequest(index)).getResponse();
 
@@ -331,7 +351,14 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
             logger.error("Failed parsing ARD JSON message.",e);
         }
 
+    }
 
+    public void apamMessageReceived(NotificationMsg mesg){
+
+            if(mesg.getVarName().equals("contact")){
+                syncAppsgateContactWithARDInput(mesg.getSource().getAbstractObjectId(),Boolean.parseBoolean(mesg.getNewValue()));
+                logger.debug("Apam Message received var name {} old value {} new value {}", mesg.getVarName(), mesg.getOldValue(),mesg.getNewValue());
+            }
 
     }
 

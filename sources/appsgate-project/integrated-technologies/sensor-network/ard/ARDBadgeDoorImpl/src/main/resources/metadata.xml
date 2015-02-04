@@ -9,7 +9,16 @@
 
         <relation field="controller" resolve="exist" multiple="true" />
 
-		<!-- device kernel meta data -->
+        <!--
+        <relation push="apamMessageReceived" creation="eager" resolve="exist" multiple="true" />
+        -->
+
+
+           <relation specification="CoreContactSensorSpec" resolve="exist" multiple="true">
+               <message push="apamMessageReceived"/>
+           </relation>
+
+        <!-- device kernel meta data -->
 		<definition name="deviceName"	 type="string" default="Unknown" 		  field="sensorName"/>
 		<definition name="deviceId" 	 type="string" default="000000" 		  field="sensorId"/>
 		<definition name="deviceType" 	 type="string" default="ARD_DEVICE" field="sensorType"/>

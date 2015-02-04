@@ -68,7 +68,6 @@ public class ARDBusMonitor extends Thread {
                             responseListener.ardMessageReceived(json);
                         } catch (JSONException e) {
                             logger.warn("ARD Router returned an invalid JSON", e);
-                            //e.printStackTrace();
                         } finally {
                             sb = new StringBuffer();
                         }
