@@ -1,22 +1,22 @@
 package appsgate.lig.upnp.media.player.command;
 
 import java.io.PrintStream;
-
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.felix.ipojo.annotations.Instantiate;
 import org.apache.felix.ipojo.annotations.Provides;
 import org.apache.felix.ipojo.annotations.Requires;
 import org.apache.felix.ipojo.annotations.ServiceProperty;
 import org.apache.felix.service.command.Descriptor;
-import org.osgi.service.upnp.UPnPDevice;
 
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.upnp.media.player.MediaPlayer;
-
 import fr.imag.adele.apam.Apam;
 import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Implementation;
 import fr.imag.adele.apam.Instance;
+import fr.imag.adele.apam.Specification;
 
 
 /**
@@ -52,13 +52,9 @@ public class MediaPlayerShell {
     PrintStream out = System.out;
 
     private MediaPlayer retrieveMediaPlayerInstance(String player) {
-		Implementation implementation = CST.apamResolver.findImplByName(null,
-			"MediaPlayer");
-		if(implementation == null) {
-			System.out.println("Media Player Implementation not found");
-			return null;
-		}
-		Instance inst = implementation.getInst(player);
+		Instance inst = CST.apamResolver.findInstByName(null,
+				player);
+
 		if(inst == null) {
 			System.out.println("No Media Player Instance with name : "+player+" found");
 			return null;
@@ -67,23 +63,41 @@ public class MediaPlayerShell {
 		return (MediaPlayer) inst.getServiceObject();
 	    
 	}
+    
+    public Set<Instance> getInsts() {
+		Specification spec = CST.apamResolver.findSpecByName(null,"CoreMediaPlayerSpec");
+		if(spec == null
+				|| spec.getImpls() != null
+				|| spec.getImpls().isEmpty()) {
+			System.out.println("no Implems of CoreMediaPlayerSpec not found");
+		}
+    	Set<Implementation> impls = spec.getImpls();
+    	Set<Instance> insts = new HashSet<Instance>();
+    	
+    	for(Implementation impl : impls) {
+    		insts.addAll(impl.getInsts());
+    	}
+    	return insts;
+    }
+    
 
     @Descriptor("list the available players")
 	public void players(@Descriptor("none") String... args) {
-		Implementation implementation = CST.apamResolver.findImplByName(null,"MediaPlayer");
-		if(implementation == null) {
-			System.out.println("Media Player Implementation not found");
+    	Set<Instance> insts = getInsts();
+		if(insts == null
+				|| insts.isEmpty()) {
+			System.out.println("no Instance of CoreMediaPlayerSpec not found");
 			return;
 		}		
 		
 		StringBuilder players = new StringBuilder();
 		
-		for (Instance playerInstance : implementation.getInsts()) {
+		for (Instance playerInstance : insts) {
 			CoreObjectSpec player = (CoreObjectSpec) playerInstance.getServiceObject();
 			
 			players.append(playerInstance.getName())
 			.append(" appsgate id = ").append(player.getAbstractObjectId())
-			.append(" friendly name = ").append(playerInstance.getProperty(UPnPDevice.FRIENDLY_NAME))
+			.append(" name = ").append(playerInstance.getName())
 			.append(" \n");
 			
 		}
