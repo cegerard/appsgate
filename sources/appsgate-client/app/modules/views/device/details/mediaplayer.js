@@ -15,16 +15,20 @@ define([
         "click button.btn-media-stop": "onStopMedia",
         "click button.btn-media-volume": "onSetVolumeMedia",
         "click button.btn-media-browse": "onBrowseMedia",
-        "click button.btn-media-audioNotification": "onAudioNotification"
+        "click button.btn-media-audioNotification": "onAudioNotification",
+        "click .ttsInput": "updateAudioNotif"
+
       },
       initialize: function() {
         var self = this;
         MediaPlayerView.__super__.initialize.apply(this, arguments);
 
         $.extend(self.__proto__.events, MediaPlayerView.__super__.events);
+
       },
       autoupdate: function() {
         MediaPlayerView.__super__.autoupdate.apply(this);
+
 
         var player = this.model;
 
@@ -37,6 +41,7 @@ define([
         }));
 
         player.requestVolume();
+
 
         // initialize the volume slider
         _.defer(function() {
@@ -101,6 +106,14 @@ define([
         this.model.onAudioNotification($("#selectedMessage").val());
       },
 
+      updateAudioNotif: function() {
+
+        if (services.getCoreTTS() != undefined) {
+          $(document).find(".ttsInput").autocomplete({
+            source: services.getCoreTTS().getTTSItemsText()
+          });}
+      },
+
       /**
       * Render the detailled view of a device
       */
@@ -140,6 +153,8 @@ define([
 
             // translate the view
             this.$el.i18n();
+          this.updateAudioNotif();
+
 
           return this;
         }
