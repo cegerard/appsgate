@@ -25,7 +25,9 @@ define([
       });
 
     },
-
+    prepareTTS: function(text) {
+      this.remoteControl("asynchronousTTSGeneration", [{"type": "String", "value": text}], this.id);
+    },
     getTTSItems: function() {
       return this.remoteControl("getSpeechTextItems", [], this.id);
     },

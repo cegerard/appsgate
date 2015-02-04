@@ -27,7 +27,16 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 	
 	public final static String TTS_IMPLEM_NAME = "TTSServiceImpl";
 	
+	/**
+	 * These  should match those stored in the DB and in the YakiTomeAPI
+	 */
 	Map<Integer, SpeechTextItem> ttsItems = new HashMap<Integer, SpeechTextItem>();
+	
+	/**
+	 * These corresponds to TTS running status (not in the DB)
+	 */
+	Map<Integer, String> ttsItemsRunning = new HashMap<Integer, String>();
+
 	YakitomeAPI apiClient;
 	
 	int coreObjectStatus = 0;
@@ -90,6 +99,7 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 			return 0;
 		}
 		
+		logger.debug("getTTSItemMatchingText(...), Step One checking already generated TTS");
 		for(int ttsId : ttsItems.keySet()) {
 			SpeechTextItem tmp = ttsItems.get(ttsId);
 			logger.trace("getTTSItemMatchingText(...), comparing {} with {}",text,tmp.getText());
@@ -106,6 +116,23 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 				}
 			}
 		}
+		logger.debug("getTTSItemMatchingText(...), TTS Not found, Step Two checking TTS onGoing");
+		for(int ttsId : ttsItemsRunning.keySet()) {
+			String tmp = ttsItemsRunning.get(ttsId);
+			logger.trace("getTTSItemMatchingText(...), comparing {} with {}",text,tmp);
+			if(tmp!= null && text.equals(tmp)) {
+				logger.trace("getTTSItemMatchingText(...), found matching text, with id : "+ttsId);
+				if(getSpeechTextStatus(ttsId) == null) {
+					logger.warn("getTTSItemMatchingText(...),"
+							+ " item unknown to Yakitome TTS, removing an returning book id = 0");
+					return 0;
+				} else {
+					logger.trace("getTTSItemMatchingText(...),"
+							+ " found book id in Yakitome TTS, returning "+ttsId);
+					return ttsId;					
+				}
+			}
+		}		
 		logger.debug("getTTSItemMatchingText(...), no item matching the text found, returning 0");
 		return 0;	
 	}
@@ -139,6 +166,7 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 				return 0;
 			}
 			book_id = response.getInt(YakitomeAPIClient.BOOK_ID_RESPONSE_KEY);
+			ttsItemsRunning.put(book_id, text);
 
 			logger.trace("asynchronousTTSGeneration(...), Launching asynchronous monitor...");
 			TTSGenerationMonitor monitor = new TTSGenerationMonitor(book_id, text, this, apiClient);
@@ -177,6 +205,8 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 				return 0;
 			}
 			book_id = response.getInt(YakitomeAPIClient.BOOK_ID_RESPONSE_KEY);
+			ttsItemsRunning.put(book_id, text);
+
 			
 			logger.trace("waitForTTSGeneration(...), Launching blocking method waiting for TTS...");
 			response = apiClient.waitForTTS(book_id);
@@ -260,6 +290,9 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 	@Override
 	public void onTTSItemAdded(SpeechTextItem item) {
 		logger.trace("onTTSItemAdded(SpeechTextItem item : {})",item.toJSON());
+		if(ttsItemsRunning.containsKey(item.getBookId())) {
+			ttsItemsRunning.remove(item.getBookId());
+		}
 		dao.addUpdateSpeechItem(item);
 		ttsItems.put(item.getBookId(), item);
 	}

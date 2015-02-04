@@ -144,6 +144,14 @@ define([
             this.Mediator.setNodeArg(iid, 0, value);
         },
       onClickEndEdit: function(e) {
+          // Good place to pre-generate text to speech and save some time
+          if (services.getCoreTTS() != undefined) {
+            $(".ttsInput").each(function(){
+              console.log(this);
+              services.getCoreTTS().prepareTTS($(this).val());
+            });
+          }
+
         this.model.set("body", this.Mediator.programJSON);
         this.model.set("modified", false);
         this.model.set("isNew", "false");
