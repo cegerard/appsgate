@@ -170,7 +170,7 @@ define([
 
         // reset the selection because a node was added
         this.setCurrentPos(-1);
-        //dispatcher.trigger("refreshDisplay"); // Non necessaire, setCurrentPos fait dŽjˆ un trigger
+        //dispatcher.trigger("refreshDisplay"); // Non necessaire, setCurrentPos fait dï¿½jï¿½ un trigger
       },
       /**
       * Method to append a node to the program
@@ -420,6 +420,16 @@ define([
 			}
 		  });
 		}
+        if (services.getCoreTTS() != undefined) {
+          $(input).find(".ttsInput").autocomplete({
+            source: services.getCoreTTS().getTTSItemsText(),
+            minLength: 0,
+            close: function(event, ui) {
+              dispatcher.trigger("changeArgValue", $(this).attr("target-id"), $(this).attr("target-index"), $(this).val());
+
+            }
+          });
+        }
 
         return input;
       },

@@ -11,14 +11,19 @@ import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Implementation;
 import fr.imag.adele.apam.Instance;
 import fr.imag.adele.apam.impl.ComponentBrokerImpl;
+import appsgate.lig.persistence.MongoDBConfiguration;
 import appsgate.lig.tts.yakitome.AdapterListener;
+import appsgate.lig.tts.yakitome.DAOSpeechTextItems;
 import appsgate.lig.tts.yakitome.YakitomeAPI;
+import appsgate.lig.tts.yakitome.utils.DAOSpeechTextItemsMongo;
 
 public class YakitomeAdapter extends Thread implements AdapterListener{
 	
 	
+	
+	
 	public YakitomeAdapter() {
-		apiClient = new YakitomeAPIClient();
+		apiClient = new YakitomeAPIClient(this);
 		// api key registered for smarthome.inria at gmail.com
 		apiClient.configure("5otuvhvboadAgcLPwy69P", "Juliette", -1);
 	}
@@ -35,6 +40,10 @@ public class YakitomeAdapter extends Thread implements AdapterListener{
 	YakitomeAPI apiClient;
 	
 	Instance ttsInstance;
+	
+	MongoDBConfiguration dbConfig;
+	DAOSpeechTextItems dao;
+	
 	
 	@Override
 	public void run() {
@@ -81,7 +90,24 @@ public class YakitomeAdapter extends Thread implements AdapterListener{
 			} else {
 				logger.trace("checkAndUpdateTTSInstance(),"
 						+ "no ApAM instance already existing with the same configuration");
-				createTTSInstance();
+				if(dbConfig != null) {
+					logger.trace("checkAndUpdateTTSInstance(),"
+							+ "dbConfig is there, everything ready to create an ApAM instance");
+					if(dao == null || !dao.testService()) {
+						// First step try to create a new dao object
+						dao = new DAOSpeechTextItemsMongo(dbConfig, this);
+					}
+					if(dao == null || !dao.testService()) {
+						// if the service (created just above) does not work properly,
+						// make sure to destroy it destroy it
+						dao = null;
+					} else {
+						createTTSInstance();
+					}
+				} else {
+					logger.warn("checkAndUpdateTTSInstance(),"
+							+ "dbConfig is not (yet ?) there, can't ApAM instance");						
+				}
 
 				
 			}			
@@ -110,7 +136,7 @@ public class YakitomeAdapter extends Thread implements AdapterListener{
 		}
 		
 		logger.trace("createTTSInstance(), instance created");
-		((TTSServiceImpl)ttsInstance.getServiceObject()).configure(apiClient, this);
+		((TTSServiceImpl)ttsInstance.getServiceObject()).configure(apiClient, dao);
 		logger.trace("createTTSInstance(), bound to api and adapter");
 	}
 	
@@ -131,7 +157,9 @@ public class YakitomeAdapter extends Thread implements AdapterListener{
 	@Override
 	public void serviceUnavailable() {
 		logger.trace("serviceUnavailable()");
-		checkAndUpdateTTSInstance();		
+		if(ttsInstance != null) {
+			checkAndUpdateTTSInstance();
+		}
 	}	
 
 	

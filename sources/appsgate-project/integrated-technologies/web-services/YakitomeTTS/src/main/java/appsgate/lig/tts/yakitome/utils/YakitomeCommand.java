@@ -16,7 +16,6 @@ import org.apache.felix.service.command.Descriptor;
 
 import appsgate.lig.tts.CoreTTSService;
 import appsgate.lig.tts.yakitome.impl.TTSServiceImpl;
-import appsgate.lig.tts.yakitome.impl.YakitomeAdapter;
 
 /**
  * Gogo command that helps show retrieve information from the service without having to implement a client
@@ -39,7 +38,7 @@ public class YakitomeCommand {
 	    "deleteSpeechText",
 	    "waitForTTSGeneration",
 	    "asynchronousTTSGeneration",
-	    "getTTSItemMatchingSentence"
+	    "getTTSItemMatchingText"
     };
 
     PrintStream out = System.out;
@@ -100,12 +99,12 @@ public class YakitomeCommand {
 	}
     
     @Descriptor("check if a Speech item as already been generated upon the text")
-	public void getTTSItemMatchingSentence(@Descriptor("text") String... args) {
+	public void getTTSItemMatchingText(@Descriptor("text") String... args) {
     	CoreTTSService tts= getTTSInst();
     	
     	if(tts!= null) {
     		if(args.length>=1) {
-        		tts.getTTSItemMatchingSentence(args[0]);
+        		tts.getTTSItemMatchingText(args[0]);
     		} else {
     			System.out.println("no argument provided");
     		}

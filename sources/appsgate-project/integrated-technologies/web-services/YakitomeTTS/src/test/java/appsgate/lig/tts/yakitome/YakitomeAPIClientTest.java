@@ -40,7 +40,7 @@ public class YakitomeAPIClientTest {
 
 	@Before
 	public void setUp() throws Exception {
-		testing = new YakitomeAPIClient();
+		testing = new YakitomeAPIClient(new AdapterListenerMock());
 		// api key registered for smarthome.inria at gmail.com
 		testing.configure("5otuvhvboadAgcLPwy69P", "Juliette", -1);
 

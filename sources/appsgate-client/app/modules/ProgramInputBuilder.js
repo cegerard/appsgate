@@ -90,14 +90,16 @@ define([
                 return "ERROR";
             }
             switch (jsonNode.type) {
+                case "stopMyself":
+                    this.stopMyself = true;
                 case "action":
 				case "action0":
 				case "action1":
 				case "action2":
 				case "action3":
-                case "stopMyself":
                     deletable = true;
                     input += this.buildActionNode(param);
+                    this.stopMyself = false;
                     break;
                 case "if":
                     deletable = true;
@@ -340,6 +342,9 @@ define([
             return devices.get(id) != undefined;
         },
         getProgramState: function(id) {
+            if (this.stopMyself) {
+                return "";
+            }
             p = programs.get(id);
             if (p == undefined) {
                 this.isValid = false;

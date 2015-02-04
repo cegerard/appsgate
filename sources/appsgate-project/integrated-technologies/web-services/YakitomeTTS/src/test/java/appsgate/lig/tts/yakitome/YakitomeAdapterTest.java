@@ -1,7 +1,5 @@
 package appsgate.lig.tts.yakitome;
 
-import static org.junit.Assert.*;
-
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -12,7 +10,6 @@ import org.junit.Test;
 
 import appsgate.lig.tts.yakitome.impl.TTSServiceImpl;
 import appsgate.lig.tts.yakitome.impl.YakitomeAPIClient;
-import appsgate.lig.tts.yakitome.impl.YakitomeAdapter;
 
 public class YakitomeAdapterTest {
 
@@ -30,12 +27,12 @@ public class YakitomeAdapterTest {
 
 	@Before
 	public void setUp() throws Exception {
-		YakitomeAPI api = new YakitomeAPIClient();
+		YakitomeAPI api = new YakitomeAPIClient(new AdapterListenerMock());
 		// api key registered for smarthome.inria at gmail.com
 		api.configure("5otuvhvboadAgcLPwy69P", "Juliette", -1);
 
 		testing = new TTSServiceImpl();
-		testing.configure(api,null);
+		testing.configure(api,new DAOSpeechTextItemsMock());
 
 	}
 
@@ -50,7 +47,7 @@ public class YakitomeAdapterTest {
 		int book_id = testing.asynchronousTTSGeneration(sample);
 		Assert.assertTrue("book_id not valid", book_id>0);
 		while(counter<20&& !found) {
-			int id = testing.getTTSItemMatchingSentence(sample);
+			int id = testing.getTTSItemMatchingText(sample);
 			if(id==book_id) {
 				found = true;
 			} else {
@@ -75,14 +72,14 @@ public class YakitomeAdapterTest {
 
 		int book_id = testing.waitForTTSGeneration(sample);
 		Assert.assertTrue("book_id not valid", book_id>0);
-		int id = testing.getTTSItemMatchingSentence(sample);
+		int id = testing.getTTSItemMatchingText(sample);
 		Assert.assertTrue("TTS should have been generated and stored with same id", id==book_id);
 		
 		JSONObject responseFour = testing.deleteSpeechText(book_id);
 		Assert.assertTrue("A MSG shoud be provided in the response ", responseFour.has(YakitomeAPIClient.MSG_RESPONSE_KEY));
 		Assert.assertEquals("Message shoud be MSG = DELETED",YakitomeAPIClient.DELETED_MSG_RESPONSE_VALUE, responseFour.getString(YakitomeAPIClient.MSG_RESPONSE_KEY));
 		
-		id = testing.getTTSItemMatchingSentence(sample);
+		id = testing.getTTSItemMatchingText(sample);
 		Assert.assertTrue("TTS should have been removed from local list", id==0);
 		
 		JSONObject response = testing.getSpeechTextStatus(book_id);	

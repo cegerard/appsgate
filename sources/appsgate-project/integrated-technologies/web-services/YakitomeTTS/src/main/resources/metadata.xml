@@ -4,6 +4,9 @@
                               
 	<implementation name="YakitomeAdapter" classname="appsgate.lig.tts.yakitome.impl.YakitomeAdapter">
 	    <callback onInit="start" onRemove="stopIt"/>
+        <relation implementation="MongoDBConfiguration" field="dbConfig" resolve="exist" creation="eager"
+            added="checkAndUpdateTTSInstance" removed="checkAndUpdateTTSInstance">
+        </relation>	    
 	</implementation>
 
     

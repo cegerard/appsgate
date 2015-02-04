@@ -299,12 +299,11 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 
 
 	private void onUpnPEvent( UPnPEvent event) {
-		logger.debug("onUpnPEvent( UPnPEvent event)" +
-				", deviceId = "+event.getDeviceId() +
-				", serviceId = "+event.getServiceId() +
-				", events = "+event.getEvents());
-
 		if(event != null) {
+			logger.debug("onUpnPEvent( UPnPEvent event)" +
+					", deviceId = "+event.getDeviceId() +
+					", serviceId = "+event.getServiceId() +
+					", events = "+event.getEvents());			
 			Dictionary events = event.getEvents();
 			Enumeration<String> variables = events.keys();
 			while( variables.hasMoreElements()) {
