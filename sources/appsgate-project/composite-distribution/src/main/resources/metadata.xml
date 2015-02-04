@@ -41,6 +41,10 @@
 
             <start implementation="YakitomeServices" name="YakitomeServicesInst"></start>
             
+            <start implementation="LocalAudioPlayer" name="LocalAudioPlayerInst"></start>
+            
+            
+            
         </contentMngt>
 
     </composite>
