@@ -186,13 +186,21 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 	public int waitForTTSGeneration(String text) {
 		logger.trace("waitForTTSGeneration(String text : {})",text);
 		int book_id = getTTSItemMatchingText(text);
+		JSONObject response;
 		if(book_id >0) {
-			logger.trace("waitForTTSGeneration(...), Text to speech already generated : "+book_id);
-			return book_id;
+			logger.trace("waitForTTSGeneration(...), found book_id: "+book_id);
+			if(!ttsItemsRunning.containsKey(book_id)) {
+				logger.trace("waitForTTSGeneration(...), Text to speech already generated : "+book_id);
+				return book_id;
+			} else {
+				logger.trace("waitForTTSGeneration(...), Text to speech NOT generated");
+			}
 		}
+				
+			
 		try {
 			logger.trace("waitForTTSGeneration(), step one generation of Text : "+text);
-			JSONObject response=new JSONObject();
+			response=new JSONObject();
 			try{
 				response = apiClient.textToSpeech(text);
 			} catch (ServiceException e) {
