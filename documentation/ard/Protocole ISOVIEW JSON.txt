@@ -1,0 +1,647 @@
+
+                      Protocole ISOVIEW JSON
+
+Dans la documentation, les JSONs sont formatés pour plus de lisibilité.
+Dans la réalité, il peuvent l'être ou non, mais on préférera ne pas formater pour limiter la taille des messages.
+
+La taille maximum pour une Question est 400. Pour les Réponses, il n'y a pas vraiement de limite.
+
+------------------------------------------------------------------------------------------------------------------
+* Question : SETUP OK
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "get_date_time"             // Récupération de la date et de l'heure.
+    }
+  Réponse :
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "get_date_time",            // Récupération de la date et de l'heure.
+      "timestamp" : n,                        // Date time Unix.
+      "date" : "YYYY/MM/DD",                  // Date.
+      "result" : true                         // OK.
+    }
+-----------------------------------------------------------------------------------------------------------------------
+* Question : SETUP OK
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "set_output",               // Définition d'une sortie.
+      "output_idx" : n,                       // Index de la sortie.
+      "name" : string,                        // Nom de la sortie. (20 caractères)
+    }
+  Réponse :
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "set_output",               // Définition d'une sortie.
+      "output_idx" : n,                       // Index de la sortie.
+      "name" : string,                        // Nom de la sortie. (20 caractères)
+      "result" : true                         // OK.
+    }
+-----------------------------------------------------------------------------------------------------------------------
+* Question : SETUP OK
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "get_output",               // Lecture de l'etat d'une sortie.
+      "output_idx" : n                        // Index de la sortie.
+    }
+  Réponse :
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "get_output",               // Lecture de l'etat d'une sortie.
+      "output_idx" : n,                       // Index de la sortie.
+      "name" : string,                        // Nom de la sortie. (20 caractères)
+      "status" : true,                        // Etat de la sortie true ou false.
+      "forced" : true,                        // Etat de forçage de la sortie true ou false.
+      "result" : true                         // OK.
+    }
+-----------------------------------------------------------------------------------------------------------------------
+* Question : SETUP OK
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "force_output",             // Forcer l'etat d'une sortie.
+      "output_idx" : n,                       // Index de la sortie.
+      "force" : true                          // Etat demandé de la sortie : true=forcée ON, false=forcée OFF ou null=pas forcée. 
+    }
+  Réponse :
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "force_output",             // Forcer l'etat d'une sortie.
+      "output_idx" : n,                       // Index de la sortie.
+      "force" : true,                         // Etat demandé de la sortie : true=force ON, false=force OFF ou null=not forced. 
+      "status" : true,                        // Etat de la sortie true ou false.
+      "forced" : true,                        // Etat de forçage de la sortie true ou false.
+      "result" : true                         // OK.
+    }
+-----------------------------------------------------------------------------------------------------------------------
+* Question : SETUP OK
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "set_input",                // Définition d'une entrée.
+      "input_idx" : n,                        // Index de l'entrée.
+      "name" : string,                        // Nom de l'entrée. (20 caractères)
+      "apparition_tt" : n,                    // Code de télétransmission pour apparition (WORD)
+      "disparition_tt" : n                    // Code de télétransmission pour disparition (WORD)
+    }
+  Réponse :
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "set_input",                // Définition d'une entrée.
+      "input_idx" : n,                        // Index de l'entrée.
+      "name" : string,                        // Nom de l'entrée. (20 caractères)
+      "apparition_tt" : n,                    // Code de télétransmission pour apparition (WORD)
+      "disparition_tt" : n,                   // Code de télétransmission pour disparition (WORD)
+      "result" : true                         // OK.
+    }
+-----------------------------------------------------------------------------------------------------------------------
+* Question : SETUP OK
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "get_input",                // Lecture de l'etat d'une entrée.
+      "input_idx" : n                         // Index de l'entrée.
+    }
+  Réponse :
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "get_input",                // Lecture de l'etat d'une entrée.
+      "input_idx" : n,                        // Index de l'entrée.
+      "name" : string,                        // Nom de l'entrée. (20 caractères)
+      "apparition_tt" : n,                    // Code de télétransmission pour apparition (WORD)
+      "disparition_tt" : n,                   // Code de télétransmission pour disparition (WORD)
+      "status" : true,                        // Etat de l'entrée true ou false.
+      "ejected" : true,                       // True si l'entrée est éjectée.
+      "result" : true                         // OK.
+    }
+-----------------------------------------------------------------------------------------------------------------------
+* Question : SETUP OK
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "force_input",              // Forcer l'etat d'une entrée.
+      "input_idx" : n,                        // Index de l'entrée.
+      "status" : true,                        // Nouvel état de l'entrée true, false ou null (ne pas changer l'état).
+      "ejected" : true                        // Etat d'ejection de l'entrée : true, false ou null (ne pas changer l'éjection).
+    }
+  Réponse :
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "force_input",              // Forcer l'etat d'une entrée.
+      "input_idx" : n,                        // Index de l'entrée.
+      "status" : true,                        // Nouvel état de l'entrée : true ou false.
+      "ejected" : true,                       // Etat d'ejection de l'entrée : true ou false.
+      "result" : true                         // OK.
+    }
+-----------------------------------------------------------------------------------------------------------------------
+* Question : SETUP NA
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "set_conf_tt",              // Configuration de la télétransmission.
+      "code_site" : "ARD GAP",                // Code du site pour le télétransmetteur (40 caractères).
+      "main_number" : "0123456789",           // Numéro de téléphone principal du télétransmetteur (40 caractères).
+      "backup_number" : "0123456789",         // Numéro de téléphone de secours du télétransmetteur (40 caractères).
+    }
+  Réponse :
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "set_conf_tt",              // Configuration de la télétransmission.
+      "code_site" : "ARD GAP",                // Code du site pour le télétransmetteur (40 caractères).
+      "main_number" : "0123456789",           // Numéro de téléphone principal du télétransmetteur (40 caractères).
+      "backup_number" : "0123456789",         // Numéro de téléphone de secours du télétransmetteur (40 caractères).
+      "result" : true                         // OK.
+    }
+-----------------------------------------------------------------------------------------------------------------------
+* Question : SETUP NA
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "get_conf_tt"               // Configuration de la télétransmission.
+    }
+  Réponse :
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "get_conf_tt",              // Configuration de la télétransmission.
+      "code_site" : "ARD GAP",                // Code du site pour le télétransmetteur (40 caractères).
+      "main_number" : "0123456789",           // Numéro de téléphone principal du télétransmetteur (40 caractères).
+      "backup_number" : "0123456789",         // Numéro de téléphone de secours du télétransmetteur (40 caractères).
+      "result" : true                         // OK.
+    }
+
+
+-----------------------------------------------------------------------------------------------------------------------
+* Question : ACCESS OK
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "reset_card_read"           // Effacer le numéro de dernier badge lu.
+    }
+  Réponse :
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "reset_card_read",          // Effacer le numéro de dernier badge lu.
+      "result" : true                         // OK.
+    }
+-----------------------------------------------------------------------------------------------------------------------
+* Question : ACCESS OK
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "door_card_read",           // Récupération du dernier badge lu à une porte.
+      "door_idx" : n                          // Index de la porte.
+    }
+  Réponse :
+    {
+      "request" : "door_card_read",
+      "door_idx" : n                          // Index de la porte.
+      "card_num" : "xxXXxxXXxxXXxxXX",        // Identifiant de carte lue : 8 octets sous forme Hex (BCD si num ARD), cadré à droite, complété à gauche par des 00.
+      "result" : true                         // OK.
+    }
+-----------------------------------------------------------------------------------------------------------------------
+* Question : ACCESS OK
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "reset_card",               // Effacer (supprimer) un badge.
+      "card_idx" : n                          // Index du badge.
+    }
+  Réponse :
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "reset_card",               // Effacer (supprimer) un badge.
+      "card_idx" : n,                          // Index du badge.
+      "result" : true                         // OK.
+    }
+-----------------------------------------------------------------------------------------------------------------------
+* Question : ACCESS OK ( Pas de réponse, mais un event "RAZ..."
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "reset_all_cards"           // RAZ de toute la table des badges.
+    }
+  Réponse :
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "reset_all_cards",          // RAZ de toute la table des badges.
+      "result" : true                         // OK.
+    }
+-----------------------------------------------------------------------------------------------------------------------
+* Question : ACCESS OK
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "set_card",                 // Création / Modification d'un Badge.
+      "card_idx" : n,                         // Index du badge.
+      "card_num" : "xxXXxxXXxxXXxxXX",        // Identifiant de carte lue : 8 octets sous forme Hex (BCD si num ARD), cadré à droite, complété à gauche par des 00.
+      "name" : string,                        // Nom du porteur du badge. (20 caractères)
+      "cat_idx" : n,                          // Index de catégorie. (profil)
+      "validity_start": "YYYY/MM/DD hh:mn:ss",// Date et heure de début de validité.
+      "validity_end": "YYYY/MM/DD hh:mn:ss",  // Date et heure de fin de validité.
+      "validity": true | false                // Valide ou invalide le badge.
+    }
+  Réponse :
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "set_card",                 // Création / Modification d'un Badge.
+      "card_idx" : n,                         // Index du badge.
+      "card_num" : "xxXXxxXXxxXXxxXX",        // Identifiant de carte lue : 8 octets sous forme Hex (BCD si num ARD), cadré à droite, complété à gauche par des 00.
+      "name" : string,                        // Nom du porteur du badge. (20 caractères)
+      "cat_idx" : n,                          // Index de catégorie. (profil)
+      "validity_start": "YYYY/MM/DD hh:mn:ss",// Date et heure de début de validité.
+      "validity_end": "YYYY/MM/DD hh:mn:ss",  // Date et heure de fin de validité.
+      "validity": true | false,               // Valide ou invalide le badge.
+      "result" : true                         // OK.
+    }
+-----------------------------------------------------------------------------------------------------------------------
+* Question : ACCESS OK
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "get_card",                 // Lecture d'un Badge.
+      "card_idx" : n,                         // Index du badge.
+    }
+  Réponse :
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "get_card",                 // Lecture d'un Badge.
+      "card_idx" : n,                         // Index du badge.
+      "card_num" : "xxXXxxXXxxXXxxXX",        // Identifiant de carte lue : 8 octets sous forme Hex (BCD si num ARD), cadré à droite, complété à gauche par des 00.
+      "name" : string,                        // Nom du porteur du badge. (20 caractères)
+      "cat_idx" : n,                          // Index de catégorie. (profil)
+      "validity_start": "YYYY/MM/DD hh:mn:ss",// Date et heure de début de validité.
+      "validity_end": "YYYY/MM/DD hh:mn:ss",  // Date et heure de fin de validité.
+      "validity": true | false,               // Valide ou invalide le badge.
+      "result" : true                         // OK.
+    }
+-----------------------------------------------------------------------------------------------------------------------
+* Question : ACCESS OK
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "reset_cat",                // Effacer une catégorie.
+      "cat_idx" : n                           // Index de la catégorie.
+    }
+  Réponse :
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "reset_cat",                // Effacer une catégorie.
+      "cat_idx" : n,                          // Index de la catégorie.
+      "result" : true                         // OK.
+    }
+-----------------------------------------------------------------------------------------------------------------------
+* Question : ACCESS OK
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "set_cat"                   // Definition de la catégorie.
+      "cat_idx" : n,                          // Index de la catégorie.
+      "name" : string,                        // Nom de la catégorie. (20 caractères)
+      "doors" :                               // Liste des portes (1 à 16) autorisées.
+      [
+          n,                                  // Index de porte
+        ...
+      ]
+    }
+  Réponse :
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "set_cat"                   // Definition de la catégorie.
+      "cat_idx" : n,                          // Index de la catégorie.
+      "name" : string,                        // Nom de la catégorie. (20 caractères)
+      "doors" :                               // Liste des portes (1 à 16) autorisées.
+      [
+          n,                                  // Index de porte
+        ...
+      ],
+      "result" : true                         // OK.
+    }
+-----------------------------------------------------------------------------------------------------------------------
+* Question : ACCESS OK
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "get_cat",                  // Lecture d'une Catégorie
+      "cat_idx" : n                           // Index de la catégorie.
+    }
+  Réponse :
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "get_cat",                  // Lecture d'une Catégorie.
+      "cat_idx" : n,                          // Index de catégorie. (profil)
+      "name" : string,                        // Nom de la catégorie. (20 caractères)
+      "doors" :                               // Liste des portes (1 à 16) autorisées.
+      [
+          n,                                  // Index de porte
+        ...
+      ],
+      "result" : true                         // OK.
+    }
+-----------------------------------------------------------------------------------------------------------------------
+* Question : ACCESS OK
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "reset_door",               // Effacer une porte.
+      "door_idx" : n                          // Index de la porte.
+    }
+  Réponse :
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "reset_door",               // Effacer une porte.
+      "door_idx" : n,                         // Index de la porte.
+      "result" : true                         // OK.
+    }
+-----------------------------------------------------------------------------------------------------------------------
+* Question : ACCESS OK
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "set_door",                 // Définition d'une porte.
+      "door_idx" : n,                         // Index de la porte.
+      "name" : string,                        // Nom de la porte. (20 caractères)
+    }
+  Réponse :
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "set_door",                 // Définition d'une porte.
+      "door_idx" : n,                         // Index de la porte.
+      "name" : string,                        // Nom de la porte. (20 caractères)
+      "result" : true                         // OK.
+    }
+-----------------------------------------------------------------------------------------------------------------------
+* Question : ACCESS OK
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "get_door",                 // Définition d'une porte.
+      "door_idx" : n                          // Index de la porte.
+    }
+  Réponse :
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "get_door",                 // Définition d'une porte.
+      "door_idx" : n,                         // Index de la porte.
+      "name" : string,                        // Nom de la porte. (20 caractères)
+      "result" : true                         // OK.
+    }
+-----------------------------------------------------------------------------------------------------------------------
+* Question : ZONE OK
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "reset_zone",               // Effacer une zone.
+      "zone_idx" : n                          // Index de la zone.
+    }
+  Réponse :
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "reset_zone",               // Effacer une zone.
+      "zone_idx" : n,                          // Index de la zone.
+      "result" : true                         // OK.
+    }
+-----------------------------------------------------------------------------------------------------------------------
+* Question : ZONE OK
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "set_zone",                 // Définition d'une zone.
+      "zone_idx" : n,                         // Index de la zone.
+      "name" : string,                        // Nom de la zone. (20 caractères)
+      "seq_on_idx" : n,                       // Index de la séquence lors de la mise en surveillance de la zone.
+      "seq_on_tt" : n,                        // Code de télétransmission lors de la mise en surveillance de la zone. (WORD)
+      "seq_off_idx" : n,                      // Index de la séquence lors de la mise hors surveillance de la zone.
+      "seq_off_tt" : n,                       // Code de télétransmission lors de la mise hors surveillance de la zone. (WORD)
+      "seq_eject_idx" : n,                    // Index de la séquence lors de la mise en surveillance de la zone si des points sont éjectés.
+      "seq_eject_tt" : n,                     // Code de télétransmission lors de la mise en surveillance de la zone si des points sont éjectés. (WORD)
+      "points" :                              // Définition des points.
+      [
+        n, ...                                // Index des entrées.
+      ]
+    }
+  Réponse :
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "set_zone",                 // Définition d'une zone.
+      "zone_idx" : n,                         // Index de la zone.
+      "name" : string,                        // Nom de la zone. (20 caractères)
+      "seq_on_idx" : n,                       // Index de la séquence lors de la mise en surveillance de la zone.
+      "seq_on_tt" : n,                        // Code de télétransmission lors de la mise en surveillance de la zone. (WORD)
+      "seq_off_idx" : n,                      // Index de la séquence lors de la mise hors surveillance de la zone.
+      "seq_off_tt" : n,                       // Code de télétransmission lors de la mise hors surveillance de la zone. (WORD)
+      "seq_eject_idx" : n,                    // Index de la séquence lors de la mise en surveillance de la zone si des points sont éjectés.
+      "seq_eject_tt" : n,                     // Code de télétransmission lors de la mise en surveillance de la zone si des points sont éjectés. (WORD)
+      "points" :                              // Définition des points.
+      [
+        n, ...                                // Index des entrées.
+      ],
+      "result" : true                         // OK.
+    }
+-----------------------------------------------------------------------------------------------------------------------
+* Question : ZONE OK
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "get_zone",                 // Lecture de l'etat d'une zone.
+      "input_idx" : n                         // Index de la zone.
+    }
+  Réponse :
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "get_zone",                 // Lecture de l'etat d'une zone.
+      "input_idx" : n,                        // Index de la zone.
+      "name" : string,                        // Nom de la zone. (20 caractères)
+      "seq_on_idx" : n,                       // Index de la séquence lors de la mise en surveillance de la zone.
+      "seq_on_tt" : n,                        // Code de télétransmission lors de la mise en surveillance de la zone. (WORD)
+      "seq_off_idx" : n,                      // Index de la séquence lors de la mise hors surveillance de la zone.
+      "seq_off_tt" : n,                       // Code de télétransmission lors de la mise hors surveillance de la zone. (WORD)
+      "seq_eject_idx" : n,                    // Index de la séquence lors de la mise en surveillance de la zone si des points sont éjectés.
+      "seq_eject_tt" : n,                     // Code de télétransmission lors de la mise en surveillance de la zone si des points sont éjectés. (WORD)
+      "active" : true | false,                // Zone en surveillance ou non.
+      "alarm" : true | false,                 // En surveillance : au moins un point en alame.
+      "eject" : true | false                  // Au moins un point ejecté.
+      "points" :                              // Définition des points.
+      [
+        n, ...                                // Index des entrées.
+      ],
+      "result" : true                         // OK.
+    }
+-----------------------------------------------------------------------------------------------------------------------
+* Question : ZONE OK
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "activate_zone",            // Mise en service
+      "zone_idx" : n                         // Index de la zone.
+    }
+  Réponse :
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "activate_zone",            // Mise en service
+      "zone_idx" : n,                        // Index de la zone.
+      "result" : true                         // OK.
+    }
+-----------------------------------------------------------------------------------------------------------------------
+* Question : ZONE OK
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "deactivate_zone",          // Mise hors service
+      "zone_idx" : n                         // Index de la zone.
+    }
+  Réponse :
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "deactivate_zone",          // Mise hors service
+      "result" : true                         // OK.
+    }
+-----------------------------------------------------------------------------------------------------------------------
+* Question : ZONE OK
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "test_zone",                // Pré alarme : retourne la liste des points en défaut (non éjectés).
+      "zone_idx" : n                         // Index de la zone.
+    }
+  Réponse :
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "test_zone",                // Pré alarme : retourne la liste des points en défaut (non éjectés).
+      "zone_idx" : n,                        // Index de la zone.
+      "points" :                              // Liste des points en défaut.
+      [
+        n, ...                                // Index des entrées.
+      ],
+      "result" : true                         // OK.
+    }
+-----------------------------------------------------------------------------------------------------------------------
+* Question : ZONE OK
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "set_sequence",             // Définition du nom de la séquence.
+      "seq_idx" : n,                          // Index de la sequence.
+      "name" : string                         // Nom de la sequence. (20 caractères)
+    }
+  Réponse :
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "set_sequence",             // Définition du nom de la séquence.
+      "seq_idx" : n,                          // Index de la sequence.
+      "name" : string                         // Nom de la sequence. (20 caractères)
+      "result" : true                         // OK.
+    }
+-----------------------------------------------------------------------------------------------------------------------
+* Question : ZONE OK
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "get_sequence",             // Lecture du nom de la séquence.
+      "seq_idx" : n                           // Index de la sequence.
+    }
+  Réponse :
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "set_sequence",             // Définition du nom de la séquence.
+      "seq_idx" : n,                          // Index de la sequence.
+      "name" : string                         // Nom de la sequence. (20 caractères)
+      "result" : true                         // OK.
+    }
+-----------------------------------------------------------------------------------------------------------------------
+* Question : ZONE OK
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "start_sequence",           // Lancemenent d'une séquence.
+      "seq_idx" : n                           // Index de la sequence.
+    }
+  Réponse :
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "start_sequence",           // Lancemenent d'une séquence.
+      "seq_idx" : n,                          // Index de la sequence.
+      "result" : true                         // OK.
+    }
+-----------------------------------------------------------------------------------------------------------------------
+* Question : EVENT OK
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "subscribe",                // Abonnement pour la réception des événements.
+      "timestamp" : n,                        // Timestamp du dernier événement reçu (0 si première fois).
+      "event_idx" : n                         // Index du dernier événement reçu(0 si première fois).
+    }
+  Réponse :
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "subscribe",                // Abonnement pour la réception des événements.
+      "timestamp" : n,                        // Timestamp du dernier événement reçu (0 si première fois).
+      "event_idx" : n,                        // Index du dernier événement reçu(0 si première fois).
+      "count" : n,                            // Nombre d'événements disponible depuis le dernier événement reçu.
+      "result" : true                         // OK.
+    }
+-----------------------------------------------------------------------------------------------------------------------
+* Question : EVENT OK
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "get_events"                // Lecture d'événements 
+      "timestamp" : n,                        // Timestamp du dernier événement reçu (0 si première fois).
+      "event_idx" : n                         // Index du dernier événement reçu(0 si première fois).
+    }
+  Réponse :
+    {
+      "req_id" : n,                           // Request id : de 0x0001 à 0xFFFF
+      "request" : "get_events",               // Lecture d'événements.
+      "timestamp" : n,                        // Timestamp du dernier événement reçu (0 si première fois). (Copie de la question)
+      "event_idx" : n,                        // Index du dernier événement reçu(0 si première fois). (Copie de la question)
+      "events" :                              // Les événements (max 20).
+      [
+        // Voir "event" plus loin.
+        ...
+      ]
+      "result" : true                         // OK.
+    }
+-----------------------------------------------------------------------------------------------------------------------
+*  Evénement : EVENT OK
+    {
+      "event" :                               // Un événement.
+      {
+        "timestamp" : n,                      // Timestamp de l'événement.
+        "event_idx" : n,                      // Index de l'événement.
+        "class" : "system",                   // Classe de l'événement parmis : "system", "zone", "sequence", "output", "input", "card"
+
+        => Le reste dépend de la classe de l'événement :
+
+        "class" : "system",                   // Evénement system
+          "cause" : "reset",                  // Redémarrage d'isoview
+          "version" : n                       // Version d'isoview. 300 => 3.00
+          OU
+          "cause" : "reinit",                 // Réinititialistaion de la base de données.
+          "version" : n                       // Version d'isoview. 300 => 3.00
+          OU
+          "cause" : "date_time",              // Changement de date et heure
+          "date" : "YYYY/MM/DD"               // Date (sans heure...)
+          OU
+          "cause" : "archives",               // Débordement de capacité des archives (On a fait le tour du tableau)
+          "version" : n                       // Version d'isoview. 300 => 3.00
+
+        "class" : "zone",                     // Evénement de zone
+          "zone_idx" : n,                     // Index de zone
+          "active" : true                     // Indique que la zone change d'état.
+          OU
+          "input_idx" : n,                    // Index de l'entrée.
+          "ejected" : true                    // Ejection ou réintégration d'un point dans la zone.
+          OU
+          "input_idx" : n,                    // Index de l'entrée.
+          "eject" : true,                     // Il y a ou non des points éjecté dans la zone.
+          "active" : true,                    // La zone est active ou non.
+       		"alarm" : true                      // La zone est en alarme ou non.
+
+        "class" : "sequence",                 // Evénement de lancement de séquence
+          "seq_idx" : n                         // Index de la sequence lancée
+
+        "class" : "output",                   // Evénement de sortie
+          "output_idx" : n,                     // Index de la sortie
+          "old_status" : true,                  // Ancien état
+          "new_status" : true                   // Nouvel état
+
+        "class" : "input",                    // Evénement d'entrée
+          "input_idx" : n,                      // Index de l'entrée
+          "old_status" : true,                  // Ancien état
+          "new_status" : true                   // Nouvel état
+          "old_ejected" : true,                 // Ancien état d'éjection
+          "new_ejected" : true                  // Nouvel état d'éjection
+
+        "class" : "card",                     // Evénement concernant les badges.
+          "cause" : "raz_cards"               // Pas de status, la table des badges à été effacée.
+          OU
+          // Fonction du status :
+          "status" : "ok",                    // Badge accepté
+          "door_idx" : n,                     // Index de la porte ayant lu le badge.
+          "card_idx" : n                      // Index du badge.
+          OU
+          "status" : "ko",                    // Badge refusé
+          "door_idx" : n,                     // Index de la porte ayant lu le badge.
+          "card_idx" : n,                     // Index du badge.
+          "cause" : "Bloked card"             // Cause du refus parmis : "Bloked card", "Invalid card", "Not yet valid card", "No more valid card", "No rights", "Refused door", "Invalid rights", "Timezone off", "Invalid door" ou "??" (Inconnue)
+          OU
+          "status" : "??",                    // Badge inconnu.
+          "door_idx" : n,                     // Index de la porte ayant lu le badge.
+          "card_c1" : n,                      // Dernier chiffre du badge.
+          "card_c2" : n,                      // Avant dernier chiffre du badge.
+          "card_c3" : n,                      // .. chiffre du badge.
+          "card_c4" : n,                      // .. chiffre du badge.
+          "card_c5" : n,                      // .. chiffre du badge.
+      }
+    }

@@ -1,0 +1,209 @@
+{
+  "doors": [
+    {
+      "id": "door_1",
+      "door_idx": 1,
+      "item_type": "door",
+      "name": "Entrée"
+    },
+    {
+      "id": "door_2",
+      "door_idx": 2,
+      "item_type": "door",
+      "name": "Garage"
+    }
+  ],
+  "cats": [
+    {
+      "id": "cat_1",
+      "doors": [
+        1,
+        2
+      ],
+      "cat_idx": 1,
+      "item_type": "cat",
+      "name": "Authorize"
+    },
+    {
+      "id": "cat_2",
+      "doors": [
+        1,
+        2
+      ],
+      "cat_idx": 2,
+      "item_type": "cat",
+      "name": "Non-authorize"
+    }
+  ],
+  "inputs": [
+    {
+      "id": "input_1",
+      "disparition_tt": 102,
+      "apparition_tt": 101,
+      "status": false,
+      "ejected": false,
+      "name": "input_1",
+      "input_idx": 1,
+      "item_type": "input"
+    },
+    {
+      "id": "input_2",
+      "disparition_tt": 102,
+      "apparition_tt": 101,
+      "status": false,
+      "ejected": false,
+      "name": "ENO1c169",
+      "input_idx": 2,
+      "item_type": "input"
+    },
+    {
+      "id": "input_3",
+      "disparition_tt": 104,
+      "apparition_tt": 103,
+      "status": false,
+      "ejected": false,
+      "name": "input_3",
+      "input_idx": 3,
+      "item_type": "input"
+    }
+  ],
+  "sequences": [
+    {
+      "id": "seq_1",
+      "seq_idx": 1,
+      "item_type": "seq",
+      "name": "Mise en fonction"
+    },
+    {
+      "id": "seq_2",
+      "seq_idx": 2,
+      "item_type": "seq",
+      "name": "Mise hors fonction"
+    },
+    {
+      "id": "seq_3",
+      "seq_idx": 3,
+      "item_type": "seq",
+      "name": "Ejection de point"
+    }
+  ],
+  "zones": [
+    {
+      "seq_on_tt": 1,
+      "eject": false,
+      "seq_off_idx": 2,
+      "zone_idx": 1,
+      "id": "zone_1",
+      "seq_off_tt": 2,
+      "alarm": false,
+      "name": "Interieur",
+      "active": true,
+      "seq_eject_tt": 3,
+      "points": [
+        2
+      ],
+      "seq_eject_idx": 3,
+      "item_type": "zone",
+      "seq_on_idx": 1
+    },
+    {
+      "seq_on_tt": 4,
+      "eject": true,
+      "seq_off_idx": 2,
+      "zone_idx": 2,
+      "id": "zone_2",
+      "seq_off_tt": 5,
+      "alarm": false,
+      "name": "Exterieure",
+      "active": true,
+      "seq_eject_tt": 6,
+      "points": [
+        3
+      ],
+      "seq_eject_idx": 3,
+      "item_type": "zone",
+      "seq_on_idx": 1
+    }
+  ],
+  "outputs": [
+    {
+      "id": "output_1",
+      "output_idx": 1,
+      "item_type": "output",
+      "name": "Sirène extérieur"
+    },
+    {
+      "id": "output_2",
+      "output_idx": 2,
+      "item_type": "output",
+      "name": "Lumière extérieur"
+    }
+  ],
+  "conf_tts": [
+    {
+      "id": "conf_tt_1",
+      "conf_tt_idx": 1,
+      "main_number": "0101010101",
+      "backup_number": "0202020202",
+      "item_type": "conf_tt",
+      "code_site": "ARD GAP"
+    }
+  ],
+  "cards": [
+    {
+      "id": "card_1",
+      "card_idx": 1,
+      "validity_start": "2014\/01\/01 12:00:00",
+      "cat_idx": 1,
+      "validity_end": "2024\/12\/31 23:59:59",
+      "validity": true,
+      "name": "Monsieur",
+      "card_num": "0004481C629F3180",
+      "item_type": "card"
+    },
+    {
+      "id": "card_2",
+      "card_idx": 2,
+      "validity_start": "2014\/01\/01 12:00:00",
+      "cat_idx": 1,
+      "validity_end": "2024\/12\/31 23:59:59",
+      "validity": true,
+      "name": "Madame",
+      "card_num": "00043351629F3180",
+      "item_type": "card"
+    },
+    {
+      "id": "card_3",
+      "card_idx": 3,
+      "validity_start": "2014\/01\/01 12:00:00",
+      "cat_idx": 1,
+      "validity_end": "2024\/12\/31 23:59:59",
+      "validity": true,
+      "name": "Junior",
+      "card_num": "0004344B629F3180",
+      "item_type": "card"
+    },
+    {
+      "id": "card_4",
+      "card_idx": 4,
+      "validity_start": "2014\/01\/01 12:00:00",
+      "cat_idx": 2,
+      "validity_end": "2014\/12\/31 23:59:59",
+      "validity": true,
+      "name": "Jardinier",
+      "card_num": "00043350629F3180",
+      "item_type": "card"
+    },
+    {
+      "id": "card_5",
+      "card_idx": 5,
+      "validity_start": "2014\/01\/01 12:00:00",
+      "cat_idx": 2,
+      "validity_end": "2015\/12\/31 23:59:59",
+      "validity": true,
+      "name": "Cuisinière",
+      "card_num": "00000000F441C793",
+      "item_type": "card"
+    }
+  ]
+}

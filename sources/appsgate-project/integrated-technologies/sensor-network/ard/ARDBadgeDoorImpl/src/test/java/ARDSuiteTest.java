@@ -22,7 +22,7 @@ public class ARDSuiteTest {
     public void before() throws IOException, JSONException {
 
         String host=System.getProperty("ard.host","192.168.1.7");
-        Integer port=Integer.parseInt(System.getProperty("ard.port","2004"));
+        Integer port=Integer.parseInt(System.getProperty("ard.port","2003"));
 
         logger.info("ARD, connecting to the host {}:{}",host,port);
 
@@ -219,34 +219,27 @@ public class ARDSuiteTest {
     }
 
     @Test
-    public void fetch10Elements() throws JSONException, InterruptedException, IOException {
+    public void testForceInput() throws JSONException, InterruptedException, IOException {
+
+        //Attention!! Atençao!! Achtung!! It's not possible to change state for the index 1
+        final Integer DOOR_IDX=2;
 
         subscriptionTest();
 
-        for(int index=1;index<2;index++){
-            System.out.println("*** iterating index:"+index);
-            try {
-                JSONObject response=ard.sendSyncRequest(new GetInputRequest(index)).getResponse();
-                //System.out.println("response:"+response.get);
-                /*
-                if(response!=null&&response.getString("name").trim().equals(name)){
-                    System.out.println("name got from response:"+response.getString("name"));
-                    System.out.println("name i ve been looking for:"+name);
-                    System.out.println("*** found index:"+index);
-                    //forceInput(index,state);
-                    return;
-                }
-                */
-            } catch (JSONException e) {
-                logger.error("Failed to recover zones recorded in the HUB ARD");
-            }
+        //Get current value
+        JSONObject response1=ard.sendSyncRequest(new GetInputRequest(DOOR_IDX)).getResponse();
+        Boolean currentState=response1.getBoolean("status");
+        Boolean newState=!currentState;
 
-        }
-/*
-        ARDFutureResponse response=ard.sendSyncRequest(new DeactivateZoneRequest(1));
-        Assert.assertTrue(response.getResponse()!=null);
-        System.out.println("Response:"+response.getResponse().toString());
-*/
+        //Change the value for the input
+        JSONObject response2=ard.sendSyncRequest(new ForceInputRequest(DOOR_IDX,newState,null)).getResponse();
+
+        //Get the current value to evaluate is the value changed
+        JSONObject response3=ard.sendSyncRequest(new GetInputRequest(DOOR_IDX)).getResponse();
+        System.out.println("After:"+response3.getString("status"));
+
+        Assert.assertTrue(response3.getBoolean("result")&&(response3.getBoolean("status")==newState));
+
         Thread.sleep(2000);
 
     }

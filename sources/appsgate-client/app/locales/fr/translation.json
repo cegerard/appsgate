@@ -120,13 +120,13 @@
       "false":"Faux",
       "with-the-value":"avec la valeur",
       "action": {
-        "zone-activate": "Activer surveillance sur __myVar__",
-        "zone-desactivate": "Désactiver surveillance sur __myVar__",
+        "zone-activate": "Activer surveillance pour la zone __myVar__",
+        "zone-desactivate": "Désactiver surveillance pour la zone __myVar__",
         "force-input": "Signaler au système d'alarme __myVar__ une entrée dans la zone "
       },
       "keyboard": {
-        "zone-activate": "Activer surveillance sur ...",
-        "zone-desactivate": "Désactiver surveillance sur ...",
+        "zone-activate": "Activer surveillance pour la zone ...",
+        "zone-desactivate": "Désactiver surveillance pour la zone ...",
         "force-input": "Signaler au système d'alarme une entrée dans la zone ..."
       },
       "event": {
@@ -145,7 +145,7 @@
       "negative": "Non",
       "state": {
         "authorized": "l'accès du badge a été autorisé par ARD",
-        "non_authorized": "l'accès du badge n'a pas été autorisé par __myVar__",
+        "non_authorized": "l'accès du badge n'a pas été autorisé par ARD",
         "alarm_fired": "alarme déclenchée par ARD"
       }
     },
