@@ -120,13 +120,13 @@
       "false":"False",
       "with-the-value":"with value",
       "action": {
-        "zone-activate": "Activate alarm on __myVar__",
-        "zone-desactivate": "Desactivate alarm on __myVar__",
+        "zone-activate": "Activate alarm on the zone __myVar__",
+        "zone-desactivate": "Desactivate alarm on the zone __myVar__",
         "force-input": "Signal an entry in the central of alarm __myVar__ in zone"
       },
       "keyboard": {
-        "zone-activate": "Activate alarm on ...",
-        "zone-desactivate": "Desactivate alarm on ...",
+        "zone-activate": "Activate alarm on the zone ...",
+        "zone-desactivate": "Desactivate alarm on the zone ...",
         "force-input": "Signal an entry in the central of alarm in zone ..."
       },
       "event": {
@@ -144,9 +144,9 @@
       },
       "negative": "No",
       "state": {
-        "authorized": "a badge is authorized by __myVar__",
-        "non_authorized": "a badge is NOT authorized by __myVar__",
-        "alarm_fired": "an alarm is detected by __myVar__"
+        "authorized": "a badge is authorized by ARD",
+        "non_authorized": "a badge is NOT authorized by ARD",
+        "alarm_fired": "an alarm is detected by ARD"
       }
     },
     "avg": "Avg : ",
