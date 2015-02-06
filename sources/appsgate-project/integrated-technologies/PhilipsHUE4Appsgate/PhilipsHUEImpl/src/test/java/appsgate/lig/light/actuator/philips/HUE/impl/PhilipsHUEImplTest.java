@@ -71,7 +71,7 @@ public class PhilipsHUEImplTest extends CoreObjectBehaviorTest {
     public void testgetHTMLColor() {
         lamp.setBlue();
         String c = lamp.getHTMLColor();
-        Assert.assertEquals("#B50000", c);
+        Assert.assertEquals("#B40000", c);
     }
 
 }
