@@ -356,7 +356,7 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
     public void apamMessageReceived(NotificationMsg mesg){
 
             if(mesg.getVarName().equals("contact")){
-                syncAppsgateContactWithARDInput(mesg.getSource().getAbstractObjectId(),Boolean.parseBoolean(mesg.getNewValue()));
+                syncAppsgateContactWithARDInput(mesg.getSource().getAbstractObjectId(),!Boolean.parseBoolean(mesg.getNewValue()));
                 logger.debug("Apam Message received var name {} old value {} new value {}", mesg.getVarName(), mesg.getOldValue(),mesg.getNewValue());
             }
 
