@@ -351,7 +351,7 @@ define([
                 return "absent";
             }
             if (p.get("runningState") == "INVALID") {
-                this.isValid = false;
+                this.isComplete = false;
                 return "invalid";
             }
             return "";
