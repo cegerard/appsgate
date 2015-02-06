@@ -1,11 +1,13 @@
 define([
     "app",
-    "text!templates/dependancy/graph.html"
-], function (App, GraphTemplate) {
+    "text!templates/dependancy/graph.html",
+	"text!templates/home/loadingWidget.html"
+], function (App, GraphTemplate, LoadingTemplate) {
 
 	var GraphView = {};
 
 	GraphView = Backbone.View.extend({
+		loadingTemplate: _.template(LoadingTemplate),
 		template: _.template(GraphTemplate),
 
 		events: {
@@ -34,23 +36,22 @@ define([
 				force.start();
 			});
 
-			// TODO = Improvements -> Sometimes more than one message is processed
-
-			// Update the graph when the modifications does not need to reload it to build new data structures (ie rename place)
-			dispatcher.on("UpdateGraph", function (place) {
-				//				console.log("graph update");
-				//				force.stop();
-				//				self.update(self.model);
-				//				force.start();
+			// Update the graph when the modifications need to reload
+			self.listenTo(dispatcher, "UpdateGraph", function (place) {
+				console.log("show");
+				$("#graph>.loading-widget").show();
+				dependancies.updateDependency();
 			});
 
-			// Update the graph when the modifications need to reload it to build new data structures (ie new entity)
-			dispatcher.on("UpdateGraphLoad", function (place) {
-				//				if (appRouter.currentView === self) {
-				//					console.log("graph reload for update");
-				//					// Reload this page to refresh data
-				//					appRouter.dependancies();
-				//				}
+			// Listener to the end of an update. Hide the loading widget and update the graph and restart the force
+			self.listenTo(dispatcher, "UpdateGraphFinished", function () {
+				dependancies.isUpdate = false;
+
+				console.log("hide");
+				$("#graph>.loading-widget").hide();
+				force.stop();
+				self.update(self.model);
+				force.start();
 			});
 
 			// Zoom variables
@@ -59,6 +60,9 @@ define([
 			onMouseDownNode = false;
 			// Used to hide the popups relations
 			onCircleRelation = false;
+
+			ENTITY_WIDTH = 24;
+			ENTITY_FOCUS_WIDTH = ENTITY_WIDTH * 1.5;
 		},
 
 		onRefreshButton: function () {
@@ -302,8 +306,8 @@ define([
 						.attr('opacity', 0)
 						.attr('x', -12)
 						.attr('y', -12)
-						.attr('width', 24)
-						.attr('height', 24);
+						.attr('width', ENTITY_WIDTH)
+						.attr('height', ENTITY_WIDTH);
 					// TEXT
 					d3.select(this).append("text")
 						.attr("class", "label-name")
@@ -318,17 +322,29 @@ define([
 					// shape STATUS PROGRAMS
 					// Type program, add form to indicate running or not. 
 					if (a.type === "program") {
+						//						if (a.state === "DEPLOYED" || a.state === "INVALID" || a.state === "INCOMPLETE") {
+						//							d3.select(this).append("rect")
+						//								.attr("class", "shape-program")
+						//								.attr("x", function (m) {
+						//									return 0
+						//								})
+						//								.attr("y", function (m) {
+						//									return 0
+						//								})
+						//								.attr("width", 11)
+						//								.attr("height", 11)
+						//								.attr('opacity', 0);
+						//						} else if (a.state === "PROCESSING" || a.state === "LIMPING") {
+						//							d3.select(this).append("svg:path")
+						//								.attr("class", "shape-program")
+						//								.attr("d", "M0,-7L14,0L0,7L0,-7")
+						//								.attr('opacity', 0);
+						//						}
+
 						if (a.state === "DEPLOYED" || a.state === "INVALID" || a.state === "INCOMPLETE") {
-							d3.select(this).append("rect")
+							d3.select(this).append("svg:path")
 								.attr("class", "shape-program")
-								.attr("x", function (m) {
-									return 0
-								})
-								.attr("y", function (m) {
-									return 0
-								})
-								.attr("width", 11)
-								.attr("height", 11)
+								.attr("d", "M0,-7L0,7L14,7L14,-7L0,-7")
 								.attr('opacity', 0);
 						} else if (a.state === "PROCESSING" || a.state === "LIMPING") {
 							d3.select(this).append("svg:path")
@@ -382,8 +398,8 @@ define([
 						.attr("marker-end", function (d) {
 							return "url(#" + d.type + ")";
 						})
-						
-						.attr("refX", -30);
+
+					.attr("refX", -30);
 					// PATH TEXT
 					d3.select(this).append("svg:path")
 						.attr("class", function (d) {
@@ -492,6 +508,10 @@ define([
 				})
 				.classed("fixedNode", function (d) {
 					return d !== self.model.get("rootNode") && d.fixed && !$(this).hasClass("nodeOver");
+				})
+				.classed("visible", function (d) {
+					var maxR = ENTITY_FOCUS_WIDTH / 2;
+					return (0 < d.x + maxR) && (d.x - maxR < self.model.get("width")) && (0 < d.y + maxR) && (d.y - maxR < self.model.get("height"));
 				});
 
 			nodeEntity.selectAll("circle")
@@ -504,10 +524,18 @@ define([
 					return "translate(5,10)";
 				})
 				.classed("circle-device-state-true", function (d) {
-					return (d.deviceState === true || d.deviceState === "true");
+					if (d.deviceType && d.deviceType === "3") {
+						return (d.deviceState === false || d.deviceState === "false");
+					} else {
+						return (d.deviceState === true || d.deviceState === "true");
+					}
 				})
 				.classed("circle-device-state-false", function (d) {
-					return (d.deviceState === false || d.deviceState === "false");
+					if (d.deviceType && d.deviceType === "3") {
+						return (d.deviceState === true || d.deviceState === "true");
+					} else {
+						return (d.deviceState === false || d.deviceState === "false");
+					}
 				});
 
 			nodeEntity.selectAll("text")
@@ -522,6 +550,13 @@ define([
 			nodeEntity.selectAll(".shape-program")
 				.attr("transform", function (d) {
 					return "translate(3,10)";
+				})
+				.attr("d", function (d) {
+					if (d.state === "PROCESSING" || d.state === "LIMPING") {
+						return "M0,-7L14,0L0,7L0,-7";
+					} else {
+						return "M0,-7L0,7L14,7L14,-7L0,-7";
+					}
 				})
 				.classed("program-invalid", function (d) {
 					return d.state === "INVALID";

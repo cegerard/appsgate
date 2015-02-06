@@ -41,70 +41,59 @@ define([
 			});
 
 			/**** Event binding to have dynamic update ****/
-
-			dispatcher.on("updatePlace", function (place) {
+			self.listenTo(dispatcher, "updatePlace", function (place) {
 				console.log("updatePlace");
-				var placeUpdated = _.find(self.get("entities"), function (e) {
-					return e.id === place.id;
-				});
-				var placeUpdatedCurrent = _.find(self.get("currentEntities"), function (e) {
-					return e.id === place.id;
-				});
-
-				placeUpdated.name = place.name;
-				placeUpdatedCurrent.name = place.name;
-
 				dispatcher.trigger("UpdateGraph");
 			});
 
-			dispatcher.on("newPlace", function (place) {
+			self.listenTo(dispatcher, "newPlace", function (place) {
 				console.log("newPlace");
-				dispatcher.trigger("UpdateGraphLoad");
+				dispatcher.trigger("UpdateGraph");
 			});
 
-			dispatcher.on("removePlace", function (place) {
+			self.listenTo(dispatcher, "removePlace", function (place) {
 				console.log("removePlace");
-				dispatcher.trigger("UpdateGraphLoad");
+				dispatcher.trigger("UpdateGraph");
 			});
 
-			dispatcher.on("moveDevice", function (messageData) {
+			self.listenTo(dispatcher, "moveDevice", function (messageData) {
 				console.log("moveDevice");
-				dispatcher.trigger("UpdateGraphLoad");
+				dispatcher.trigger("UpdateGraph");
 			});
 
-			dispatcher.on("newDevice", function (messageData) {
+			self.listenTo(dispatcher, "newDevice", function (messageData) {
 				console.log("newDevice");
-				dispatcher.trigger("UpdateGraphLoad");
+				dispatcher.trigger("UpdateGraph");
 			});
 
-			dispatcher.on("removeDevice", function (messageData) {
+			self.listenTo(dispatcher, "removeDevice", function (messageData) {
 				console.log("removeDevice");
-				dispatcher.trigger("UpdateGraphLoad");
+				dispatcher.trigger("UpdateGraph");
 			});
 
-			dispatcher.on("newProgram", function (program) {
+			self.listenTo(dispatcher, "newProgram", function (program) {
 				console.log("newProgram");
-				dispatcher.trigger("UpdateGraphLoad");
+				dispatcher.trigger("UpdateGraph");
 			});
 
-			dispatcher.on("removeProgram", function (program) {
+			self.listenTo(dispatcher, "removeProgram", function (program) {
 				console.log("removeProgram");
-				dispatcher.trigger("UpdateGraphLoad");
+				dispatcher.trigger("UpdateGraph");
 			});
 
-			dispatcher.on("updateProgram", function (program) {
+			self.listenTo(dispatcher, "updateProgram", function (program) {
 				console.log("updateProgram");
-				dispatcher.trigger("UpdateGraphLoad");
+				dispatcher.trigger("UpdateGraph");
 			});
 
-			dispatcher.on("newService", function (service) {
+			self.listenTo(dispatcher, "newService", function (service) {
 				console.log("newService");
-				dispatcher.trigger("UpdateGraphLoad");
+				dispatcher.trigger("UpdateGraph");
 			});
 
-			dispatcher.on("removeService", function (serviceId) {
+			self.listenTo(dispatcher, "removeService", function (serviceId) {
 				console.log("removeService");
-				dispatcher.trigger("UpdateGraphLoad");
+				dispatcher.trigger("UpdateGraph");
 			});
 
 		},
@@ -132,6 +121,8 @@ define([
 		},
 
 		loadData: function (jsonData) {
+			var self = this;
+
 			// Creation of the data structure : relations / entities / neighbors
 			var relationsNotSorted = jsonData.links,
 				entities = identifyService(jsonData.nodes),
@@ -152,10 +143,96 @@ define([
 
 			// Bind event ID
 			_.each(this.get("currentEntities"), function (e) {
-				dispatcher.on(e.id, function () {
-					dispatcher.trigger("UpdateGraphLoad");
+				self.listenTo(dispatcher, e.id, function (arg) {
+					// Before trigger check is it is an event we really want to process
+					if (self.checkFireEvent(arg)) {
+						dispatcher.trigger("UpdateGraph");
+					}
 				});
 			});
+		},
+
+		/**
+		 * Method to check if the event in parameter have to trigger event and be processed. This prevent to process no needed event (event from the program's nodes, etc)
+		 * @param evt : Event to check
+		 */
+		checkFireEvent: function (evt) {
+			// List of events from entites we process
+			var eventFiringUpdate = ["runningState", "inserted", "name", "contact", "plugState"];
+			return (evt.varName && _.contains(eventFiringUpdate, evt.varName));
+		},
+
+		/**
+		 * Method the update the model with new data.
+		 * @param jsonData : JSON with the new graph data
+		 */
+		updateModel: function (jsonData) {
+			var self = this;
+
+			// Get the entities from the JSON after the processing of identify services etc
+			var entities = identifyService(jsonData.nodes);
+
+			var oldEntities = self.get("entities");
+			var initialLengthOld = oldEntities.length;
+			var oldEntitiesUpdated = [];
+
+			// For each entites in the model, check if a visible property has changed. If yes, update the existing data in the model
+			_.each(entities, function (e) {
+				// Get the corresponding entity in the model
+				var oldE = _.find(oldEntities, function (o) {
+					return o.id === e.id;
+				});
+
+				// !== if it exists
+				if (oldE !== undefined) {
+					// Check the different visible properties
+					if (oldE.name && oldE.name != e.name) {
+						oldE.name = e.name;
+					}
+					if (oldE.state && oldE.state != e.state) {
+						oldE.state = e.state;
+					}
+					if (oldE.deviceState && oldE.deviceState != e.deviceState) {
+						oldE.deviceState = e.deviceState;
+					}
+					// Save all the entites which has been seen
+					oldEntitiesUpdated.push(oldE);
+				} else {
+					// New entity, push it
+					oldEntities.push(e);
+					// Listening events from this entity
+					self.listenTo(dispatcher, e.id, function (arg) {
+						// Before trigger check is it is an event we really want to process
+						if (self.checkFireEvent(arg)) {
+							dispatcher.trigger("UpdateGraph");
+						}
+					});
+				}
+			});
+
+			// Entities have been delete
+			if (oldEntitiesUpdated.length < initialLengthOld) {
+				// Get all the entities deleted
+				var oldEntitiesDeleted = oldEntities.filter(function (e) {
+					return !_.contains(oldEntitiesUpdated, e);
+				});
+				// Stop listening event from these entities and delete them from the model
+				_.each(oldEntitiesDeleted, function (entityToDelete) {
+					self.stopListening(dispatcher, entityToDelete.id);
+					oldEntities.splice(oldEntities.indexOf(entityToDelete), 1);
+				});
+			}
+
+			var relations = processRelationsID(jsonData.links, oldEntities),
+				neighbors = buildNeighborsMap(relations);
+
+			this.set({
+				relations: relations,
+				neighbors: neighbors,
+			});
+
+			self.updateEntitiesShown();
+
 		},
 
 		/**
@@ -423,6 +500,13 @@ define([
 			}
 
 			return nbWritingReferences;
+		},
+
+		/**
+		 * Method to manually detach all the event listened
+		 */
+		detachEvents: function () {
+			this.stopListening();
 		}
 
 	});

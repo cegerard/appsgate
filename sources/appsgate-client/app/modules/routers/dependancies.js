@@ -27,6 +27,9 @@ define([
 
 			$("#main").html(appRouter.navbartemplate());
 
+			// say that we want a refresh after the loadGraph
+			dependancies.refresh();
+			
 			// Send the request to the server to get the graph
 			communicator.sendMessage({
 				method: "getGraph",
@@ -87,6 +90,9 @@ define([
 
 			$("#main").html(appRouter.navbartemplate());
 
+			// say that we want a refresh after the loadGraph
+			dependancies.refresh();
+			
 			// Send the request to the server to get the graph
 			communicator.sendMessage({
 				method: "getGraph",

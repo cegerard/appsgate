@@ -1132,3 +1132,14 @@ fieldset[disabled] .btn {
 	font-style: normal;
 	font-weight: bold;
 } 
+
+#graph > .loading-widget {
+	display: none;
+	width: 0.4em;
+	height: 0.4em;
+	position: absolute;
+	bottom: 0px;
+	right: 0px;
+	margin-bottom: 30px;
+	margin-right: 30px;
+}
