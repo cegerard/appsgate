@@ -734,9 +734,9 @@
   },
   "modal-schedule-program": {
     "title": "Schedule the program in AppsGate's Google Calendar",
-    "schedule-activation": "Planifier l'activation du programme",
-    "schedule-deactivation": "Planifier la désactivation du programme",
-    "schedule-both": "Planifier l'activation et la désactivation du programme"
+    "schedule-activation": "Schedule the start of the program",
+    "schedule-deactivation": "Schedule the stop of the program",
+    "schedule-both": "Schedule start and stop of the program"
   },
   "modal-edit-service": {
     "name-already-existing": "Name of existing service",
