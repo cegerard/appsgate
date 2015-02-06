@@ -10,8 +10,8 @@ import appsgate.lig.colorLight.actuator.spec.CoreColorLightSpec;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
+import appsgate.lig.light.actuator.philips.HUE.impl.utils.HSBColor;
 import appsgate.lig.proxy.PhilipsHUE.interfaces.PhilipsHUEServices;
-import java.awt.Color;
 
 /**
  * This class is the AppsGate implementation of ColorLightSpec for Philips HUE
@@ -826,11 +826,17 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
      * @return html value of the color
      */
     protected String getHTMLColor() {
+    	
+    	HSBColor hsb = new HSBColor((int)this.getLightColor(), this.getSat(), this.getBri());
+    	return hsb.toRGB().getHTMLColor();
+    	
+    	/* Removed to avoid java.awt dependency
         float h = (float) Math.max(0.0, Math.min(this.getLightColor() / 65535.0, 1.0));
         float s = (float) Math.max(0.0, Math.min(this.getSat() / 254.0, 1.0));
         float b = (float) Math.max(0.0, Math.min(this.getBri() / 254.0, 1.0));
         Color c = Color.getHSBColor(h, s, b);
         return String.format("#%02X%02X%02X", c.getRed(), c.getGreen(), c.getBlue());
+        */
     }
 
     /**
