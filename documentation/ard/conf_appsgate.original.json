@@ -1,0 +1,451 @@
+{
+  "doors": [
+    {
+      "id": "door_1",
+      "door_idx": 1,
+      "item_type": "door",
+      "name": "Entrée"
+    },
+    {
+      "id": "door_2",
+      "door_idx": 2,
+      "item_type": "door",
+      "name": "Garage"
+    },
+    {
+      "id": "door_3",
+      "door_idx": 3,
+      "item_type": "door",
+      "name": "Salon"
+    },
+    {
+      "id": "door_4",
+      "door_idx": 4,
+      "item_type": "door",
+      "name": "Portillon"
+    },
+    {
+      "id": "door_5",
+      "door_idx": 5,
+      "item_type": "door",
+      "name": "Portail"
+    }
+  ],
+  "cats": [
+    {
+      "id": "cat_1",
+      "doors": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "cat_idx": 1,
+      "item_type": "cat",
+      "name": "Propriétaire"
+    },
+    {
+      "id": "cat_2",
+      "doors": [
+        1,
+        4
+      ],
+      "cat_idx": 2,
+      "item_type": "cat",
+      "name": "Enfant"
+    },
+    {
+      "id": "cat_3",
+      "doors": [
+        4,
+        5
+      ],
+      "cat_idx": 3,
+      "item_type": "cat",
+      "name": "Personnel extérieur"
+    },
+    {
+      "id": "cat_4",
+      "doors": [
+        1,
+        4,
+        5
+      ],
+      "cat_idx": 4,
+      "item_type": "cat",
+      "name": "Personnel intérieur"
+    }
+  ],
+  "inputs": [
+    {
+      "id": "input_1",
+      "disparition_tt": 102,
+      "apparition_tt": 101,
+      "status": false,
+      "ejected": false,
+      "name": "ENO1c169",
+      "input_idx": 1,
+      "item_type": "input"
+    },
+    {
+      "id": "input_2",
+      "disparition_tt": 104,
+      "apparition_tt": 103,
+      "status": false,
+      "ejected": false,
+      "name": "Portail",
+      "input_idx": 2,
+      "item_type": "input"
+    },
+    {
+      "id": "input_3",
+      "disparition_tt": 106,
+      "apparition_tt": 105,
+      "status": false,
+      "ejected": false,
+      "name": "Clôture",
+      "input_idx": 3,
+      "item_type": "input"
+    },
+    {
+      "id": "input_4",
+      "disparition_tt": 108,
+      "apparition_tt": 107,
+      "status": false,
+      "ejected": false,
+      "name": "Porche",
+      "input_idx": 4,
+      "item_type": "input"
+    },
+    {
+      "id": "input_5",
+      "disparition_tt": 110,
+      "apparition_tt": 109,
+      "status": false,
+      "ejected": false,
+      "name": "Facade",
+      "input_idx": 5,
+      "item_type": "input"
+    },
+    {
+      "id": "input_6",
+      "disparition_tt": 112,
+      "apparition_tt": 111,
+      "status": false,
+      "ejected": false,
+      "name": "Terrasse",
+      "input_idx": 6,
+      "item_type": "input"
+    },
+    {
+      "id": "input_7",
+      "disparition_tt": 114,
+      "apparition_tt": 113,
+      "status": false,
+      "ejected": false,
+      "name": "Porte entrée",
+      "input_idx": 7,
+      "item_type": "input"
+    },
+    {
+      "id": "input_8",
+      "disparition_tt": 116,
+      "apparition_tt": 115,
+      "status": false,
+      "ejected": false,
+      "name": "Porte garage",
+      "input_idx": 8,
+      "item_type": "input"
+    },
+    {
+      "id": "input_9",
+      "disparition_tt": 118,
+      "apparition_tt": 117,
+      "status": false,
+      "ejected": false,
+      "name": "Porte fenêtre salon",
+      "input_idx": 9,
+      "item_type": "input"
+    },
+    {
+      "id": "input_10",
+      "disparition_tt": 120,
+      "apparition_tt": 119,
+      "status": false,
+      "ejected": false,
+      "name": "Fenêtre cuisine",
+      "input_idx": 10,
+      "item_type": "input"
+    },
+    {
+      "id": "input_11",
+      "disparition_tt": 122,
+      "apparition_tt": 121,
+      "status": false,
+      "ejected": false,
+      "name": "Fenêtre chambre 1",
+      "input_idx": 11,
+      "item_type": "input"
+    },
+    {
+      "id": "input_12",
+      "disparition_tt": 124,
+      "apparition_tt": 123,
+      "status": false,
+      "ejected": false,
+      "name": "Fenêtre chambre 2",
+      "input_idx": 12,
+      "item_type": "input"
+    },
+    {
+      "id": "input_13",
+      "disparition_tt": 126,
+      "apparition_tt": 125,
+      "status": false,
+      "ejected": false,
+      "name": "Fenêtre bureau",
+      "input_idx": 13,
+      "item_type": "input"
+    },
+    {
+      "id": "input_14",
+      "disparition_tt": 128,
+      "apparition_tt": 127,
+      "status": false,
+      "ejected": false,
+      "name": "Cuisine",
+      "input_idx": 14,
+      "item_type": "input"
+    },
+    {
+      "id": "input_15",
+      "disparition_tt": 130,
+      "apparition_tt": 129,
+      "status": false,
+      "ejected": false,
+      "name": "Salon",
+      "input_idx": 15,
+      "item_type": "input"
+    },
+    {
+      "id": "input_16",
+      "disparition_tt": 132,
+      "apparition_tt": 131,
+      "status": false,
+      "ejected": false,
+      "name": "Chambre 1",
+      "input_idx": 16,
+      "item_type": "input"
+    },
+    {
+      "id": "input_17",
+      "disparition_tt": 144,
+      "apparition_tt": 133,
+      "status": false,
+      "ejected": false,
+      "name": "Chambre 2",
+      "input_idx": 17,
+      "item_type": "input"
+    },
+    {
+      "id": "input_18",
+      "disparition_tt": 136,
+      "apparition_tt": 135,
+      "status": false,
+      "ejected": false,
+      "name": "Bureau",
+      "input_idx": 18,
+      "item_type": "input"
+    }
+  ],
+  "sequences": [
+    {
+      "id": "seq_1",
+      "seq_idx": 1,
+      "item_type": "seq",
+      "name": "Mise en fonction"
+    },
+    {
+      "id": "seq_2",
+      "seq_idx": 2,
+      "item_type": "seq",
+      "name": "Mise hors fonction"
+    },
+    {
+      "id": "seq_3",
+      "seq_idx": 3,
+      "item_type": "seq",
+      "name": "Ejection de point"
+    }
+  ],
+  "zones": [
+    {
+      "seq_on_tt": 1,
+      "eject": false,
+      "seq_off_idx": 2,
+      "zone_idx": 1,
+      "id": "zone_1",
+      "seq_off_tt": 2,
+      "alarm": false,
+      "name": "Enceinte",
+      "active": true,
+      "seq_eject_tt": 3,
+      "points": [
+        1,
+        2,
+        3
+      ],
+      "seq_eject_idx": 3,
+      "item_type": "zone",
+      "seq_on_idx": 1
+    },
+    {
+      "seq_on_tt": 4,
+      "eject": true,
+      "seq_off_idx": 2,
+      "zone_idx": 2,
+      "id": "zone_2",
+      "seq_off_tt": 5,
+      "alarm": false,
+      "name": "Jardin",
+      "active": true,
+      "seq_eject_tt": 6,
+      "points": [
+        4,
+        5,
+        6
+      ],
+      "seq_eject_idx": 3,
+      "item_type": "zone",
+      "seq_on_idx": 1
+    },
+    {
+      "seq_on_tt": 7,
+      "eject": false,
+      "seq_off_idx": 2,
+      "zone_idx": 3,
+      "id": "zone_3",
+      "seq_off_tt": 8,
+      "alarm": false,
+      "name": "Maison",
+      "active": true,
+      "seq_eject_tt": 9,
+      "points": [
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "seq_eject_idx": 3,
+      "item_type": "zone",
+      "seq_on_idx": 1
+    },
+    {
+      "seq_on_tt": 10,
+      "eject": false,
+      "seq_off_idx": 2,
+      "zone_idx": 4,
+      "id": "zone_4",
+      "seq_off_tt": 11,
+      "alarm": false,
+      "name": "Intérieur",
+      "active": true,
+      "seq_eject_tt": 12,
+      "points": [
+        14,
+        15,
+        16,
+        17,
+        18
+      ],
+      "seq_eject_idx": 3,
+      "item_type": "zone",
+      "seq_on_idx": 1
+    }
+  ],
+  "outputs": [
+    {
+      "id": "output_1",
+      "output_idx": 1,
+      "item_type": "output",
+      "name": "Sirène extérieur"
+    },
+    {
+      "id": "output_2",
+      "output_idx": 2,
+      "item_type": "output",
+      "name": "Lumière extérieur"
+    }
+  ],
+  "conf_tts": [
+    {
+      "id": "conf_tt_1",
+      "conf_tt_idx": 1,
+      "main_number": "0101010101",
+      "backup_number": "0202020202",
+      "item_type": "conf_tt",
+      "code_site": "ARD GAP"
+    }
+  ],
+  "cards": [
+    {
+      "id": "card_1",
+      "card_idx": 1,
+      "validity_start": "2014\/01\/01 12:00:00",
+      "cat_idx": 1,
+      "validity_end": "2024\/12\/31 23:59:59",
+      "validity": true,
+      "name": "Monsieur",
+      "card_num": "0004481C629F3180",
+      "item_type": "card"
+    },
+    {
+      "id": "card_2",
+      "card_idx": 2,
+      "validity_start": "2014\/01\/01 12:00:00",
+      "cat_idx": 1,
+      "validity_end": "2024\/12\/31 23:59:59",
+      "validity": true,
+      "name": "Madame",
+      "card_num": "00043351629F3180",
+      "item_type": "card"
+    },
+    {
+      "id": "card_3",
+      "card_idx": 3,
+      "validity_start": "2014\/01\/01 12:00:00",
+      "cat_idx": 2,
+      "validity_end": "2024\/12\/31 23:59:59",
+      "validity": true,
+      "name": "Junior",
+      "card_num": "0004344B629F3180",
+      "item_type": "card"
+    },
+    {
+      "id": "card_4",
+      "card_idx": 4,
+      "validity_start": "2014\/01\/01 12:00:00",
+      "cat_idx": 3,
+      "validity_end": "2014\/12\/31 23:59:59",
+      "validity": true,
+      "name": "Jardinier",
+      "card_num": "00043350629F3180",
+      "item_type": "card"
+    },
+    {
+      "id": "card_5",
+      "card_idx": 5,
+      "validity_start": "2014\/01\/01 12:00:00",
+      "cat_idx": 4,
+      "validity_end": "2015\/12\/31 23:59:59",
+      "validity": true,
+      "name": "Cuisinière",
+      "card_num": "00000000F441C793",
+      "item_type": "card"
+    }
+  ]
+}
