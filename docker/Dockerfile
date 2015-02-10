@@ -27,7 +27,7 @@ ENV PATH $M2:$PATH
 RUN git clone https://github.com/appsgate2015/appsgate.git
 WORKDIR appsgate
 RUN mvn install -Pcomplete -DskipTests
-RUN chmod +x /distribution/complete/apam
+RUN chmod +x /distributions/complete/apam
 
 # Copy the run script into the container 
 Add ./scripts/run.sh /data/appsgate/run.sh
