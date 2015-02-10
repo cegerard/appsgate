@@ -15,6 +15,9 @@ define([
       list: function() {
         // display the side menu
         appRouter.showMenuView(new PlaceMenuView());
+		  
+	    // set active the first element - displayed by default
+	    $($($(".aside-menu .list-group")[1]).find(".list-group-item")[0]).addClass("active");
 
         // update the url
         appRouter.navigate("#places/" + places.at(0).get("id"), {replace:true});
