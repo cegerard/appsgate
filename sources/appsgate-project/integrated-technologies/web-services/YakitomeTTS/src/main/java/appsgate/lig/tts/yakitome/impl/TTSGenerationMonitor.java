@@ -12,15 +12,19 @@ public class TTSGenerationMonitor extends Thread {
 	/**
 	 * @param listener
 	 */
-	public TTSGenerationMonitor(int book_id, String text, TTSItemsListener listener, YakitomeAPI ttsAPI) {
+	public TTSGenerationMonitor(int book_id, String text, String voice, int speed, TTSItemsListener listener, YakitomeAPI ttsAPI) {
 		logger.trace("TTSGenerationMonitor(int book_id : {}"
 				+ ", String text : {}"
+				+ ", String voice : {}"
+				+ ", int speed : {}"
 				+ ", TTSItemsListener listener : {}"
-				+ ", YakitomeAPI ttsAPI: {})", book_id, text, listener, ttsAPI);
+				+ ", YakitomeAPI ttsAPI: {})", book_id, text, voice, speed, listener, ttsAPI);
 		this.listener = listener;
 		this.ttsAPI = ttsAPI;
 		this.book_id = book_id;
 		this.text = text;
+		this.voice = voice;
+		this.speed = speed;
 	}
 	
 	@Override
@@ -29,6 +33,8 @@ public class TTSGenerationMonitor extends Thread {
 		try {
 			JSONObject response = ttsAPI.waitForTTS(book_id);
 			response.put(YakitomeAPI.TEXT_KEY, text);
+			response.put(YakitomeAPI.VOICE_KEY, voice);
+			response.put(YakitomeAPI.SPEED_KEY, speed);
 			SpeechTextItem item = new SpeechTextItem(response);
 			if(item != null ) {
 				logger.trace("run(), item found, sending callback message to listener");
@@ -46,4 +52,6 @@ public class TTSGenerationMonitor extends Thread {
 	YakitomeAPI ttsAPI;
 	int book_id;
 	String text;
+	String voice;
+	int speed;
 }

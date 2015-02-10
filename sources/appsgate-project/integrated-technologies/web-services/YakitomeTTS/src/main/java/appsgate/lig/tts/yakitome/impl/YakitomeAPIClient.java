@@ -24,8 +24,7 @@ import appsgate.lig.tts.yakitome.utils.HttpUtils;
  */
 public class YakitomeAPIClient implements YakitomeAPI {
 	public YakitomeAPIClient(AdapterListener adapter) {
-		voice = DEFAULT_VOICE;
-		speed = DEFAULT_SPEED;
+
 		this.adapter = adapter;
 	}
 	
@@ -50,12 +49,18 @@ public class YakitomeAPIClient implements YakitomeAPI {
 	public static final String PARAM_SEPARATOR = "&";
 
 	public static final String API_KEY_PARAM = "api_key=";
-	public static final String VOICE_PARAM = "voice=";
+	public static final String VOICE_PARAM = VOICE_KEY+"=";
 	public static final String TEXT_PARAM = TEXT_KEY+"=";
-	public static final String SPEED_PARAM = "speed=";
-	public static final String BOOK_ID_PARAM = "book_id=";
+	public static final String SPEED_PARAM = SPEED_KEY+"=";
+	public static final String BOOK_ID_PARAM = BOOK_ID_KEY+"=";
 	public static final String FORMAT_PARAM = "format=";
 	public static final String FORMAT_MP3_VALUE = "mp3";
+	
+	public static final String DEFAULT_VOICE = "Juliette";
+	public static final int DEFAULT_SPEED = 5;
+	public static final int MIN_SPEED = 1;
+	public static final int MAX_SPEED = 10;
+	
 	
 	/**
 	 * will only search for the tts generation and audio file for a limited times
@@ -69,8 +74,7 @@ public class YakitomeAPIClient implements YakitomeAPI {
 
 
 	private String api_key_value;
-	private String voice;
-	private String speed;
+
 
 	/**
 	 * flag asserting that configuration (api key and other properties are
@@ -119,7 +123,7 @@ public class YakitomeAPIClient implements YakitomeAPI {
 	 * @see appsgate.lig.tts.yakitome.YakitomeAPI#configure(java.lang.String, java.lang.String, int)
 	 */
 	@Override
-	public void configure(String api_key_value, String voice, int speed) {
+	public void configure(String api_key_value) {
 		isProperlyConfigured = false;
 		isAvailable = false;
 
@@ -127,15 +131,7 @@ public class YakitomeAPIClient implements YakitomeAPI {
 			this.api_key_value = api_key_value;
 		}
 
-		if (speed >= 1 && speed <= 10) {
-			this.speed = String.valueOf(speed);
-		}
-
 		testService();
-
-		if (isAvailable && voice != null && checkVoice(voice)) {
-			this.voice = voice;
-		}
 	}
 	
 	static Map<String, String> initHeaders() {
@@ -163,8 +159,7 @@ public class YakitomeAPIClient implements YakitomeAPI {
 
 		if (isAvailable) {
 			try {
-				JSONObject availableVoices = getVoices().optJSONObject(
-						FREE_VOICES_RESPONSE_VALUE);
+				JSONObject availableVoices = getVoices();
 				if (availableVoices != null) {
 					Iterator it = availableVoices.keys();
 					while (it.hasNext()) {
@@ -212,7 +207,11 @@ public class YakitomeAPIClient implements YakitomeAPI {
 		String result = HttpUtils.sendHttpsPost(YAKITOME_JSON_URL
 				+ VOICES_SERVICE, initHeaders(), urlParameters, null);
 
-		return checkResponse(result);
+		checkResponse(result);
+		
+		JSONObject json = new JSONObject(result);
+		// TODO: change this if we later integrate chaged voices
+		return json.optJSONObject(FREE_VOICES_VALUE);
 	}
 
 	JSONObject checkResponse(String result) throws ServiceException {
@@ -225,28 +224,28 @@ public class YakitomeAPIClient implements YakitomeAPI {
 		}
 
 		JSONObject response = new JSONObject(result);
-		if (response.has(HTTP_STATUS_RESPONSE_KEY)
-				&& response.getInt(HTTP_STATUS_RESPONSE_KEY) != HTTP_STATUS_RESPONSE_VALUE_OK) {
+		if (response.has(HTTP_STATUS_KEY)
+				&& response.getInt(HTTP_STATUS_KEY) != HTTP_STATUS_VALUE_OK) {
 			logger.warn("checkResponse(...), wrong http status : "
-					+ response.getInt(HTTP_STATUS_RESPONSE_KEY));
+					+ response.getInt(HTTP_STATUS_KEY));
 			adapter.serviceUnavailable();
 			throw new ServiceException(
 					"Yakitome service returned wrong http status : "
-							+ response.getInt(HTTP_STATUS_RESPONSE_KEY));
+							+ response.getInt(HTTP_STATUS_KEY));
 		}
 
-		if (response.has(ERROR_CODE_RESPONSE_KEY)
-				&& response.getInt(ERROR_CODE_RESPONSE_KEY) != ERROR_CODE_RESPONSE_VALUE_OK) {
+		if (response.has(ERROR_CODE_KEY)
+				&& response.getInt(ERROR_CODE_KEY) != ERROR_CODE_VALUE) {
 			logger.warn("checkResponse(...), error code : "
-					+ response.getInt(ERROR_CODE_RESPONSE_KEY)
+					+ response.getInt(ERROR_CODE_KEY)
 					+ ", error message : "
-					+ response.optString(MSG_RESPONSE_KEY));
+					+ response.optString(MSG_KEY));
 			adapter.serviceUnavailable();
 			throw new ServiceException(
 					"Yakitome service returned error code : "
-							+ response.getInt(ERROR_CODE_RESPONSE_KEY)
+							+ response.getInt(ERROR_CODE_KEY)
 							+ ", error message : "
-							+ response.optString(MSG_RESPONSE_KEY));
+							+ response.optString(MSG_KEY));
 		}
 
 		return response;
@@ -257,17 +256,41 @@ public class YakitomeAPIClient implements YakitomeAPI {
 	 * @see appsgate.lig.tts.yakitome.YakitomeAPI#textToSpeech(java.lang.String)
 	 */
 	@Override
-	public JSONObject textToSpeech(String text) throws ServiceException {
+	public JSONObject textToSpeech(String text, String voice, int speed) throws ServiceException {
 		Map<String, String> urlParameters = new LinkedHashMap<String, String>();
+		if (!checkVoice(voice)) {
+			throw new ServiceException("Voice does not exist cannot generate Text To Speech"+voice);
+		}
+		
+		
+		
 		urlParameters.put(API_KEY_PARAM, api_key_value);
 		urlParameters.put(PARAM_SEPARATOR + VOICE_PARAM, voice);
-		urlParameters.put(PARAM_SEPARATOR + SPEED_PARAM, speed);
+		urlParameters.put(PARAM_SEPARATOR + SPEED_PARAM, String.valueOf(checkAndgetSpeed(speed)));
 		urlParameters.put(PARAM_SEPARATOR + TEXT_PARAM, text);
 
 		String result = HttpUtils.sendHttpsPost(YAKITOME_JSON_URL
 				+ TTS_SERVICE, initHeaders(), urlParameters, null);
 
 		return checkResponse(result);
+	}
+	
+	@Override
+	public int checkAndgetSpeed(int speed) {
+		logger.trace("checkAndgetSpeed(int speed : {})",speed);
+		if(speed ==0) {
+			logger.trace("checkAndgetSpeed(...), speed is 0, using default value : "+DEFAULT_SPEED);
+			return DEFAULT_SPEED;
+		} else if(speed>MAX_SPEED){
+			logger.trace("checkAndgetSpeed(...), speed is too high using max value: "+MAX_SPEED);
+			return MAX_SPEED;
+		} else if(speed < MIN_SPEED) {
+			logger.trace("checkAndgetSpeed(...), speed is too low using min value: "+MIN_SPEED);
+			return MIN_SPEED;
+		} else {
+			return speed;
+		}
+		
 	}
 
 	/* (non-Javadoc)
@@ -348,14 +371,14 @@ public class YakitomeAPIClient implements YakitomeAPI {
 				logger.trace("waitForTTS(), Service Exception : "+e.getMessage());
 				response = new JSONObject();
 			}
-			if(!response.has(YakitomeAPI.STATUS_RESPONSE_KEY)
-					||YakitomeAPI.STATUS_RUNNING_RESPONSE_VALUE.equals(
-							response.getString(YakitomeAPI.STATUS_RESPONSE_KEY))) {
+			if(!response.has(YakitomeAPI.STATUS_KEY)
+					||YakitomeAPI.STATUS_RUNNING_VALUE.equals(
+							response.getString(YakitomeAPI.STATUS_KEY))) {
 				testCounter++;
 				logger.trace("waitForTTS(), still not generated, research counter : "+testCounter);
 
-			} else if (YakitomeAPIClient.STATUS_DONE_RESPONSE_VALUE.equals(
-					response.getString(YakitomeAPI.STATUS_RESPONSE_KEY))){
+			} else if (YakitomeAPIClient.STATUS_DONE_VALUE.equals(
+					response.getString(YakitomeAPI.STATUS_KEY))){
 				found = true;
 			}
 		}
@@ -383,17 +406,17 @@ public class YakitomeAPIClient implements YakitomeAPI {
 				logger.trace("waitForTTS(), Service Exception : "+e.getMessage());
 				response = new JSONObject();
 			}
-			if(!response.has(YakitomeAPI.STATUS_RESPONSE_KEY)
-					||YakitomeAPI.STATUS_RUNNING_RESPONSE_VALUE.equals(
-							response.getString(YakitomeAPI.STATUS_RESPONSE_KEY))
-					||!response.has(YakitomeAPIClient.AUDIOS_RESPONSE_KEY)
-					||response.getJSONArray(YakitomeAPIClient.AUDIOS_RESPONSE_KEY).length()<1) {
+			if(!response.has(YakitomeAPI.STATUS_KEY)
+					||YakitomeAPI.STATUS_RUNNING_VALUE.equals(
+							response.getString(YakitomeAPI.STATUS_KEY))
+					||!response.has(YakitomeAPIClient.AUDIOS_KEY)
+					||response.getJSONArray(YakitomeAPIClient.AUDIOS_KEY).length()<1) {
 				testCounter++;
 				logger.trace("waitForTTS(), still no audio file, research counter : "+testCounter);
 
-			} else if (YakitomeAPIClient.STATUS_DONE_RESPONSE_VALUE.equals(
-					response.getString(YakitomeAPI.STATUS_RESPONSE_KEY))
-					&& response.getJSONArray(YakitomeAPIClient.AUDIOS_RESPONSE_KEY).length()>0){
+			} else if (YakitomeAPIClient.STATUS_DONE_VALUE.equals(
+					response.getString(YakitomeAPI.STATUS_KEY))
+					&& response.getJSONArray(YakitomeAPIClient.AUDIOS_KEY).length()>0){
 				found = true;
 			}
 		}
