@@ -11,7 +11,8 @@
 
     
 	<implementation name="TTSServiceImpl" specification="CoreTTSService"
-	    classname="appsgate.lig.tts.yakitome.impl.TTSServiceImpl">
+	    classname="appsgate.lig.tts.yakitome.impl.TTSServiceImpl"
+	    push="stateChanged">
 	            <definition name="serviceId" type="string" field="serviceId"/>
 	            <property name="serviceId" value="$this$name"/>
 	           

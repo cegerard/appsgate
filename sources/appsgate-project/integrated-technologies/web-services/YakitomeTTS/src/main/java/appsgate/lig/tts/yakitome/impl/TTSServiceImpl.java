@@ -10,6 +10,8 @@ import org.osgi.framework.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import appsgate.lig.core.object.messages.CoreNotificationMsg;
+import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.tts.CoreTTSService;
@@ -248,6 +250,7 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 		}
 		dao.addUpdateSpeechItem(item);
 		ttsItems.put(item.getBookId(), item);
+		stateChanged("ttsUpdated", null, item.toJSON().toString());
 	}
 
 	String serviceId;
@@ -258,6 +261,8 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 		descr.put("id", getAbstractObjectId());
 		descr.put("type", getUserType()); // 104 for TTS
 		descr.put("status", getObjectStatus());
+		descr.put("voice", getDefaultVoice());
+		descr.put("speed", getDefaultSpeed());
 		descr.put("ttsItems", getSpeechTextItems());
 		return descr;
 	}
@@ -446,7 +451,11 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 	public void setDefaultVoice(String voice) {
 		logger.trace("setDefaultVoice(String voice : {})",voice);
 		if(apiClient.checkVoice(voice)) {
-			defaultVoice=voice;
+			if(!defaultVoice.equals(voice) ) {
+				stateChanged(YakitomeAPI.VOICE_KEY, defaultVoice, voice);
+				defaultVoice=voice;
+			}
+			
 		} else {
 			logger.trace("setDefaultVoice(...), voice does not exists, keeping ",defaultVoice);			
 		}
@@ -461,7 +470,11 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 	@Override
 	public void setDefaultSpeed(int speed) {
 		logger.trace("setDefaultSpeed(int speed : {})",speed);
+		int oldValue = defaultSpeed;
 		defaultSpeed = apiClient.checkAndgetSpeed(speed);
+		if(defaultSpeed != oldValue) {
+			stateChanged(YakitomeAPI.SPEED_KEY, String.valueOf(oldValue), String.valueOf(defaultSpeed));
+		}
 	}
 
 	@Override
@@ -469,4 +482,8 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 		logger.trace("getAvailableVoices()");
 		return apiClient.getVoices();
 	}
+	
+	private NotificationMsg stateChanged(String varName, String oldValue, String newValue) {
+		return new CoreNotificationMsg(varName, oldValue, newValue, this);
+	}	
 }
