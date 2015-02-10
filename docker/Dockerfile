@@ -33,4 +33,4 @@ RUN chmod +x /distribution/complete/apam
 Add ./scripts/run.sh /data/appsgate/run.sh
 
 # Define the entrypoint at run time
-ENTRYPOINT ["~/appsgate/run.sh"]
+ENTRYPOINT ["/data/appsgate/run.sh"]
