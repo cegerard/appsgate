@@ -20,12 +20,12 @@ public class SelectReferences {
     /**
      * nodeSelect of the reference
      */
-    private NodeSelect nodeSelect;
+    private final NodeSelect nodeSelect;
     
     /**
      * referencesData : Hashmap for the information about reference (ie Type, name)
      */
-    private ArrayList<HashMap<String,String>> referencesData;
+    private final ArrayList<HashMap<String,String>> referencesData;
 
     public SelectReferences(NodeSelect nodeSelect, ArrayList<HashMap<String, String>> referencesData) {
         this.nodeSelect = nodeSelect;

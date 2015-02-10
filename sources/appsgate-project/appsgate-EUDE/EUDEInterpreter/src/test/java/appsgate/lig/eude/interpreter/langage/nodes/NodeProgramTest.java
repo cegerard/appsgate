@@ -7,6 +7,7 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
 import appsgate.lig.eude.interpreter.impl.TestUtilities;
+import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.spec.ProgramLineNotification;
@@ -35,6 +36,7 @@ public class NodeProgramTest extends NodeTest {
             {
                 allowing(mediator).notifyChanges(with(any(ProgramStateNotification.class)));
                 allowing(mediator).notifyChanges(with(any(ProgramLineNotification.class)));
+                allowing(mediator).newProgramStatus(with(any(String.class)), with(any(ReferenceTable.STATUS.class)));
             }
         });
         ruleJSON = new JSONObject();

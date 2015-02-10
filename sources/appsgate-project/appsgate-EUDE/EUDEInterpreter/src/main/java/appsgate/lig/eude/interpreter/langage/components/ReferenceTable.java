@@ -8,6 +8,7 @@ package appsgate.lig.eude.interpreter.langage.components;
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeSelect;
+import appsgate.lig.eude.interpreter.spec.ProgramDesc;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,6 +28,7 @@ public class ReferenceTable {
      * Static class member uses to log what happened in each instances
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(ReferenceTable.class);
+
 
     /**
      *
@@ -97,18 +99,6 @@ public class ReferenceTable {
     /**
      *
      * @param programId
-     */
-    public void addProgram(String programId) {
-        if (programId.equalsIgnoreCase(myProgId)) {
-            LOGGER.debug("The program is self referenced (do not need to add it in the reference table.");
-            return;
-        }
-        programs.add(new ProgramReferences(programId, STATUS.UNKNOWN));
-    }
-    
-    /**
-     *
-     * @param programId
      * @param refData - data about reference
      */
     public void addProgram(String programId, HashMap<String,String> refData) {
@@ -132,7 +122,7 @@ public class ReferenceTable {
      * @param deviceId
      */
     public void addDevice(String deviceId) {
-        devices.add(new DeviceReferences(deviceId, STATUS.UNKNOWN));
+        devices.add(new DeviceReferences(deviceId, STATUS.UNKNOWN, null));
     }
     
      /**
@@ -187,13 +177,15 @@ public class ReferenceTable {
      *
      * @param programId
      * @param newStatus
+     * @return true if the program referenced has changed of status
      */
-    public void setProgramStatus(String programId, STATUS newStatus) { // VOID
+    public Boolean setProgramStatus(String programId, STATUS newStatus) { // VOID
         for (ProgramReferences pRef : this.programs) {
             if (pRef.getProgramId().equals(programId)) {
-                pRef.setProgramStatus(newStatus);
+                return pRef.setProgramStatus(newStatus);
             }
         }
+        return false;
     }
 
 
@@ -311,20 +303,6 @@ public class ReferenceTable {
             this.err = ErrorMessagesFactory.getEmptyProgramMessage();
             this.state=STATUS.INVALID;
         }
-        for (ProgramReferences pRef : programs) {
-            LOGGER.trace("computeStatus(), program " + pRef.getProgramId() + ", status :" + pRef.getProgramStatus());
-            switch (pRef.getProgramStatus()) {
-                case MISSING:
-                    setState(STATUS.INVALID);
-                    this.err = ErrorMessagesFactory.getMessageFromMissingProgram(pRef.getProgramId());
-                    return this.state;
-                case INVALID:
-                case UNSTABLE:
-                    this.err = ErrorMessagesFactory.getMessageFromInvalidProgram(pRef.getProgramId());
-                    setState(STATUS.UNSTABLE);
-                    break;
-            }
-        }
         // Services && devices are treated the same way
         for (DeviceReferences device : devices) {
             LOGGER.trace("computeStatus(), device " + device.getDeviceId() + ", status " + device.getDeviceStatus());
@@ -340,6 +318,20 @@ public class ReferenceTable {
                 LOGGER.warn("Select node {} is empty.", s.getNodeSelect());
                 setState(STATUS.UNSTABLE);
                 this.err = ErrorMessagesFactory.getMessageFromEmptySelect(s.getNodeSelect());
+            }
+        }
+        for (ProgramReferences pRef : programs) {
+            LOGGER.trace("computeStatus(), program " + pRef.getProgramId() + ", status :" + pRef.getProgramStatus());
+            switch (pRef.getProgramStatus()) {
+                case MISSING:
+                    setState(STATUS.INVALID);
+                    this.err = ErrorMessagesFactory.getMessageFromMissingProgram(pRef.getProgramId());
+                    return this.state;
+                case INVALID:
+                case UNSTABLE:
+                    this.err = ErrorMessagesFactory.getMessageFromInvalidProgram(pRef.getProgramId());
+                    setState(STATUS.UNSTABLE);
+                    break;
             }
         }
         return this.state;
@@ -361,5 +353,20 @@ public class ReferenceTable {
      */
     public JSONObject getErrorMessage() {
         return this.err;
+    }
+    
+    public static STATUS getProgramStatus(ProgramDesc.PROGRAM_STATE runningState) {
+        switch(runningState){
+            case DEPLOYED:
+            case PROCESSING:
+                return STATUS.OK;
+            case INCOMPLETE:
+            case LIMPING:
+                return STATUS.UNSTABLE;
+            case INVALID:
+                return STATUS.INVALID;
+            default:
+                return STATUS.UNKNOWN;
+        }
     }
 }

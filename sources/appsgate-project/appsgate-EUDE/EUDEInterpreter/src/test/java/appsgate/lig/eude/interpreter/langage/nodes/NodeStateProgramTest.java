@@ -9,6 +9,7 @@ import appsgate.lig.chmi.spec.GenericCommand;
 import appsgate.lig.ehmi.spec.EHMIProxyMock;
 import appsgate.lig.ehmi.spec.EHMIProxySpec;
 import appsgate.lig.ehmi.spec.messages.NotificationMsg;
+import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 
 import org.jmock.Expectations;
 import static org.jmock.Expectations.any;
@@ -35,10 +36,9 @@ public class NodeStateProgramTest extends NodeTest {
         events.put("endEvent", e);
         events.put("startEvent", e);
 
-        final GenericCommand cmd = context.mock(GenericCommand.class);
-
         context.checking(new Expectations() {
             {
+                allowing(mediator).newProgramStatus(with(any(String.class)), with(any(ReferenceTable.STATUS.class)));
                 allowing(mediator).getContext();
                 will(returnValue(c));
                 allowing(mediator).addNodeListening(with(any(NodeEvent.class)));
