@@ -1,0 +1,23 @@
+<button class="btn btn-prog btn-prog-action" id="<%= node.iid %>">
+        <% if (typeof node.phrase !== 'undefined') { %>
+                <%= $.i18n.t(node.phrase, {myVar:engine.buildInputFromNode(node.source, currentNode)}) %>
+    <% } else { %>
+        Uknown
+    <% } %>
+
+    <% if (node.eventName == "lastCard") { %>
+
+    <select target-id="<%= node.iid %>" id="ard-user-selector-<%= node.iid %>" class="ard-user-selector">
+        <option value="*" data-i18n='devices.ard.event.any'></option>
+        <% _.each(cards,function(inputx){ %>
+        <option value="<%= inputx.card_num %>" <% if (node.eventValue === inputx.card_num) { print('selected'); } %> ><%= inputx.card_name %></option>
+        <% }); %>
+    </select>
+
+    <span data-i18n='devices.ard.event.card_passed2'/>
+
+    <% } %>
+
+</button>
+
+
