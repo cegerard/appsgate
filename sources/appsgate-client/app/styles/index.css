@@ -601,6 +601,10 @@ body {
   background: transparent !important;
   border: none !important;
 }
+.missing-device{
+  color:red;
+  cursor:help;
+}
 .read-only .btn-prog-device:hover,
 .read-only .btn-prog-service:hover {
   color: #0F4AB3 !important;
@@ -627,7 +631,11 @@ body {
 }
 .btn-prog-invalid {
   color: white;
-  background-color: orange;
+  background-color: red;
+}
+.btn-prog-incomplete {
+  color: white;
+  background-color:#f0ad4e;
 }
 .read-only .btn-prog-prog {
   color: #9999FF !important;
@@ -655,6 +663,14 @@ fieldset[disabled] .btn {
 }
 .read-only .btn-prog-absent {
   color: red;
+  font-weight: 700;
+}
+.read-only .btn-prog-invalid {
+  color: red;
+  font-weight: 700;
+}
+.read-only .btn-prog-incomplete {
+  color: #f0ad4e;
   font-weight: 700;
 }
 .read-only .btn:hover,
@@ -869,6 +885,12 @@ fieldset[disabled] .btn {
 .expected-programs button {
   color: white;
   background: #0F4AB3;
+}
+button.program-invalid{
+  color: red;
+}
+button.program-incomplete{
+  color: #f0ad4e;
 }
 .btn-current {
   position: relative;

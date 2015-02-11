@@ -1,15 +1,13 @@
-<div id="progress-<%= node.iid %>" class="progress-indicator-group pull-left">
-  <table>
-    <tr>
-      <td>
-        <i class="glyphicon glyphicon-flash pull-left"></i>
-      </td>
-      <td>
-        <span id="progress-counter-<%=node.iid %>" class="progress-indicator">0</span>
-      </td>
-    </tr>
-  </table>
-</div>
-<div class="btn btn-default btn-prog btn-prog-action <% if(node.type === 'stopMyself') { %><%= 'btn-prog-stopself' %><% } %>" id="<%= node.iid %>">
-        <%= $.i18n.t(node.phrase, {myVar:engine.buildInputFromNodeOrMandatory(node.target, currentNode, typeof node.target.value !== 'undefined')}) %>
-</div>
+<% if (state === '') {%>
+<button class='btn btn-prog' id='<%= node.iid %>'>
+        <span><%= name %></span>
+</button>
+<%} else if (state === 'absent') {%>
+<button class='btn btn-prog btn-prog-absent' id='<%= node.iid %>' title="<%= $.i18n.t("programs.absent")%>">
+        <span><%= $.i18n.t("programs.missing") %></span>
+</button>
+<%} else {%>
+<button class='btn btn-prog btn-prog-<%= state %>' id='<%= node.iid %>' title="<%= $.i18n.t("programs."+state)%>">
+        <span><%= name %></span>
+</button>
+<%}%>
