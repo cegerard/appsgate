@@ -354,6 +354,9 @@ define([
                 this.isComplete = false;
                 return "invalid";
             }
+            if (!p.isValid()) {
+                return "incomplete";
+            }
             return "";
         }
 

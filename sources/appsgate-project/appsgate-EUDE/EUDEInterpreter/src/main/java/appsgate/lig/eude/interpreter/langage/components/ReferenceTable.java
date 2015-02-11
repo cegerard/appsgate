@@ -328,7 +328,6 @@ public class ReferenceTable {
                     this.err = ErrorMessagesFactory.getMessageFromMissingProgram(pRef.getProgramId());
                     return this.state;
                 case INVALID:
-                case UNSTABLE:
                     this.err = ErrorMessagesFactory.getMessageFromInvalidProgram(pRef.getProgramId());
                     setState(STATUS.UNSTABLE);
                     break;

@@ -383,7 +383,15 @@ define([
       id = this.progId;
       programs.forEach(function(prg) {
         if (id != prg.get("id")) {
-          $(".expected-programs").append("<button id='" + prg.get("id") + "' class='btn btn-default btn-keyboard program-node' prg_name='" + prg.get("name") + "' group-id='program'><span>" + prg.get("name") + "<span></button>");
+            var cssClass = 'btn btn-default btn-keyboard program-node';
+            if (!prg.isValid()) {
+                if (prg.get("runningState") == "INVALID") {
+                    cssClass += " program-invalid";
+                } else  {
+                    cssClass += " program-incomplete";
+                }
+            }
+          $(".expected-programs").append("<button id='" + prg.get("id") + "' class='" + cssClass + "' prg_name='" + prg.get("name") + "' group-id='program'><span>" + prg.get("name") + "<span></button>");
         }
       });
     },
