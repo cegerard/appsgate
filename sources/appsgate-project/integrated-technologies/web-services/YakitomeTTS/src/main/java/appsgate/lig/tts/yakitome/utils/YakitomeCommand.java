@@ -38,7 +38,11 @@ public class YakitomeCommand {
 	    "deleteSpeechText",
 	    "waitForTTSGeneration",
 	    "asynchronousTTSGeneration",
-	    "getTTSItemMatchingText"
+	    "getTTSItemMatchingText",
+	    "setVoice",
+	    "setSpeed",
+	    "getVoices",
+	    "getConfig"
     };
 
     PrintStream out = System.out;
@@ -98,42 +102,94 @@ public class YakitomeCommand {
     	}
 	}
     
-    @Descriptor("check if a Speech item as already been generated upon the text")
-	public void getTTSItemMatchingText(@Descriptor("text") String... args) {
+    @Descriptor("check if a Speech item as already been generated upon the text (if no voice and speed provided, will use the default values)")
+	public void getTTSItemMatchingText(@Descriptor("text [voice] [speed]") String... args) {
     	CoreTTSService tts= getTTSInst();
     	
     	if(tts!= null) {
-    		if(args.length>=1) {
-        		tts.getTTSItemMatchingText(args[0]);
+    		if(args.length==1) {
+        		tts.getTTSItemMatchingText(args[0], tts.getDefaultVoice(), tts.getDefaultSpeed());    		
+    		} else if (args.length==3) {
+        		tts.getTTSItemMatchingText(args[0], args[1], Integer.parseInt(args[2]));    		
     		} else {
     			System.out.println("no argument provided");
     		}
     	}
 	} 
     
-    @Descriptor("Generate TTS and audio file asynchronously, must check the log to see what have been generated")
-	public void asynchronousTTSGeneration(@Descriptor("text") String... args) {
+    @Descriptor("Generate TTS and audio file asynchronously, must check the log to see what have been generated (if no voice and speed provided, will use the default values)")
+	public void asynchronousTTSGeneration(@Descriptor("text [voice] [speed]") String... args) {
     	CoreTTSService tts= getTTSInst();
     	
     	if(tts!= null) {
-    		if(args.length>=1) {
-        		tts.asynchronousTTSGeneration(args[0]);
+    		if(args.length==1) {
+        		tts.asynchronousTTSGeneration(args[0]);    		
+    		} else if (args.length==3) {
+        		tts.asynchronousTTSGeneration(args[0], args[1], Integer.parseInt(args[2]));    		
     		} else {
     			System.out.println("no argument provided");
     		}
     	}
 	}  
     
-    @Descriptor("Generate TTS and audio file (blocking method), must check the log to see what have been generated")
-	public void waitForTTSGeneration(@Descriptor("text") String... args) {
+    @Descriptor("Generate TTS and audio file (blocking method), must check the log to see what have been generated (if no voice and speed provided, will use the default values)")
+	public void waitForTTSGeneration(@Descriptor("text [voice] [speed]") String... args) {
     	CoreTTSService tts= getTTSInst();
     	
     	if(tts!= null) {
-    		if(args.length>=1) {
-        		tts.waitForTTSGeneration(args[0]);
+    		if(args.length==1) {
+        		tts.waitForTTSGeneration(args[0]);    		
+    		} else if (args.length==3) {
+        		tts.waitForTTSGeneration(args[0], args[1], Integer.parseInt(args[2]));    		
     		} else {
     			System.out.println("no argument provided");
     		}
     	}
-	}      
+	} 
+    
+    @Descriptor("set the current default voice (used when no voice provided for TTS)")
+	public void setVoice(@Descriptor("voice") String... args) {
+    	CoreTTSService tts= getTTSInst();
+    	
+    	if(tts!= null) {
+    		if(args.length>=1) {
+        		tts.setDefaultVoice(args[0]);
+    		} else {
+    			System.out.println("no argument provided");
+    		}
+    	}
+	} 
+    
+    @Descriptor("set the current default speed (used when no speed provided for TTS)")
+	public void setSpeed(@Descriptor("speed") String... args) {
+    	CoreTTSService tts= getTTSInst();
+    	
+    	if(tts!= null) {
+    		if(args.length>=1) {
+        		tts.setDefaultSpeed(Integer.parseInt(args[0]));
+    		} else {
+    			System.out.println("no argument provided");
+    		}
+    	}
+	}
+    
+    @Descriptor("Get the list of availables voices, with language, country and gender")
+	public void getVoices(String... args) {
+    	CoreTTSService tts= getTTSInst();
+    	
+    	if(tts!= null) {
+        	System.out.println("Voices :\n"+tts.getAvailableVoices());
+    	}
+	}
+    
+    @Descriptor("get current configuration (voice and speed)")
+	public void getConfig(String... args) {
+    	CoreTTSService tts= getTTSInst();
+    	
+    	if(tts!= null) {
+        	System.out.println("Voice :"+tts.getDefaultVoice()
+        			+", speed : "+tts.getDefaultSpeed());
+    	}
+	}           
+ 
 }

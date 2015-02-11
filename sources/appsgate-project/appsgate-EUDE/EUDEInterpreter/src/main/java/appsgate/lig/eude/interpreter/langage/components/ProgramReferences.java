@@ -20,7 +20,7 @@ public class ProgramReferences {
     /**
      * programId : Id of the device referenced
      */
-    private String programId;
+    private final String programId;
     
     /**
      * programStatus : STATUS of the device 
@@ -30,26 +30,29 @@ public class ProgramReferences {
     /**
      * referencesData : Hashmap for the information about reference (ie Type, name)
      */
-    private ArrayList<HashMap<String,String>> referencesData;
+    private final ArrayList<HashMap<String,String>> referencesData;
 
-    public ProgramReferences(String deviceId, ReferenceTable.STATUS deviceStatus, ArrayList<HashMap<String, String>> referencesData) {
-        this.programId = deviceId;
-        this.programStatus = deviceStatus;
+    public ProgramReferences(String pid, ReferenceTable.STATUS status, ArrayList<HashMap<String, String>> referencesData) {
+        this.programId = pid;
+        this.programStatus = status;
         this.referencesData = referencesData;
     }
     
-    public ProgramReferences(String deviceId, ReferenceTable.STATUS deviceStatus) {
-        this.programId = deviceId;
-        this.programStatus = deviceStatus;
-        this.referencesData = new ArrayList<HashMap<String, String>>();
-    }
 
     public String getProgramId() {
         return programId;
     }
-    
-    public void setProgramStatus(ReferenceTable.STATUS programStatus) {
+    /**
+     * 
+     * @param programStatus 
+     * @return true if the programStatus has changed
+     */
+    public Boolean setProgramStatus(ReferenceTable.STATUS programStatus) {
+        if (this.programStatus == programStatus) {
+            return false;
+        }
         this.programStatus = programStatus;
+        return true;
     }
 
     public ReferenceTable.STATUS getProgramStatus() {

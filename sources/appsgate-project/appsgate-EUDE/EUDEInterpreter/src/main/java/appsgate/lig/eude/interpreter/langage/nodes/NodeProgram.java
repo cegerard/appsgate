@@ -480,7 +480,8 @@ final public class NodeProgram extends Node implements ProgramDesc {
     private void setState(PROGRAM_STATE runningState, String iid) {
         if (runningState != this.state) {
             this.state = runningState;
-            getMediator().notifyChanges(new ProgramStateNotification(id, "runningState", this.state.toString(), name, iid));
+            getMediator().newProgramStatus(this.getId(), ReferenceTable.getProgramStatus(runningState));
+            getMediator().notifyChanges(new ProgramStateNotification(id, this.state.toString(), name, iid));
         }
     }
 

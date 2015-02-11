@@ -36,14 +36,36 @@ define([
          * @constructor
          */
         initialize: function() {
+			var self = this;
+			
             this.listenTo(places, "add", this.render);
             this.listenTo(places, "change", this.render);
             this.listenTo(places, "remove", this.render);
-            this.listenTo(devices, "change", this.autoupdate);
             this.listenTo(devices, "remove", this.autoupdate);
+			
+			// StopListening the clock doesn't work, so forEach to listen all device except for it
+			_.forEach(devices.models, function(d) {
+				if (d.get("id") !== "21106637055") {
+					self.listenTo(d, "change", self.autoupdate);
+					self.listenTo(d, "change:placeId", self.onMoveDevice);
+				}
+			});
 
-            this.stopListening(devices.getCoreClock());
+			// DOESN'T WORK
+			//this.stopListening(devices.getCoreClock());
         },
+		/**
+		 * Method called when a device has been moved. This changement trigger this method and the autoupdate. So this method just process to deactivate et update the previous place.
+		 */
+		onMoveDevice: function(model) {
+			// Desactivate previous item menu
+			$(this.$el.find("#place-" + model.previous("placeId"))).removeClass("active");
+			// Replace previous item menu to delete the device moved
+			this.$el.find("#place-" + model.previous("placeId")).replaceWith(this.tplPlaceContainer({
+                place: places.get(model.previous("placeId")),
+				active: false
+            }));
+		},
         /**
          * Method called when a device has changed
          * @param model Model that changed, Device in that cas

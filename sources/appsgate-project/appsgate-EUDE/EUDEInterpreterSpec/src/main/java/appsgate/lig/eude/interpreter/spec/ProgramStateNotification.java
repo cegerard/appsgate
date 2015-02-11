@@ -15,12 +15,11 @@ public class ProgramStateNotification extends ProgramNotification {
      * Constructor
      *
      * @param programId
-     * @param varName
      * @param value
      * @param programName
      * @param iid
      */
-    public ProgramStateNotification(String programId, String varName, String value, String programName, String iid) {
+    public ProgramStateNotification(String programId, String value, String programName, String iid) {
         super("runningState", programId, value, programName, null, iid);
     }
     

@@ -42,7 +42,7 @@ public class YakitomeAPIClientTest {
 	public void setUp() throws Exception {
 		testing = new YakitomeAPIClient(new AdapterListenerMock());
 		// api key registered for smarthome.inria at gmail.com
-		testing.configure("5otuvhvboadAgcLPwy69P", "Juliette", -1);
+		testing.configure("5otuvhvboadAgcLPwy69P");
 
 	}
 
@@ -58,7 +58,7 @@ public class YakitomeAPIClientTest {
 	
 	public void testCheckStatus(int book_id) {
 		JSONObject response= testing.getSpeechTextStatus(book_id);
-		Assert.assertTrue("Status for book_id should exists", response.has(YakitomeAPIClient.STATUS_RESPONSE_KEY));
+		Assert.assertTrue("Status for book_id should exists", response.has(YakitomeAPIClient.STATUS_KEY));
 
 	}	
 
@@ -87,24 +87,24 @@ public class YakitomeAPIClientTest {
 		try {
 			
 			logger.debug("\n\n*** Step One : creating text to speech ***");
-			JSONObject responseOne = testing.textToSpeech(sample);
-			Assert.assertTrue("When text to speech generated, a book id should hav been generated", responseOne.has(YakitomeAPIClient.BOOK_ID_RESPONSE_KEY));
-			Assert.assertTrue("Book id should be sup to 0", responseOne.getInt(YakitomeAPIClient.BOOK_ID_RESPONSE_KEY)>0);
-			Assert.assertTrue("There should be a words count in the sample sentence", responseOne.has(YakitomeAPIClient.WORD_CNT_RESPONSE_KEY));
-			Assert.assertEquals("There should be 5 words in the sample sentence", 5, responseOne.getInt(YakitomeAPIClient.WORD_CNT_RESPONSE_KEY));
+			JSONObject responseOne = testing.textToSpeech(sample,"Juliette",5);
+			Assert.assertTrue("When text to speech generated, a book id should hav been generated", responseOne.has(YakitomeAPIClient.BOOK_ID_KEY));
+			Assert.assertTrue("Book id should be sup to 0", responseOne.getInt(YakitomeAPIClient.BOOK_ID_KEY)>0);
+			Assert.assertTrue("There should be a words count in the sample sentence", responseOne.has(YakitomeAPIClient.WORD_CNT_KEY));
+			Assert.assertEquals("There should be 5 words in the sample sentence", 5, responseOne.getInt(YakitomeAPIClient.WORD_CNT_KEY));
 			
-			int book_id = responseOne.getInt(YakitomeAPIClient.BOOK_ID_RESPONSE_KEY);
+			int book_id = responseOne.getInt(YakitomeAPIClient.BOOK_ID_KEY);
 			
 			logger.debug("\n\n*** Step Two : Checking TTS status ***");			
 			int testCounter = 0;
 			while(testCounter<15) {
 				Thread.sleep(2000);
 				JSONObject responseTwo= testing.getSpeechTextStatus(book_id);
-				Assert.assertTrue("Status for book_id should exists", responseTwo.has(YakitomeAPIClient.STATUS_RESPONSE_KEY));
-				String status = responseTwo.getString(YakitomeAPIClient.STATUS_RESPONSE_KEY);
-				if(YakitomeAPIClient.STATUS_DONE_RESPONSE_VALUE.equals(status)) {
+				Assert.assertTrue("Status for book_id should exists", responseTwo.has(YakitomeAPIClient.STATUS_KEY));
+				String status = responseTwo.getString(YakitomeAPIClient.STATUS_KEY);
+				if(YakitomeAPIClient.STATUS_DONE_VALUE.equals(status)) {
 					testCounter = 99;
-				} else if(YakitomeAPIClient.STATUS_RUNNING_RESPONSE_VALUE.equals(status)) {
+				} else if(YakitomeAPIClient.STATUS_RUNNING_VALUE.equals(status)) {
 					testCounter++;	
 					logger.debug("--> Checking status, still not done, counter = "+testCounter);
 
@@ -121,16 +121,16 @@ public class YakitomeAPIClientTest {
 			while(testCounter<10) {
 				Thread.sleep(2000);
 				responseThree= testing.getAudioFileURL(book_id);
-				Assert.assertTrue("Status for book_id should exists", responseThree.has(YakitomeAPIClient.STATUS_RESPONSE_KEY));
-				String status = responseThree.getString(YakitomeAPIClient.STATUS_RESPONSE_KEY);
-				if(YakitomeAPIClient.STATUS_DONE_RESPONSE_VALUE.equals(status)) {
-					Assert.assertTrue("Audio file(s) should be provided", responseThree.has(YakitomeAPIClient.AUDIOS_RESPONSE_KEY));
-					if(responseThree.getJSONArray(YakitomeAPIClient.AUDIOS_RESPONSE_KEY).length()>0) {
+				Assert.assertTrue("Status for book_id should exists", responseThree.has(YakitomeAPIClient.STATUS_KEY));
+				String status = responseThree.getString(YakitomeAPIClient.STATUS_KEY);
+				if(YakitomeAPIClient.STATUS_DONE_VALUE.equals(status)) {
+					Assert.assertTrue("Audio file(s) should be provided", responseThree.has(YakitomeAPIClient.AUDIOS_KEY));
+					if(responseThree.getJSONArray(YakitomeAPIClient.AUDIOS_KEY).length()>0) {
 						testCounter = 12;
 					} else {
 						testCounter++;						
 					}
-				} else if(YakitomeAPIClient.STATUS_RUNNING_RESPONSE_VALUE.equals(status)) {
+				} else if(YakitomeAPIClient.STATUS_RUNNING_VALUE.equals(status)) {
 					testCounter++;
 				} else {
 					fail("Unknown Text to speech status");
@@ -138,13 +138,13 @@ public class YakitomeAPIClientTest {
 				logger.debug("--> Checking status, still no mp3 file provided, counter = "+testCounter);
 			}
 			Assert.assertTrue("Text to speech audio file should be generated in less than 10 * 2 secs",testCounter==12);
-			Assert.assertTrue("One or mor audio files shoud be provided",responseThree.getJSONArray(YakitomeAPIClient.AUDIOS_RESPONSE_KEY).length()>0);
+			Assert.assertTrue("One or mor audio files shoud be provided",responseThree.getJSONArray(YakitomeAPIClient.AUDIOS_KEY).length()>0);
 
 			
 			logger.debug("\n\n*** Step Four : Deleting TTS ***");	
 			JSONObject responseFour = testing.deleteSpeechText(book_id);
-			Assert.assertTrue("A MSG shoud be provided in the responde ", responseFour.has(YakitomeAPIClient.MSG_RESPONSE_KEY));
-			Assert.assertEquals("Message shoud be MSG = DELETED",YakitomeAPIClient.DELETED_MSG_RESPONSE_VALUE, responseFour.getString(YakitomeAPIClient.MSG_RESPONSE_KEY));
+			Assert.assertTrue("A MSG shoud be provided in the responde ", responseFour.has(YakitomeAPIClient.MSG_KEY));
+			Assert.assertEquals("Message shoud be MSG = DELETED",YakitomeAPIClient.DELETED_MSG_VALUE, responseFour.getString(YakitomeAPIClient.MSG_KEY));
 			
 		} catch (Exception e) {
 			fail("text to speech should not raise exception : "+e.getMessage());

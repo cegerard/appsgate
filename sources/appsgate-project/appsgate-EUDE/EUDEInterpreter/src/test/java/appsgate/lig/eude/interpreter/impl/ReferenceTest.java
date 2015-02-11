@@ -127,6 +127,6 @@ public class ReferenceTest {
         Set<String> programsId = references.getProgramsId();
         Assert.assertEquals(1, programsId.size());
         ReferenceTable.STATUS ret = references.checkReferences();
-        Assert.assertEquals(ReferenceTable.STATUS.INVALID, ret);
+        Assert.assertEquals(ReferenceTable.STATUS.UNSTABLE, ret);
     }
 }

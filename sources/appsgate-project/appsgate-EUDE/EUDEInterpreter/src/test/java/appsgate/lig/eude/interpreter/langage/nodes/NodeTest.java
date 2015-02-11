@@ -54,6 +54,7 @@ public abstract class NodeTest {
         this.ruleJSON.put("phrase", "");
         this.mediator = context.mock(EUDEInterpreter.class);
         programNode = new NodeProgram(mediator, null);
+        programNode.setId("test");
         this.emptySeqRules = new JSONObject();
         emptySeqRules.put("type", "seqRules");
         emptySeqRules.put("rules", new JSONArray());

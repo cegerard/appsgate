@@ -25,7 +25,7 @@ public class YakitomeAdapter extends Thread implements AdapterListener{
 	public YakitomeAdapter() {
 		apiClient = new YakitomeAPIClient(this);
 		// api key registered for smarthome.inria at gmail.com
-		apiClient.configure("5otuvhvboadAgcLPwy69P", "Juliette", -1);
+		apiClient.configure("5otuvhvboadAgcLPwy69P");
 	}
 	
 	/**
