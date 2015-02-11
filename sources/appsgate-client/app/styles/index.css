@@ -601,6 +601,10 @@ body {
   background: transparent !important;
   border: none !important;
 }
+.missing-device{
+  color:red;
+  cursor:help;
+}
 .read-only .btn-prog-device:hover,
 .read-only .btn-prog-service:hover {
   color: #0F4AB3 !important;

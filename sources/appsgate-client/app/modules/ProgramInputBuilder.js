@@ -18,10 +18,11 @@ define([
     "text!templates/program/nodes/numberNode.html",
     "text!templates/program/nodes/waitNode.html",
     "text!templates/program/nodes/programNode.html",
+    "text!templates/program/nodes/programActionNode.html",
     "text!templates/program/nodes/defaultPropertyNode.html",
     "text!templates/program/nodes/selectNode.html",
     "text!templates/program/nodes/scaleTemplate.html"
-], function(App, dfltActionTpl, deviceTpl, serviceTpl, ifTpl, whenTpl, dfltEventTpl, programEventTpl, stateTpl, keepStateTpl, whileTpl, booleanExpressionTpl, comparatorTpl, numberTpl, waitTpl, programTpl, dfltPropertyTpl, selectNodeTpl, scaleTpl) {
+], function(App, dfltActionTpl, deviceTpl, serviceTpl, ifTpl, whenTpl, dfltEventTpl, programEventTpl, stateTpl, keepStateTpl, whileTpl, booleanExpressionTpl, comparatorTpl, numberTpl, waitTpl, programTpl, pgmActionTpl, dfltPropertyTpl, selectNodeTpl, scaleTpl) {
     var ProgramInputBuilder = {};
     // router
     ProgramInputBuilder = Backbone.Model.extend({
@@ -40,6 +41,7 @@ define([
         tplNumberNode: _.template(numberTpl),
         tplWaitNode: _.template(waitTpl),
         tplProgramNode: _.template(programTpl),
+        tplProgramActionNode: _.template(pgmActionTpl),
         tplDefaultPropertyNode: _.template(dfltPropertyTpl),
         tplSelectNode: _.template(selectNodeTpl),
         tplScale: _.template(scaleTpl),
@@ -120,7 +122,6 @@ define([
                 case "device":
                     param.node.validDevice = this.isDeviceValid(param.node.value);
                     this.isComplete = this.isComplete && param.node.validDevice;
-                    param.node.name = this.getDeviceName(param.node.value);
                     if(!param.node["hideSelector"] || param.node.hideSelector!=true){
                         input += this.tplDeviceNode(param);
                     }
@@ -211,8 +212,9 @@ define([
                     input += "<div class='btn btn-prog btn-prog-action mandatory-spot input-spot' id='" + jsonNode.iid + "'>" + "<span data-i18n='language.mandatory-keyword'/>" + "</div>";
                     break;
                 case "programCall":
-                    c = this.getProgramState(jsonNode.value);
-                    input += "<button class='btn btn-prog btn-prog-" + c + "' id='" + jsonNode.iid + "'><span>" + programs.getName(jsonNode.value) + "</span></button>";
+                    param.state = this.getProgramState(jsonNode.value);
+                    param.name = programs.getName(jsonNode.value);
+                    input += this.tplProgramNode(param);
                     break;
                 case "programs":
                     input += "<button class='btn btn-default input-spot mandatory-spot' id='" + jsonNode.iid + "'><span data-i18n='language.mandatory-keyword'/></button>";
@@ -248,7 +250,7 @@ define([
                 return services.getTemplateByType('action',param.node.target.serviceType, param);
             }
             if (param.node.target.type === "programCall" || param.node.target.type === "programs") {
-                return this.tplProgramNode(param);
+                return this.tplProgramActionNode(param);
             }
             return this.tplDefaultActionNode(param);
         },
@@ -319,18 +321,6 @@ define([
             }
         },
 
-        getDeviceName: function(id) {
-            var deviceName;
-            if (devices.get(id) == undefined) {
-                console.warn("device not found: " + id);
-                deviceName = "UNKNOWN DEVICE";
-            } else if (devices.get(id).get("name") !== "") {
-                deviceName = devices.get(id).get("name");
-            } else {
-                deviceName = devices.get(id).get("id");
-            }
-            return deviceName;
-        },
         getServiceName: function(id) {
             if (services.get(id) == undefined) {
                 console.error("service not found: " + id);
