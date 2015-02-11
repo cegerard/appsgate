@@ -288,7 +288,7 @@ public class EUDEInterpreterTest {
     @Test
     public void testNotifyChanges() {
         System.out.println("notifyChanges");
-        NotificationMsg notif = new ProgramStateNotification("test", "test", null, "test", null);
+        NotificationMsg notif = new ProgramStateNotification( "test", null, "test", null);
         NotificationMsg result = instance.notifyChanges(notif);
         Assert.assertNotNull(result);
     }
