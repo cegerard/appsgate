@@ -132,9 +132,9 @@ define([
             }
             if (device != null) {
                 self.templates['action'][brick.type] = device.getTemplateAction();
-                self.templates['action-parameter'][brick.type] = device.getTemplateParameter();
+                self.templates['action-parameter'][brick.type] = device.getActionTemplateParameter();
                 self.templates['event'][brick.type] = device.getTemplateEvent();
-                self.templates['event-parameter'][brick.type] = {};
+                self.templates['event-parameter'][brick.type] = device.getEventTemplateParameter();
                 self.templates['state'][brick.type] = device.getTemplateState();
                 self.templates['state-parameter'][brick.type] = {};
                 self.templates['property'][brick.type] = device.getTemplateProperty();

@@ -21,10 +21,7 @@ package appsgate.ard.protocol.main;
 
 import appsgate.ard.protocol.controller.ARDController;
 import appsgate.ard.protocol.model.command.listener.ARDMessage;
-import appsgate.ard.protocol.model.command.request.ActivateZoneRequest;
-import appsgate.ard.protocol.model.command.request.GetTimeRequest;
-import appsgate.ard.protocol.model.command.request.GetZoneRequest;
-import appsgate.ard.protocol.model.command.request.SubscriptionRequest;
+import appsgate.ard.protocol.model.command.request.*;
 import appsgate.ard.protocol.model.Constraint;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,7 +38,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException, InterruptedException, JSONException {
 
-        ARDController ard=new ARDController("192.168.3.110", 2001);
+        ARDController ard=new ARDController("192.168.1.7", 2003);
 
         //Open the socket with ard box
         ard.connect();
@@ -71,9 +68,13 @@ public class Main {
         //Register
         ard.getMapRouter().put(constraint,listenerForARDMessages);
 
+        /*
         ard.sendSyncRequest(new GetTimeRequest());
         Thread.sleep(1000);
         ard.sendSyncRequest(new GetTimeRequest());
+        */
+        ard.sendSyncRequest(new GetCardRequest(2)).getResponse();
+
         //ard.sendRequest(new ActivateZoneRequest(0));
 
 /*
