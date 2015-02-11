@@ -985,6 +985,18 @@
       "name": {
         "plural": "Synthèse vocale",
         "singular": "Synthèse vocale"
+      },
+      "lang": {
+        "voice": "Utiliser la voix",
+        "English": "Anglaise",
+        "French": "Française",
+        "German": "Allemande",
+        "Spanish": "Espagnole",
+        "from": "de",
+        "Male": "Homme",
+        "Female": "Femme",
+        "slow": "lente",
+        "fast": "rapide"
       }
     }
   },

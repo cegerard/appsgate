@@ -126,7 +126,7 @@ define([
                     console.debug(param);
                     return "<span>unknown</span>";
             }
-        },
+        }
     });
 
     return Services;

@@ -2,8 +2,9 @@ define([
     "app",
     "text!templates/services/list/servicesListByCategory.html",
     "text!templates/services/list/mail.html",
+    "text!templates/services/details/tts.html",
     "models/service/weather"
-], function(App, serviceListByCategoryTemplate, mailTemplate, Weather) {
+], function(App, serviceListByCategoryTemplate, mailTemplate,ttsTemplate,  Weather) {
 
     var ServiceByTypeView = {};
     /**
@@ -12,6 +13,7 @@ define([
     ServiceByTypeView = Backbone.View.extend({
         tpl: _.template(serviceListByCategoryTemplate),
         mailTpl: _.template(mailTemplate),
+        ttsTpl: _.template(ttsTemplate),
         events: {
             "keyup #add-weather-modal input": "validWeatherName",
             "click #add-weather-modal button.valid-button": "addWeatherName",
@@ -103,6 +105,10 @@ define([
                 if (this.id === "102") {
                     this.$el.html(this.mailTpl({
                         mail: services.getServicesByType()[this.id][0]
+                    }));
+                } else if (this.id === "104") {
+                    this.$el.html(this.ttsTpl({
+                        tts: services.getServicesByType()[this.id][0]
                     }));
                 } else {
                     this.$el.html(this.tpl({
