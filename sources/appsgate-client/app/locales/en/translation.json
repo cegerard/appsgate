@@ -127,12 +127,16 @@
       "keyboard": {
         "zone-activate": "Activate alarm on the zone ...",
         "zone-desactivate": "Desactivate alarm on the zone ...",
-        "force-input": "Signal an entry in the central of alarm in zone ..."
+        "force-input": "Signal an entry in the central of alarm in zone ...",
+        "card_passed":"User badge has been identified"
       },
       "event": {
         "authorized": "a badge is authorized by ...",
         "non_authorized": "a badge is NOT authorized by ...",
-        "alarm_fired": "an alarm is detected by ..."
+        "alarm_fired": "an alarm is detected by ...",
+        "card_passed":"Card of ",
+        "card_passed2": " was identified",
+        "any": "Any"
       },
       "last-authorized": "Last badge access granted",
       "last-card": "Last badge passed",

@@ -127,12 +127,16 @@
       "keyboard": {
         "zone-activate": "Activer surveillance pour la zone ...",
         "zone-desactivate": "Désactiver surveillance pour la zone ...",
-        "force-input": "Signaler au système d'alarme une entrée dans la zone ..."
+        "force-input": "Signaler au système d'alarme une entrée dans la zone ...",
+        "card_passed":"Carte de utilisateur est passée"
       },
       "event": {
         "authorized": "l'accès du badge a été autorisé par ...",
         "non_authorized": "l'accès du badge n'a pas été autorisé par ...",
-        "alarm_fired": "alarme déclenchée par ARD"
+        "alarm_fired": "alarme déclenchée par ARD",
+        "card_passed":"Carte de ",
+        "card_passed2": " est passée",
+        "any": "Quelconque"
       },
       "last-authorized": "Dernier badge accès autorisé",
       "last-card": "Dernier badge passé",

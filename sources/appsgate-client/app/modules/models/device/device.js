@@ -212,7 +212,10 @@ define([
     getValue: function() {
       return "[No Value]";
     },
-    getTemplateParameter: function() {
+    getActionTemplateParameter: function() {
+      return {};
+    },
+    getEventTemplateParameter: function() {
       return {};
     }
   });

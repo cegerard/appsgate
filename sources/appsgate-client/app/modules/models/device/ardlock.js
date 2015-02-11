@@ -1,8 +1,9 @@
 define([
   "app",
   "models/device/device",
-  "text!templates/program/nodes/ardActionNode.html"
-], function(App, Device, ActionTemplate) {
+  "text!templates/program/nodes/ardActionNode.html",
+  "text!templates/program/nodes/ardEventNode.html"
+], function(App, Device, ActionTemplate, EventTemplate) {
 
   var ARDLock = {};
   /**
@@ -23,6 +24,7 @@ define([
 
       this.remoteControl("getZonesAvailable", [], "zonesavailable");
       this.remoteControl("getInputsAvailable", [], "inputsavailable");
+      this.remoteControl("getCardsAvailable", [], "cardsavailable");
 
       dispatcher.on('zonesavailable', function(zones) {
         console.log("zones available received: " + JSON.stringify(zones, 4, null));
@@ -33,9 +35,15 @@ define([
         console.log("inputs available received: " + JSON.stringify(inputs, 4, null));
         self.set("inputs", inputs);
       });
+
+      dispatcher.on('cardsavailable', function(inputs) {
+        console.log("cards available received: " + JSON.stringify(inputs, 4, null));
+        $.extend(param,[])
+        self.set("cards", inputs);
+      });
     },
     getEvents: function() {
-      return ["isAuthorized", "isNotAuthorized", "alarmFired"];
+      return ["isAuthorized", "isNotAuthorized", "alarmFired","lastCard"];
     },
     getStates: function(which) {
       switch (which) {
@@ -181,6 +189,13 @@ define([
           v.phrase = "devices.ard.state.alarm_fired";
           $(btn).attr("json", JSON.stringify(v));
           break;
+        case "lastCard":
+          $(btn).append("<span data-i18n='devices.ard.keyboard.card_passed'/>");
+          v.eventName = "lastCard";
+          v.eventValue = "*";
+          v.phrase = "devices.ard.event.card_passed";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
         default:
           console.error("unexpected event found for Contact Sensor: " + evt);
           btn = null;
@@ -191,11 +206,19 @@ define([
     getTemplateAction: function() {
       return _.template(ActionTemplate);
     },
-    getTemplateParameter: function() {
+    getTemplateEvent: function() {
+      return _.template(EventTemplate);
+    },
+    getEventTemplateParameter: function() {
+      return {
+        cards: this.get("cards")
+      }
+    },
+    getActionTemplateParameter: function() {
       return {
         zones: this.get("zones"),
         inputs: this.get("inputs")
-    }
+      }
     }
 
   });

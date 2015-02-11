@@ -27,6 +27,7 @@ define([
         "change .volume-input": "onChangeMediaVolume",
         "change .ard-zone-selector": "onARDZoneSelector",
         "change .ard-input-selector": "onARDInputSelector",
+        "change .ard-user-selector": "onARDUserSelector",
         "change .lamp-input-selector": "onLampInputSelector",
         "change .ard-input-value-selector": "onARDInputValueSelector",
         "change .hour-picker, .minute-picker": "onChangeClockValue",
@@ -143,6 +144,18 @@ define([
             var value = {"type": "int", "value": valueInt};
             this.Mediator.setNodeArg(iid, 0, value);
         },
+      onARDUserSelector: function(e) {
+        e.stopPropagation();
+
+        var iid = $(e.currentTarget).attr("target-id");
+
+        var userElement = $("#ard-user-selector-" + iid);
+        var userElementValue = $("#ard-user-selector-" + iid)[0].selectedOptions[0].value;
+        this.Mediator.setNodeAttribute(iid, "eventValue", userElementValue);
+
+        // clearing selection
+        //this.resetSelection();
+      },
       onClickEndEdit: function(e) {
           // Good place to pre-generate text to speech and save some time
           if (services.getCoreTTS() != undefined) {
