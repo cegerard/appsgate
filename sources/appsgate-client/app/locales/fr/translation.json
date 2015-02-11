@@ -976,6 +976,12 @@
       },
       "weblink": "Voir météo",
       "warning-weather-delete": "Voulez-vous vraiment supprimer cette météo favorie ?"
+    },
+    "tts": {
+      "name": {
+        "plural": "Synthèse vocale",
+        "singular": "Synthèse vocale"
+      }
     }
   },
   "decorations": {
