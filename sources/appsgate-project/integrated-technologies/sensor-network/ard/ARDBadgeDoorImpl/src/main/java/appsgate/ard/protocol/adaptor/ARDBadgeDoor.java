@@ -1,9 +1,15 @@
 package appsgate.ard.protocol.adaptor;
 
+import appsgate.ard.protocol.adaptor.callbacks.ARDMessageCallback;
+import appsgate.ard.protocol.adaptor.callbacks.AlarmCallback;
+import appsgate.ard.protocol.adaptor.callbacks.AuthorizationCallback;
+import appsgate.ard.protocol.adaptor.callbacks.CardMessageCallback;
+import appsgate.ard.protocol.adaptor.constraint.ARDMessageConstraint;
+import appsgate.ard.protocol.adaptor.constraint.AlarmConstraint;
+import appsgate.ard.protocol.adaptor.constraint.AuthorizationConstraint;
+import appsgate.ard.protocol.adaptor.constraint.CardMessageConstraint;
 import appsgate.ard.protocol.controller.ARDController;
-import appsgate.ard.protocol.model.ARDFutureResponse;
 import appsgate.ard.protocol.model.Constraint;
-import appsgate.ard.protocol.model.command.ARDRequest;
 import appsgate.ard.protocol.model.command.listener.ARDMessage;
 import appsgate.ard.protocol.model.command.request.*;
 import appsgate.lig.ard.badge.door.messages.ARDBadgeDoorContactNotificationMsg;
@@ -23,8 +29,12 @@ import java.util.Map;
 
 public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, CoreObjectSpec, CoreARDBadgeDoorSpec { //ARDWatchDogSpec
 
-    private static final Integer ARD_MAX_INDEX_FETCH=10;
     private static Logger logger = LoggerFactory.getLogger(ARDController.ARD_LOGNAME);
+
+    private static final Integer ARD_MAX_INPUT_FETCH =10;
+    private static final Integer ARD_MAX_CARDS_FETCH =10;
+    private static final Integer ARD_MAX_ZONES_FETCH =10;
+
     private String sensorName;
     private String sensorId;
     private String sensorType;
@@ -40,9 +50,24 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
     private String status;
     private String pictureId;
     private Integer doorID=-1;
+
+    public void setLastCard(String lastCard) {
+        this.lastCard = lastCard;
+    }
+
     private String lastCard="-1";
+
+    public void setAuthorized(Boolean authorized) {
+        this.authorized = authorized;
+    }
+
     private Boolean authorized=false;
     private String ardClass="";
+
+    public void setLastMessage(String lastMessage) {
+        this.lastMessage = lastMessage;
+    }
+
     private String lastMessage="";
     private JSONArray zonesCache=null;
     private JSONArray inputsCache=null;
@@ -79,20 +104,11 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
         descr.put("lastCard", lastCard);
         descr.put("authorized", authorized);
         descr.put("lastMessage", lastMessage);
-        /*
-        JSONObject zone1 = new JSONObject();
-        JSONObject zone2 = new JSONObject();
-        zone1.put("zone_idx",1);
-        zone1.put("zone_name","exterieur");
-        zone2.put("zone_idx",2);
-        zone2.put("zone_name","interieur");
 
-        descr.append("zones", zone1);
-        descr.append("zones", zone2);
-        */
         fillUpZones(descr);
         fillUpInputs(descr);
         fillUpCards(descr);
+
         return descr;
     }
 
@@ -105,27 +121,11 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
     }
 
     public void newInst() {
-        logger.info("New contact sensor detected, "+sensorId);
-        controller.getMapRouter().put(new Constraint() {
-                                          @Override
-                                          public boolean evaluate(JSONObject jsonObject) throws JSONException {
-                                              try {
-                                                  Boolean alarm=jsonObject.getJSONObject("event").getBoolean("alarm");
-                                                  Boolean active=jsonObject.getJSONObject("event").getBoolean("active");
-                                                  return alarm && active;
-
-                                              } catch (JSONException e){
-                                                  return false;
-                                              }
-                                          }
-                                      },
-                new ARDMessage() {
-                    @Override
-                    public void ardMessageReceived(JSONObject json) throws JSONException {
-                        triggerApamMessage(new ARDBadgeDoorContactNotificationMsg("alarmFired", "false", "true", ARDBadgeDoor.this));
-                    }
-                }
-        );
+        logger.info("New ARD controller detected, "+sensorId);
+        controller.getMapRouter().put(new AlarmConstraint(),new AlarmCallback(this));
+        controller.getMapRouter().put(new CardMessageConstraint(),new CardMessageCallback(this,lastCard));
+        controller.getMapRouter().put(new AuthorizationConstraint(),new AuthorizationCallback(this,authorized.toString()));
+        controller.getMapRouter().put(new ARDMessageConstraint(),new ARDMessageCallback(this,lastMessage));
     }
 
     public void deleteInst() {
@@ -204,7 +204,7 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
 
         if(cardsCache==null){
             cardsCache=new JSONArray();
-            for(int index=0;index<ARD_MAX_INDEX_FETCH;index++){
+            for(int index=0;index< ARD_MAX_CARDS_FETCH;index++){
                 try {
                     JSONObject response=controller.sendSyncRequest(new GetCardRequest(index)).getResponse();
 
@@ -236,7 +236,7 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
 
         if(zonesCache==null){
             zonesCache=new JSONArray();
-            for(int index=1;index<ARD_MAX_INDEX_FETCH;index++){
+            for(int index=1;index< ARD_MAX_ZONES_FETCH;index++){
                 try {
                     JSONObject response=controller.sendSyncRequest(new GetZoneRequest(index)).getResponse();
 
@@ -246,7 +246,6 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
                         zone.put("zone_idx",index);
                         zone.put("zone_name",zoneName);
                         zonesCache.put(zone);
-                        //descr.append("zones",zone);
                     }
                 } catch (JSONException e) {
                     logger.error("Failed to recover zones recorded in the HUB ARD");
@@ -264,7 +263,7 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
 
     private void syncAppsgateContactWithARDInput(String name,Boolean state){
         logger.trace("Looking for a ARD input with name {} to set status to {}",name,state);
-        for(int index=1;index<ARD_MAX_INDEX_FETCH;index++){
+        for(int index=1;index< ARD_MAX_INPUT_FETCH;index++){
             logger.trace("Checking input in the index {}", index);
             try {
                 JSONObject response=controller.sendSyncRequest(new GetInputRequest(index)).getResponse();
@@ -285,7 +284,7 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
 
         if(inputsCache==null){
             inputsCache=new JSONArray();
-            for(int index=1;index<ARD_MAX_INDEX_FETCH;index++){
+            for(int index=1;index< ARD_MAX_INPUT_FETCH;index++){
                 try {
                     JSONObject response=controller.sendSyncRequest(new GetInputRequest(index)).getResponse();
 
@@ -325,29 +324,12 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
     }
 
     public JSONObject getZonesAvailable(){
-
         JSONObject descr = new JSONObject();
-
         fillUpZones(descr);
-
-
         return descr;
-
-        /* Example of zone
-            try {
-                zone1.put("zone_idx",1);
-                zone1.put("zone_name","exterieur");
-                zone2.put("zone_idx",2);
-                zone2.put("zone_name","interieur");
-                descr.append("zones", zone1);
-                descr.append("zones", zone2);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        */
     }
 
-    private String getCardNumber(Integer cardIndex){
+    public String getCardNumber(Integer cardIndex){
          return mapCard.get(cardIndex);
 
     }
@@ -367,36 +349,6 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
             doorID=newDoorID;
             ardClass=newArdClass;
 
-            String newCard="-1";
-            try {
-                newCard=getCardNumber(eventNode.getInt("card_idx"));
-            }catch(JSONException e){
-                logger.warn("No ID CARD received.",e);
-            }finally {
-                triggerApamMessage(new ARDBadgeDoorContactNotificationMsg("lastCard","",newCard,this));
-                //triggerApamMessage(new ARDBadgeDoorContactNotificationMsg("card_idx","",newCard,this));
-                lastCard=newCard;
-            }
-
-            String newLastMessage="";
-            try {
-                newLastMessage=eventNode.getString("cause");
-            }catch(JSONException e){
-                logger.warn("No cause received.",e);
-            }finally {
-                triggerApamMessage(new ARDBadgeDoorContactNotificationMsg("lastMessage",lastMessage.toString(),newLastMessage.toString(),this));
-                lastMessage=newLastMessage;
-            }
-
-            Boolean newAuthorized=Boolean.FALSE;
-            try {
-                newAuthorized=eventNode.getString("status").equalsIgnoreCase("ok")?true:false;
-            }catch(JSONException e){
-                logger.warn("No status received.",e);
-            } finally {
-                triggerApamMessage(new ARDBadgeDoorContactNotificationMsg("authorized",authorized.toString(),newAuthorized.toString(),this));
-                authorized=newAuthorized;
-            }
 
         }catch(JSONException e){
             logger.error("Failed parsing ARD JSON message.",e);

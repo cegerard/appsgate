@@ -38,7 +38,6 @@ define([
 
       dispatcher.on('cardsavailable', function(inputs) {
         console.log("cards available received: " + JSON.stringify(inputs, 4, null));
-        $.extend(param,[])
         self.set("cards", inputs);
       });
     },

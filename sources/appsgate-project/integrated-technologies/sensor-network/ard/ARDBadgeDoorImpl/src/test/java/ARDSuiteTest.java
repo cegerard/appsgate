@@ -22,7 +22,7 @@ public class ARDSuiteTest {
     public void before() throws IOException, JSONException {
 
         String host=System.getProperty("ard.host","192.168.1.7");
-        Integer port=Integer.parseInt(System.getProperty("ard.port","2003"));
+        Integer port=Integer.parseInt(System.getProperty("ard.port","2004"));
 
         logger.info("ARD, connecting to the host {}:{}",host,port);
 
