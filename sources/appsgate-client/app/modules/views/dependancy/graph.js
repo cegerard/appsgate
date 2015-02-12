@@ -248,6 +248,71 @@ define([
 					return d.name;
 			});
 
+			// Update: selection on all the element
+			nodeEntity.each(function (a) {
+				// When an entity become "ghost", append line and remove decoration (circle or square)
+				if (a.isGhost && d3.select(this).selectAll("line").empty()) {
+					d3.select(this).append("line")
+						.attr("class", "ghost-decoration")
+						.attr("opacity", 1)
+						.attr("x1", -9)
+						.attr("y1", -9)
+						.attr("x2", 9)
+						.attr("y2", 9);
+
+					d3.select(this).append("line")
+						.attr("class", "ghost-decoration")
+						.attr("opacity", 1)
+						.attr("x1", -9)
+						.attr("y1", 9)
+						.attr("x2", 9)
+						.attr("y2", -9);
+
+					// Remove program decoration 
+					var programDecoration = d3.select(this).selectAll(".shape-program");
+					if (!programDecoration.empty()) {
+						programDecoration.remove();
+					}
+
+					// Remove device decoration 
+					var deviceDecoration = d3.select(this).selectAll(".circle-device-state");
+					if (!deviceDecoration.empty()) {
+						deviceDecoration.remove();
+					}
+
+				} else if (!a.isGhost && !d3.select(this).selectAll("line").empty()) {
+					// Entity reappeared
+					// Remove ghost decoration
+					d3.select(this).selectAll("line").remove();
+
+					// Readd the decorations
+					// shape STATUS PROGRAMS
+					// Type program, add form to indicate running or not. 
+					if (a.type === "program") {
+						if (a.state === "DEPLOYED" || a.state === "INVALID" || a.state === "INCOMPLETE") {
+							d3.select(this).append("svg:path")
+								.attr("class", "shape-program")
+								.attr("d", "M0,-7L0,7L14,7L14,-7L0,-7")
+								.attr('opacity', 1);
+						} else if (a.state === "PROCESSING" || a.state === "LIMPING") {
+							d3.select(this).append("svg:path")
+								.attr("class", "shape-program")
+								.attr("d", "M0,-7L14,0L0,7L0,-7")
+								.attr('opacity', 1);
+						}
+
+					}
+
+					// shape STATUS DEVICES
+					if (a.type === "device" && a.deviceState !== undefined) {
+						d3.select(this).append("circle")
+							.attr("class", "circle-device-state")
+							.attr("opacity", 1)
+							.attr("r", 7);
+					}
+				}
+			})
+
 			// New nodes
 			var nEnter = nodeEntity.enter().append("svg:g")
 				.attr("class", "nodeGroup")
@@ -322,25 +387,6 @@ define([
 					// shape STATUS PROGRAMS
 					// Type program, add form to indicate running or not. 
 					if (a.type === "program") {
-						//						if (a.state === "DEPLOYED" || a.state === "INVALID" || a.state === "INCOMPLETE") {
-						//							d3.select(this).append("rect")
-						//								.attr("class", "shape-program")
-						//								.attr("x", function (m) {
-						//									return 0
-						//								})
-						//								.attr("y", function (m) {
-						//									return 0
-						//								})
-						//								.attr("width", 11)
-						//								.attr("height", 11)
-						//								.attr('opacity', 0);
-						//						} else if (a.state === "PROCESSING" || a.state === "LIMPING") {
-						//							d3.select(this).append("svg:path")
-						//								.attr("class", "shape-program")
-						//								.attr("d", "M0,-7L14,0L0,7L0,-7")
-						//								.attr('opacity', 0);
-						//						}
-
 						if (a.state === "DEPLOYED" || a.state === "INVALID" || a.state === "INCOMPLETE") {
 							d3.select(this).append("svg:path")
 								.attr("class", "shape-program")
@@ -362,6 +408,25 @@ define([
 							.attr("opacity", 0)
 							.attr("r", 7);
 					}
+
+					// shape GHOST
+					if (a.isGhost) {
+						d3.select(this).append("line")
+							.attr("class", "ghost-decoration")
+							.attr("opacity", 0)
+							.attr("x1", -9)
+							.attr("y1", -9)
+							.attr("x2", 9)
+							.attr("y2", 9);
+
+						d3.select(this).append("line")
+							.attr("class", "ghost-decoration")
+							.attr("opacity", 0)
+							.attr("x1", -9)
+							.attr("y1", 9)
+							.attr("x2", 9)
+							.attr("y2", -9);
+					}
 				});
 
 			nEnter.select("circle").transition().duration(800).attr("r", 14);
@@ -369,12 +434,14 @@ define([
 			nEnter.select(".shape-program").transition().duration(800).style("opacity", 1);
 			nEnter.select(".circle-device-state").transition().duration(800).style("opacity", 1);
 			nEnter.select("text").transition().duration(800).style("opacity", 1);
+			nEnter.selectAll(".ghost-decoration").transition().duration(800).style("opacity", 1);
 
 			nodeEntity.exit().select("image").transition().duration(600).style("opacity", 0);
 			nodeEntity.exit().select("text").transition().duration(700).style("opacity", 0);
 			nodeEntity.exit().select("circle").transition().duration(700).attr("r", 0);
 			nodeEntity.exit().select(".shape-program").transition().duration(700).style("opacity", 0);
 			nodeEntity.exit().select(".circle-device-state").transition().duration(700).style("opacity", 0);
+			nodeEntity.exit().selectAll(".ghost-decoration").transition().duration(700).style("opacity", 0);
 			nodeEntity.exit().transition().duration(800).remove();
 
 
@@ -516,7 +583,10 @@ define([
 
 			nodeEntity.selectAll("circle")
 				.classed("program-multiple-writing-reference", function (d) {
-					return self.model.isMultipleTargeted(d);
+					return !d.isGhost && self.model.isMultipleTargeted(d);
+				})
+				.classed("ghost-decoration", function (d) {
+					return d.isGhost;
 				})
 
 			nodeEntity.selectAll(".circle-device-state")
@@ -759,6 +829,9 @@ define([
 							// register on click event
 							self.applyFilter("entities", d, this.checked);
 							self.updateCheckAllEntities();
+
+							// Reinitialize all the popover because some of them may have been recreated
+							$('[data-toggle="popover"]').popover();
 						})
 					d3.select(this).append("span")
 						.text(function (d) {
@@ -785,6 +858,9 @@ define([
 							// register on click event
 							self.applyFilter("relations", d, this.checked);
 							self.updateCheckAllRelations();
+
+							// Reinitialize all the popover because some of them may have been recreated
+							$('[data-toggle="popover"]').popover();
 						})
 					d3.select(this).append("span")
 						.text(function (d) {

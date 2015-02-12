@@ -1131,6 +1131,11 @@ button.program-incomplete{
 	fill: #777;
 }
 
+#graph g>.ghost-decoration {
+	stroke: blue;
+	stroke-width: 2px;
+}
+
 #graph-caption {
 	margin-top: 20px;
 }

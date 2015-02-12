@@ -10,6 +10,7 @@ import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeSelect;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.Callable;
@@ -61,6 +62,7 @@ public class GraphManager {
     private final String SERVICE_ENTITY = "service";
     private final String DEVICE_ENTITY = "device";
     private final String SELECTOR_ENTITY = "selector";
+    private final String GHOST_ENTITY = "ghost";
 
     private final String CLOCK_ID = "21106637055";
 
@@ -85,9 +87,17 @@ public class GraphManager {
         initJSONObject();
         // Retrieving programs id
         this.programsId = interpreter.getListProgramIds(null);
-        int idSelector = -2;
+
+        // Collection used to store the selector we added
         ArrayList<NodeSelect> selectorsSaved = new ArrayList<NodeSelect>();
 
+        // Collection to store the entities (program and devices) we added
+        HashSet<String> entitiesAdded = new HashSet<String>();
+
+        // Collection to store the program ghost we will add
+        HashSet<String> ghostPrograms = new HashSet<String>();
+
+        /* BUILD NODES FROM PROGRAMS */
         for (String pid : programsId) {
             NodeProgram p = interpreter.getNodeProgram(pid);
             if (p != null) {
@@ -99,57 +109,41 @@ public class GraphManager {
 
                 // Program links : Reference or planified
                 ReferenceTable references = p.getReferences();
+                // Links to the devices
                 for (DeviceReferences rdevice : references.getDevicesReferences()) {
                     if (rdevice.getDeviceId().equals(CLOCK_ID)) {
                         addLink(PLANIFIED_LINK, pid, rdevice.getDeviceId());
                     } else {
                         addLink(REFERENCE_LINK, pid, rdevice.getDeviceId(), rdevice.getReferencesData());
                     }
+                    entitiesAdded.add(rdevice.getDeviceId());
                 }
-
+                // Links to the programs
                 for (ProgramReferences rProgram : references.getProgramsReferences()) {
                     addLink(REFERENCE_LINK, pid, rProgram.getProgramId(), rProgram.getReferencesData());
+
+                    if (rProgram.getProgramStatus() == ReferenceTable.STATUS.MISSING) {
+                        ghostPrograms.add(rProgram.getProgramId());
+                    }
                 }
 
-                if (addSelector(pid, references, selectorsSaved, idSelector)) {
-                    idSelector--;
-                }
+                // Add selectors from this program
+                addSelector(pid, references, selectorsSaved);
             }
 
-            // Planification
-            ExecutorService executor = Executors.newSingleThreadExecutor();
-            Callable<Object> task = new Callable<Object>() {
-                public Object call() {
-                    return interpreter.getContext().checkProgramsScheduled();
-                }
-            };
-            Future<Object> future = executor.submit(task);
-            try {
-                JSONArray programsScheduled = (JSONArray) future.get(2, TimeUnit.SECONDS);
-
-                // Links program - scheduler
-                if (programsScheduled != null && programsScheduled.toString().contains(pid)) {
-                    addLink(PLANIFIED_LINK, pid, CLOCK_ID);
-                    //@TODO: if planified more than one time, have more than one relation...
-                }
-            } catch (TimeoutException ex) {
-                LOGGER.error("Time Out trying to reach scheduling service, aborting)");
-                // handle the timeout
-            } catch (InterruptedException e) {
-                // handle the interrupts
-            } catch (ExecutionException e) {
-                // handle other exceptions
-            } finally {
-                future.cancel(true); // may or may not desire this
-            }
-
+            // Link to the scheduler
+            buildPlanificationLink(pid);
         }
+
+        /* BUILD NODES FROM DEVICES */
         // Retrieving devices id
         JSONArray devices = this.interpreter.getContext().getDevices();
         for (int i = 0; i < devices.length(); i++) {
             try {
                 JSONObject o = devices.getJSONObject(i);
+
                 addDevice(o);
+                entitiesAdded.remove(o.getString("id"));
 
                 // Don't add the location link of the service Weather and Mail
                 if (!o.getString("type").equals("102") && !o.getString("type").equals("103")) {
@@ -158,32 +152,80 @@ public class GraphManager {
                 }
 
             } catch (JSONException ex) {
+                LOGGER.error("JSON error during add device {}", ex.getCause());
             }
-
         }
+        
+        /* BUILD GHOSTS NODES */
+        buildDeviceGhosts(entitiesAdded);
+        buildProgramGhosts(ghostPrograms);
+
+        /* BUILD PLACE NODES */
+        buildPlaces();
+
+    }
+
+    /**
+     * Method add the node placs to the json object
+     */
+    private void buildPlaces() {
         JSONArray places = this.interpreter.getContext().getPlaces();
         for (int i = 0; i < places.length(); i++) {
             try {
                 addPlace(places.getJSONObject(i));
             } catch (JSONException ex) {
+                LOGGER.error("JSON error during buidling place {}", ex.getCause());
             }
 
         }
         // Add manual for the unlocated place
-//        JSONObject unLocatedPlace = new JSONObject();
-//        try {
-//            unLocatedPlace.put("id", "-1");
-//            unLocatedPlace.put("name", "Unlocated");
-//            addPlace(unLocatedPlace);
-//        } catch (JSONException ex) {
-//            java.util.logging.Logger.getLogger(GraphManager.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-
+        /*JSONObject unLocatedPlace = new JSONObject();
+         try {
+         unLocatedPlace.put("id", "-1");
+         unLocatedPlace.put("name", "Unlocated");
+         addPlace(unLocatedPlace);
+         } catch (JSONException ex) {
+         java.util.logging.Logger.getLogger(GraphManager.class.getName()).log(Level.SEVERE, null, ex);
+         }*/
     }
 
     /**
+     * Method to build the planification link of a program
      *
-     * @param o
+     * @param pid : id of the program we want to build planificatin links
+     */
+    private void buildPlanificationLink(String pid) {
+        // Planification of the checkPrograms to avoid stucking if no scheduling service
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Callable<Object> task = new Callable<Object>() {
+            public Object call() {
+                return interpreter.getContext().checkProgramsScheduled();
+            }
+        };
+        Future<Object> future = executor.submit(task);
+        try {
+            JSONArray programsScheduled = (JSONArray) future.get(2, TimeUnit.SECONDS);
+
+            // Links program - scheduler
+            if (programsScheduled != null && programsScheduled.toString().contains(pid)) {
+                addLink(PLANIFIED_LINK, pid, CLOCK_ID);
+            }
+        } catch (TimeoutException ex) {
+            LOGGER.error("Time Out trying to reach scheduling service, aborting)");
+            // handle the timeout
+        } catch (InterruptedException e) {
+            // handle the interrupts
+        } catch (ExecutionException e) {
+            // handle other exceptions
+        } finally {
+            future.cancel(true); // may or may not desire this
+        }
+    }
+
+    /**
+     * Method thats add Device to the json object
+     *
+     * @param o : JSONOjevt of the device to add
      */
     private void addDevice(JSONObject o) {
         try {
@@ -221,6 +263,7 @@ public class GraphManager {
                 }
 
             } catch (JSONException ex) {
+                LOGGER.error("JSON error of deviceState {}", ex.getCause());
             }
 
             // Time special case
@@ -237,8 +280,41 @@ public class GraphManager {
     }
 
     /**
+     * Method to add device ghosts to the json object
      *
-     * @param o
+     * @param ghosts : HashSet of the ghosts
+     */
+    private void buildDeviceGhosts(HashSet<String> ghosts) {
+        for (String ghostId : ghosts) {
+            addGhost("device", ghostId);
+        }
+    }
+    
+    /**
+     * Method to add program ghosts to the json object
+     *
+     * @param ghosts : HashSet of the ghosts
+     */
+    private void buildProgramGhosts(HashSet<String> ghosts) {
+        for (String ghostId : ghosts) {
+            addGhost("program", ghostId);
+        }
+    }
+    
+    private void addGhost(String typeGhost, String id) {
+        HashMap<String, String> optArg = new HashMap<String, String>();
+        optArg.put("isGhost", Boolean.TRUE.toString());
+        if (typeGhost.equals("device")) {
+            addNode(DEVICE_ENTITY, id, "", optArg);
+        } else {
+            addNode(PROGRAM_ENTITY, id, "", optArg);
+        }
+    }
+
+    /**
+     * Method that adds a place node to the json object
+     *
+     * @param o : JSONObject of the place to add
      */
     private void addPlace(JSONObject o) {
         try {
@@ -390,7 +466,7 @@ public class GraphManager {
      * @param idSelector
      * @return
      */
-    private boolean addSelector(String pid, ReferenceTable ref, ArrayList<NodeSelect> selectorsSaved, int idSelector) {
+    private boolean addSelector(String pid, ReferenceTable ref, ArrayList<NodeSelect> selectorsSaved) {
         boolean ret = false;
         String typeDevices = "";
         ArrayList<SelectReferences> selectors = ref.getSelectors();
