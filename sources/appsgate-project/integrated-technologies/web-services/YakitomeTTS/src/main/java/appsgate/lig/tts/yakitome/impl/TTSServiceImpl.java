@@ -263,6 +263,7 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 		descr.put("status", getObjectStatus());
 		descr.put("voice", getDefaultVoice());
 		descr.put("speed", getDefaultSpeed());
+		descr.put("voices", getAvailableVoices());
 		descr.put("ttsItems", getSpeechTextItems());
 		return descr;
 	}
