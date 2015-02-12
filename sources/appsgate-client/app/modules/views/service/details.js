@@ -2,8 +2,9 @@ define([
   "app",
   "text!templates/services/details/serviceContainer.html",
   "text!templates/services/details/mail.html",
-  "text!templates/services/details/weather.html"
-  ], function(App, serviceDetailsTemplate, mediaPlayerDetailTemplate, mailDetailTemplate, weatherDetailTemplate) {
+  "text!templates/services/details/weather.html",
+  "text!templates/services/details/tts.html"
+  ], function(App, serviceDetailsTemplate, mediaPlayerDetailTemplate, mailDetailTemplate, weatherDetailTemplate, ttsDetailTemplate) {
 
     var ServiceDetailsView = {};
     // detailled view of a service
@@ -11,6 +12,7 @@ define([
       template: _.template(serviceDetailsTemplate),
       tplMail: _.template(mailDetailTemplate),
       tplWeather: _.template(weatherDetailTemplate),
+      tplTTS: _.template(ttsDetailTemplate),
       // map the events and their callback
       events: {
         "click button.back-button": "onBackButton",
@@ -134,7 +136,7 @@ define([
         }
       },
       /**
-      * Render the detailled view of a service
+      * Render the detailed view of a service
       */
       render: function() {
         var self = this;

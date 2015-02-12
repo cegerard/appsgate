@@ -98,6 +98,7 @@
   },
     "devices": {
         "no-value":"---",
+		"missing": "Cet équipement est déconnecté",
         "actuator": {
             "action": {
                 "turnOff": "Eteindre",
@@ -857,7 +858,11 @@
     "warning-program-delete": "Voulez-vous vraiment supprimer ce programme ?",
     "scheduled-event": "Programme Appsgate ",
     "simulated-time": "Heure simulée",
-    "inactive-node": "Cette instruction ne sera pas exécutée."
+    "inactive-node": "Cette instruction ne sera pas exécutée.",
+	"invalid" : "Ce programme est invalide",
+	"absent" : "Le programme a été effacé",
+	"missing" : "Programme inconnu",
+	"incomplete" : "Ce programme est partiellement activable"
   },
   "programs-menu": {
     "add-button": "Ajouter programme",
@@ -980,6 +985,24 @@
       },
       "weblink": "Voir météo",
       "warning-weather-delete": "Voulez-vous vraiment supprimer cette météo favorie ?"
+    },
+    "tts": {
+      "name": {
+        "plural": "Synthèse vocale",
+        "singular": "Synthèse vocale"
+      },
+      "lang": {
+        "voice": "Utiliser la voix",
+        "English": "Anglaise",
+        "French": "Française",
+        "German": "Allemande",
+        "Spanish": "Espagnole",
+        "from": "de",
+        "Male": "Homme",
+        "Female": "Femme",
+        "slow": "lente",
+        "fast": "rapide"
+      }
     }
   },
   "decorations": {

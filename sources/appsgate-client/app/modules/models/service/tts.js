@@ -5,11 +5,6 @@ define([
 
   var TTS = {};
 
-  /**
-   * Abstract class regrouping common characteristics shared by all the devices
-   *
-   * @class Device.Model
-   */
   TTS = Service.extend({
     /**
      * @constructor
@@ -18,12 +13,38 @@ define([
       TTS.__super__.initialize.apply(this, arguments);
       var self = this;
 
-      // listening for volume value
       dispatcher.on(this.get("id"), function(ttsItems) {
         console.log("received : " + ttsItems);
         self.set("items", ttsItems);
       });
 
+    },
+    getVoices: function() {
+      return this.get("voices");
+    },
+    getSpeed: function() {
+      return this.get("speed");
+    },
+    setSpeed: function(speed) {
+      this.remoteControl("setDefaultSpeed", [{"type": "int", "value": speed}], this.id);
+    },
+    getVoice: function() {
+      return this.get("voice");
+    },
+    getLangFromVoice: function(voice) {
+      var voices = this.getVoices();
+      for(var lang in voices) {
+        for(var i = 0; i< voices[lang].length; i++) {
+          if(voices[lang][i][2] === voice) {
+            return lang;
+          }
+        }
+      }
+      return null;
+    },
+
+    setVoice: function(voice) {
+      this.remoteControl("setDefaultVoice", [{"type": "String", "value": voice}], this.id);
     },
     prepareTTS: function(text) {
       this.remoteControl("asynchronousTTSGeneration", [{"type": "String", "value": text}], this.id);
@@ -41,7 +62,6 @@ define([
           a.push(items[i].text);
         }
       }
-
       return a;
     }
   });

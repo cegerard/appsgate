@@ -4,8 +4,8 @@
         <%= node.name %>
     </span>
     <% } else { %>
-    <span>
-        Unknown: <%= node.id %>
+    <span class="missing-device" title="<%=$.i18n.t("devices.missing")%>">
+        (<%= node.name %>)
     </span>
     <%}%>
 </button>

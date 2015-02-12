@@ -2,8 +2,9 @@ define([
   "app",
   "views/service/menu",
   "views/service/servicebytype",
+  "views/service/details/tts",
   "views/service/details"
-  ], function(App, ServiceMenuView, ServicesByTypeView, ServiceDetailsView) {
+  ], function(App, ServiceMenuView, ServicesByTypeView, TTSDetailsView, ServiceDetailsView) {
 
     var ServiceRouter = {};
     /**
@@ -56,7 +57,16 @@ define([
 			  appRouter.currentMenuView.updateSideMenu();
 	  	}
 
-        appRouter.showDetailsView(new ServicesByTypeView({id: typeId}));
+
+
+        switch(typeId) {
+          case "104":
+            appRouter.showDetailsView(new TTSDetailsView({model: services.getCoreTTS()}));
+            break;
+          default :
+            appRouter.showDetailsView(new ServicesByTypeView({id: typeId}));
+            break;
+        }
 
         $(".nav-item").removeClass("active");
         $(".services-nav").addClass("active");
@@ -78,7 +88,17 @@ define([
 			  $(".services-nav").addClass("active");
 	  	}
 
-        appRouter.showDetailsView(new ServiceDetailsView({model: services.get(id)}));
+        var service = services.get(id);
+        switch(service.get("type")) {
+          case 104:
+            appRouter.showDetailsView(new TTSDetailsView({model: service}));
+            break;
+          default :
+            appRouter.showDetailsView(new ServiceDetailsView({model: services.get(id)}));
+            break;
+        }
+
+
       }
     });
     return ServiceRouter;

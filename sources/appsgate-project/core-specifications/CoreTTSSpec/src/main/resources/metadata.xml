@@ -4,7 +4,8 @@
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
     <specification name="CoreTTSService" 
-        interfaces="appsgate.lig.tts.CoreTTSService, appsgate.lig.core.object.spec.CoreObjectSpec">
+        interfaces="appsgate.lig.tts.CoreTTSService, appsgate.lig.core.object.spec.CoreObjectSpec"
+        messages="appsgate.lig.core.object.messages.NotificationMsg">
     </specification>
 
 </apam>

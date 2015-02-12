@@ -25,7 +25,13 @@
                 <% } else { %>
                 <span data-i18n="services.weather.name.plural"></span>
             <% } %>
-        <% } %>        
+        <% } else if (type === "104") { %>
+            <% if (services.length === 1) { %>
+                <span data-i18n="services.tts.name.singular"></span>
+            <% } else { %>
+                <span data-i18n="services.tts.name.plural"></span>
+            <% } %>
+        <% } %>
         <span class="pull-right badge">
             <% if (type === "102") { %>
             <span id='mailFavCnt'><%= services[0].getNumberOfFavorites() %></span>

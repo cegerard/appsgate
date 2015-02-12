@@ -98,6 +98,7 @@
   },
   "devices": {
     "no-value": "---",
+    "missing": "This device is disconnected",
     "actuator": {
       "action": {
         "turnOff": "Turn off",
@@ -857,7 +858,11 @@
     "warning-program-delete": "Do you really want to delete this program ?",
     "scheduled-event": "Appsgate program ",
     "simulated-time": "Simulated-time",
-    "inactive-node": "This instruction won't be executed."
+    "inactive-node": "This instruction won't be executed.",
+	"invalid" : "This program is invalid",
+	"absent" : "Program has been deleted",
+	"missing" : "Unknown program",
+	"incomplete" : "This program is partially activable"
   },
   "programs-menu": {
     "add-button": "New Program",
