@@ -11,7 +11,7 @@ define([
       initialize: function() {
         var self = this;
         ArdView.__super__.initialize.apply(this, arguments);
-
+        this.listenTo(this.model, "change", this.render);
         $.extend(self.__proto__.events, ArdView.__super__.events);
       },
       autoupdate: function() {

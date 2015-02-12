@@ -167,7 +167,7 @@ public class ARDController {
 
     private ARDMessage initDoor(String id,Integer doorIdx,String doorName){
 
-        Implementation impl = CST.componentBroker.getImpl("ARDBadgeDoor");// CST.apamResolver.findImplByName(null, "");
+        Implementation impl = CST.componentBroker.getImpl("ARDBadgeDoor");
         Map<String, String> properties = new HashMap<String, String>();
 
         properties.put("deviceName", "ARD-Door-"+doorName);
@@ -197,7 +197,6 @@ public class ARDController {
                 Set<String> controllersDeclaration=declarationController.get(this);
                 controllersDeclaration.add(id);
             } catch (Exception e) {
-                System.out.println("Failed to connect.. retrying in "+retry);
                 if(retry==null || retry==-1) break;
                 try {
                     Thread.sleep(retry);

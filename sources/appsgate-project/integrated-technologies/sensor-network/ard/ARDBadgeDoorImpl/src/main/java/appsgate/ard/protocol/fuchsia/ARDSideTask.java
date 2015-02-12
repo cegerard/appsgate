@@ -1,20 +1,17 @@
 package appsgate.ard.protocol.fuchsia;
 
 import appsgate.ard.protocol.controller.ARDController;
-import appsgate.ard.protocol.model.Constraint;
-import appsgate.ard.protocol.model.command.listener.ARDMessage;
-import fr.imag.adele.apam.CST;
-import fr.imag.adele.apam.Implementation;
-import fr.imag.adele.apam.Instance;
 import org.apache.felix.ipojo.*;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.ow2.chameleon.fuchsia.core.declaration.ImportDeclaration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
+/**
+ * This thread is invoked by the importer in order not to block the main thread of ipojo
+ */
 public class ARDSideTask implements Runnable {
 
     private Logger logger = LoggerFactory.getLogger(ARDController.ARD_LOGNAME);
@@ -55,14 +52,6 @@ public class ARDSideTask implements Runnable {
                 declarationController.put((ARDController)controller.getPojoObject(),new HashSet<String>());
                 ardController=(ARDController)controller.getPojoObject();
                 ardController.validate(importer,importDeclaration,declarationController);
-                /*
-                try {
-                    controller=new ARDController(ip,port);
-                    controller.validate();
-                } catch (JSONException e) {
-                    logger.error("Failed on starting up ARD controller",e);
-                }
-                */
             } catch (UnacceptableConfiguration unacceptableConfiguration) {
                 unacceptableConfiguration.printStackTrace();
             } catch (MissingHandlerException e) {
