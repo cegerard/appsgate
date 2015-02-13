@@ -221,14 +221,16 @@ define([
       }], this.id);
     },
     /**
-     * Send a message to the backend to set the volume to a given level
      */
-    onAudioNotification: function(message) {
+    onAudioNotification: function(message, voice, speed) {
       console.log("onAudioNotification : ",message);
       this.remoteControl("audioNotification", [{
         "type": "String",
         "value": message
-      }], this.id);
+      },
+        {"type": "String", "value": voice},
+        {"type": "int", "value": speed}
+      ], this.id);
     },
     /**
      * Sends a request to the server for the current volume level

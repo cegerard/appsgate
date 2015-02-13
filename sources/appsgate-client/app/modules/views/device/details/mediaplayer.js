@@ -103,7 +103,10 @@ define([
        */
       onAudioNotification: function() {
 
-        this.model.onAudioNotification($("#selectedMessage").val());
+        this.model.onAudioNotification($("#selectedMessage").val(),
+            services.getCoreTTS().getVoice(),
+            services.getCoreTTS().getSpeed()
+        );
       },
 
       updateAudioNotif: function() {
