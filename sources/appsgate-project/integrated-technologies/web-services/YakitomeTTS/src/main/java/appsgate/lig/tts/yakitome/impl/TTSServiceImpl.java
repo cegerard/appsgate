@@ -196,6 +196,8 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 		logger.trace("deleteSpeechText(...), trying to remove from local list");
 		ttsItems.remove(book_id);
 		dao.removeSpeechItem(book_id);
+		stateChanged("ttsItems", null, getSpeechTextItems().toString());
+		
 		return response;
 	}
 	
@@ -251,6 +253,8 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 		dao.addUpdateSpeechItem(item);
 		ttsItems.put(item.getBookId(), item);
 		stateChanged("ttsUpdated", null, item.toJSON().toString());
+		stateChanged("ttsItems", null, getSpeechTextItems().toString());
+
 	}
 
 	String serviceId;
