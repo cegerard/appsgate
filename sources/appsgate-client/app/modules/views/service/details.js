@@ -3,7 +3,7 @@ define([
   "text!templates/services/details/serviceContainer.html",
   "text!templates/services/details/mail.html",
   "text!templates/services/details/weather.html",
-  "text!templates/services/details/tts.html"
+  "text!templates/services/details/tts/tts.html"
   ], function(App, serviceDetailsTemplate, mediaPlayerDetailTemplate, mailDetailTemplate, weatherDetailTemplate, ttsDetailTemplate) {
 
     var ServiceDetailsView = {};

@@ -161,7 +161,10 @@ define([
           if (services.getCoreTTS() != undefined) {
             $(".ttsInput").each(function(){
               console.log(this);
-              services.getCoreTTS().prepareTTS($(this).val());
+              services.getCoreTTS().prepareTTS($(this).val(),
+                  services.getCoreTTS().getVoice(),
+                  services.getCoreTTS().getSpeed()
+              );
             });
           }
 

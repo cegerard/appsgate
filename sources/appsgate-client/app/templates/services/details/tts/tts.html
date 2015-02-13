@@ -1,0 +1,45 @@
+<div class="lead">
+	<span data-i18n="services.tts.name.singular"></span>
+</div>
+<div class="contents-list scrollable">
+	<div class="panel panel-default">
+		<div class="list-group">
+			<% if (typeof sensorImg !== "undefined") { %>
+			<li class="list-group-item">
+				<img src="<%= sensorImg %>"  class="img-responsive" style="width:auto;">
+			</li>
+			<% } %>
+
+			<div class="form-inline" style="margin-top:30px;">
+				<span data-i18n="services.tts.control.existing"/>
+				<select class="form-control select-tts" style="max-width:60%;">
+				</select>
+				<button type="button" class="btn btn-tts-delete" data-i18n="services.tts.control.delete"></button>
+			</div>
+
+
+
+			<div class="form-inline" style="width:100%;margin-top:30px">
+				<button type="button" class="btn btn-tts-add" data-i18n="services.tts.control.add"></button>
+				<input class="new-tts" type="text" value="Message...">
+			</div>
+
+
+			<div class="form-inline" style="width:100%;margin-top:30px">
+				<span data-i18n="services.tts.control.use-voice"/>
+				<select class="form-control select-lang">
+				</select>
+
+				<span data-i18n="services.tts.control.from"/>
+				<%var gender = "Male"%>
+
+				<select class="form-control select-voice">
+				</select>
+				<!--(<span class=select-gender" data-i18n="services.tts.lang.<%= gender %>"/>)-->
+				<span data-i18n="services.tts.control.slow"/>
+				<input type="range" class="select-speed" min="1" max="10" style="width:auto;display:inline;">
+				<span data-i18n="services.tts.control.fast"/>
+			</div>
+		</div>
+	</div>
+</div>

@@ -2,7 +2,7 @@ define([
     "app",
     "text!templates/services/list/servicesListByCategory.html",
     "text!templates/services/list/mail.html",
-    "text!templates/services/details/tts.html",
+    "text!templates/services/details/tts/tts.html",
     "models/service/weather"
 ], function(App, serviceListByCategoryTemplate, mailTemplate,ttsTemplate,  Weather) {
 
