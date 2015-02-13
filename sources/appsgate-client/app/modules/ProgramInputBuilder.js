@@ -323,7 +323,7 @@ define([
 
         getServiceName: function(id) {
             if (services.get(id) == undefined) {
-                console.error("service not found: " + id);
+                this.isComplete = false;
                 return "UNKNOWN SERVICE";
             }
             return services.get(id).get("name");
