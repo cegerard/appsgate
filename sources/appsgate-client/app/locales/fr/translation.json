@@ -991,17 +991,22 @@
         "plural": "Synthèse vocale",
         "singular": "Synthèse vocale"
       },
-      "lang": {
-        "voice": "Utiliser la voix",
-        "English": "Anglaise",
-        "French": "Française",
-        "German": "Allemande",
-        "Spanish": "Espagnole",
+      "control": {
+        "existing": "Notifications existantes",
+        "delete": "Supprimer",
+        "add": "Ajouter une notification",
+        "use-voice": "Utiliser la voix",
         "from": "de",
         "Male": "Homme",
         "Female": "Femme",
         "slow": "lente",
         "fast": "rapide"
+      },
+      "lang": {
+        "English": "Anglaise",
+        "French": "Française",
+        "German": "Allemande",
+        "Spanish": "Espagnole"
       }
     }
   },
