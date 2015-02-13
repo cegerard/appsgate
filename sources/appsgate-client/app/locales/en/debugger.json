@@ -1,4 +1,47 @@
 {
+  "decorations": {
+    "program_added" : "program __name__ has been added",
+    "program_deleted" : "program __name__ has been deleted",
+    "program_saved" : "program __name__ updated",
+    "connection" : "device connected",
+    "disconnection" : "device disconnected",
+    "error" : "something unexpected happen",
+    "changevalue" : "__var__ : __text__",
+    "appear" : "device __name__ appeared",
+    "remove" : "device __name__ disappeared",
+	"defaultMessage" : "default message",
+    "ColorLight" : {
+	  "change" : {
+		"value" : "lamp is on : __text__",
+		"colorChanged" : "color changed to __text__"
+	  },
+      "setRed" : "set color to red",
+      "setBlue" : "set color to blue",
+      "setGreen" : "set color to green",
+      "setYellow" : "set color to yellow",
+      "setOrange" : "set color to orange",
+      "setPurple" : "set color to purple",
+      "setPink" : "set color to pink",
+      "setWhite" : "set color to white",
+	  "setColorJson" : "change color to __color__",
+      "off" : "$t(translation:devices.lamp.action.turnOff)",
+      "on" : "$t(translation:devices.lamp.action.turnOn)"
+    },
+	"Temperature" : {
+	  "change" : {
+		"value" : "Temperature is __text__ °C"
+	  }
+    },
+	"SmartPlug" : {
+		"on" : "Switch plug on",
+		"off" : "Switch plug off"
+	},
+    "DomiCube" : {
+      "change" : {
+         "activeFace" : "New face for the DomiCube"
+      }
+    }
+  },
   "groups": {
     "temperature": "$t(translation:devices.temperature.name.singular)",
     "temperature_plural": "$t(translation:devices.temperature.name.plural)",
@@ -26,20 +69,5 @@
     "dependencie_plural": "Dependencies",
     "all": "All",
     "all_plural": "All"
-  },
-  "decorations": {
-    "program_added" : "program __name__ has been added",
-    "program_deleted" : "program __name__ has been deleted",
-    "program_saved" : "program __name__ updated",
-    "connection" : "device connected",
-    "disconnection" : "device disconnected",
-    "error" : "something unexpected happen",
-    "change" : "__var__ : __text__",
-    "appear" : "device __name__ appeared",
-    "remove" : "device __name__ disappeared",
-    "colorlight" : {
-      "off" : "$t(translation:devices.lamp.language.turnOff)",
-      "on" : "$t(translation:devices.lamp.language.turnOn)"
-    }
   }
 }

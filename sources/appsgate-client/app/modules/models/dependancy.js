@@ -183,18 +183,33 @@ define([
 					return o.id === e.id;
 				});
 
-				// !== if it exists
+				// = if it exists
 				if (oldE !== undefined) {
+					var isNoMoreGhost = false;
+					// GHOST Changement type
+					if (e.isGhost && !oldE.isGhost) {
+						// No ghost -> ghost
+						oldE.isGhost = "true";
+					}
+					if (oldE.isGhost && !e.isGhost) {
+						// Ghost -> No ghost
+						delete oldE.isGhost;
+						isNoMoreGhost = true;
+					}
+					
 					// Check the different visible properties
-					if (oldE.name && oldE.name != e.name) {
+					if (oldE.name && oldE.name != e.name && e.name !== "" || isNoMoreGhost) {
 						oldE.name = e.name;
 					}
-					if (oldE.state && oldE.state != e.state) {
+					// State program
+					if (oldE.state && oldE.state != e.state || isNoMoreGhost && e.state) {
 						oldE.state = e.state;
 					}
-					if (oldE.deviceState && oldE.deviceState != e.deviceState) {
+					// State device
+					if ((oldE.deviceState && oldE.deviceState != e.deviceState) || (isNoMoreGhost && e.deviceState)) {
 						oldE.deviceState = e.deviceState;
 					}
+					
 					// Save all the entites which has been seen
 					oldEntitiesUpdated.push(oldE);
 				} else {

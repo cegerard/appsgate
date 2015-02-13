@@ -1,4 +1,47 @@
 {
+  "decorations": {
+    "program_added" : "le programme __name__ a été ajouté",
+    "program_deleted" : "le programme __name__ a été supprimé",
+    "program_saved" : "le programme __name__ a été modifié",
+    "connection" : "l'équipement s'est connecté",
+    "disconnection" : "l'équipement a été déconnecté",
+    "error" : "une erreur s'est produite",
+    "changevalue" : "__var__ : __text__",
+    "appear" : "l'équipement __name__ est apparu",
+    "remove" : "l'équipement __name__ a été enlevé",
+	"defaultMessage" : "Une ligne de programme a été exécutée",
+    "ColorLight" : {
+	  "change" : {
+		"value" : "la lampe est allumée : __text__",
+		"colorChanged" : "la couleur a changé pour __text__"
+	  },
+      "setRed" : "allumer en rouge",
+      "setBlue" : "allumer en bleu",
+      "setGreen" : "allumer en vert",
+      "setYellow" : "allumer en jaune",
+      "setOrange" : "allumer en orange",
+      "setPurple" : "allumer en violet",
+      "setPink" : "allumer en rose",
+      "setWhite" : "allumer en blanc",
+	  "setColorJson" : "changer la couleur en __color__",
+      "off" : "$t(translation:devices.lamp.action.turnOff)",
+      "on" : "$t(translation:devices.lamp.action.turnOn)"
+    },
+	"Temperature" : {
+	  "change" : {
+		"value" : "la température est de __text__ °C"
+	  }
+    },
+	"SmartPlug" : {
+		"on" : "Allumer la prise",
+		"off" : "Eteindre la prise"
+	},
+    "DomiCube" : {
+      "change" : {
+         "activeFace" : "Nouvelle face du DomiCube"
+      }
+    }
+  },
   "groups": {
     "temperature": "$t(translation:devices.temperature.name.singular)",
     "temperature_plural": "$t(translation:devices.temperature.name.plural)",
@@ -26,21 +69,6 @@
     "dependencie_plural": "Dépendances",
     "all": "Tous",
     "all_plural": "Tous"
-  },
-  "decorations": {
-    "program_added" : "le programme __name__ a été ajouté",
-    "program_deleted" : "le programme __name__ a été supprimé",
-    "program_saved" : "le programme __name__ a été modifié",
-    "connection" : "l'équipement s'est connecté",
-    "disconnection" : "l'équipement a été déconnecté",
-    "error" : "une erreur s'est produite",
-    "change" : "__var__ : __text__",
-    "appear" : "l'équipement __name__ est apparu",
-    "remove" : "l'équipement __name__ a été enlevé",
-    "colorlight" : {
-      "off" : "$t(translation:devices.lamp.language.turnOff)",
-      "on" : "$t(translation:devices.lamp.language.turnOn)"
-    }
-
   }
+
 }
