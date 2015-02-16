@@ -121,13 +121,13 @@
       "false":"False",
       "with-the-value":"with value",
       "action": {
-        "zone-activate": "Activate alarm on the zone __myVar__",
-        "zone-desactivate": "Desactivate alarm on the zone __myVar__",
+        "zone-activate": "Activate alarm for the zone __myVar__",
+        "zone-desactivate": "Desactivate alarm for the zone __myVar__",
         "force-input": "Signal an entry in the central of alarm __myVar__ in zone"
       },
       "keyboard": {
-        "zone-activate": "Activate alarm on the zone ...",
-        "zone-desactivate": "Desactivate alarm on the zone ...",
+        "zone-activate": "Activate alarm for the zone ...",
+        "zone-desactivate": "Desactivate alarm for the zone ...",
         "force-input": "Signal an entry in the central of alarm in zone ...",
         "card_passed":"User badge has been identified"
       },
@@ -136,7 +136,7 @@
         "non_authorized": "a badge is NOT authorized by ...",
         "alarm_fired": "an alarm is detected by ...",
         "card_passed":"Card of ",
-        "card_passed2": " was identified",
+        "card_passed2": " is identified",
         "any": "Any"
       },
       "last-authorized": "Last badge access granted",
