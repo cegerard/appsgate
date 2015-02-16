@@ -397,7 +397,6 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 		logger.trace("audioNotification(String message: {})", message);
 		audioNotification(message, null, -1);
 	}
-
 		
 	@Override
 	public void audioNotification(String message, String voice, int speed) {

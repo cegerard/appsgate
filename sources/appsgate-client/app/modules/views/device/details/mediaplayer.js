@@ -1,8 +1,9 @@
 define([
   "app",
   "views/device/details/details",
+  "views/service/details/tts",
   "text!templates/devices/details/mediaplayer.html"
-  ], function(App, DeviceDetailsView, mediaPlayerDetailTemplate) {
+  ], function(App, DeviceDetailsView, TTSServiceView, mediaPlayerDetailTemplate) {
 
     var MediaPlayerView = {};
     // detailled view of a device
@@ -19,6 +20,9 @@ define([
         "click .ttsInput": "updateAudioNotif"
 
       },
+      ttsView:{},
+
+
       initialize: function() {
         var self = this;
         MediaPlayerView.__super__.initialize.apply(this, arguments);
@@ -102,19 +106,18 @@ define([
        * Called when click on AudioNotification
        */
       onAudioNotification: function() {
+        var selected = $(".select-tts option:selected");
 
-        this.model.onAudioNotification($("#selectedMessage").val(),
-            services.getCoreTTS().getVoice(),
-            services.getCoreTTS().getSpeed()
+      this.model.onAudioNotification(selected.attr("text"),
+            selected.attr("voice"),
+            selected.attr("speed")
         );
       },
 
       updateAudioNotif: function() {
 
-        if (services.getCoreTTS() != undefined) {
-          $(document).find(".ttsInput").autocomplete({
-            source: services.getCoreTTS().getTTSItemsText()
-          });}
+        TTSModel=services.getCoreTTS();
+        new TTSServiceView({model: TTSModel}).renderTTS(TTSModel.getTTSItems());
       },
 
       /**
@@ -150,6 +153,8 @@ define([
             });
             self.model.save();
           });
+
+          this.updateAudioNotif();
 
 
           this.resize($(".scrollable"));
