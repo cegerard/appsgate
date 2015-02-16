@@ -56,13 +56,7 @@ public class SSDPNotifySocket extends HTTPMUSocket implements Runnable
 	
 	public SSDPNotifySocket(String bindAddr)
 	{
-		String addr = SSDP.ADDRESS;
-		useIPv6Address = false;
-		if (HostInterface.isIPv6Address(bindAddr) == true) {
-			addr = SSDP.getIPv6Address();
-			useIPv6Address = true;
-		}
-		open(addr, SSDP.PORT, bindAddr);
+
 		setControlPoint(null);
 	}
 
@@ -91,12 +85,9 @@ public class SSDPNotifySocket extends HTTPMUSocket implements Runnable
 	 */
 	public boolean post(SSDPNotifyRequest req)
 	{
-		String ssdpAddr = SSDP.ADDRESS;
-		if (useIPv6Address == true)
-			ssdpAddr = SSDP.getIPv6Address();
-		req.setHost(ssdpAddr, SSDP.PORT);
-		return post((HTTPRequest)req);
-	}
+
+		return false;
+		}
 
 	////////////////////////////////////////////////
 	//	run	
@@ -113,52 +104,17 @@ public class SSDPNotifySocket extends HTTPMUSocket implements Runnable
 		while (deviceNotifyThread == thisThread) {
 			Thread.yield();
 
-			// Thanks for Kazuyuki Shudo (08/23/07)
-			SSDPPacket packet = null;
-			try {
-				packet = receive();
-			}
-			catch (IOException e) { 
-				break;
-			}
-			
-			// Thanks for Mikael Hakman (04/20/05)
-			if (packet == null)
-				continue;
-			
-			// Thanks for Inma (02/20/04)
-			InetAddress maddr = getMulticastInetAddress();
-			InetAddress pmaddr = packet.getHostInetAddress();
-			if (maddr.equals(pmaddr) == false) {
-				Debug.warning("Invalidate Multicast Recieved from IP " + maddr + " on " + pmaddr);
-				continue;
-			}
-			//TODO Must be performed on a different Thread in order to prevent UDP packet losses.
-			if (ctrlPoint != null)
-				ctrlPoint.notifyReceived(packet); 
+
 		}
 	}
 	
 	public void start(){
-		StringBuffer name = new StringBuffer("Cyber.SSDPNotifySocket/");
-		String localAddr = this.getLocalAddress();
-		// localAddr is null on Android m3-rc37a (01/30/08)
-		if (localAddr != null && 0 < localAddr.length()) {
-			name.append(this.getLocalAddress()).append(':');
-			name.append(this.getLocalPort()).append(" -> ");
-			name.append(this.getMulticastAddress()).append(':');
-			name.append(this.getMulticastPort());
-		}
-		deviceNotifyThread = new Thread(this,name.toString());
-		deviceNotifyThread.start();
+
 	}
 	
 	public void stop()
 	{
-		// Thanks for Mikael Hakman (04/20/05)
-		close();
-		
-		deviceNotifyThread = null;
+
 	}
 }
 
