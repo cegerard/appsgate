@@ -991,6 +991,10 @@
         "plural": "Synthèse vocale",
         "singular": "Synthèse vocale"
       },
+      "notification": {
+        "message": "Message",
+        "voice": "Voix"
+      },
       "control": {
         "existing": "Notifications existantes",
         "delete": "Supprimer",

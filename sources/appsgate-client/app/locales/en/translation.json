@@ -985,6 +985,33 @@
       },
       "weblink": "See weather forecast",
       "warning-weather-delete": "Do you really want to delete this meteo place ?"
+    },
+    "tts": {
+      "name": {
+        "plural": "Text-To-Speech",
+        "singular": "Text-To-Speech"
+      },
+      "notification": {
+        "message": "Message",
+        "voice": "Voice"
+      },
+      "control": {
+        "existing": "Existing notifications",
+        "delete": "Delete",
+        "add": "Add a new notification",
+        "use-voice": "Use voice",
+        "from": "from",
+        "Male": "Male",
+        "Female": "Female",
+        "slow": "slow",
+        "fast": "fast"
+      },
+      "lang": {
+        "English": "English",
+        "French": "French",
+        "German": "German",
+        "Spanish": "Spanish"
+      }
     }
   }
 }
