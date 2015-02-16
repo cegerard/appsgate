@@ -129,14 +129,14 @@
         "zone-activate": "Activate alarm for the zone ...",
         "zone-desactivate": "Desactivate alarm for the zone ...",
         "force-input": "Signal an entry in the central of alarm in zone ...",
-        "card_passed":"User badge has been identified"
+        "card_passed":"User badge is recognized"
       },
       "event": {
         "authorized": "a badge is authorized by ...",
         "non_authorized": "a badge is NOT authorized by ...",
         "alarm_fired": "an alarm is detected by ...",
-        "card_passed":"Card of ",
-        "card_passed2": " is identified",
+        "card_passed":"Badge of ",
+        "card_passed2": " is recognized",
         "any": "Any"
       },
       "last-authorized": "Last badge access granted",

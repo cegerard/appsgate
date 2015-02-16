@@ -129,14 +129,14 @@
         "zone-activate": "Activer surveillance pour la zone ...",
         "zone-desactivate": "Désactiver surveillance pour la zone ...",
         "force-input": "Signaler au système d'alarme une entrée dans la zone ...",
-        "card_passed":"Carte de utilisateur est passée"
+        "card_passed":"Badge de utilisateur est reconnu"
       },
       "event": {
         "authorized": "l'accès du badge a été autorisé par ...",
         "non_authorized": "l'accès du badge n'a pas été autorisé par ...",
         "alarm_fired": "alarme déclenchée par ARD",
-        "card_passed":"Carte de ",
-        "card_passed2": " est passée",
+        "card_passed":"Badge de ",
+        "card_passed2": " est reconnu",
         "any": "Quelconque"
       },
       "last-authorized": "Dernier badge accès autorisé",
