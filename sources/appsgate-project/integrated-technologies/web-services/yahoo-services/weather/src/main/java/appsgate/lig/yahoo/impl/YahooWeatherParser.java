@@ -15,6 +15,7 @@ import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import appsgate.lig.weather.utils.CurrentWeather;
@@ -42,6 +43,8 @@ public class YahooWeatherParser {
     static final String xPathForecast = "/rss/channel/item/forecast";
     static final String xPathPubDate = "//pubDate";
     static final String xPathPresentationURL = "//link";
+    static final String xPathLocationURL = "/rss/channel/location";
+
 
     static final String xPathTitle = "/rss/channel/item/title";
 
@@ -134,13 +137,58 @@ public class YahooWeatherParser {
         return location;
     }
     
-    static public String parsePresentationURL(Document xmlDocument) throws Exception {
-        XPath xPath = XPathFactory.newInstance().newXPath();
+    static public String parsePresentationURL(Document xmlDocument, String woeid) throws Exception {
+    	// PresentationURL (old "link" xml elements does not work anymore)
+    	// -> we build our own URL, as it is done when fetching a location on a browser
+        
+        //String location = xPath.evaluate(xPathPresentationURL, xmlDocument);
+    	
+    	XPath xPath = XPathFactory.newInstance().newXPath();
+    	Node location = (Node)xPath.evaluate(xPathLocationURL, xmlDocument,
+    			XPathConstants.NODE);
+    	NamedNodeMap attributes = location.getAttributes();
+    	
+    	
+    	String country = attributes.getNamedItem("country").getNodeValue();
+    	String region = attributes.getNamedItem("region").getNodeValue();
+    	String city = attributes.getNamedItem("city").getNodeValue();
+    	
+    	String presentationURL = "";
+    	
+    	if(country != null) {
+    		country=country.replace(' ', '_');
+    		
+    		if(country.equals("France")) {
+    			// Ugly hack to use the yahoo french website when fetching french location
+    			presentationURL+="https://fr.meteo.yahoo.com/";
+    		} else {
+    			presentationURL+="https://weather.yahoo.com/";
+    		}
+    		
+    		// Using country
+			presentationURL+=country;    			
 
-        String location = xPath.evaluate(xPathPresentationURL, xmlDocument);
-        logger.info("Current location : " + location);
-
-        return location;
+    		
+    		// We should use the region and the city, but it does not work alwaysn
+    		// especially with unusual characters, we replace the region with x
+    		// and city with x, and we end by the woeid
+    		
+    		// Using region
+    		presentationURL+="/x";
+    		
+    		
+    		// Using city
+    		presentationURL+="/x";
+    		
+    		// adding woeid
+    		presentationURL+="-"+woeid;
+    		
+    	} else {
+    		logger.warning("parsePresentationURL(...), no country found for current location");
+    	}
+    	logger.info("returning presentation URL : "+presentationURL);
+		
+    	return presentationURL;
     }
 
     static public Calendar parsePublicationDate(Document xmlDocument)

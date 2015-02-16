@@ -153,9 +153,13 @@ define([
                 // instantiate a model for the new location observer
                 var loc = $("#add-weather-modal input[name='name']").val();
 //                var weather = new Weather({location	: loc, id	: 'WeatherObserver-'+Math.round(Math.random() * 10000).toString(), name : loc, type :"103"});
-                var weather = new Weather({location	: loc, id	: 'WeatherObserver-'+loc, name : loc, type :"103"});
-                services.create(weather);
-                weather.save();
+
+                communicator.sendMessage({
+                    "method":"addLocationObserver",
+                    "args":[{"type":"String","value":loc}],
+                    "callId":"addLocation",
+                    "TARGET":"EHMI"
+                });
 
                 // tell the router that there is no modal any more
                 appRouter.isModalShown = false;

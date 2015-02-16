@@ -112,18 +112,14 @@ public class WeatherObserverImpl extends AbstractObjectSpec implements
 	public JSONObject getDescription() throws JSONException {
 		JSONObject descr = new JSONObject();
 
-		// mandatory appsgate properties
-		descr.put("id", appsgateObjectId);
-		// mandatory appsgate properties
 		descr.put("id", appsgateObjectId);
 		descr.put("type", appsgateUserType);
 		descr.put("status", appsgateDeviceStatus);
 		descr.put("woeid", currentWoeid);
-		descr.put("presentationURL", currentPresentationURL);
-
 		descr.put("pictureId", appsgatePictureId);
 		try {
-
+			this.refresh();
+			descr.put("presentationURL", getPresentationURL());
 			descr.put("location", getCurrentLocation());
 			descr.put("temperature", getCurrentTemperature());
 			descr.put("trend", getCurrentWeatherCode());
@@ -132,6 +128,7 @@ public class WeatherObserverImpl extends AbstractObjectSpec implements
 			logger.warn("Error during get description" + exc.getMessage());
 			return descr;
 		}
+		logger.debug("getDescription(), returning : "+descr.toString());
 		return descr;
 	}
 
@@ -327,7 +324,10 @@ public class WeatherObserverImpl extends AbstractObjectSpec implements
 				lastFetch = System.currentTimeMillis();
 
 				lastPublicationdate = weatherService
-						.getPublicationDate(currentLocation);				
+						.getPublicationDate(currentLocation);
+
+				currentPresentationURL = weatherService
+						.getPresentationURL(currentLocation);
 			}
 			
 			if (currentWeather == null) {
@@ -349,8 +349,6 @@ public class WeatherObserverImpl extends AbstractObjectSpec implements
 				currentWoeid = weatherService.getWOEID(currentLocation);
 			}
 
-			currentPresentationURL = weatherService
-					.getPresentationURL(currentLocation);
 
 		}
 
