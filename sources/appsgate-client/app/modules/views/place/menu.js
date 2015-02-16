@@ -60,11 +60,13 @@ define([
 		onMoveDevice: function(model) {
 			// Desactivate previous item menu
 			$(this.$el.find("#place-" + model.previous("placeId"))).removeClass("active");
-			// Replace previous item menu to delete the device moved
-			this.$el.find("#place-" + model.previous("placeId")).replaceWith(this.tplPlaceContainer({
-                place: places.get(model.previous("placeId")),
-				active: false
-            }));
+			// Replace previous item menu to delete the device moved. Test to avoid delete item menu already delete (when delete place with devices)
+			if (places.get(model.previous("placeId"))) {
+				this.$el.find("#place-" + model.previous("placeId")).replaceWith(this.tplPlaceContainer({
+					place: places.get(model.previous("placeId")),
+					active: false
+				}));
+			}
 		},
         /**
          * Method called when a device has changed
