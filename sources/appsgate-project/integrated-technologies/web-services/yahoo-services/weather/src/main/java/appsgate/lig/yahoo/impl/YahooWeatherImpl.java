@@ -347,16 +347,21 @@ public class YahooWeatherImpl implements YahooWeather {
 							YahooWeatherParser.parseCurrentConditions(doc));
 					forecasts.put(woeid, YahooWeatherParser.parseForecast(doc));
 					lastPublicationDates.put(woeid, newPubDate);
+					
 					presentationURLs.put(woeid,
-							YahooWeatherParser.parsePresentationURL(doc));
+							YahooWeatherParser.parsePresentationURL(doc,woeid));
+					logger.info("Publication data parsed, presentation url : "+YahooWeatherParser.parsePresentationURL(doc,woeid));
+					
 				} else
 					logger.info("Publication date for " + placeName
 							+ " is NOT newer, does nothing");
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new WeatherForecastException(
 					"Impossible to fetch to weather forecast service, "
 							+ e.getMessage());
+			
 		}
 	}
 
