@@ -50,6 +50,10 @@ define(function(require, exports, module) {
     
         $(".navbar").i18n();
     
+    
+        this.getServerName = function() {
+            return communicator.getServerName();
+        };
         // Wait for the socket to be opened
         dispatcher.on("WebSocketOpen", function() {
     
@@ -160,10 +164,8 @@ define(function(require, exports, module) {
         });
 
         // set current server address and port in the modal for settings
-        if(typeof communicator.getServerAddr() !== "undefined") {
-            $("#settings-modal .addr-server").val(communicator.getServerAddr().split("://")[1].split(":")[0]);
-            $("#settings-modal .port-server").val(communicator.getServerAddr().split(":")[2]);
-        }
+        $("#settings-modal .addr-server").val(communicator.getServerName());
+        $("#settings-modal .port-server").val(communicator.getServerPort());
 
         // Initialize the communication layer
         communicator.initialize();
@@ -184,8 +186,8 @@ define(function(require, exports, module) {
       
             // set the new server address
             // build the server address from the information given by the user
-            this.serverAddr = "ws://" + $("#settings-modal .addr-server").val() + ":";
-            communicatorAddr = this.serverAddr + ":" + $("#settings-modal .port-server").val() === "" ? "8080" : $("#settings-modal .port-server").val();
+            var serverName =  $("#settings-modal .addr-server").val();
+            var communicatorAddr = "ws://" + serverName + ":" + ($("#settings-modal .port-server").val() === "" ? "8080" : $("#settings-modal .port-server").val());
       
             // update the language if updated
             if ($("#settings-modal select#language :selected").val() !== appRouter.locale) {
@@ -226,9 +228,6 @@ define(function(require, exports, module) {
         $('.circlemenu').circleMenu('close');
     }
     
-    function getServerAdress() {
-        return this.serverAddr;
-    }
 
     return app;
 });
