@@ -106,7 +106,13 @@ public class AudioPlayerImpl extends CoreObjectBehavior implements MediaPlayer, 
 		logger.trace("play(String mediaURL : {}, String mediaName : {})");
 		this.currentMediaURL = mediaURL;
 		this.currentMediaName = mediaName;
-
+		
+		
+		if(playerWrapper != null) {
+			synchronized (playerWrapper) {
+				stop();				
+			}
+		}
 		playerWrapper = new PlayerWrapperThread();
 		if(playerWrapper.configure(mediaURL)) {
 			playerWrapper.start();
