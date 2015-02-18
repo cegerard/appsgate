@@ -91,6 +91,20 @@ define([
       setServerAddr:function(serverAddr) {
         this.serverAddr = serverAddr;
       },
+      
+      getServerName: function() {
+        if (this.serverAddr !== undefined) {
+          return this.serverAddr.split("://")[1].split(":")[0];
+        }
+        return "";
+      },
+      
+      getServerPort: function() {
+        if (this.serverAddr !== undefined) {
+          return this.serverAddr.split(":")[2];
+        }
+        return "";
+      },
 
       /**
       * Close the current connection if needed and start a new connection

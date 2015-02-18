@@ -34,11 +34,24 @@
     },
 	"SmartPlug" : {
 		"on" : "Allumer la prise",
-		"off" : "Eteindre la prise"
+		"off" : "Eteindre la prise",
+        "change" : {
+          "consumption" : "La consommation est de __text__ W"
+        }
 	},
     "DomiCube" : {
       "change" : {
          "activeFace" : "Nouvelle face du DomiCube"
+      }
+    },
+    "Illumination" : {
+      "change" : {
+        "value" : "La luminosité est de __text__ lux"
+      }
+    },
+    "Switch" : {
+      "change" : {
+        "switchNumber" : "Quelqu'un a appuyé sur le bouton __text__"
       }
     }
   },

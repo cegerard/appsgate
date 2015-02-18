@@ -34,11 +34,24 @@
     },
 	"SmartPlug" : {
 		"on" : "Switch plug on",
-		"off" : "Switch plug off"
+		"off" : "Switch plug off",
+        "change" : {
+          "consumption" : "consumption indicates __text__ W"
+        }
 	},
     "DomiCube" : {
       "change" : {
          "activeFace" : "New face for the DomiCube"
+      }
+    },
+    "Illumination" : {
+      "change" : {
+        "value" : "Luminosity is __text__ lux"
+      }
+    },
+    "Switch" : {
+      "change" : {
+        "switchNumber" : "Someone pressed button __text__"
       }
     }
   },

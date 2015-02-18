@@ -5,10 +5,11 @@
 var MWIMS = 3000000;
 
 define([
+    "app",
     "appsgate.debugger",
     "text!templates/debugger/default.html",
     "bootstrap-datetimepicker"
-], function(Debugger, debuggerDefaultTemplate) {
+], function(App, Debugger, debuggerDefaultTemplate) {
 
   var DebuggerView = {};
   // detailled view of a debugger
@@ -17,7 +18,7 @@ define([
 
     initialize: function() {
         this.connector = new Debugger.Connector({
-            address: document.URL.replace(/http:\/\//i,"").replace(/\/.*/i,"").replace(/:.*/i,""),
+            address: App.getServerName(),
             port: '8090'
         });
     },
