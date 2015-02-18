@@ -17,9 +17,13 @@ define([
         },
       initialize: function() {
         var self = this;
+
+        $.ajaxSetup({ cache: false });
+
         PhillipsHueView.__super__.initialize.apply(self, arguments);
 
         $.extend(self.__proto__.events, PhillipsHueView.__super__.events);
+
       },
       /**
       * Callback to toggle a lamp - used when the displayed device is a lamp (!)
@@ -45,24 +49,14 @@ define([
         return false;
       },
       colorchanged: function(){
-        var lamp = this.model;//devices.get(Backbone.history.fragment.split("/")[1]);
-        var rgb = $(".picker_h").css("background-color");
-        //var pli=rgb.replace("rgb(","").replace(")","").split(",");
-        var hsl = Raphael.rgb2hsl(rgb);
-        //var hsl = rgb2hsb({r:parseInt(pli[0]),g:parseInt(pli[1]),b:parseInt(pli[2])});
+        var lamp = this.model;
+        var rgb = $("#colorbg").css("background-color");
+        var hsl = Raphael.rgb2hsb(rgb);
         var hH=Math.round(hsl.h* 65535);
         var hS=Math.round(hsl.s* 255);
-        var hB=Math.round(hsl.l* 255);
+        var hB=Math.round(hsl.b* 255);
         lamp.set({"color": hH, "saturation": hS, "brightness": hB});
         lamp.sendFullColor();
-        //lamp.sendColor(hH);
-        //lamp.sendSaturation(hS);
-        //lamp.sendBrightness(hB);
-        //lamp.set({"color": Math.round(hsl.h * 65535), "saturation": Math.round(hsl.s * 255), "brightness": Math.round(hsl.l * 255)});
-        //lamp.sendColor(Math.round(hsl.h * 65535));
-        //lamp.sendSaturation(Math.round(hsl.s * 255));
-        //lamp.sendBrightness(Math.round(hsl.l * 255));
-
       },
       autoupdate: function() {
         PhillipsHueView.__super__.autoupdate.apply(this);
@@ -82,9 +76,6 @@ define([
             lampButton = "<span data-i18n='devices.lamp.action.turnOn'></span>";
         }
         this.$el.find("#lamp-button").html(lampButton);
-
-        // if the lamp is on, we allow the user to pick a color
-        //this.renderColorWheel();
 
         // translate the view
         this.$el.i18n();
@@ -123,44 +114,49 @@ define([
       */
       renderColorWheel: function() {
           var self=this;
-          var colorHSB = hex2hsb(colorHex);
+          //var colorHSB = hex2hsb(colorHex);
           //moveColorByHex(colorHex);
           $moving = "colors";
           $mousebutton = 0;
 
           $("#colorPickerLi").bind("mousedown", function (a) {
               if ($(a.target).parents().andSelf().hasClass("picker-colors")) {
-                  a.preventDefault();
+                  //a.preventDefault();
                   $mousebutton = 1;
                   $moving = "colors";
-                  moveColor(a)
+                  moveColor(a);
+                  self.colorchanged();
               }
               if ($(a.target).parents().andSelf().hasClass("picker-hues")) {
-                  a.preventDefault();
+                  //a.preventDefault();
                   $mousebutton = 1;
                   $moving = "hues";
-                  moveHue(a)
+                  moveHue(a);
+                  self.colorchanged();
               }
           }).bind("mouseup", function (a) {
-              a.preventDefault();
+              //a.preventDefault();
               $mousebutton = 0;
               $moving = "";
               self.colorchanged();
 
           }).bind("mousemove", function (a) {
+
               a.preventDefault();
               if ($mousebutton == 1) {
                   if ($moving == "colors") {
-                      moveColor(a)
-                  }
-                  if ($moving == "hues") {
-                      moveHue(a)
+                      moveColor(a);
+                      self.colorchanged();
+                  }else if ($moving == "hues") {
+                      moveHue(a);
+                      self.colorchanged();
                   }
               }
+
           });
 
           $(document).ready(function(){
-              var lamp = self.model;//devices.get(Backbone.history.fragment.split("/")[1]);
+              var lamp = self.model;
               moveColorByHex(expandHex(lamp.getCurrentColor()));
           });
 
