@@ -670,8 +670,9 @@ final public class NodeProgram extends Node implements ProgramDesc {
     public void setProgramStatus(String id, ReferenceTable.STATUS s) {
         // No need to update the status and the reference table if this is the same program
         if (!id.equalsIgnoreCase(this.id)) {
-            references.setProgramStatus(id, s);
-            changeStatus();
+            if (references.setProgramStatus(id, s)){
+                changeStatus();
+            }
         }
     }
 
