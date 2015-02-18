@@ -24,6 +24,7 @@ import appsgate.lig.chmi.spec.listeners.CoreEventsListener;
 import appsgate.lig.chmi.spec.listeners.CoreUpdatesListener;
 import appsgate.lig.context.device.properties.table.spec.DevicePropertiesTableSpec;
 import appsgate.lig.context.userbase.spec.UserBaseSpec;
+import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.ehmi.spec.GrammarDescription;
 import appsgate.lig.ehmi.exceptions.CoreDependencyException;
 import appsgate.lig.ehmi.exceptions.ExternalComDependencyException;
@@ -226,7 +227,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 			try {
 				// before subscribing to new Core Device, synchronize the
 				// existing ones
-				JSONArray devicesArray = coreProxy.getDevices();
+				JSONArray devicesArray = coreProxy.getDevicesDescription();
 				for (int i = 0; i < devicesArray.length(); i++) {
 					try {
 						logger.trace("synchroCoreProxy(), synchro for : "+devicesArray.getJSONObject(i).toString());
@@ -239,7 +240,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 								"id");
 
 							if (!"21".equals(type)) {
-							addGrammar(id, type, new GrammarDescription(coreProxy.getDeviceBehavior(type)));
+							addGrammar(id, type, new GrammarDescription(coreProxy.getDeviceBehaviorFromType(type)));
 							}
 						}
 					} catch (JSONException e) {
@@ -310,7 +311,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 		synchroCoreProxy();
 		JSONArray devices = new JSONArray();
 		try {
-			return addContextData(coreProxy.getDevices());
+			return addContextData(coreProxy.getDevicesDescription());
 		} catch (CoreDependencyException coreException) {
 			logger.debug("Resolution failled for core dependency, no device can be found.");
 			if (systemClock.isRemote()) {
@@ -355,7 +356,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 		synchroCoreProxy();
 		JSONObject devices = new JSONObject();
 		try {
-			JSONObject coreObject = coreProxy.getDevice(deviceId);
+			JSONObject coreObject = coreProxy.getDeviceDescription(deviceId);
             return addContextData(coreObject, deviceId);
 		} catch (CoreDependencyException coreException) {
 			logger.debug("Resolution failed for core dependency, no device can be found.");
@@ -381,7 +382,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 		synchroCoreProxy();
 		JSONArray devices = new JSONArray();
 		try {
-			return addContextData(coreProxy.getDevices(type));
+			return addContextData(coreProxy.getDevicesDescriptionFromType(type));
 		} catch (CoreDependencyException coreException) {
 			logger.debug("Resolution failed for core dependency, no device can be found.");
 			if (systemClock.isRemote()) {
@@ -405,11 +406,11 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 			logger.error("no context data available");
 			return null;
 		}
-		JSONObject deviceDetails = coreProxy.getDevice(objectId);
+		CoreObjectSpec device = coreProxy.getCoreDevice(objectId);
 		try {
-			GrammarDescription grammar = getGrammarFromType(deviceDetails.getString("type"));
+			GrammarDescription grammar = getGrammarFromType(device.getUserType());
                         if (grammar == null) {
-                            logger.error("Unable to get grammar for device: {}", deviceDetails.getString("id"));
+                            logger.error("Unable to get grammar for device: {}", objectId);
                             return null;
                         }
 			return new StateDescription(grammar.getStateDescription(stateName));
@@ -480,8 +481,8 @@ public class EHMIProxyImpl implements EHMIProxySpec {
                 GrammarDescription desc = devicePropertiesTable.getGrammarFromType(deviceType);
                 if (desc == null ) {
 			logger.warn("getGrammarFromType({}): the devicePropertyTable did not contain", deviceType);
-                        desc = new GrammarDescription(coreProxy.getDeviceBehavior(deviceType));
-                        addGrammar(null, deviceType, new GrammarDescription(coreProxy.getDeviceBehavior(deviceType)));
+                        desc = new GrammarDescription(coreProxy.getDeviceBehaviorFromType(deviceType));
+                        addGrammar(null, deviceType, new GrammarDescription(coreProxy.getDeviceBehaviorFromType(deviceType)));
                 } else {
                 }
 		return desc;
@@ -603,43 +604,33 @@ public class EHMIProxyImpl implements EHMIProxySpec {
                     //for (SymbolicPlace symbolicPlace : placeManager.getPlaces()) {
                     //	coreObjectInPlace.addAll(symbolicPlace.getDevices());
                     //}
-                    JSONArray devices = coreProxy.getDevices();
+                    JSONArray devices = coreProxy.getDevicesId();
                     for (int i = 0; i < devices.length(); i++) {
-                        JSONObject o = devices.optJSONObject(i);
-                        if (o != null) {
-                            coreObjectInPlace.add(o.optString("id"));
-                        }
+                         coreObjectInPlace.add(devices.optString(i));
                     }
 		}
 
-		// Now we get all identifier of device that match one types of the type
-		// list
-		try {
-			if (!typeList.isEmpty()) {
-				for (String type : typeList) {
-					JSONArray devicesOfType = coreProxy.getDevices(type);
-					int size = devicesOfType.length();
-					for (int i = 0; i < size; i++) {
-						coreObjectOfType.add(devicesOfType.getJSONObject(i)
-								.getString("id"));
-					}
-				}
-			} else {
-				JSONArray allDevices = coreProxy.getDevices();
-				int size = allDevices.length();
+	// Now we get all identifier of device that match one types of the type
+	// list
+		if (!typeList.isEmpty()) {
+			for (String type : typeList) {
+				JSONArray devicesOfType = coreProxy.getDevicesIdFromType(type);
+				int size = devicesOfType.length();
 				for (int i = 0; i < size; i++) {
-					coreObjectOfType.add(allDevices.getJSONObject(i).getString(
-							"id"));
+					coreObjectOfType.add(devicesOfType.optString(i));
 				}
 			}
-
-			// We get the intersection between placed object and object of
-			// specified type
-			coreObjectInPlace.retainAll(coreObjectOfType);
-
-		} catch (JSONException e) {
-			e.printStackTrace();
+		} else {
+			JSONArray allDevices = coreProxy.getDevicesId();
+			int size = allDevices.length();
+			for (int i = 0; i < size; i++) {
+				coreObjectOfType.add(allDevices.optString(i));
+			}
 		}
+
+		// We get the intersection between placed object and object of
+		// specified type
+		coreObjectInPlace.retainAll(coreObjectOfType);
 
 		return coreObjectInPlace;
 	}
@@ -1408,17 +1399,16 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 			return grammar;
 		}
 		// Add the grammar to the table
-		JSONObject device = coreProxy.getDevice(deviceId);
+		CoreObjectSpec device = coreProxy.getCoreDevice(deviceId);
 
-		try {
-			String type = device.getString("type");
+		if(device != null) {
+			String type = device.getUserType();
 			devicePropertiesTable.setType(deviceId, type);
                         grammar = getGrammarFromType(type);
                         devicePropertiesTable.addGrammarForDevice(deviceId, type, grammar);
 			return grammar;
-		} catch (JSONException ex) {
-			logger.error("Unable to get 'type' from {}, {}", device.toString(), deviceId);
-		} catch (NullPointerException e){
+		
+		} else {
             logger.error("Device {} is not available, this is not normal, ask the matrix architect why",deviceId);
         }
 		return null;

@@ -30,7 +30,6 @@ import appsgate.lig.chmi.spec.GenericCommand;
 import appsgate.lig.chmi.spec.listeners.CoreEventsListener;
 import appsgate.lig.chmi.spec.listeners.CoreUpdatesListener;
 import appsgate.lig.clock.sensor.spec.CoreClockSpec;
-import appsgate.lig.core.object.messages.CoreNotificationMsg;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.core.object.spec.CoreObjectSpec.CORE_TYPE;
@@ -207,45 +206,36 @@ public class CHMIProxyImpl implements CHMIProxySpec {
      * @param objectID the AbstractObjectSpec identifier
      * @return an AbstractObjectSpec object that have objectID as identifier
      */
-    public Object getObjectRefFromID(String objectID) {
+    @Override
+    public CoreObjectSpec getCoreDevice(String objectId) {
+		logger.trace("getObjectRefFromID(String objectID : {})",objectId);
     	
-    	//Call on CHMIProxy instance
-    	if(objectID.contentEquals("proxy")) {
-    		return this;
+    	if(objectId == null ||objectId.isEmpty()) {
+    		logger.warn("getObjectRefFromID(...), objectId is null");
+    		return null;
     	}
     	
-    	//Call on any core objects
-        Iterator<CoreObjectSpec> it = abstractDevice.iterator();
-        CoreObjectSpec tempAbstractObject = null;
-        String id;
-        boolean notFound = true;
-
-        while (it.hasNext() && notFound) {
-            tempAbstractObject = it.next();
-            id = tempAbstractObject.getAbstractObjectId();
-            if (objectID.equalsIgnoreCase(id)) {
-                notFound = false;
+        for (CoreObjectSpec adev : abstractDevice) {
+        	if (objectId.equalsIgnoreCase(adev.getAbstractObjectId())) {
+        		logger.trace("getObjectRefFromID(...); device found");
+                return adev;
             }
         }
-
-        if (!notFound) {
-            return tempAbstractObject;
-        } else {
-            return null;
-        }
+		logger.trace("getObjectRefFromID(...); device NOT found");
+		return null;
     }
 
     @SuppressWarnings("rawtypes")
     @Override
     public GenericCommand executeCommand(int clientId, String objectId, String methodName, ArrayList<Object> args, ArrayList<Class> paramType, String callId) {
-        Object obj = getObjectRefFromID(objectId);
+        Object obj = getCoreDevice(objectId);
         return new GenericCommand(args, paramType, obj, objectId, methodName, callId, clientId, sendToClientService);
     }
 
     @SuppressWarnings("rawtypes")
     @Override
     public GenericCommand executeCommand(String objectId, String methodName, ArrayList<Object> args, ArrayList<Class> paramType) {
-        Object obj = getObjectRefFromID(objectId);
+        Object obj = getCoreDevice(objectId);
         return new GenericCommand(args, paramType, obj, methodName);
     }
     
@@ -281,53 +271,60 @@ public class CHMIProxyImpl implements CHMIProxySpec {
      * Send all the devices description to one client
      */
     @Override
-    public JSONArray getDevices() {
+    public JSONArray getDevicesDescription() {
+    	logger.trace("getDevicesDescription()");
 
         if (abstractDevice != null && !abstractDevice.isEmpty()) {
             JSONArray jsonDeviceList = new JSONArray();
 
             for (CoreObjectSpec adev : abstractDevice) {
-            	logger.debug("getDevices(), adding : "+getObjectDescription(adev));
-                jsonDeviceList.put(getObjectDescription(adev));
+            	JSONObject obj = getObjectDescription(adev);
+                jsonDeviceList.put(obj);
             }
-            logger.debug("getDevices(), returning "+jsonDeviceList);
+            logger.debug("getDevicesDescription(), returning "+jsonDeviceList);
 
             return jsonDeviceList;
 
         } else {
-            logger.debug("No smart object detected.");
+            logger.debug("No Core Object detected.");
             return new JSONArray();
         }
     }
+    
+	public JSONArray getDevicesId() {
+    	logger.trace("getDevicesId()");
+        JSONArray jsonDeviceList = new JSONArray();
+        if (abstractDevice != null && !abstractDevice.isEmpty()) {
+
+            for (CoreObjectSpec adev : abstractDevice) {
+                jsonDeviceList.put(adev.getAbstractObjectId());
+            }
+            logger.debug("getDevicesId(), returning "+jsonDeviceList);
+            return jsonDeviceList;
+        } else {
+            logger.debug("No CoreObject detected.");
+            return jsonDeviceList;
+        }
+	}
 
     @Override
-    public JSONObject getDevice(String objectId) {
+    public JSONObject getDeviceDescription(String objectId) {
+    	logger.trace("getDeviceDescription(String objectId : {})",objectId);
 
-        Object obj = getObjectRefFromID(objectId);
+    	CoreObjectSpec obj = getCoreDevice(objectId);
 
         if (obj != null) {
-            CoreObjectSpec objSpec = (CoreObjectSpec) obj;
-            return getObjectDescription(objSpec);
+            return obj.getDescription();
         }
 
         return new JSONObject();
     }
     
-    /**
-     * Get the core object from its identifier
-     * @param objectId the object identifier
-     * @return the core object instance
-     */
-    private CoreObjectSpec getCoreDevice(String objectId) {
-    	Object obj = getObjectRefFromID(objectId);
-    	if (obj != null) {
-            return (CoreObjectSpec) obj;
-        }
-    	return null;
-    }
 
     @Override
-    public JSONArray getDevices(String type) {
+    public JSONArray getDevicesDescriptionFromType(String type) {
+    	logger.trace("getDevicesDescriptionFromType(String type : {})",type);
+
         Iterator<CoreObjectSpec> devices = abstractDevice.iterator();
 
         if (devices != null) {
@@ -343,13 +340,36 @@ public class CHMIProxyImpl implements CHMIProxySpec {
             return jsonDeviceList;
 
         } else {
-            logger.debug("No smart object detected.");
+            logger.debug("No CoreObject detected.");
             return new JSONArray();
         }
     }
+    
+    @Override
+    public JSONArray getDevicesIdFromType(String type) {
+    	logger.trace("getDevicesDescriptionFromType(String type : {})",type);
+
+        Iterator<CoreObjectSpec> devices = abstractDevice.iterator();
+
+        if (devices != null) {
+            JSONArray jsonDeviceList = new JSONArray();
+
+            while (devices.hasNext()) {
+                CoreObjectSpec adev = devices.next();
+                if (type.contentEquals(adev.getUserType())) {
+                    jsonDeviceList.put(adev.getAbstractObjectId());
+                }
+            }
+            return jsonDeviceList;
+
+        } else {
+            logger.debug("No Core Object detected.");
+            return new JSONArray();
+        }
+    }    
 
     @Override
-    public JSONObject getDeviceBehavior(String type) {
+    public JSONObject getDeviceBehaviorFromType(String type) {
         Iterator<CoreObjectSpec> devices = abstractDevice.iterator();
 
         if (devices != null) {
@@ -369,17 +389,17 @@ public class CHMIProxyImpl implements CHMIProxySpec {
 
     @Override
     public String getCoreClockObjectId() {
-    	JSONArray clocks = getDevices("21");
-    	JSONObject clock = null;
+    	JSONArray clocks = getDevicesIdFromType("21");
+    	String clock = null;
     	int nbClocks = clocks.length();
     	int i = 0;
     	try {
     		while(i < nbClocks) {
-				clock = clocks.getJSONObject(i);
+				clock = clocks.optString(i);
 				i++;
     		}
     		if(clock != null) {
-    			return clock.getString("id");
+    			return clock;
     		}
     	} catch (JSONException e) {
     		logger.debug(e.getMessage());
