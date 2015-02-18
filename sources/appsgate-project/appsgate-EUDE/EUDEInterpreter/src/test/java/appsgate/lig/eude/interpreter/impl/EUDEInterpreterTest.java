@@ -134,7 +134,7 @@ public class EUDEInterpreterTest {
 
                 allowing(chmiProxy).executeCommand(with(any(String.class)), with(any(String.class)), with(any(JSONArray.class)));
                 will(returnValue(gc));
-                allowing(chmiProxy).getDevices();
+                allowing(chmiProxy).getDevicesDescription();
                 will(returnValue(deviceList));
 
             }

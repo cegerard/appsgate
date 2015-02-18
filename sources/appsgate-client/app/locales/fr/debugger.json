@@ -15,6 +15,7 @@
 		"value" : "la lampe est allumée : __text__",
 		"colorChanged" : "la couleur a changé pour __text__"
 	  },
+      "blink30" : "Faire clignoter",
       "setRed" : "allumer en rouge",
       "setBlue" : "allumer en bleu",
       "setGreen" : "allumer en vert",
@@ -36,7 +37,8 @@
 		"on" : "Allumer la prise",
 		"off" : "Eteindre la prise",
         "change" : {
-          "consumption" : "La consommation est de __text__ W"
+          "consumption" : "La consommation est de __text__ W",
+          "plugState" : "La prise est __text__"
         }
 	},
     "DomiCube" : {
@@ -52,6 +54,11 @@
     "Switch" : {
       "change" : {
         "switchNumber" : "Quelqu'un a appuyé sur le bouton __text__"
+      }
+    },
+    "Contact" : {
+      "change" : {
+        "contact" : "Le capteur de contact est __text__, __value__, __contact__"
       }
     }
   },

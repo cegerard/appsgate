@@ -233,7 +233,7 @@ public class CHMICommandListener implements CommandListener {
 		} else {
 			// Type is a reference to a complex java object
 			// and value correspond to the id of the java AbstractObjectSpec
-			Object paramRef = chmiProxy.getObjectRefFromID(value);
+			Object paramRef = chmiProxy.getCoreDevice(value);
 			arguments.add(paramRef);
 		}
 	}

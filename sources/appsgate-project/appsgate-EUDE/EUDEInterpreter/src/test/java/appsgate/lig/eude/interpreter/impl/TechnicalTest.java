@@ -116,7 +116,7 @@ public class TechnicalTest {
                 will(returnValue("2"));
 
                 allowing(chmiProxy).executeCommand(with(any(String.class)), with(any(String.class)), with(any(JSONArray.class)));
-                allowing(chmiProxy).getDevices();
+                allowing(chmiProxy).getDevicesDescription();
                 will(returnValue(deviceList));
 
             }
