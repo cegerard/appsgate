@@ -31,7 +31,7 @@
 			"invalid-program": "Invalide",
 			"device-on": "Equipement allumé",
 			"device-off": "Equipement éteint",
-			"device-multiple-reference": "Multiples changements d'état"
+			"device-multiple-reference": "Multiples modifications d'états"
 		},
 	  	"help" : {
 			"title" : "Aide",
