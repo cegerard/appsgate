@@ -43,57 +43,79 @@ define([
 			/**** Event binding to have dynamic update ****/
 			self.listenTo(dispatcher, "updatePlace", function (place) {
 				console.log("updatePlace");
-				dispatcher.trigger("UpdateGraph");
+				dispatcher.trigger("UpdateGraph", {
+					buildGraph: false
+				});
 			});
 
 			self.listenTo(dispatcher, "newPlace", function (place) {
 				console.log("newPlace");
-				dispatcher.trigger("UpdateGraph");
+				dispatcher.trigger("UpdateGraph", {
+					buildGraph: true
+				});
 			});
 
 			self.listenTo(dispatcher, "removePlace", function (place) {
 				console.log("removePlace");
-				dispatcher.trigger("UpdateGraph");
+				dispatcher.trigger("UpdateGraph", {
+					buildGraph: true
+				});
 			});
 
 			self.listenTo(dispatcher, "moveDevice", function (messageData) {
 				console.log("moveDevice");
-				dispatcher.trigger("UpdateGraph");
+				dispatcher.trigger("UpdateGraph", {
+					buildGraph: true
+				});
 			});
 
 			self.listenTo(dispatcher, "newDevice", function (messageData) {
 				console.log("newDevice");
-				dispatcher.trigger("UpdateGraph");
+				dispatcher.trigger("UpdateGraph", {
+					buildGraph: true
+				});
 			});
 
 			self.listenTo(dispatcher, "removeDevice", function (messageData) {
 				console.log("removeDevice");
-				dispatcher.trigger("UpdateGraph");
+				dispatcher.trigger("UpdateGraph", {
+					buildGraph: true
+				});
 			});
 
 			self.listenTo(dispatcher, "newProgram", function (program) {
 				console.log("newProgram");
-				dispatcher.trigger("UpdateGraph");
+				dispatcher.trigger("UpdateGraph", {
+					buildGraph: true
+				});
 			});
 
 			self.listenTo(dispatcher, "removeProgram", function (program) {
 				console.log("removeProgram");
-				dispatcher.trigger("UpdateGraph");
+				dispatcher.trigger("UpdateGraph", {
+					buildGraph: true
+				});
 			});
 
 			self.listenTo(dispatcher, "updateProgram", function (program) {
 				console.log("updateProgram");
-				dispatcher.trigger("UpdateGraph");
+				dispatcher.trigger("UpdateGraph", {
+					buildGraph: true
+				});
 			});
 
 			self.listenTo(dispatcher, "newService", function (service) {
 				console.log("newService");
-				dispatcher.trigger("UpdateGraph");
+				dispatcher.trigger("UpdateGraph", {
+					buildGraph: true
+				});
 			});
 
 			self.listenTo(dispatcher, "removeService", function (serviceId) {
 				console.log("removeService");
-				dispatcher.trigger("UpdateGraph");
+				dispatcher.trigger("UpdateGraph", {
+					buildGraph: true
+				});
 			});
 
 		},
@@ -146,7 +168,9 @@ define([
 				self.listenTo(dispatcher, e.id, function (arg) {
 					// Before trigger check is it is an event we really want to process
 					if (self.checkFireEvent(arg)) {
-						dispatcher.trigger("UpdateGraph");
+						dispatcher.trigger("UpdateGraph", {
+							buildGraph: false
+						});
 					}
 				});
 			});
@@ -196,7 +220,7 @@ define([
 						delete oldE.isGhost;
 						isNoMoreGhost = true;
 					}
-					
+
 					// Check the different visible properties
 					if (oldE.name && oldE.name != e.name && e.name !== "" || isNoMoreGhost) {
 						oldE.name = e.name;
@@ -209,7 +233,7 @@ define([
 					if ((oldE.deviceState && oldE.deviceState != e.deviceState) || (isNoMoreGhost && e.deviceState)) {
 						oldE.deviceState = e.deviceState;
 					}
-					
+
 					// Save all the entites which has been seen
 					oldEntitiesUpdated.push(oldE);
 				} else {

@@ -999,8 +999,8 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	}
         
         @Override
-        public JSONObject getGraph() {
-            return interpreter.getGraph();
+        public JSONObject getGraph(Boolean buildGraph) {
+            return interpreter.getGraph(buildGraph);
         }
 
 	@Override
