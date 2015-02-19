@@ -8,7 +8,9 @@
     "commands": {
         "checkCurrentTimeOfDay" : {"params" : [
         {"name" : "isAfter"},
-        {"name" : "isBefore"}]}
+        {"name" : "isBefore"}]},
+        "getCurrentTimeInMillis" : {"params" : []},
+        "getTimeFlowRate" : {"params" : []}
     }
     
 }

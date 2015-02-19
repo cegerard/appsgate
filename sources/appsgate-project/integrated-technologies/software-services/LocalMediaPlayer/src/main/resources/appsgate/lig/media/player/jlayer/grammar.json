@@ -1,0 +1,17 @@
+{
+    "friendlyName": "Local Media Player",
+    "typename": "Mediaplayer",
+    "properties": [
+    ],
+    "states": [
+
+    ],
+    "commands" : {
+        "play" : {"params" : [{"name" : "url"}]},
+        "pause" : {},
+        "getVolume" : {},
+        "setVolume" : {"params" : [{"name" : "level"}]},
+        "resume" : {},
+        "stop" : {}
+    }
+}
