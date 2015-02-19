@@ -162,7 +162,7 @@ define([
                     input += this.tplKeepStateNode(param);
                     break;
                 case "empty":
-                    input += "<div class='btn btn-default btn-prog input-spot' id='" + jsonNode.iid + "'><span data-i18n='language.nothing-keyword'/></div>";
+                    input += "<div class='btn btn-default btn-prog input-spot empty-btn' id='" + jsonNode.iid + "'><span data-i18n='language.nothing-keyword'/></div>";
                     break;
                 case "mandatory":
                     input += "<div class='btn btn-default input-spot mandatory-spot' id='" + jsonNode.iid + "'><span data-i18n='language.mandatory-keyword'/></div>";

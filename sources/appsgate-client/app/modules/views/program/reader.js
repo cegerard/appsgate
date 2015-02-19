@@ -321,28 +321,24 @@ define([
           input = self.applyReadMode(input);
           $(".programInput").html(input).addClass("read-only");
 
+          $(".programInput").find(".empty-btn").next(".separator").remove();
+          $(".programInput").find(".empty-btn").remove();
+          
           if($(".programInput").children(".seq-block-node").children(":not(.input-spot):not(.seq-block-header)").length < 1){
             $(".programInput").children(".seq-block-node").remove();
             $(".programInput").children(".separator").remove();
           }
           else {
-            if($(".seq-block-node").find(".input-spot").next(".separator").length > 0
-            && $(".seq-block-node").find(".input-spot").next(".separator").next().length == 0){
-              $(".seq-block-node").find(".input-spot").next(".separator")[0].remove();
-            }
-            $(".seq-block-node").find(".input-spot").prev(".separator").remove();
+            $(".programInput").children(".seq-block-node").children(".separator").last().remove();
           }
           if($(".programInput").children(".set-block-node").children(":not(.input-spot):not(.set-block-header)").length < 1){
             $(".programInput").children(".set-block-node").remove();
             $(".programInput").children(".separator").remove();
           }
           else {
-            if($(".set-block-node").find(".input-spot").next(".separator").length > 0
-              && $(".set-block-node").find(".input-spot").next(".separator").next().length == 0){
-              $(".set-block-node").find(".input-spot").next(".separator")[0].remove();
-            }
-            $(".set-block-node").find(".input-spot").prev(".separator").remove();
+            $(".programInput").children(".set-block-node").children(".separator").last().remove();
           }
+          
 
           $(".input-spot:not(.mandatory-spot)").remove();
           $(".mandatory-spot").text($.i18n.t("language.mandatory-readonly"));
