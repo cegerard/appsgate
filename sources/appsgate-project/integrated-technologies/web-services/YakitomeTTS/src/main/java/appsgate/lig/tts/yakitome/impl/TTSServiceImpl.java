@@ -10,6 +10,8 @@ import org.osgi.framework.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mongodb.util.JSON;
+
 import appsgate.lig.core.object.messages.CoreNotificationMsg;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectBehavior;
@@ -46,6 +48,8 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 	
 	String defaultVoice = YakitomeAPIClient.DEFAULT_VOICE;
 	int defaultSpeed = YakitomeAPIClient.DEFAULT_SPEED;
+	
+	JSONObject currentVoices = null;
 	
 	
 	/**
@@ -485,7 +489,15 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 	@Override
 	public JSONObject getAvailableVoices() {
 		logger.trace("getAvailableVoices()");
-		return apiClient.getVoices();
+		if(currentVoices== null || currentVoices.length()<1) {
+			if(apiClient != null ) {
+				return apiClient.getVoices();
+			} else {
+				return null;
+			}
+		} else {
+			return currentVoices;
+		}
 	}
 	
 	private NotificationMsg stateChanged(String varName, String oldValue, String newValue) {

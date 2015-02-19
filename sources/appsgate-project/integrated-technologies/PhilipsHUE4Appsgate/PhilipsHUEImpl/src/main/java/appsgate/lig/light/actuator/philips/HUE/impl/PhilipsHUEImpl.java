@@ -298,22 +298,23 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 
     @Override
     public boolean setColorJson(JSONObject color) {
-        JSONObject oldColor;
 
-        try {
-            oldColor = getJSONColor();
-            color.put("on", on);
-        } catch (JSONException e) {
-            // never happens since the key is not null
-            return false;
-        }
+        JSONObject oldColor = getJSONColor();
 
-        if (PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, color)) {
+        JSONObject state=PhilipsBridge.getLightState(lightBridgeIP, lightBridgeId);
+        state.put("bri", String.valueOf(color.get("bri")));
+        state.put("hue", String.valueOf(color.get("hue")));
+        state.put("sat", String.valueOf(color.get("sat")));
+
+        HSBColor hsb = new HSBColor(color.getInt("hue"),color.getInt("sat"), color.getInt("bri"));
+        state.put("rgbcolor", hsb.toRGB().getHTMLColor());
+
+        if (PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, state)) {
             on = String.valueOf(true);
-            hue = String.valueOf(color);
-            bri = String.valueOf(BRI_DEFAULT);
-            sat = String.valueOf(SAT_DEFAULT);
-            notifyChanges("colorChanged", oldColor.toString(), getJSONColor().toString());
+            hue = String.valueOf(color.get("hue"));
+            bri = String.valueOf(color.get("bri"));
+            sat = String.valueOf(color.get("sat"));
+            notifyChanges("colorChanged", oldColor.toString(), state.toString());
 
             return true;
         }
@@ -332,29 +333,14 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
      */
     public boolean setSaturatedColor(long color) {
 
-        JSONObject newColor = new JSONObject();
-        JSONObject oldColor = getJSONColor();
+        JSONObject state=PhilipsBridge.getLightState(lightBridgeIP, lightBridgeId);
+        state.put("bri", String.valueOf(BRI_DEFAULT));
+        state.put("hue", String.valueOf(color));
+        state.put("sat", String.valueOf(SAT_DEFAULT));
 
-        try {
-            newColor.put("hue", color);
-            newColor.put("bri", BRI_DEFAULT);
-            newColor.put("sat", SAT_DEFAULT);
-            newColor.put("on", true);
-        } catch (JSONException e) {
+        return setColorJson(state);
 
-        }
 
-        if (PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, newColor)) {
-            on = String.valueOf(true);
-            hue = String.valueOf(color);
-            bri = String.valueOf(BRI_DEFAULT);
-            sat = String.valueOf(SAT_DEFAULT);
-            newColor.put("rgbcolor", getHTMLColor());
-            notifyChanges("colorChanged", oldColor.toString(), newColor.toString());
-            return true;
-        }
-
-        return false;
     }
 
     private JSONObject getJSONColor() {

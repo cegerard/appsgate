@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import appsgate.lig.chmi.spec.listeners.CoreEventsListener;
 import appsgate.lig.chmi.spec.listeners.CoreUpdatesListener;
+import appsgate.lig.core.object.spec.CoreObjectSpec;
 
 /**
  * Specification of the CHMI proxy that offer services about
@@ -85,28 +86,49 @@ public interface CHMIProxySpec {
 	/**
 	 * Get all the devices description as JSONArray
 	 */
-	public JSONArray getDevices();
+	public JSONArray getDevicesDescription();
+	
+	/**
+	 * Get all the devices description as JSONArray
+	 */
+	public JSONArray getDevicesId();	
 	
 	/**
 	 * Get the device description
 	 * @param objectId the object identifier
 	 * @return the object information as a JSONObject
 	 */
-	public JSONObject getDevice(String objectId);
+	public JSONObject getDeviceDescription(String objectId);
 	
 	/**
 	 * Get all the device that fit the type parameter
 	 * @param type the type parameter
 	 * @return the device list of the same "type"
 	 */
-	public JSONArray getDevices(String type);
+	public JSONArray getDevicesIdFromType(String type);
+	
+	/**
+	 * Get all the device that fit the type parameter
+	 * @param type the type parameter
+	 * @return the device list of the same "type"
+	 */
+	public JSONArray getDevicesDescriptionFromType(String type);
+	
 
     /**
      * Get the grammar behavior of a particular device type
      * @param type the type parameter
      * @return the JSON representation of the Grammar
      */
-    public JSONObject getDeviceBehavior(String type);
+    public JSONObject getDeviceBehaviorFromType(String type);
+    
+    /**
+     * Get the core object from its identifier
+     * @param objectId the object identifier
+     * @return the core object instance
+     */
+    public CoreObjectSpec getCoreDevice(String objectId);
+    
 	
 	/**
 	 * Get the identifier of the core clock

@@ -251,7 +251,7 @@ public class SystemClock {
 	 */
 	public boolean isRemote() {
 		if(coreProxy != null) {
-			JSONArray array = coreProxy.getDevices("21");
+			JSONArray array = coreProxy.getDevicesIdFromType("21");
 			if(array != null && array.length()> 0)
 				return true;			
 		}

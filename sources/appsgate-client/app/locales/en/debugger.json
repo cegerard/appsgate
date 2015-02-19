@@ -15,6 +15,7 @@
 		"value" : "lamp is on : __text__",
 		"colorChanged" : "color changed to __text__"
 	  },
+      "blink30" : "Blink",
       "setRed" : "set color to red",
       "setBlue" : "set color to blue",
       "setGreen" : "set color to green",
@@ -36,7 +37,8 @@
 		"on" : "Switch plug on",
 		"off" : "Switch plug off",
         "change" : {
-          "consumption" : "consumption indicates __text__ W"
+          "consumption" : "consumption indicates __text__ W",
+          "plugState" : "Plug is __text__"
         }
 	},
     "DomiCube" : {
@@ -52,6 +54,11 @@
     "Switch" : {
       "change" : {
         "switchNumber" : "Someone pressed button __text__"
+      }
+    },
+    "Contact" : {
+      "change" : {
+        "contact" : "Contact changes _text__"
       }
     }
   },

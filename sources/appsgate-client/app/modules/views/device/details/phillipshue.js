@@ -24,6 +24,14 @@ define([
 
         $.extend(self.__proto__.events, PhillipsHueView.__super__.events);
 
+          dispatcher.on(this.model.get("id"), function(updatedVariableJSON) {
+              if(updatedVariableJSON.varName == "colorChanged"){
+                  hexcolor=JSON.parse(updatedVariableJSON.value).rgbcolor;
+                  moveColorByHex(expandHex(hexcolor));
+              }
+
+          });
+
       },
       /**
       * Callback to toggle a lamp - used when the displayed device is a lamp (!)
@@ -114,8 +122,6 @@ define([
       */
       renderColorWheel: function() {
           var self=this;
-          //var colorHSB = hex2hsb(colorHex);
-          //moveColorByHex(colorHex);
           $moving = "colors";
           $mousebutton = 0;
 
@@ -141,16 +147,14 @@ define([
               self.colorchanged();
 
           }).bind("mousemove", function (a) {
-
-              a.preventDefault();
+              //a.preventDefault();
               if ($mousebutton == 1) {
                   if ($moving == "colors") {
                       moveColor(a);
-                      self.colorchanged();
                   }else if ($moving == "hues") {
                       moveHue(a);
-                      self.colorchanged();
                   }
+                  self.colorchanged();
               }
 
           });
