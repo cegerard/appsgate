@@ -125,7 +125,13 @@ define([
           $moving = "colors";
           $mousebutton = 0;
 
-          $("#colorPickerLi").bind("mousedown", function (a) {
+          $("#luminositePickerInputRange").change(function(e) {
+              self.model.set("brightness",e.target.value)
+              self.model.sendBrightness();
+          });
+
+
+              $("#colorPickerLi").bind("mousedown", function (a) {
               if ($(a.target).parents().andSelf().hasClass("picker-colors")) {
                   //a.preventDefault();
                   $mousebutton = 1;

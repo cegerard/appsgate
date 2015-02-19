@@ -296,7 +296,8 @@
         "turnOff": "Turn off",
         "turnOn": "Turn on",
         "turnAllOff": "Turn all off",
-        "turnAllOn": "Turn all on"
+        "turnAllOn": "Turn all on",
+        "brightness": "Brightness"
       },
       "complement": {
         "change-color": "to",

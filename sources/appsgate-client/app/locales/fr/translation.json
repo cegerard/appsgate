@@ -296,7 +296,8 @@
         "turnOff": "Eteindre",
         "turnOn": "Allumer",
         "turnAllOff": "Tout éteindre",
-        "turnAllOn": "Tout allumer"
+        "turnAllOn": "Tout allumer",
+        "brightness": "Luminosité"
       },
       "complement": {
         "change-color": "en",
