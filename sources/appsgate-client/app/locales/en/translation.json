@@ -306,11 +306,14 @@
         "speed": "seconds and blink it ",
         "fast":"rapidly",
         "normal":"normally",
-        "slow":"slowly"
+        "slow":"slowly",
+        "luminosity-change":" to ",
+        "minimum":"(min)",
+        "maximum":"(max)"
       },
       "keyboard": {
         "blink": "Blink a __myVar__",
-        "brightness": "brightness of a __myVar__",
+        "brightness": "Change brightness of __myVar__",
         "isOff": "a __myVar__ is off",
         "isOff-keep": "a __myVar__ off",
         "isOn": "a __myVar__ is on",
@@ -323,7 +326,7 @@
       },
       "language": {
         "blink": "Blink __myVar__",
-        "brightness": "brightness of lamp __myVar__",
+        "brightness": "Change brightness of __myVar__",
         "isOff": "__myVar__ is off",
         "isOff-keep": "__myVar__ off",
         "isOn": "__myVar__ is on",

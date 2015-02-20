@@ -17,7 +17,7 @@
             Unknown
         <% } %>
 
-    <% if (node.methodName.search("set") === 0 ) { %>
+    <% if (node.methodName.search("set") === 0 && node.methodName != "setBrightness") { %>
     <span data-i18n="devices.lamp.complement.change-color"></span>
     <select id="lamp-color-<%= node.idd %>" class="lamp-color-picker" target-id="<%= node.iid %>">
         <option <% if (node.methodName === "setRed") { %>selected<% } %> value="setRed" data-i18n="language.color.red"></option>
@@ -42,4 +42,10 @@
         </select>
     <% } %>
 
+    <% if ( node.methodName == "setBrightness" ) { %>
+            <span data-i18n="devices.lamp.complement.luminosity-change"></span>
+            <span data-i18n="devices.lamp.complement.minimum"></span>
+            <input target-id="<%= node.iid %>" id="luminositeInputRange-<%= node.iid %>" class="lamp-luminosity-selector" type="range" value="<%= node.args[0].value %>" class="select-speed" min="1" max="254" style="width:auto;display:inline;">
+            <span data-i18n="devices.lamp.complement.maximum"></span>
+    <% } %>
 </div>

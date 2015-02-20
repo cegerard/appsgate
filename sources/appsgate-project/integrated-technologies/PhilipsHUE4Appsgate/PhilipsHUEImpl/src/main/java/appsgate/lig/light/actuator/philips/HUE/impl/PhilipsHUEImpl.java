@@ -351,16 +351,9 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
     
     @Override
     public boolean setBrightness(long brightness) {
-
-        JSONObject oldColor = getJSONColor();
-
-        if (PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "bri", brightness)) {
-            bri = String.valueOf(brightness);
-            notifyChanges("colorChanged", oldColor.toString(), getJSONColor().toString());
-            return true;
-        }
-
-        return false;
+        JSONObject state=PhilipsBridge.getLightState(lightBridgeIP, lightBridgeId).getJSONObject("state");
+        state.put("bri", String.valueOf(brightness));
+        return setColorJson(state);
     }
 
     /**

@@ -41,7 +41,7 @@ define([
      *return the list of available actions
      */
     getActions: function() {
-      return ["switchOn", "switchOff", "blink"];
+      return ["switchOn", "switchOff", "blink","setBrightness"];
     },
     /**
      * return the keyboard code for a given action
@@ -83,6 +83,22 @@ define([
           v.phrase = "devices.lamp.language.blink";
           $(btn).attr("json", JSON.stringify(v));
           break;
+        case "setBrightness":
+          $(btn).append("<span>" + $.i18n.t('devices.lamp.keyboard.brightness', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.lamp.keyboard.lamp') + "</span>",
+          }));
+          v.methodName = "setBrightness";
+          v.type="action1";
+          v.args = [{
+            "type": "long",
+            "value": "254"
+          }];
+          v.phrase = "devices.lamp.language.brightness";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+
+
+
         default:
           console.error("unexpected action found for PhilipsHue: " + act);
           btn = null;

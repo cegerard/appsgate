@@ -25,7 +25,11 @@
 </li>
 <li class="list-group-item" style="padding-top:10px;height:50px;">
     <strong data-i18n="devices.lamp.action.brightness"></strong>
-    <div class="pull-right"><input id="luminositePickerInputRange" type="range" class="select-speed" min="1" max="254" style="width:auto;display:inline;" value="<%= device.get('brightness') %>"></div>
+    <div class="pull-right">
+        <span data-i18n="devices.lamp.complement.minimum"></span>
+        <input id="luminositePickerInputRange" type="range" class="select-speed" min="1" max="254" style="width:auto;display:inline;" value="<%= device.get('brightness') %>">
+        <span data-i18n="devices.lamp.complement.maximum"></span>
+    </div>
 </li>
 <li id="colorPickerLi" class="list-group-item" style="height:450px;">
     <span data-i18n="devices.lamp.complement.color"></span>

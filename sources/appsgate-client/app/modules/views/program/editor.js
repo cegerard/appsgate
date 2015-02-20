@@ -29,6 +29,7 @@ define([
         "change .ard-input-selector": "onARDInputSelector",
         "change .ard-user-selector": "onARDUserSelector",
         "change .lamp-input-selector": "onLampInputSelector",
+        "change .lamp-luminosity-selector": "onLampLuminositySelector",
         "change .ard-input-value-selector": "onARDInputValueSelector",
         "change .hour-picker, .minute-picker": "onChangeClockValue",
         "change .hour-before-picker, .minute-before-picker, .hour-after-picker, .minute-after-picker": "onChangeClockCheckingValue",
@@ -121,6 +122,13 @@ define([
         var value2 = {"type": "long", "value": valueInt2};
         this.Mediator.setNodeArg(iid, 0, value1);
         this.Mediator.setNodeArg(iid, 1, value2);
+      },
+      onLampLuminositySelector: function(e) {
+        e.stopPropagation();
+        var iid = $(e.currentTarget).attr("target-id");
+        var valueInt1 = $("#luminositeInputRange-" + iid)[0].value;
+        var value1 = {"type": "long", "value": valueInt1};
+        this.Mediator.setNodeArg(iid, 0, value1);
       },
       //ARD
       onARDInputSelector: function(e) {
