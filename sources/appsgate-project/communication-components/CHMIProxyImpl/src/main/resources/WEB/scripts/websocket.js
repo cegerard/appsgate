@@ -31,7 +31,7 @@ define(['philipshue/philipshue', 'enocean/enocean', 'upnp/upnp', 'debugger/debug
      			ws = new WebSocket("ws://"+server[0]+":"+DEFAULT_SERVER_PORT+"/");
      			ws.onopen = function()
      			{ 
-     				ws.send("{\"method\":\"getDevices\", \"args\":[], \"callId\":\"cf-get-devices\", \"TARGET\":\"CHMI\"}");
+     				ws.send("{\"method\":\"getDevicesDescription\", \"args\":[], \"callId\":\"cf-get-devices\", \"TARGET\":\"CHMI\"}");
      			};
      
      			ws.onmessage = function (evt) 

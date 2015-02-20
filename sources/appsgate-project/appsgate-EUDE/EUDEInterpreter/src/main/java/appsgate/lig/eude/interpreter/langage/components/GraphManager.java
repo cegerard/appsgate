@@ -59,10 +59,8 @@ public class GraphManager {
     private final String DENOTES_LINKS = "denotes";
     private final String PLACE_ENTITY = "place";
     private final String TIME_ENTITY = "time";
-    private final String SERVICE_ENTITY = "service";
     private final String DEVICE_ENTITY = "device";
     private final String SELECTOR_ENTITY = "selector";
-    private final String GHOST_ENTITY = "ghost";
 
     private final String CLOCK_ID = "21106637055";
 
@@ -74,9 +72,14 @@ public class GraphManager {
     }
 
     /**
+     * 
+     * @param needUpdateGraph
      * @return the graph in JSON format
      */
-    public JSONObject getGraph() {
+    public JSONObject getGraph(boolean needUpdateGraph) {
+        if (needUpdateGraph) {
+            updateGraph();
+        }
         return returnJSONObject;
     }
 
@@ -155,7 +158,7 @@ public class GraphManager {
                 LOGGER.error("JSON error during add device {}", ex.getCause());
             }
         }
-        
+
         /* BUILD GHOSTS NODES */
         buildDeviceGhosts(entitiesAdded);
         buildProgramGhosts(ghostPrograms);
@@ -289,7 +292,7 @@ public class GraphManager {
             addGhost("device", ghostId);
         }
     }
-    
+
     /**
      * Method to add program ghosts to the json object
      *
@@ -300,7 +303,7 @@ public class GraphManager {
             addGhost("program", ghostId);
         }
     }
-    
+
     private void addGhost(String typeGhost, String id) {
         HashMap<String, String> optArg = new HashMap<String, String>();
         optArg.put("isGhost", Boolean.TRUE.toString());
@@ -523,6 +526,62 @@ public class GraphManager {
             }
         }
         return ret;
+    }
+
+    /**
+     * Method to update the nodes graph with the latest values
+     */
+    private void updateGraph() {
+        try {
+            // Loop over all nodes to updates them
+            for (int i = 0; i < this.returnJSONObject.getJSONArray("nodes").length(); i++) {
+                JSONObject node = this.returnJSONObject.getJSONArray("nodes").getJSONObject(i);
+                if (node.get("type") == DEVICE_ENTITY) {
+                    // Device
+                    JSONObject currentDevice = this.interpreter.getContext().getDevice(node.getString("id"));
+                    // If null it is a ghost, so no need to update
+                    if (currentDevice == null) {
+                        continue;
+                    }
+                    // Update Value
+                    switch (Integer.parseInt(currentDevice.getString("type"))) {
+                        case 3: // Contact
+                            node.put("deviceState", currentDevice.getString("contact"));
+                            break;
+                        case 4: // CardSwitch
+                            node.put("deviceState", currentDevice.getString("inserted"));
+                            break;
+                        case 6: // Plug
+                            node.put("deviceState", currentDevice.getString("plugState"));
+                            break;
+                        case 7: // Lamp
+                            node.put("deviceState", String.valueOf(currentDevice.getBoolean("value")));
+                            break;
+                        default:
+                            break;
+                    }
+                    // Update Name
+                    node.put("name", currentDevice.getString("name"));
+                } else if (node.get("type") == PROGRAM_ENTITY) {
+                    // Program
+                    NodeProgram currentProgram = interpreter.getNodeProgram(node.getString("id"));
+                    // Update state
+                    node.put("state", currentProgram.getState());
+                } else if (node.get("type").equals(PLACE_ENTITY)) {
+                    // Place
+                    for (int j = 0; j < this.interpreter.getContext().getPlaces().length(); j++) {
+                        JSONObject place = this.interpreter.getContext().getPlaces().getJSONObject(j);
+                        if (place.getString("id").equals(node.getString("id"))) {
+                            // Update Name
+                            place.put("name", node.getString("name"));
+                        }
+                    }
+                }
+            }
+
+        } catch (JSONException ex) {
+            java.util.logging.Logger.getLogger(GraphManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 }

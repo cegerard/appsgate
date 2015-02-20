@@ -30,10 +30,10 @@ define([
 			// say that we want a refresh after the loadGraph
 			dependancies.refresh();
 			
-			// Send the request to the server to get the graph
+			// Send the request to the server to get the graph and build the graph (args @true)
 			communicator.sendMessage({
 				method: "getGraph",
-				args: [],
+				args: [{type:"Boolean", value: true}],
 				callId: "loadGraph",
 				TARGET: "EHMI"
 			});
@@ -93,10 +93,10 @@ define([
 			// say that we want a refresh after the loadGraph
 			dependancies.refresh();
 			
-			// Send the request to the server to get the graph
+			// Send the request to the server to get the graph and build it (args @true)
 			communicator.sendMessage({
 				method: "getGraph",
-				args: [],
+				args: [{type:"Boolean", value: true}],
 				callId: "loadGraph",
 				TARGET: "EHMI"
 			});

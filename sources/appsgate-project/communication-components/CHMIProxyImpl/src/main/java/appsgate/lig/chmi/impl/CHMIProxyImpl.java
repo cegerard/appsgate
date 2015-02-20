@@ -208,35 +208,47 @@ public class CHMIProxyImpl implements CHMIProxySpec {
      */
     @Override
     public CoreObjectSpec getCoreDevice(String objectId) {
-		logger.trace("getObjectRefFromID(String objectID : {})",objectId);
+		logger.trace("getCoreDevice(String objectID : {})",objectId);
     	
     	if(objectId == null ||objectId.isEmpty()) {
-    		logger.warn("getObjectRefFromID(...), objectId is null");
+    		logger.warn("getCoreDevice(...), objectId is null");
     		return null;
     	}
     	
         for (CoreObjectSpec adev : abstractDevice) {
         	if (objectId.equalsIgnoreCase(adev.getAbstractObjectId())) {
-        		logger.trace("getObjectRefFromID(...); device found");
+        		logger.trace("getCoreDevice(...); device found");
                 return adev;
             }
         }
-		logger.trace("getObjectRefFromID(...); device NOT found");
+		logger.trace("getCoreDevice(...); device NOT found");
 		return null;
     }
 
     @SuppressWarnings("rawtypes")
     @Override
     public GenericCommand executeCommand(int clientId, String objectId, String methodName, ArrayList<Object> args, ArrayList<Class> paramType, String callId) {
-        Object obj = getCoreDevice(objectId);
+    	Object obj;
+    	if("proxy".equals(objectId)) {
+    		logger.trace("executeCommand(...), ObjectId: proxy, direct call to CHMI");
+    		obj = this;
+    	} else {
+    		obj = getCoreDevice(objectId);
+    	}
         return new GenericCommand(args, paramType, obj, objectId, methodName, callId, clientId, sendToClientService);
     }
 
     @SuppressWarnings("rawtypes")
     @Override
     public GenericCommand executeCommand(String objectId, String methodName, ArrayList<Object> args, ArrayList<Class> paramType) {
-        Object obj = getCoreDevice(objectId);
-        return new GenericCommand(args, paramType, obj, methodName);
+    	Object obj;
+    	if("proxy".equals(objectId)) {
+    		logger.trace("executeCommand(...), ObjectId: proxy, direct call to CHMI");
+    		obj = this;
+    	} else {
+    		obj = getCoreDevice(objectId);
+    	}
+    	return new GenericCommand(args, paramType, obj, methodName);
     }
     
     @Override

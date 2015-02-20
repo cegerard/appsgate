@@ -484,7 +484,8 @@ public interface EHMIProxySpec {
 	 * @return the programs list as a JSONArray
 	 */
 	public JSONArray getPrograms();
-	        public JSONObject getGraph() ;
+        
+        public JSONObject getGraph(Boolean buildGraph) ;
 
 	/**
 	 * Check if a program is active or not

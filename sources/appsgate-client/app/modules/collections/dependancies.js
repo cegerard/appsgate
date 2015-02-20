@@ -11,7 +11,7 @@ define([
 			var self = this;
 
 			self.isRefresh = true;
-			self.isUpdate = false;
+			self.isUpdating = false;
 
 			// listen to the event when the graph is loaded
 			dispatcher.on("loadGraph", function (graph) {
@@ -42,57 +42,57 @@ define([
 				}
 			});
 
-			self.differencies = (function () {
-				this.relations = [];
-				this.entities = [];
-
-				this.mergeRelations = function (newRelations) {
-					_.forEach(newRelations, function (newR) {
-						var isUpdated = false;
-						_.forEach(relations, function (oldR) {
-							if (newR.target.id === oldR.target.id && newR.source.id === oldR.source.id) {
-								oldR = newR;
-								isUpdated = true;
-							}
-						});
-						if (!isUpdated) {
-							relations.push(newR);
-						}
-					});
-				};
-
-				this.mergeEntities = function (newEntities) {
-					_.forEach(newEntities, function (newE) {
-						var entityAlreadyWaiting = _.find(entities, function (e) {
-							return e.id === newE.id;
-						});
-						if (entityAlreadyWaiting) {
-							entityAlreadyWaiting = newE;
-						} else {
-							entities.push(newE);
-						}
-					});
-				};
-
-				return {
-					pushRelations: function (newRelations) {
-						mergeRelations(newRelations);
-					},
-					pushEntities: function (newEntities) {
-						mergeEntities(newEntities);
-					},
-					pushDifferencies: function (newDifferencies) {
-						mergeEntities(newDifferencies.get("entities"));
-						mergeRelations(newDifferencies.get("relations"));
-					},
-					getRelationsWaiting: function () {
-						return relations;
-					},
-					getEntitiesWaiting: function () {
-						return entities;
-					}
-				};
-			})();
+//			self.differencies = (function () {
+//				this.relations = [];
+//				this.entities = [];
+//
+//				this.mergeRelations = function (newRelations) {
+//					_.forEach(newRelations, function (newR) {
+//						var isUpdated = false;
+//						_.forEach(relations, function (oldR) {
+//							if (newR.target.id === oldR.target.id && newR.source.id === oldR.source.id) {
+//								oldR = newR;
+//								isUpdated = true;
+//							}
+//						});
+//						if (!isUpdated) {
+//							relations.push(newR);
+//						}
+//					});
+//				};
+//
+//				this.mergeEntities = function (newEntities) {
+//					_.forEach(newEntities, function (newE) {
+//						var entityAlreadyWaiting = _.find(entities, function (e) {
+//							return e.id === newE.id;
+//						});
+//						if (entityAlreadyWaiting) {
+//							entityAlreadyWaiting = newE;
+//						} else {
+//							entities.push(newE);
+//						}
+//					});
+//				};
+//
+//				return {
+//					pushRelations: function (newRelations) {
+//						mergeRelations(newRelations);
+//					},
+//					pushEntities: function (newEntities) {
+//						mergeEntities(newEntities);
+//					},
+//					pushDifferencies: function (newDifferencies) {
+//						mergeEntities(newDifferencies.get("entities"));
+//						mergeRelations(newDifferencies.get("relations"));
+//					},
+//					getRelationsWaiting: function () {
+//						return relations;
+//					},
+//					getEntitiesWaiting: function () {
+//						return entities;
+//					}
+//				};
+//			})();
 		},
 
 		/**
@@ -102,19 +102,19 @@ define([
 			this.isRefresh = true;
 		},
 
-		updateDependency: function () {
+		updateDependency: function (buildGraph) {
 			var self = this;
 
-			if (self.isUpdate) {
+			if (self.isUpdating) {
 				self.listenTo(dispatcher, "UpdateGraphFinished", function () {
 					// Send the request to the server to get the graph
 					communicator.sendMessage({
 						method: "getGraph",
-						args: [],
+						args: [{type:"Boolean", value: buildGraph}],
 						callId: "loadGraph",
 						TARGET: "EHMI"
 					});
-					self.isUpdate = true;
+					self.isUpdating = true;
 					self.stopListening(dispatcher, "UpdateGraphFinished");
 				});
 			} else {
@@ -122,11 +122,11 @@ define([
 				// Send the request to the server to get the graph
 				communicator.sendMessage({
 					method: "getGraph",
-					args: [],
+					args: [{type:"Boolean", value: buildGraph}],
 					callId: "loadGraph",
 					TARGET: "EHMI"
 				});
-				self.isUpdate = true;
+				self.isUpdating = true;
 			}
 
 

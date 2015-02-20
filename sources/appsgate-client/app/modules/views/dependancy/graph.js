@@ -37,15 +37,15 @@ define([
 			});
 
 			// Update the graph when the modifications need to reload
-			self.listenTo(dispatcher, "UpdateGraph", function (place) {
+			self.listenTo(dispatcher, "UpdateGraph", function (args) {
 				console.log("show");
 				$("#graph>.loading-widget").show();
-				dependancies.updateDependency();
+				dependancies.updateDependency(args.buildGraph);
 			});
 
 			// Listener to the end of an update. Hide the loading widget and update the graph and restart the force
 			self.listenTo(dispatcher, "UpdateGraphFinished", function () {
-				dependancies.isUpdate = false;
+				dependancies.isUpdating = false;
 
 				console.log("hide");
 				$("#graph>.loading-widget").hide();

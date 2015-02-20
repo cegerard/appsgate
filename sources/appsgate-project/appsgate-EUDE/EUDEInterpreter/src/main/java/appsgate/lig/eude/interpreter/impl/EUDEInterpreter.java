@@ -94,6 +94,11 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
     public ClockProxy clock;
 
     /**
+     *
+     */
+    private GraphManager gm;
+
+    /**
      * Constructor. Initialize the list of programs and of events
      *
      */
@@ -101,6 +106,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
         mapPrograms = new HashMap<String, NodeProgram>();
         listCoreNodeEvent = new ArrayList<CoreEventListener>();
         root = initRootProgram();
+        gm = new GraphManager(this);
     }
 
     /**
@@ -212,14 +218,14 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
             p.stop();
         }
 
-        p.update(jsonProgram); 
+        p.update(jsonProgram);
         notifyUpdateProgram(p.getId(), p.getState().toString(), p.getProgramName(), p.getJSONDescription());
         //save program map state
 
         if (contextHistory_push.pushData_add(this.getClass().getSimpleName(), p.getId(), p.getProgramName(), getProgramsDesc())) {
             return true;
         }
-        
+
         return false;
     }
 
@@ -737,9 +743,13 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
     }
 
     @Override
-    public JSONObject getGraph() {
-        GraphManager gm = new GraphManager(this);
-        gm.buildGraph();
-        return gm.getGraph();
+    public JSONObject getGraph(Boolean buildGraph) {
+        if (buildGraph) {
+            gm.buildGraph();
+            // False because no need to update the graph, we just build it
+            return gm.getGraph(false);
+        } else {
+            return gm.getGraph(true);
+        }
     }
 }
