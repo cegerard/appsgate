@@ -72,7 +72,7 @@ public class GraphManager {
     }
 
     /**
-     * 
+     *
      * @param needUpdateGraph
      * @return the graph in JSON format
      */
@@ -536,49 +536,54 @@ public class GraphManager {
             // Loop over all nodes to updates them
             for (int i = 0; i < this.returnJSONObject.getJSONArray("nodes").length(); i++) {
                 JSONObject node = this.returnJSONObject.getJSONArray("nodes").getJSONObject(i);
-                if (node.get("type") == DEVICE_ENTITY) {
-                    // Device
-                    JSONObject currentDevice = this.interpreter.getContext().getDevice(node.getString("id"));
-                    // If null it is a ghost, so no need to update
-                    if (currentDevice == null) {
-                        continue;
-                    }
-                    // Update Value
-                    switch (Integer.parseInt(currentDevice.getString("type"))) {
-                        case 3: // Contact
-                            node.put("deviceState", currentDevice.getString("contact"));
-                            break;
-                        case 4: // CardSwitch
-                            node.put("deviceState", currentDevice.getString("inserted"));
-                            break;
-                        case 6: // Plug
-                            node.put("deviceState", currentDevice.getString("plugState"));
-                            break;
-                        case 7: // Lamp
-                            node.put("deviceState", String.valueOf(currentDevice.getBoolean("value")));
-                            break;
-                        default:
-                            break;
-                    }
-                    // Update Name
-                    node.put("name", currentDevice.getString("name"));
-                } else if (node.get("type") == PROGRAM_ENTITY) {
-                    // Program
-                    NodeProgram currentProgram = interpreter.getNodeProgram(node.getString("id"));
-                    // Update state
-                    node.put("state", currentProgram.getState());
-                } else if (node.get("type").equals(PLACE_ENTITY)) {
-                    // Place
-                    for (int j = 0; j < this.interpreter.getContext().getPlaces().length(); j++) {
-                        JSONObject place = this.interpreter.getContext().getPlaces().getJSONObject(j);
-                        if (place.getString("id").equals(node.getString("id"))) {
-                            // Update Name
-                            place.put("name", node.getString("name"));
+                try {
+                    // If ghost, no need update
+                    node.get("isGhost");
+                } catch (JSONException ex) {
+                    // "isGhost" not presented in JSON, so catch JSONException
+                    if (node.get("type") == DEVICE_ENTITY) {
+                        // Device
+                        JSONObject currentDevice = this.interpreter.getContext().getDevice(node.getString("id"));
+                        // If null it is a ghost, so no need to update
+                        if (currentDevice == null) {
+                            continue;
+                        }
+                        // Update Value
+                        switch (Integer.parseInt(currentDevice.getString("type"))) {
+                            case 3: // Contact
+                                node.put("deviceState", currentDevice.getString("contact"));
+                                break;
+                            case 4: // CardSwitch
+                                node.put("deviceState", currentDevice.getString("inserted"));
+                                break;
+                            case 6: // Plug
+                                node.put("deviceState", currentDevice.getString("plugState"));
+                                break;
+                            case 7: // Lamp
+                                node.put("deviceState", String.valueOf(currentDevice.getBoolean("value")));
+                                break;
+                            default:
+                                break;
+                        }
+                        // Update Name
+                        node.put("name", currentDevice.getString("name"));
+                    } else if (node.get("type") == PROGRAM_ENTITY) {
+                        // Program
+                        NodeProgram currentProgram = interpreter.getNodeProgram(node.getString("id"));
+                        // Update state
+                        node.put("state", currentProgram.getState());
+                    } else if (node.get("type") == PLACE_ENTITY) {
+                        // Place
+                        for (int j = 0; j < this.interpreter.getContext().getPlaces().length(); j++) {
+                            JSONObject place = this.interpreter.getContext().getPlaces().getJSONObject(j);
+                            if (place.getString("id").equals(node.getString("id"))) {
+                                // Update Name
+                                node.put("name", place.getString("name"));
+                            }
                         }
                     }
                 }
             }
-
         } catch (JSONException ex) {
             java.util.logging.Logger.getLogger(GraphManager.class.getName()).log(Level.SEVERE, null, ex);
         }

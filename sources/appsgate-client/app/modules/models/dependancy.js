@@ -243,7 +243,9 @@ define([
 					self.listenTo(dispatcher, e.id, function (arg) {
 						// Before trigger check is it is an event we really want to process
 						if (self.checkFireEvent(arg)) {
-							dispatcher.trigger("UpdateGraph");
+							dispatcher.trigger("UpdateGraph", {
+								buildGraph: false
+							});
 						}
 					});
 				}
