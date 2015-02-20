@@ -372,7 +372,7 @@ require(['websocket', 'clock', 'jQuery'], function(websocketRef, clockModuleRef,
  		 */
 		this.getDevices = function ()
 		{
-			var call = eval({"method":"getDevices", "args":[], "callId":"cf-getdevices", "TARGET":"CHMI"});
+			var call = eval({"method":"getDevicesDescription", "args":[], "callId":"cf-getdevices", "TARGET":"CHMI"});
 			websocket.send(JSON.stringify(call));
 		}
 		
@@ -381,7 +381,7 @@ require(['websocket', 'clock', 'jQuery'], function(websocketRef, clockModuleRef,
  		 */
 		this.getDevice = function (deviceId)
 		{
-			var call = eval({"method":"getDevice", "args":[{"type":"String", "value":deviceId}], "callId":"cf-getdevice", "TARGET":"CHMI"});
+			var call = eval({"method":"getDeviceDescription", "args":[{"type":"String", "value":deviceId}], "callId":"cf-getdevice", "TARGET":"CHMI"});
 			websocket.send(JSON.stringify(call));
 		}
 		
@@ -390,7 +390,7 @@ require(['websocket', 'clock', 'jQuery'], function(websocketRef, clockModuleRef,
  		 */
 		this.getDevicesByType = function (type)
 		{
-			var call = eval({"method":"getDevices", "args":[{"type":"String", "value":type}], "callId":"cf-getdevicesbytype", "TARGET":"CHMI"});
+			var call = eval({"method":"getDevicesDescription", "args":[{"type":"String", "value":type}], "callId":"cf-getdevicesbytype", "TARGET":"CHMI"});
 			websocket.send(JSON.stringify(call));
 		}
 		
