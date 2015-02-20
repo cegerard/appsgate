@@ -53,19 +53,19 @@ public class NodeIf extends Node {
         super(parent, ruleIfJSON);
         try {
             this.expBool = Builder.buildFromJSON(getJSONObject(ruleIfJSON, "expBool"), this);
-        } catch (SpokTypeException ex) {
-            throw new SpokNodeException(this, "NodeIf", "expBool", ex);
+        } catch (SpokNodeException ex) {
+            throw new SpokNodeException(this, "NodeIf.expBool", ex);
         }
         try {
             this.seqRulesTrue = Builder.buildFromJSON(getJSONObject(ruleIfJSON, "seqRulesTrue"), this);
-        } catch (SpokTypeException ex) {
-            throw new SpokNodeException(this, "NodeIf", "seqRulesTrue", ex);
+        } catch (SpokNodeException ex) {
+            throw new SpokNodeException(this, "NodeIf.seqRulesTrue", ex);
         }
         if (ruleIfJSON.has("seqRulesFalse")) {
             try {
                 this.seqRulesFalse = Builder.buildFromJSON(getJSONObject(ruleIfJSON, "seqRulesFalse"), this);
-            } catch (SpokTypeException ex) {
-                throw new SpokNodeException(this, "NodeIf", "seqRulesFalse", ex);
+            } catch (SpokNodeException ex) {
+                throw new SpokNodeException(this, "NodeIf.seqRulesFalse", ex);
             }
         } else {
             LOGGER.trace("No else block for this node");

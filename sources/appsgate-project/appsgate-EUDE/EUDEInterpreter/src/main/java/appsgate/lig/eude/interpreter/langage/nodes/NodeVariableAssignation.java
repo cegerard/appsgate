@@ -9,7 +9,6 @@ import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.SpokObject;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import java.util.HashMap;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -55,9 +54,9 @@ public class NodeVariableAssignation extends Node implements ICanBeEvaluated {
         if (obj.has("value")) {
             try {
                 value = Builder.buildFromJSON(obj.optJSONObject("value"), this);
-            } catch (SpokTypeException ex) {
+            } catch (SpokNodeException ex) {
                 LOGGER.error("Unable to build the value of the variable assignation");
-                throw new SpokNodeException(this, "NodeVariableAssignation", "value", ex);
+                throw new SpokNodeException(this, "NodeVariableAssignation.value", ex);
             }
         }
         name = getJSONString(obj, "name");

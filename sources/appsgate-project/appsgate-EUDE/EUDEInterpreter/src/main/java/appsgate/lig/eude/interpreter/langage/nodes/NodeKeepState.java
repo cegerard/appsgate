@@ -4,7 +4,6 @@ import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import java.util.HashMap;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,9 +51,9 @@ public class NodeKeepState extends Node {
         try {
             state = (NodeState) Builder.buildFromJSON(o.getJSONObject("state"), this);
         } catch (JSONException ex) {
-            throw new SpokNodeException(this, "NodeKeepState", "state", ex);
-        } catch (SpokTypeException ex) {
-            throw new SpokNodeException(this, "NodeKeepState", "state", ex);
+            throw new SpokNodeException(this, "NodeKeepState.json", ex);
+        } catch (SpokNodeException ex) {
+            throw new SpokNodeException(this, "NodeKeepState.state", ex);
         }
     }
 

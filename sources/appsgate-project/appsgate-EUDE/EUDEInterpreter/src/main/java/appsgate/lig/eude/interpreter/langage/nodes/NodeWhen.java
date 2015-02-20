@@ -6,7 +6,6 @@ import org.json.JSONObject;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import java.util.HashMap;
 import org.json.JSONException;
 import org.slf4j.Logger;
@@ -53,19 +52,18 @@ public class NodeWhen extends Node implements INodeRule{
         super(parent, ruleWhenJSON);
 
         try {
-            
             seqEventNode =  Builder.buildFromJSON(getJSONObject(ruleWhenJSON, "events"), this);
             seqEvent = (INodeEvent) seqEventNode;
-        } catch (SpokTypeException ex) {
+        } catch (SpokNodeException ex) {
             LOGGER.error("Unable to build events {}", ex.getMessage());
-            throw new SpokNodeException(this, "NodeWhen", "events", ex);
+            throw new SpokNodeException(this, "NodeWhen.events", ex);
         }
         try {
             // initialize the sequences of events and rules
             seqRules = Builder.buildFromJSON(ruleWhenJSON.optJSONObject("seqRulesThen"), this);
-        } catch (SpokTypeException ex) {
+        } catch (SpokNodeException ex) {
             LOGGER.error("Unable to build seqRulesThen");
-            throw new SpokNodeException(this, "NodeWhen", "seqRulesThen", ex);
+            throw new SpokNodeException(this, "NodeWhen.seqRulesThen", ex);
         }
 
     }

@@ -10,7 +10,6 @@ import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -81,9 +80,9 @@ public class NodeSeqRules extends Node implements INodeSet {
             try {
                 instructions.add(Builder.buildFromJSON(seqRulesJSON.getJSONObject(i), this));
             } catch (JSONException ex) {
-                throw new SpokNodeException(this, "NodeSeqRules", "item " + i, ex);
-            } catch (SpokTypeException ex) {
-                throw new SpokNodeException(this, "NodeSeqRules", "item " + i, ex);
+                throw new SpokNodeException(this, "NodeSeqRules.json", ex);
+            } catch (SpokNodeException ex) {
+                throw new SpokNodeException(this, "NodeSeqRules.type", ex);
             }
         }
     }

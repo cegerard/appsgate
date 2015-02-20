@@ -10,6 +10,7 @@ import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.SpokParser;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import java.util.HashMap;
 import org.json.JSONException;
@@ -42,7 +43,7 @@ public class NodeWait extends Node {
         super(p);
     }
 
-    public NodeWait(JSONObject o, Node parent) throws SpokTypeException {
+    public NodeWait(JSONObject o, Node parent) throws SpokNodeException {
         super(parent, o);
         if (o.has("waitFor")) {
             waitFor = Builder.buildFromJSON(o.optJSONObject("waitFor"), this);

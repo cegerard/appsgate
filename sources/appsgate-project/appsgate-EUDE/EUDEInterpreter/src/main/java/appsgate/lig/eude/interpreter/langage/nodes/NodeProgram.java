@@ -12,6 +12,7 @@ import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import appsgate.lig.eude.interpreter.spec.ProgramDesc;
 import appsgate.lig.eude.interpreter.spec.ProgramStateNotification;
 
@@ -208,9 +209,19 @@ final public class NodeProgram extends Node implements ProgramDesc {
             }
             this.isSyntaxicallyCorrect = true;
             return this.buildReferences();
-        } catch (SpokException ex) {
+        } catch (SpokNodeException ex) {
             LOGGER.error("Unable to parse a specific node: {}", ex.getMessage());
             this.isSyntaxicallyCorrect = false;
+            errorMessage = ErrorMessagesFactory.getMessageFromSpokNodeException(ex);
+        
+        } catch (SpokTypeException ex) {
+            LOGGER.error("Problem of type: {}", ex.getMessage());
+            this.isSyntaxicallyCorrect = false;
+            errorMessage = ErrorMessagesFactory.getMessageFromInvalidType(ex);
+        } catch (SpokException ex) {
+            LOGGER.error("Problem: {}", ex.getMessage());
+            this.isSyntaxicallyCorrect = false;
+            errorMessage = ErrorMessagesFactory.getMessageFromSpokException(ex);
         }
         setInvalid();
         return false;

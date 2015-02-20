@@ -10,7 +10,6 @@ import appsgate.lig.ehmi.spec.EHMIProxySpec;
 import appsgate.lig.ehmi.spec.StateDescription;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import appsgate.lig.eude.interpreter.spec.ProgramCommandNotification;
 
 import org.json.JSONArray;
@@ -57,7 +56,7 @@ public class NodeStateDevice extends NodeState {
         if (getObjectNode() instanceof ICanBeEvaluated) {
             object = (ICanBeEvaluated) getObjectNode();
         } else {
-            throw new SpokNodeException(this, "NodeStateDevice", "object", null);
+            throw new SpokNodeException(this, "NodeStateDevice.object", null);
         }
     }
 
@@ -107,7 +106,7 @@ public class NodeStateDevice extends NodeState {
 
         try {
             events = Builder.buildFromJSON(o, this, target);
-        } catch (SpokTypeException ex) {
+        } catch (SpokNodeException ex) {
             LOGGER.error("Unable to build events: {}", ex.getMessage());
             return null;
         }

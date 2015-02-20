@@ -65,23 +65,23 @@ public class NodeWhile extends Node implements INodeRule {
                 this.state = (NodeState) n;
             } else {
                 LOGGER.error("The node state is not a State node.");
-                throw new SpokNodeException(this, "NodeWhile", "state", null);
+                throw new SpokNodeException(this, "NodeWhile.state.wrong", null);
             }
-        } catch (SpokTypeException ex) {
+        } catch (SpokNodeException ex) {
             LOGGER.warn("There is no state to node {}", this);
-            throw new SpokNodeException(this, "NodeWhile", "state", ex);
+            throw new SpokNodeException(this, "NodeWhile.state.null", ex);
         }
         JSONObject rulesJSON = o.optJSONObject("rules");
         try {
             this.rules = Builder.buildFromJSON(rulesJSON, this);
-        } catch (SpokTypeException ex) {
+        } catch (SpokNodeException ex) {
             LOGGER.warn("There is no rules to node {}", this);
-            throw new SpokNodeException(this, "NodeWhile", "rules", ex);
+            throw new SpokNodeException(this, "NodeWhile.rules.no", ex);
         }
         JSONObject thenJSON = o.optJSONObject("rulesThen");
         try {
             this.rulesThen = Builder.nodeOrNull(thenJSON, this);
-        } catch (SpokTypeException ex) {
+        } catch (SpokNodeException ex) {
             LOGGER.trace("There is no rulesThen");
             this.rulesThen = null;
         }

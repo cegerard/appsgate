@@ -10,7 +10,6 @@ import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import java.util.HashMap;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -69,15 +68,15 @@ abstract public class NodeState extends Node implements ICanBeEvaluated {
                 stateName = getJSONString(o.getJSONObject("param"), "name");
             } catch (JSONException ex) {
                 LOGGER.error("Unable to build NodeState: {}", o.toString());
-                throw new SpokNodeException(this, "NodeState", "name", ex);
+                throw new SpokNodeException(this, "NodeState.name", ex);
 
             }
         }
         try {
             objectNode = Builder.buildFromJSON(getJSONObject(o, "object"), parent);
-        } catch (SpokTypeException ex) {
+        } catch (SpokNodeException ex) {
             LOGGER.error("Unable to build NodeState: {}", o.toString());
-            throw new SpokNodeException(this, "NodeState", "object", ex);
+            throw new SpokNodeException(this, "NodeState.object", ex);
         }
 
     }

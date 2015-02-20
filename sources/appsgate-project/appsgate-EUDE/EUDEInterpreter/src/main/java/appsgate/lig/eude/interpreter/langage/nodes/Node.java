@@ -15,7 +15,6 @@ import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.components.SpokObject;
 import appsgate.lig.eude.interpreter.langage.components.SpokParser;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import appsgate.lig.eude.interpreter.spec.ProgramLineNotification;
 import appsgate.lig.eude.interpreter.spec.ProgramTraceNotification;
 import java.util.HashMap;
@@ -342,7 +341,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
             return jsonObj.getString(jsonParam);
         } catch (JSONException ex) {
             LOGGER.debug("Unable to get string: {}", jsonParam);
-            throw new SpokNodeException(this, this.getClass().getName(), jsonParam, ex);
+            throw new SpokNodeException(this, "jsonString", ex);
         }
     }
 
@@ -360,7 +359,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
             return jsonObj.getJSONArray(jsonParam);
         } catch (JSONException ex) {
             LOGGER.debug("Unable to get array: {}", jsonParam);
-            throw new SpokNodeException(this, this.getClass().getName(), jsonParam, ex);
+            throw new SpokNodeException(this, "jsonArray", ex);
         }
 
     }
@@ -379,7 +378,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
             return jsonObj.getJSONObject(jsonParam);
         } catch (JSONException ex) {
             LOGGER.debug("Unable to get object: {}", jsonParam);
-            throw new SpokNodeException(this, this.getClass().getName(), jsonParam, ex);
+            throw new SpokNodeException(this, "jsonObject", ex);
         }
 
     }
@@ -401,9 +400,9 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
             } else {
                 s = Builder.buildFromJSON(getJSONObject(o, common), this);
             }
-        } catch (SpokTypeException ex) {
+        } catch (SpokNodeException ex) {
             LOGGER.error("No {} found", common);
-            throw new SpokNodeException(this, this.getClass().getSimpleName(), common, ex);
+            throw new SpokNodeException(this, "getDevice", ex);
         }
         return s;
     }

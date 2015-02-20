@@ -8,7 +8,6 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -60,10 +59,10 @@ public class NodeReturn extends Node implements ICanBeEvaluated {
                 returnValue = (ICanBeEvaluated) returnValueNode;
             } else {
                 LOGGER.error("The return value is not a function and has no result");
-                throw new SpokNodeException(this, "NodeReturn", "returnValue", null);
+                throw new SpokNodeException(this, "NodeReturn.returnValue.noResult", null);
             }
-        } catch (SpokTypeException ex) {
-            throw new SpokNodeException(this, "NodeReturn", "returnValue", ex);
+        } catch (SpokNodeException ex) {
+            throw new SpokNodeException(this, "NodeReturn.returnValue.type", ex);
         }
     }
 

@@ -151,7 +151,7 @@ public class NodeVariableDefinition extends Node implements INodeList, ICanBeEva
      */
     private void checkVariable(JSONObject obj) throws SpokException {
         if (this.id == null || this.id.isEmpty()) {
-            throw new SpokNodeException(this, "Variable", "id/name", null);
+            throw new SpokNodeException(this, "Variable.id-name", null);
         }
         if (obj == null) {
             LOGGER.debug("Declaring a non inited variable");

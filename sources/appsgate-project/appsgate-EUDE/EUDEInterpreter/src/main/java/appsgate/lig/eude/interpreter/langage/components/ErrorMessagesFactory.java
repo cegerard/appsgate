@@ -1,6 +1,8 @@
 package appsgate.lig.eude.interpreter.langage.components;
 
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeSelect;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -76,7 +78,7 @@ public class ErrorMessagesFactory {
      * @param programId the id of the missing program
      * @return a JSONObject corresponding to the invalid program message
      */
-    static JSONObject getMessageFromInvalidProgram(String programId) {
+    public static JSONObject getMessageFromInvalidProgram(String programId) {
         JSONObject error = new JSONObject();
         try {
             error.put("msg", "programs.error.invalidProgram");
@@ -97,5 +99,27 @@ public class ErrorMessagesFactory {
         }
         return error;
     
+    }
+
+    public static JSONObject getMessageFromInvalidType(SpokTypeException ex) {
+        JSONObject error = new JSONObject();
+        try {
+            error.put("msg", "programs.error.type");
+           // error.put("pid", programId);
+        } catch (JSONException e) {
+            // never happens
+        }
+        return error;
+    }
+
+    public static JSONObject getMessageFromSpokException(SpokException ex) {
+        JSONObject error = new JSONObject();
+        try {
+            error.put("msg", "programs.error.emptySelec");
+           // error.put("pid", programId);
+        } catch (JSONException e) {
+            // never happens
+        }
+        return error;
     }
 }

@@ -4,9 +4,6 @@
  * and open the template in the editor.
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
-
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
-
 /**
  *
  * @author jr

@@ -9,7 +9,6 @@ import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -190,7 +189,7 @@ public class NodeValue extends Node implements INodeList, ICanBeEvaluated {
             }
             return a;
 
-        } catch (SpokTypeException ex) {
+        } catch (SpokNodeException ex) {
             LOGGER.error("The value was not correct: {}", this.getExpertProgramScript());
             LOGGER.debug(this.getJSONDescription().toString());
             return null;

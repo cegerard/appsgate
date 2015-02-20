@@ -81,33 +81,33 @@ public class NodeComparator extends Node implements ICanBeEvaluated {
         comparator = BinaryComparator.get(getJSONString(o, "comparator"));
         if (comparator == null) {
             LOGGER.debug("Unknown comparator: {}", getJSONString(o, "comparator"));
-            throw new SpokNodeException(this, "Comparator", "comparator", null);
+            throw new SpokNodeException(this, "Comparator.unknown", null);
         }
         try {
             leftNode = Builder.buildFromJSON(o.optJSONObject("leftOperand"), this);
-            if (!(leftNode instanceof ICanBeEvaluated)) {
-                LOGGER.error("Left operand does not return a value");
-                throw new SpokNodeException(this, "Comparator", "leftOperand", null);
-            }
-            left = (ICanBeEvaluated) leftNode;
-        } catch (SpokTypeException ex) {
+        } catch (SpokNodeException ex) {
             LOGGER.error("Missing left operand");
-            throw new SpokNodeException(this, "Comparator", "leftOperand", ex);
+            throw new SpokNodeException(this, "Comparator.leftOperand.missing", ex);
         }
+        if (!(leftNode instanceof ICanBeEvaluated)) {
+            LOGGER.error("Left operand does not return a value");
+            throw new SpokNodeException(this, "Comparator.leftOperand.noReturn", null);
+        }
+        left = (ICanBeEvaluated) leftNode;
         try {
             rightNode = Builder.buildFromJSON(o.optJSONObject("rightOperand"), this);
-            if (!(rightNode instanceof ICanBeEvaluated)) {
-                LOGGER.error("right operand does not return a value");
-                throw new SpokNodeException(this, "Comparator", "rightOperand", null);
-            }
-            right = (ICanBeEvaluated) rightNode;
-        } catch (SpokTypeException ex) {
+        } catch (SpokNodeException ex) {
             LOGGER.debug("Missing right operand");
-            throw new SpokNodeException(this, "Comparator", "rightOperand", null);
+            throw new SpokNodeException(this, "Comparator.rightOperand.missing", null);
         }
+        if (!(rightNode instanceof ICanBeEvaluated)) {
+            LOGGER.error("right operand does not return a value");
+            throw new SpokNodeException(this, "Comparator.rightOperand.noReturn", null);
+        }
+        right = (ICanBeEvaluated) rightNode;
         if (!left.getResultType().equalsIgnoreCase(right.getResultType())) {
             LOGGER.debug("Two types mismatch {}, {}", left.getResultType(), right.getResultType());
-            throw new SpokNodeException(this, "Comparator", "type mismatch", null);
+            throw new SpokNodeException(this, "Comparator.typeMismatch", null);
         }
 
     }
@@ -172,7 +172,7 @@ public class NodeComparator extends Node implements ICanBeEvaluated {
     }
 
     @Override
-    public NodeValue getResult()  {
+    public NodeValue getResult() {
         Boolean result = false;
         try {
             switch (comparator) {
@@ -205,9 +205,9 @@ public class NodeComparator extends Node implements ICanBeEvaluated {
     public String getResultType() {
         return "boolean";
     }
-    
+
     @Override
-    protected void buildReferences(ReferenceTable table, HashMap<String,String> args) {
+    protected void buildReferences(ReferenceTable table, HashMap<String, String> args) {
         if (leftNode != null) {
             leftNode.buildReferences(table, null);
         }
@@ -220,5 +220,5 @@ public class NodeComparator extends Node implements ICanBeEvaluated {
     public String getTypeSpec() {
         return "Comparator";
     }
-    
+
 }

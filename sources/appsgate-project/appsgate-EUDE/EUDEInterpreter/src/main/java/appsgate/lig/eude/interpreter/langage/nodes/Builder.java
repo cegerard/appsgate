@@ -186,12 +186,12 @@ public class Builder {
         if (type.equalsIgnoreCase("wait")) {
             return NODE_TYPE.NODE_WAIT;
         }
-        LOGGER.debug("The type [{}] does not exists", type);
+        LOGGER.warn("The type [{}] does not exists", type);
         throw new SpokTypeException(type);
     }
 
     public static Node buildFromJSON(JSONObject o, Node parent)
-            throws SpokTypeException {
+            throws SpokNodeException {
         return buildFromJSON(o, parent, null);
     }
 
@@ -201,18 +201,18 @@ public class Builder {
      * @param parent the parent node to attach
      * @param stateTarget if there is some specific values
      * @return the object built with the specific constructor
-     * @throws SpokTypeException if something goes wrong during building
+     * @throws SpokNodeException if something goes wrong during building
      */
     public static Node buildFromJSON(JSONObject o, Node parent, JSONObject stateTarget)
-            throws SpokTypeException {
+            throws SpokNodeException {
         if (o == null) {
             LOGGER.warn("No node to build");
-            throw new SpokTypeException("no node");
+            throw new SpokNodeException(parent,"builder.nonode", null);
 
         }
         if (!o.has("type")) {
             LOGGER.debug("No type: {}", o.toString());
-            throw new SpokTypeException("no type");
+            throw new SpokNodeException(parent,"builder.notype", null);
         }
         if (stateTarget != null) {
             try {
@@ -279,13 +279,12 @@ public class Builder {
                     return new NodeComparator(o, parent);
                 default:
                     LOGGER.error("No such type found : {}", o.toString());
-                    throw new SpokNodeException(parent, "NodeBuilder", "type", null);
+                    throw new SpokNodeException(parent, "NodeBuilder.type.unknown", null);
             }
         } catch (SpokNodeException ex) {
-            LOGGER.debug("Unable to build node: {}", o.optString("type"));
-            throw new SpokTypeException("Node not built: " + o.toString(), ex);
+            throw new SpokNodeException(parent,"Builder.unableToBuild", ex);
         } catch (SpokException ex) {
-            throw new SpokTypeException("Variable node definition can not be built", ex);
+            throw new SpokNodeException(parent,"Builder.variable", ex);
         }
     }
 
@@ -294,10 +293,10 @@ public class Builder {
      * @param o
      * @param parent
      * @return
-     * @throws SpokTypeException
+     * @throws SpokNodeException
      */
     public static Node nodeOrNull(JSONObject o, Node parent)
-            throws SpokTypeException {
+            throws SpokNodeException {
         if (o == null || o.isNull("type")) {
             return null;
         }

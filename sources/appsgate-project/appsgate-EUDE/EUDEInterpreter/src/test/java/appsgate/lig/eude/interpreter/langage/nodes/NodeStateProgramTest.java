@@ -5,7 +5,6 @@
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.chmi.spec.GenericCommand;
 import appsgate.lig.ehmi.spec.EHMIProxyMock;
 import appsgate.lig.ehmi.spec.EHMIProxySpec;
 import appsgate.lig.ehmi.spec.messages.NotificationMsg;

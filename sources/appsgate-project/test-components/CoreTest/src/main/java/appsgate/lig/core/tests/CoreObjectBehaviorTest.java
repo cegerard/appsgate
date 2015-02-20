@@ -2,10 +2,8 @@ package appsgate.lig.core.tests;
 
 import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.StateDescription;
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.nodes.Builder;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -106,7 +104,7 @@ public class CoreObjectBehaviorTest {
                 return;
             }
             Builder.buildFromJSON(o, null, target);
-        } catch (SpokTypeException ex) {
+        } catch (SpokNodeException ex) {
             nbError++;
             System.out.println(" - UNABLE to load node (" + ev + ")");
         }

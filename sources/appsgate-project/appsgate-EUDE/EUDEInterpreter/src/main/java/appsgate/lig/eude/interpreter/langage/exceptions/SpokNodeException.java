@@ -20,26 +20,41 @@ public class SpokNodeException extends SpokException {
      */
     private final Node node;
 
+    private final String errorMessage;
+
     /**
      *
      * @param n the node which is not correct
-     * @param name
-     * @param jsonParam
+     * @param error the error message
      * @param ex
      */
-    public SpokNodeException(Node n, String name, String jsonParam, Exception ex) {
-        super("Missing parameter [" + jsonParam + "] for " + name, ex);
+    public SpokNodeException(Node n, String error, Exception ex) {
+        super("NodeException: " + error, ex);
         this.node = n;
+        this.errorMessage = error;
     }
 
     /**
      * @return the node id
      */
     public String getNodeId() {
+        try {
+            SpokNodeException c = (SpokNodeException) this.getCause();
+            return c.getNodeId();
+        } catch (ClassCastException e) {
+            // Do nothing
+        }
         if (node != null) {
             return node.getIID();
         }
         return null;
+    }
+
+    /**
+     * @return the error message
+     */
+    public String getErrorMessage() {
+        return this.errorMessage;
     }
 
 }

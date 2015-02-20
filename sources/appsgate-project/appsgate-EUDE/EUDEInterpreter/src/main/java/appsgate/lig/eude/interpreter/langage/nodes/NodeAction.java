@@ -72,7 +72,7 @@ public class NodeAction extends Node implements ICanBeEvaluated {
         Integer nbParam = Integer.parseInt(ruleJSON.optString("type").replaceAll("[a-zA-Z]", "0"));
         if (args.length() < nbParam) {
             LOGGER.warn("The action node {} has not the correct number of arguments", ruleJSON);
-            throw new SpokNodeException(this, "Action", "args", null);
+            throw new SpokNodeException(this, "action.argNumber", null);
         }
         returnType = ruleJSON.optString("returnType");
     }

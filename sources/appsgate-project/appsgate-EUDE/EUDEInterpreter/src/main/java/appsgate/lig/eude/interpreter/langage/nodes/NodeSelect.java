@@ -4,12 +4,10 @@ import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -150,7 +148,7 @@ public class NodeSelect extends Node implements INodeList, ICanBeEvaluated {
                     } else {
                         LOGGER.warn("Found an unexpected node: " + n);
                     }
-                } catch (SpokTypeException ex) {
+                } catch (SpokNodeException ex) {
                     LOGGER.error("Unable to parse the what branch of selector");
                     LOGGER.debug("Unable to parse: " + o.toString());
                 }

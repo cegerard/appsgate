@@ -74,7 +74,7 @@ public class NodeSelectState extends Node implements INodeList, ICanBeEvaluated 
         devicesToCheck = Builder.buildFromJSON(o.optJSONObject("devices"), this);
         if (!(devicesToCheck instanceof INodeList)) {
             LOGGER.error("The devices to check must be a list");
-            throw new SpokNodeException(this, "NodeSelectState", "devices", null);
+            throw new SpokNodeException(this, "SelectState.devices.listNeeded", null);
         }
         stateToCheck = getJSONString(o, "state");
         stateValue = getJSONString(o, "value");
@@ -88,7 +88,7 @@ public class NodeSelectState extends Node implements INodeList, ICanBeEvaluated 
         }
         if (duration < 0) {
             LOGGER.error("duration cannot be a negative value");
-            throw new SpokNodeException(this, "SelectState", "duration", null);
+            throw new SpokNodeException(this, "SelectState.duration", null);
         }
 
     }
