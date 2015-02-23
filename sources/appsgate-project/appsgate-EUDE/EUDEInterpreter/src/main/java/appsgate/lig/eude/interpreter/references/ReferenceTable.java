@@ -7,7 +7,6 @@ package appsgate.lig.eude.interpreter.references;
 
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
 import appsgate.lig.eude.interpreter.langage.components.ErrorMessagesFactory;
-import appsgate.lig.eude.interpreter.langage.components.SelectReferences;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeSelect;
 import appsgate.lig.eude.interpreter.spec.ProgramDesc;
@@ -82,7 +81,7 @@ public class ReferenceTable {
     /**
      *
      */
-    private final ArrayList<SelectReferences> nodes;
+    private final ArrayList<SelectReference> nodes;
 
     /**
      *
@@ -92,7 +91,7 @@ public class ReferenceTable {
     public ReferenceTable(EUDEInterpreter interpreter, String pid) {
         devices = new ArrayList<DeviceReference>();
         programs = new ArrayList<ProgramReference>();
-        nodes = new ArrayList<SelectReferences>();
+        nodes = new ArrayList<SelectReference>();
         this.interpreter = interpreter;
         this.state = STATUS.UNKNOWN;
         this.myProgId = pid;
@@ -153,7 +152,7 @@ public class ReferenceTable {
      */
     public void addNodeSelect(NodeSelect aThis, HashMap<String,String> refData) {
         boolean refDataAdded = false;
-        for (SelectReferences sRef : this.nodes) {
+        for (SelectReference sRef : this.nodes) {
             if (sRef.getNodeSelect() == aThis) {
                 refDataAdded = sRef.addReferencesData(refData);
             }
@@ -161,7 +160,7 @@ public class ReferenceTable {
         if (!refDataAdded) {
             ArrayList<HashMap<String,String>> newRefData = new ArrayList<HashMap<String, String>>();
             newRefData.add(refData);
-            nodes.add(new SelectReferences(aThis, newRefData));
+            nodes.add(new SelectReference(aThis, newRefData));
         }
     }
 
@@ -244,7 +243,7 @@ public class ReferenceTable {
         return null;
     }
     
-    public ArrayList<SelectReferences> getSelectors() {
+    public ArrayList<SelectReference> getSelectors() {
         return nodes;
     }
 
@@ -318,7 +317,7 @@ public class ReferenceTable {
                     break;
             }
         }
-        for (SelectReferences s : nodes) {
+        for (SelectReference s : nodes) {
             if (s.getNodeSelect().isEmptySelection()) {
                 LOGGER.warn("Select node {} is empty.", s.getNodeSelect());
                 setState(STATUS.UNSTABLE);

@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package appsgate.lig.eude.interpreter.langage.components;
+package appsgate.lig.eude.interpreter.references;
 
 import appsgate.lig.eude.interpreter.langage.nodes.NodeSelect;
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import java.util.HashMap;
  * 
  * @author bidoismorgan
  */
-public class SelectReferences {
+public class SelectReference {
     
     /**
      * nodeSelect of the reference
@@ -27,7 +27,7 @@ public class SelectReferences {
      */
     private final ArrayList<HashMap<String,String>> referencesData;
 
-    public SelectReferences(NodeSelect nodeSelect, ArrayList<HashMap<String, String>> referencesData) {
+    public SelectReference(NodeSelect nodeSelect, ArrayList<HashMap<String, String>> referencesData) {
         this.nodeSelect = nodeSelect;
         this.referencesData = referencesData;
     }

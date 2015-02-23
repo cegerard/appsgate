@@ -6,13 +6,13 @@
 package appsgate.lig.eude.interpreter.references;
 
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
-import appsgate.lig.eude.interpreter.langage.components.SelectReferences;
 import appsgate.lig.eude.interpreter.langage.components.SpokParser;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeSelect;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.Callable;
@@ -97,10 +97,10 @@ public class GraphManager {
         ArrayList<NodeSelect> selectorsSaved = new ArrayList<NodeSelect>();
 
         // Collection to store the entities (program and devices) we added
-        HashSet<String> entitiesAdded = new HashSet<String>();
+        HashSet<DeviceReference> entitiesAdded = new HashSet<DeviceReference>();
 
         // Collection to store the program ghost we will add
-        HashSet<String> ghostPrograms = new HashSet<String>();
+        HashSet<ProgramReference> ghostPrograms = new HashSet<ProgramReference>();
 
         /* BUILD NODES FROM PROGRAMS */
         for (String pid : programsId) {
@@ -121,14 +121,14 @@ public class GraphManager {
                     } else {
                         addLink(REFERENCE_LINK, pid, rdevice.getDeviceId(), rdevice.getReferencesData());
                     }
-                    entitiesAdded.add(rdevice.getDeviceId());
+                    entitiesAdded.add(rdevice);
                 }
                 // Links to the programs
                 for (ProgramReference rProgram : references.getProgramsReferences()) {
                     addLink(REFERENCE_LINK, pid, rProgram.getProgramId(), rProgram.getReferencesData());
 
                     if (rProgram.getProgramStatus() == ReferenceTable.STATUS.MISSING) {
-                        ghostPrograms.add(rProgram.getProgramId());
+                        ghostPrograms.add(rProgram);
                     }
                 }
 
@@ -148,7 +148,13 @@ public class GraphManager {
                 JSONObject o = devices.getJSONObject(i);
 
                 addDevice(o);
-                entitiesAdded.remove(o.getString("id"));
+                // Remove this device from the potential ghost
+                for (Iterator<DeviceReference> it = entitiesAdded.iterator(); it.hasNext();) {
+                    DeviceReference dRef = it.next();
+                    if (dRef.getDeviceId().equals(o.getString("id"))) {
+                        it.remove();
+                    }
+                }
 
                 // Don't add the location link of the service Weather and Mail
                 if (!o.getString("type").equals("102") && !o.getString("type").equals("103")) {
@@ -203,6 +209,7 @@ public class GraphManager {
         // Planification of the checkPrograms to avoid stucking if no scheduling service
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Callable<Object> task = new Callable<Object>() {
+            @Override
             public Object call() {
                 return interpreter.getContext().checkProgramsScheduled();
             }
@@ -289,9 +296,9 @@ public class GraphManager {
      *
      * @param ghosts : HashSet of the ghosts
      */
-    private void buildDeviceGhosts(HashSet<String> ghosts) {
-        for (String ghostId : ghosts) {
-            addGhost("device", ghostId);
+    private void buildDeviceGhosts(HashSet<DeviceReference> ghosts) {
+        for (DeviceReference dRef : ghosts) {
+            addGhost("device", dRef.getDefaultName(), dRef.getDeviceId());
         }
     }
 
@@ -300,9 +307,9 @@ public class GraphManager {
      *
      * @param ghosts : HashSet of the ghosts
      */
-    private void buildProgramGhosts(HashSet<String> ghosts) {
-        for (String ghostId : ghosts) {
-            addGhost("program", ghostId);
+    private void buildProgramGhosts(HashSet<ProgramReference> ghosts) {
+        for (ProgramReference pRef : ghosts) {
+            addGhost("program", pRef.getDefaultName(), pRef.getId());
         }
     }
 
@@ -313,13 +320,13 @@ public class GraphManager {
      * Program
      * @param id : String id of ghost
      */
-    private void addGhost(String typeGhost, String id) {
+    private void addGhost(String typeGhost, String name, String id) {
         HashMap<String, String> optArg = new HashMap<String, String>();
         optArg.put("isGhost", Boolean.TRUE.toString());
         if (typeGhost.equals("device")) {
-            addNode(DEVICE_ENTITY, id, "", optArg);
+            addNode(DEVICE_ENTITY, id, name, optArg);
         } else {
-            addNode(PROGRAM_ENTITY, id, "", optArg);
+            addNode(PROGRAM_ENTITY, id, name, optArg);
         }
     }
 
@@ -481,9 +488,9 @@ public class GraphManager {
     private boolean addSelector(String pid, ReferenceTable ref, ArrayList<NodeSelect> selectorsSaved) {
         boolean ret = false;
         String typeDevices = "";
-        ArrayList<SelectReferences> selectors = ref.getSelectors();
+        ArrayList<SelectReference> selectors = ref.getSelectors();
         // For each selector present in the program...
-        for (SelectReferences selector : selectors) {
+        for (SelectReference selector : selectors) {
             HashMap<String, ArrayList<String>> elements = (HashMap<String, ArrayList<String>>) selector.getNodeSelect().getPlaceDeviceSelector();
             ArrayList<String> placesSelector = elements.get("placeSelector");
 
