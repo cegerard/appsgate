@@ -305,6 +305,10 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
         state.put("bri", String.valueOf(color.get("bri")));
         state.put("hue", String.valueOf(color.get("hue")));
         state.put("sat", String.valueOf(color.get("sat")));
+        if(color.optBoolean("on")) {
+        	state.put("on", String.valueOf(color.get("on")));
+        }
+
 
         HSBColor hsb = new HSBColor(color.getInt("hue"),color.getInt("sat"), color.getInt("bri"));
         state.put("rgbcolor", hsb.toRGB().getHTMLColor());
@@ -337,7 +341,8 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
         state.put("bri", String.valueOf(BRI_DEFAULT));
         state.put("hue", String.valueOf(color));
         state.put("sat", String.valueOf(SAT_DEFAULT));
-
+        state.put("on", true);
+        
         return setColorJson(state);
 
 
@@ -475,12 +480,13 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 
     @Override
     public boolean setWhite() {
+    	
 
         JSONObject JSONAttribute = new JSONObject();
         JSONObject oldColor;
         try {
             oldColor = getLightStatus();
-            JSONAttribute.put("bri", 220);
+            JSONAttribute.put("bri", 254);
             JSONAttribute.put("sat", 0);
             JSONAttribute.put("on", true);
         } catch (JSONException e) {
@@ -491,7 +497,7 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
         if (PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, JSONAttribute)) {
             on = String.valueOf(true);
             sat = String.valueOf(0);
-            bri = String.valueOf(220);
+            bri = String.valueOf(254);
 
             notifyChanges("colorChanged", oldColor.toString(), getJSONColor().toString());
 
