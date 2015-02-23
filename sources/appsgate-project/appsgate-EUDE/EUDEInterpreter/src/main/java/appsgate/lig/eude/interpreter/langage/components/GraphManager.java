@@ -304,6 +304,13 @@ public class GraphManager {
         }
     }
 
+    /**
+     * Method to add a Ghost Node
+     *
+     * @param typeGhost : String to describe the type of ghost : Devive or
+     * Program
+     * @param id : String id of ghost
+     */
     private void addGhost(String typeGhost, String id) {
         HashMap<String, String> optArg = new HashMap<String, String>();
         optArg.put("isGhost", Boolean.TRUE.toString());
