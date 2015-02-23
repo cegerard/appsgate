@@ -8,7 +8,7 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 import appsgate.lig.ehmi.spec.EHMIProxyMock;
 import appsgate.lig.ehmi.spec.EHMIProxySpec;
 import appsgate.lig.ehmi.spec.messages.NotificationMsg;
-import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
+import appsgate.lig.eude.interpreter.references.ReferenceTable;
 
 import org.jmock.Expectations;
 import static org.jmock.Expectations.any;

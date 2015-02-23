@@ -3,9 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package appsgate.lig.eude.interpreter.langage.components;
+package appsgate.lig.eude.interpreter.references;
 
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
+import appsgate.lig.eude.interpreter.langage.components.ErrorMessagesFactory;
+import appsgate.lig.eude.interpreter.langage.components.SelectReferences;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeSelect;
 import appsgate.lig.eude.interpreter.spec.ProgramDesc;
@@ -71,11 +73,11 @@ public class ReferenceTable {
     /**
      *
      */
-    private final ArrayList<DeviceReferences> devices;
+    private final ArrayList<DeviceReference> devices;
     /**
      *
      */
-    private final ArrayList<ProgramReferences> programs;
+    private final ArrayList<ProgramReference> programs;
 
     /**
      *
@@ -88,8 +90,8 @@ public class ReferenceTable {
      * @param pid
      */
     public ReferenceTable(EUDEInterpreter interpreter, String pid) {
-        devices = new ArrayList<DeviceReferences>();
-        programs = new ArrayList<ProgramReferences>();
+        devices = new ArrayList<DeviceReference>();
+        programs = new ArrayList<ProgramReference>();
         nodes = new ArrayList<SelectReferences>();
         this.interpreter = interpreter;
         this.state = STATUS.UNKNOWN;
@@ -99,45 +101,48 @@ public class ReferenceTable {
     /**
      *
      * @param programId
+     * @param name
      * @param refData - data about reference
      */
-    public void addProgram(String programId, HashMap<String,String> refData) {
+    public void addProgram(String programId, String name, HashMap<String,String> refData) {
         if (programId.equalsIgnoreCase(myProgId)) {
             LOGGER.debug("The program is self referenced (do not need to add it in the reference table.");
             return;
         }
         
-        ProgramReferences pRef = getProgramFromId(programId);
+        ProgramReference pRef = getProgramFromId(programId);
         if (pRef != null) {
             pRef.addReferencesData(refData);
         } else {
             ArrayList<HashMap<String,String>> newRefData = new ArrayList<HashMap<String, String>>();
             newRefData.add(refData);
-            programs.add(new ProgramReferences(programId, STATUS.UNKNOWN, newRefData));
+            programs.add(new ProgramReference(programId, STATUS.UNKNOWN, name, newRefData));
         }
     }
 
     /**
      *
      * @param deviceId
+     * @param deviceName
      */
-    public void addDevice(String deviceId) {
-        devices.add(new DeviceReferences(deviceId, STATUS.UNKNOWN, null));
+    public void addDevice(String deviceId, String deviceName) {
+        devices.add(new DeviceReference(deviceId, STATUS.UNKNOWN, deviceName, null));
     }
     
      /**
      *
      * @param deviceId
+     * @param deviceName
      * @param refData - data about reference
      */
-    public void addDevice(String deviceId, HashMap<String,String> refData) {
-        DeviceReferences dRef = getDeviceFromId(deviceId);
+    public void addDevice(String deviceId, String deviceName, HashMap<String,String> refData) {
+        DeviceReference dRef = getDeviceFromId(deviceId);
         if (dRef != null) {
             dRef.addReferencesData(refData);
         } else {
             ArrayList<HashMap<String,String>> newRefData = new ArrayList<HashMap<String, String>>();
             newRefData.add(refData);
-            devices.add(new DeviceReferences(deviceId, STATUS.UNKNOWN, newRefData));
+            devices.add(new DeviceReference(deviceId, STATUS.UNKNOWN, deviceName, newRefData));
         }
         
     }
@@ -166,7 +171,7 @@ public class ReferenceTable {
      * @param newStatus
      */
     public void setDeviceStatus(String deviceId, STATUS newStatus) {
-        for (DeviceReferences device : this.devices) {
+        for (DeviceReference device : this.devices) {
             if (device.getDeviceId().equals(deviceId)) {
                 device.setDeviceStatus(newStatus);
             }
@@ -180,7 +185,7 @@ public class ReferenceTable {
      * @return true if the program referenced has changed of status
      */
     public Boolean setProgramStatus(String programId, STATUS newStatus) { // VOID
-        for (ProgramReferences pRef : this.programs) {
+        for (ProgramReference pRef : this.programs) {
             if (pRef.getProgramId().equals(programId)) {
                 return pRef.setProgramStatus(newStatus);
             }
@@ -195,14 +200,14 @@ public class ReferenceTable {
      */
     public Set<String> getProgramsId() {
         Set<String> programsId = new HashSet<String>();
-        for (ProgramReferences pRef : this.programs) {
+        for (ProgramReference pRef : this.programs) {
             programsId.add(pRef.getProgramId());
         }
         return programsId;
     }
     
-     public ProgramReferences getProgramFromId (String id) {
-        for (ProgramReferences pRef : this.programs) {
+     public ProgramReference getProgramFromId (String id) {
+        for (ProgramReference pRef : this.programs) {
             if (pRef.getProgramId().equals(id)) {
                 return pRef;
             }
@@ -210,11 +215,11 @@ public class ReferenceTable {
         return null;
     }
     
-    public ArrayList<DeviceReferences> getDevicesReferences() {
+    public ArrayList<DeviceReference> getDevicesReferences() {
         return this.devices;
     }
     
-    public ArrayList<ProgramReferences> getProgramsReferences() {
+    public ArrayList<ProgramReference> getProgramsReferences() {
         return this.programs;
     }
 
@@ -224,14 +229,14 @@ public class ReferenceTable {
      */
     public Set<String> getDevicesId() {
         Set<String> devicesId = new HashSet<String>();
-        for (DeviceReferences device : this.devices) {
+        for (DeviceReference device : this.devices) {
             devicesId.add(device.getDeviceId());
         }
         return devicesId;
     }
     
-    public DeviceReferences getDeviceFromId (String id) {
-        for (DeviceReferences device : this.devices) {
+    public DeviceReference getDeviceFromId (String id) {
+        for (DeviceReference device : this.devices) {
             if (device.getDeviceId().equals(id)) {
                 return device;
             }
@@ -260,7 +265,7 @@ public class ReferenceTable {
      *
      */
     private void retrieveReferences() {
-        for (ProgramReferences pRef : programs) {
+        for (ProgramReference pRef : programs) {
             NodeProgram prog = interpreter.getNodeProgram(pRef.getProgramId());
             LOGGER.trace("retrieveReferences(), program " + pRef.getProgramId() + ", status " + pRef.getProgramStatus());
             if (prog != null) {
@@ -277,7 +282,7 @@ public class ReferenceTable {
             }
         }
         // Services && devices are treated the same way
-        for (DeviceReferences device : devices) {
+        for (DeviceReference device : devices) {
             LOGGER.trace("retrieveReferences(), device " + device.getDeviceId() + ", status " + device.getDeviceStatus());
             JSONObject deviceJSON = interpreter.getContext().getDevice(device.getDeviceId());
             try {
@@ -304,7 +309,7 @@ public class ReferenceTable {
             this.state=STATUS.INVALID;
         }
         // Services && devices are treated the same way
-        for (DeviceReferences device : devices) {
+        for (DeviceReference device : devices) {
             LOGGER.trace("computeStatus(), device " + device.getDeviceId() + ", status " + device.getDeviceStatus());
             switch (device.getDeviceStatus()) {
                 case MISSING:
@@ -320,7 +325,7 @@ public class ReferenceTable {
                 this.err = ErrorMessagesFactory.getMessageFromEmptySelect(s.getNodeSelect());
             }
         }
-        for (ProgramReferences pRef : programs) {
+        for (ProgramReference pRef : programs) {
             LOGGER.trace("computeStatus(), program " + pRef.getProgramId() + ", status :" + pRef.getProgramStatus());
             switch (pRef.getProgramStatus()) {
                 case MISSING:

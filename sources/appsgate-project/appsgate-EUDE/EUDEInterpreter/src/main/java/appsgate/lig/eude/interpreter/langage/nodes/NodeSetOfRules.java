@@ -7,7 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
-import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
+import appsgate.lig.eude.interpreter.references.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import java.util.HashMap;
 import java.util.List;

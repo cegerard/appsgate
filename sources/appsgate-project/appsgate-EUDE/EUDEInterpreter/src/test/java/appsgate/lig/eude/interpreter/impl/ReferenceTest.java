@@ -10,7 +10,7 @@ import appsgate.lig.chmi.spec.GenericCommand;
 import appsgate.lig.context.services.DataBasePullService;
 import appsgate.lig.context.services.DataBasePushService;
 import appsgate.lig.ehmi.spec.EHMIProxyMock;
-import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
+import appsgate.lig.eude.interpreter.references.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
 import java.io.FileNotFoundException;
 import java.io.IOException;
