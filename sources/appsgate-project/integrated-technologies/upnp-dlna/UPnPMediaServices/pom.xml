@@ -68,7 +68,7 @@
 					<services>
 						<service>
 							<serviceType>urn:schemas-upnp-org:service:ContentDirectory:1</serviceType>
-							<SCPDURL>org.upnp.schemas/service/ContentDirectory.1.xml</SCPDURL>
+							<sCPDURL>org.upnp.schemas/service/ContentDirectory.1.xml</sCPDURL>
 							<mapping>
 								<packageName>appsgate.lig.upnp.media</packageName>
 								<className>ContentDirectory</className>
@@ -76,7 +76,7 @@
 						</service>
 						<service>
 							<serviceType>urn:schemas-upnp-org:service:ConnectionManager:1</serviceType>
-							<SCPDURL>org.upnp.schemas/service/ConnectionManager.1.xml</SCPDURL>
+							<sCPDURL>org.upnp.schemas/service/ConnectionManager.1.xml</sCPDURL>
 							<mapping>
 								<packageName>appsgate.lig.upnp.media</packageName>
 								<className>ConnectionManager</className>
@@ -84,7 +84,7 @@
 						</service>
 						<service>
 							<serviceType>urn:schemas-upnp-org:service:AVTransport:1</serviceType>
-							<SCPDURL>org.upnp.schemas/service/AVTransport.1.xml</SCPDURL>
+							<sCPDURL>org.upnp.schemas/service/AVTransport.1.xml</sCPDURL>
 							<mapping>
 								<packageName>appsgate.lig.upnp.media</packageName>
 								<className>AVTransport</className>
@@ -92,7 +92,7 @@
 						</service>
 						<service>
 							<serviceType>urn:schemas-upnp-org:service:RenderingControl:1</serviceType>
-							<SCPDURL>org.upnp.schemas/service/RenderingControl.1.xml</SCPDURL>
+							<sCPDURL>org.upnp.schemas/service/RenderingControl.1.xml</sCPDURL>
 							<mapping>
 								<packageName>appsgate.lig.upnp.media</packageName>
 								<className>RenderingControl</className>
