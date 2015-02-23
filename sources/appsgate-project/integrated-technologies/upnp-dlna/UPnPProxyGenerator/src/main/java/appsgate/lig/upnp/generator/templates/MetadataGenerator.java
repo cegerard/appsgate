@@ -22,7 +22,7 @@ public class MetadataGenerator  {
 		
 		metadata.write("<apam xmlns=\"fr.imag.adele.apam\" xmlns:ipojo=\"org.apache.felix.ipojo\" \n");
 		metadata.write("	xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n");
-		metadata.write("	xsi:schemaLocation=\"fr.imag.adele.apam https://raw.github.com/AdeleResearchGroup/ApAM/master/runtime/core/src/main/resources/xsd/ApamCore.xsd\">\n");
+		metadata.write("	xsi:schemaLocation=\"fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd\">\n");
 		metadata.write("\n");
 
         metadata.write("<specification name=\"UPnPService\" />  \n");
