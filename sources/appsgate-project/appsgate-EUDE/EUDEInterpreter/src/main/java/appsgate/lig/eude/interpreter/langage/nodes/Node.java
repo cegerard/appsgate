@@ -7,7 +7,7 @@ import java.util.concurrent.Callable;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.EndEventGenerator;
 import appsgate.lig.eude.interpreter.langage.components.EndEventListener;
-import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
+import appsgate.lig.eude.interpreter.references.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEventGenerator;
 import appsgate.lig.eude.interpreter.langage.components.StartEventListener;
@@ -83,9 +83,13 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      * the phrase available for the editor
      */
     private String phrase = null;
-    
+
     /**
-     * 
+     * the default name of the node, can be empty
+     */
+    private String defaultName;
+    /**
+     *
      */
     protected Boolean stopped = false;
 
@@ -107,6 +111,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
         this(p);
         this.iid = o.optString("iid");
         this.phrase = o.optString("phrase");
+        this.defaultName = o.optString("name");
     }
 
     /**
@@ -136,6 +141,15 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
     public final void setIID(String id) {
         this.iid = id;
     }
+
+    /**
+     *
+     * @return the default name of the node
+     */
+    public final String getDefaultName() {
+        return this.defaultName;
+    }
+
     /**
      * Stop the interpretation of the node. Check if the node is not started
      */
@@ -190,6 +204,9 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
         try {
             o.put("iid", this.getIID());
             o.put("phrase", this.phrase);
+            if (this.defaultName != null && !this.defaultName.isEmpty()) {
+                o.put("name", this.defaultName);
+            }
         } catch (JSONException ex) {
         }
         return o;
@@ -244,7 +261,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
     @Override
     public void addEndEventListener(EndEventListener listener) {
         LOGGER.trace("ADD:  {} listen EndEvent FROM {}", listener, this);
-        if(endEventListeners.contains(listener)) {
+        if (endEventListeners.contains(listener)) {
             LOGGER.warn("{} is already listening to {}", listener, this);
             return;
         }
@@ -622,22 +639,24 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
     /**
      *
      * @param table
-     * @param args The Hashmap of arguments need in the leaf after event and action node
+     * @param args The Hashmap of arguments need in the leaf after event and
+     * action node
      */
-    protected void buildReferences(ReferenceTable table, HashMap<String,String> args) {
+    protected void buildReferences(ReferenceTable table, HashMap<String, String> args) {
         // Do nothing for leaf if no Device or no Program is referenced 
     }
-    
+
     abstract public String getTypeSpec();
-    
+
     @Override
     final public String toString() {
-        return "[Node("+ this.iid+ ") " + getTypeSpec() + "]";
+        return "[Node(" + this.iid + ") " + getTypeSpec() + "]";
     }
-    
+
     /**
      * Method to notify the tracemanager a command has been passed
-     * @param n 
+     *
+     * @param n
      */
     protected void notifyLine(ProgramTraceNotification n) {
         try {

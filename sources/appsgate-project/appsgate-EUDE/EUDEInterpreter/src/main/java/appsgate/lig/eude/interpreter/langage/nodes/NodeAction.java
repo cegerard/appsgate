@@ -2,8 +2,8 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.chmi.spec.GenericCommand;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
-import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
-import appsgate.lig.eude.interpreter.langage.components.ReferenceTable.REFERENCE_TYPE;
+import appsgate.lig.eude.interpreter.references.ReferenceTable;
+import appsgate.lig.eude.interpreter.references.ReferenceTable.REFERENCE_TYPE;
 import appsgate.lig.eude.interpreter.langage.components.SpokObject;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.*;

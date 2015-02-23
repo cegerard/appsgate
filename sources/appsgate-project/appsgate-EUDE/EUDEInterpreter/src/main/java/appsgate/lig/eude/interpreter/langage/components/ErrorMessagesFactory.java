@@ -63,7 +63,7 @@ public class ErrorMessagesFactory {
      * @param programId the id of the missing program
      * @return a JSONObject corresponding to the missing program message
      */
-    static JSONObject getMessageFromMissingProgram(String programId) {
+    public static JSONObject getMessageFromMissingProgram(String programId) {
         JSONObject error = new JSONObject();
         try {
             error.put("msg", "programs.error.missingProgram");
@@ -89,7 +89,7 @@ public class ErrorMessagesFactory {
         return error;
     }
 
-    static JSONObject getMessageFromEmptySelect(NodeSelect s) {
+    public static JSONObject getMessageFromEmptySelect(NodeSelect s) {
         JSONObject error = new JSONObject();
         try {
             error.put("msg", "programs.error.emptySelec");

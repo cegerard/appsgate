@@ -3,9 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package appsgate.lig.eude.interpreter.langage.components;
+package appsgate.lig.eude.interpreter.references;
 
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
+import appsgate.lig.eude.interpreter.langage.components.SelectReferences;
+import appsgate.lig.eude.interpreter.langage.components.SpokParser;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeSelect;
 import java.util.ArrayList;
@@ -113,7 +115,7 @@ public class GraphManager {
                 // Program links : Reference or planified
                 ReferenceTable references = p.getReferences();
                 // Links to the devices
-                for (DeviceReferences rdevice : references.getDevicesReferences()) {
+                for (DeviceReference rdevice : references.getDevicesReferences()) {
                     if (rdevice.getDeviceId().equals(CLOCK_ID)) {
                         addLink(PLANIFIED_LINK, pid, rdevice.getDeviceId());
                     } else {
@@ -122,7 +124,7 @@ public class GraphManager {
                     entitiesAdded.add(rdevice.getDeviceId());
                 }
                 // Links to the programs
-                for (ProgramReferences rProgram : references.getProgramsReferences()) {
+                for (ProgramReference rProgram : references.getProgramsReferences()) {
                     addLink(REFERENCE_LINK, pid, rProgram.getProgramId(), rProgram.getReferencesData());
 
                     if (rProgram.getProgramStatus() == ReferenceTable.STATUS.MISSING) {
@@ -304,6 +306,13 @@ public class GraphManager {
         }
     }
 
+    /**
+     * Method to add a Ghost Node
+     *
+     * @param typeGhost : String to describe the type of ghost : Devive or
+     * Program
+     * @param id : String id of ghost
+     */
     private void addGhost(String typeGhost, String id) {
         HashMap<String, String> optArg = new HashMap<String, String>();
         optArg.put("isGhost", Boolean.TRUE.toString());

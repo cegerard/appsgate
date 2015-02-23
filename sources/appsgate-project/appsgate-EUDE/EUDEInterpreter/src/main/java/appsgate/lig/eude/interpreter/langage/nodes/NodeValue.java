@@ -6,7 +6,7 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
-import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
+import appsgate.lig.eude.interpreter.references.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import java.util.ArrayList;
@@ -272,11 +272,11 @@ public class NodeValue extends Node implements INodeList, ICanBeEvaluated {
     protected void buildReferences(ReferenceTable table, HashMap<String,String> args) {
         switch (this.type) {
             case PROGRAMCALL:
-                table.addProgram(value, args);
+                table.addProgram(value, this.getDefaultName(), args);
                 break;
             case SERVICE:
             case DEVICE:
-                table.addDevice(value, args);
+                table.addDevice(value, this.getDefaultName(), args);
                 break;
             default:
                 LOGGER.debug("[buildReferences] unknown case to handle: {}", this);
