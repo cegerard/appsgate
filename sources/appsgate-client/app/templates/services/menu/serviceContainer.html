@@ -35,6 +35,8 @@
         <span class="pull-right badge">
             <% if (type === "102") { %>
             <span id='mailFavCnt'><%= services[0].getNumberOfFavorites() %></span>
+            <% } else if (type === "104") { %>
+            <%= services[0].getTTSItems().length %>
             <% } else { %>
             <%= services.length %>
             <% } %>
