@@ -579,8 +579,11 @@ public class GraphManager {
                     } else if (node.get("type") == PROGRAM_ENTITY) {
                         // Program
                         NodeProgram currentProgram = interpreter.getNodeProgram(node.getString("id"));
-                        // Update state
-                        node.put("state", currentProgram.getState());
+                        // If null it is a ghost, so no need to update
+                        if (currentProgram != null) {
+                            // Update state
+                            node.put("state", currentProgram.getState());
+                        }
                     } else if (node.get("type") == PLACE_ENTITY) {
                         // Place
                         for (int j = 0; j < this.interpreter.getContext().getPlaces().length(); j++) {
