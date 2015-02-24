@@ -74,7 +74,7 @@ public interface CoreObjectSpec {
 	
 	/**
 	 * Get the type of the core object it can
-	 * be service or device
+	 * be a service or device of the Core World, a Communication Tecnology Adapter, or an extended-service
 	 * @return the core type value
 	 */
 	public CORE_TYPE getCoreType();
@@ -95,7 +95,9 @@ public interface CoreObjectSpec {
 		SERVICE,
 		DEVICE,
 		SIMULATED_DEVICE,
-		SIMULATED_SERVICE;
+		SIMULATED_SERVICE,
+		ADAPTER,
+		EXTENDED;
 	}
         
 	
