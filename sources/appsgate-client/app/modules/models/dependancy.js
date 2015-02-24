@@ -584,6 +584,11 @@ define([
 					// Weather case, show the location
 					e.type = "service";
 					e.name = e.location;
+					break;
+				case 104:
+					// Weather case, show the location
+					e.type = "service";
+					e.name = $.i18n.t("services.tts.name.singular");
 					break
 				default:
 					break;
