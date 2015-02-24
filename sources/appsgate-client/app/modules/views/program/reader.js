@@ -328,9 +328,6 @@ define([
             $(".programInput").children(".seq-block-node").remove();
             $(".programInput").children(".separator").remove();
           }
-          else {
-            $(".programInput").children(".seq-block-node").children(".separator").last().remove();
-          }
           if($(".programInput").children(".set-block-node").children(":not(.input-spot):not(.set-block-header)").length < 1){
             $(".programInput").children(".set-block-node").remove();
             $(".programInput").children(".separator").remove();
@@ -338,6 +335,10 @@ define([
           else {
             $(".programInput").children(".set-block-node").children(".separator").last().remove();
           }
+            $(".programInput").find(".seq-block-node").each(function(n, o) {
+              console.log(n + ": " + o);
+              $(o).children(".separator").last().remove();
+              });
           
 
           $(".input-spot:not(.mandatory-spot)").remove();
