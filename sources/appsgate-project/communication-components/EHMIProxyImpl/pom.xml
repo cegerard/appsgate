@@ -68,6 +68,12 @@
             <artifactId>SchedulerSpec</artifactId>
             <version>${project.version}</version>
         </dependency>
+        
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>ConfigurableClockImpl</artifactId>
+            <version>${project.version}</version>
+        </dependency>    
 
         <dependency>
 			<groupId>org.osgi</groupId>
@@ -81,6 +87,13 @@
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>        
+        
+        <!-- Add ipojo dependency because of the error: cannot access Pojo during build -->
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.ipojo</artifactId>
+            <version>${ipojo.version}</version>
+        </dependency>           
         
 	</dependencies>
 

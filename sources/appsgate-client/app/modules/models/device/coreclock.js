@@ -131,10 +131,10 @@ define([
      * Send a request synchronization with the core clock of the system
      */
     synchronizeCoreClock: function() {
-      this.remoteControl("getCurrentTimeInMillis", [], "systemCurrentTime");
+      this.remoteCall("getCurrentTimeInMillis", [], "systemCurrentTime");
     },
     synchronizeFlowRate: function() {
-      this.remoteControl("getTimeFlowRate", [], "systemCurrentFlowRate");
+      this.remoteCall("getTimeFlowRate", [], "systemCurrentFlowRate");
     },
     /**
      * Remove the automatic synchronization with the server

@@ -88,9 +88,6 @@ public class ObjectUpdateListener implements CoreUpdatesListener {
             //sendObjectPlace(coreType, objectId, placeId);
             //sendObjectName(objectId, name);
 
-            if (userType.contentEquals("21") && !EHMIProxy.getSystemClock().isRemote()) { //The new device is a clock and no remote clock
-                EHMIProxy.startRemoteClockSync();										//Is already used.
-            }
             if(traceManager != null) {
             	traceManager.coreUpdateNotify(EHMIProxy.getCurrentTimeInMillis(), objectId, coreType, userType, name, description, "new");
             }
@@ -107,10 +104,7 @@ public class ObjectUpdateListener implements CoreUpdatesListener {
     		}
     		
         	
-            if (userType.contentEquals("21") && EHMIProxy.getSystemClock().isRemote() //The removed device is a clock, the system is remotely synchronized
-                    && objectId.contentEquals(EHMIProxy.getSystemClock().getAbstractObjectId())) { //and it is the clock what we are synchronized with
-                EHMIProxy.stopRemoteClockSync();
-            }
+
             traceManager.coreUpdateNotify(EHMIProxy.getCurrentTimeInMillis(), objectId, coreType, userType, name, description, "remove");
             EHMIProxy.newDeviceStatus(objectId, Boolean.FALSE);
 

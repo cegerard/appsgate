@@ -3,6 +3,8 @@ package appsgate.lig.ehmi.impl.listeners;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import appsgate.lig.clock.sensor.spec.AlarmEventObserver;
+
 /**
  * Inner class to register time notification through the core clock
  *
@@ -10,7 +12,7 @@ import org.slf4j.LoggerFactory;
  * @since April 29, 2014
  * @version 1.0.0
  */
-public class TimeObserver {
+public class TimeObserver implements AlarmEventObserver{
 	
 	/**
      * Static class member uses to log what happened in each instances

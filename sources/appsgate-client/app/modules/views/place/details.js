@@ -312,6 +312,7 @@ define([
             });
             // show the popup
             this.$el.find("#delete-popover").popover('show');
+            console.log("popover delete shown !");
         },
         /**
          * Callback to toggle a plug

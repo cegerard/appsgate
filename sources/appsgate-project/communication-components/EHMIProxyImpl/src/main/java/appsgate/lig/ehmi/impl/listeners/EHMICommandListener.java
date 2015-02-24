@@ -86,12 +86,6 @@ public class EHMICommandListener implements CommandListener {
 				logger.debug("Inappropriate argument: " + e.getMessage());
 			} catch(CoreDependencyException coreException) {
 				String objId = obj.getString("objectId");
-				if(objId.contentEquals(ehmiProxy.getSystemClock().getAbstractObjectId())) {
-					logger.trace("Use the local clock instead of the provided core clock;");
-					executorService.execute(ehmiProxy.executeCommand(clientId, method, arguments, types, callId));
-				}else {
-					logger.warn("Resolution failed for core dependency, no remote call can be triggered.");
-				}
 			}
 		} catch (JSONException e1) {
 			logger.error(e1.getMessage());

@@ -9,6 +9,11 @@
 		<callback onInit="newInst" onRemove="deleteInst" />
 		
 		<relation field="coreProxy" resolve="exist" creation="eager" added="synchroCoreProxy"/>
+
+		<relation specification="CoreClockSpec" resolve="exist" fail="wait">
+		    <interface field="systemClock"/>
+            <interface field="systemClockCoreObject"/>
+		</relation>
 		
 		<relation field="devicePropertiesTable" resolve="exist"/>
 		<relation field="placeManager" resolve="exist" />

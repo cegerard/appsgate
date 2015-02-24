@@ -22,6 +22,7 @@ import appsGate.lig.manager.client.communication.service.subscribe.ListenerServi
 import appsgate.lig.chmi.spec.CHMIProxySpec;
 import appsgate.lig.chmi.spec.listeners.CoreEventsListener;
 import appsgate.lig.chmi.spec.listeners.CoreUpdatesListener;
+import appsgate.lig.clock.sensor.spec.CoreClockSpec;
 import appsgate.lig.context.device.properties.table.spec.DevicePropertiesTableSpec;
 import appsgate.lig.context.userbase.spec.UserBaseSpec;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
@@ -152,8 +153,12 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	/**
 	 * This is the system clock to deal with time in AppsGate EHMI
 	 */
-	private SystemClock systemClock;
-
+	private CoreClockSpec systemClock;
+	/**
+	 * This is the system clock to deal with time in AppsGate EHMI
+	 */
+	private CoreObjectSpec systemClockCoreObject;
+	
 	Object lock = new Object();
 
 	/**
@@ -177,7 +182,6 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	 */
 	public void newInst() {
 		logger.debug("EHMI is starting");
-		systemClock = new SystemClock(this);
 
 		if (httpService != null) {
 			final HttpContext httpContext = httpService
@@ -259,14 +263,10 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 				} else {
 					logger.error("Core updates listener deployement failed.");
 				}
-				systemClock.startRemoteSync(coreProxy);
 
 
 			} catch (CoreDependencyException coreException) {
-				logger.warn("Resolution failled for core dependency, no notification subscription can be set.");
-				if (systemClock.isRemote()) {
-					systemClock.stopRemoteSync(coreProxy);
-				}
+				logger.warn("Resolution failed for core dependency, no notification subscription can be set.");
 			}
 
 		} else {
@@ -294,9 +294,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 		try {
 			coreProxy.CoreEventsUnsubscribe(objectEventsListener);
 			coreProxy.CoreUpdatesUnsubscribe(objectUpdatesListener);
-			if (systemClock.isRemote()) {
-				systemClock.stopRemoteSync(coreProxy);
-			}
+
 		} catch (CoreDependencyException coreException) {
 			logger.warn("Resolution failed for core dependency, no notification subscription can be delete.");
 		}
@@ -313,13 +311,11 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 		try {
 			return addContextData(coreProxy.getDevicesDescription());
 		} catch (CoreDependencyException coreException) {
-			logger.debug("Resolution failled for core dependency, no device can be found.");
-			if (systemClock.isRemote()) {
-				systemClock.stopRemoteSync(coreProxy);
-			}
+			logger.debug("Resolution failed for core dependency, no device can be found.");
+
 			try {
-				devices.put(addContextData(systemClock.getDescription(),
-						systemClock.getAbstractObjectId()));
+				devices.put(addContextData(systemClockCoreObject.getDescription(),
+						systemClockCoreObject.getAbstractObjectId()));
 			} catch (JSONException e) {
 				logger.error(e.getMessage());
 			}
@@ -360,13 +356,11 @@ public class EHMIProxyImpl implements EHMIProxySpec {
             return addContextData(coreObject, deviceId);
 		} catch (CoreDependencyException coreException) {
 			logger.debug("Resolution failed for core dependency, no device can be found.");
-			if (systemClock.isRemote()) {
-				systemClock.stopRemoteSync(coreProxy);
-			}
-			if (deviceId.contentEquals(systemClock.getAbstractObjectId())) {
+
+			if (deviceId.contentEquals(systemClockCoreObject.getAbstractObjectId())) {
 				try {
-					devices = addContextData(systemClock.getDescription(),
-							systemClock.getAbstractObjectId());
+					devices = addContextData(systemClockCoreObject.getDescription(),
+							systemClockCoreObject.getAbstractObjectId());
 				} catch (JSONException e) {
 					logger.error(e.getMessage());
 				}
@@ -385,13 +379,11 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 			return addContextData(coreProxy.getDevicesDescriptionFromType(type));
 		} catch (CoreDependencyException coreException) {
 			logger.debug("Resolution failed for core dependency, no device can be found.");
-			if (systemClock.isRemote()) {
-				systemClock.stopRemoteSync(coreProxy);
-			}
+
 			try {
-				if (type.contentEquals(systemClock.getSystemClockType())) {
-					devices.put(addContextData(systemClock.getDescription(),
-							systemClock.getAbstractObjectId()));
+				if (type.contentEquals(systemClockCoreObject.getUserType())) {
+					devices.put(addContextData(systemClockCoreObject.getDescription(),
+							systemClockCoreObject.getAbstractObjectId()));
 				}
 			} catch (JSONException e) {
 				logger.error(e.getMessage());
@@ -1141,15 +1133,6 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	}
 
 	/**
-	 * Get the EHMI system clock abstraction
-	 * 
-	 * @return the abstract system clock instance
-	 */
-	public SystemClock getSystemClock() {
-		return systemClock;
-	}
-
-	/**
 	 * Get a command description, resolve the local target reference and return
 	 * a runnable command object
 	 * 
@@ -1225,7 +1208,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 		Entry eventKey = new Entry(coreListener);
 
 		// Check if the need to by register in the core clock implementation
-		if (systemClock.getAbstractObjectId().contentEquals(
+		if (systemClockCoreObject.getAbstractObjectId().contentEquals(
 				coreListener.getObjectId())
 				&& eventKey.getVarName().contentEquals("ClockAlarm")
 				&& !eventKey.isEventOnly()) {
@@ -1330,7 +1313,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	 *            the new time to set
 	 */
 	public void setCurrentTimeInMillis(long millis) {
-		logger.warn("Set current time method is not supported yet for local system clock.");
+		systemClock.setCurrentTimeInMillis(millis);
 	}
 
 	/**
@@ -1348,9 +1331,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	 * @return the new time flow rate
 	 */
 	public double setTimeFlowRate(double rate) {
-		logger.warn("Set time flow rate method is not supported yet for local system clock.");
-		logger.warn("requested value: " + rate);
-		return SystemClock.defaultTimeFlowRate;
+		return systemClock.setTimeFlowRate(rate);
 	}
 
 	/**
@@ -1360,20 +1341,6 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	 */
 	public void sendClockAlarmNotifcation(ClockAlarmNotificationMsg msg) {
 		sendToClients(msg.JSONize());
-	}
-
-	/**
-	 * Start the remote clock synchronization
-	 */
-	public void startRemoteClockSync() {
-		systemClock.startRemoteSync(coreProxy);
-	}
-
-	/**
-	 * Stop the remote clock synchronization
-	 */
-	public void stopRemoteClockSync() {
-		systemClock.stopRemoteSync(coreProxy);
 	}
 
 	public void getLog(long timeStart, long timeEnd) {
