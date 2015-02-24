@@ -66,6 +66,8 @@ define(function(require, exports, module) {
             var servicesReady = false;
             var programsReady = false;
             var dependanciesReady = false;
+            var adaptersReady = false;
+
       
             // places
             dispatcher.on("placesReady", function() {
@@ -104,7 +106,14 @@ define(function(require, exports, module) {
                 dispatcher.trigger("dataReady");
               }
             });
-    
+
+            // adapters
+            dispatcher.on("adaptersReady", function() {
+                adaptersReady = true;
+                if (placesReady && devicesReady && servicesReady && programsReady) {
+                    dispatcher.trigger("dataReady");
+                }
+            });
 
             // all data have been received, launch the user interface
             dispatcher.on("dataReady", function() {
@@ -142,6 +151,11 @@ define(function(require, exports, module) {
             // Initialize the collection dependancies
             require(['collections/dependancies'], function(Dependancies) {
                 window.dependancies = new Dependancies();
+            });
+
+            // Initialize the collection adapters
+            require(['collections/adapters'], function(Adapters) {
+                window.adapters = new Adapters();
             });
 
         });

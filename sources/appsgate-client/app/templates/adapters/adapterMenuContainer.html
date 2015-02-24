@@ -1,0 +1,15 @@
+<a href="#adapters/<%= type %>" class="list-group-item id="side-<%= type %>">
+    <!-- header -->
+    <p class="list-group-item-heading lead">
+        <% if (type === "1001") { %>
+            <% if (adapters.length === 1) { %>
+                <span data-i18n="adapters.enocean.name.singular"></span>
+                <% } else { %>
+                <span data-i18n="adapters.enocean.name.plural"></span>
+            <% } %>
+        <% } %>
+        <span class="pull-right badge">
+            <%= adapters.length %>
+        </span>
+    </p>
+</a>
