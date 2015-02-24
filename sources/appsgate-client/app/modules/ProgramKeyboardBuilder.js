@@ -469,7 +469,7 @@ define([
     },
     buildSelectKey: function(type) {
       var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard select-node' selector-type='" + type + "' ></button>");
-      if (type === 6 || type === 7 || type === 21) {
+      if (type === "6" || type === "7" || type === "21") {
         $(btn).append("<span data-i18n='keyboard.selector.prefix-f'/>");
       } else {
         $(btn).append("<span data-i18n='keyboard.selector.prefix-m'/>");

@@ -421,7 +421,7 @@ define([
 
             if (!appRouter.isModalShown) {
                 switch (this.model.get("type")) {
-                    case 0: // temperature sensor
+                    case "0": // temperature sensor
                         this.$el.html(this.template({
                             device: this.model,
                             sensorImg: ["app/img/sensors/temperature_intern.png", "app/img/sensors/temperature_extern.png"],
@@ -432,7 +432,7 @@ define([
                         }));
                         break;
 
-                    case 32: // CO2 sensor
+                    case "32": // CO2 sensor
                         this.$el.html(this.template({
                             device: this.model,
                             sensorImg: ["app/img/sensors/enoceanNanoSenseE4000.jpg"],
@@ -443,7 +443,7 @@ define([
                         }));
                         break;
 
-                    case 1: // illumination sensor
+                    case "1": // illumination sensor
                         this.$el.html(this.template({
                             device: this.model,
                             sensorImg: ["app/img/sensors/illumination_intern.png", "app/img/sensors/illumination_extern.png"],
@@ -454,7 +454,7 @@ define([
                         }));
                         break;
 
-                    case 2: // switch sensor
+                    case "2": // switch sensor
                         this.$el.html(this.template({
                             device: this.model,
                             sensorImg: ["app/img/sensors/switch.png"],
@@ -464,7 +464,7 @@ define([
                         }));
                         break;
 
-                    case 3: // contact sensor
+                    case "3": // contact sensor
                         this.$el.html(this.template({
                             device: this.model,
                             sensorImg: ["app/img/sensors/contact.png"],
@@ -474,7 +474,7 @@ define([
                         }));
                         break;
 
-                    case 4: // key card sensor
+                    case "4": // key card sensor
                         this.$el.html(this.template({
                             device: this.model,
                             sensorImg: ["app/img/sensors/keycard.png"],
@@ -483,7 +483,7 @@ define([
                             deviceDetails: this.tplKeyCard
                         }));
                         break;
-                    case 5: // ARD lock
+                    case "5": // ARD lock
                         this.$el.html(this.template({
                             device: this.model,
                             sensorImg: ["app/img/sensors/ard-logo.png"],
@@ -493,7 +493,7 @@ define([
                         }));
                         break;
 
-                    case 6: // plug
+                    case "6": // plug
                         this.$el.html(this.template({
                             device: this.model,
                             sensorImg: ["app/img/sensors/plug.png"],
@@ -503,7 +503,7 @@ define([
                         }));
                         break;
 
-                    case 7: // phillips hue
+                    case "7": // phillips hue
                         var lamp = this.model;
 
                         this.$el.html(this.template({
@@ -524,7 +524,7 @@ define([
                         this.renderColorWheel(enabled, color);
 
                         break;
-                    case 8: // switch actuator
+                    case "8": // switch actuator
                         this.$el.html(this.template({
                             device: this.model,
                             sensorImg: ["app/img/sensors/doubleSwitch.jpg"],
@@ -533,7 +533,7 @@ define([
                             deviceDetails: this.tplActuator
                         }));
                         break;
-                    case 21: // core clock
+                    case "21": // core clock
                         var hours = [];
                         for (var i = 0; i < 24; i++) {
                             hours.push(i);
@@ -552,7 +552,7 @@ define([
                             deviceDetails: this.tplCoreClock
                         }));
                         break;
-                    case 124: // core TV
+                    case "124": // core TV
                         this.$el.html(this.template({
                             device: this.model,
                             sensorImg: ["app/img/tv.gif"],
@@ -561,7 +561,7 @@ define([
                             deviceDetails: this.tplCoreTV
                         }));
                         break;
-                    case 210: // domicube
+                    case "210": // domicube
                       this.$el.html(this.template({
                           device: this.model,
                           sensorImg: ["app/img/sensors/domicube.jpg"],
@@ -577,8 +577,8 @@ define([
 
                 // translate the view
                 this.$el.i18n();
-
                 return this;
+
             }
         },
         /**

@@ -79,51 +79,51 @@ define([
         addDevice: function(brick) {
             var self = this;
             var device = null;
-            brick.type = parseInt(brick.type);
+            //brick.type = parseInt(brick.type);
             switch (brick.type) {
-                case 0:
+                case "0":
                     device = new TemperatureSensor(brick);
                     break;
-                case 1:
+                case "1":
                     device = new IlluminationSensor(brick);
                     break;
-                case 2:
+                case "2":
                     device = new SwitchSensor(brick);
                     break;
-                case 3:
+                case "3":
                     device = new ContactSensor(brick);
                     break;
-                case 4:
+                case "4":
                     device = new KeyCardSensor(brick);
                     break;
-                case 5:
+                case "5":
                     device = new ARDLock(brick);
                     break;
-                case 6:
+                case "6":
                     device = new Plug(brick);
                     break;
-                case 7:
+                case "7":
                     device = new PhillipsHue(brick);
                     break;
-                case 8:
+                case "8":
                     device = new Actuator(brick);
                     break;
-                case 21:
+                case "21":
                     device = new CoreClock(brick);
                     break;
-                case 124:
+                case "124":
                     device = new CoreTV(brick);
                     break;
-                case 31:
+                case "31":
                     device = new MediaPlayer(brick);
                     break;
-                case 32:
+                case "32":
                     device = new CO2Sensor(brick);
                     break;
-                case 36:
+                case "36":
                     device = new MediaBrowser(brick);
                     break;
-                case 210:
+                case "210":
                     device = new DomiCube(brick);
                     break;
                 default:
@@ -188,7 +188,7 @@ define([
 
             devAll=devices.where({type: type});
 
-            devs=_.reject(devAll,function(device){ return !$.inArray(device.get("type"), [21,102,103]) });
+            devs=_.reject(devAll,function(device){ return !$.inArray(device.get("type"), ["21","102","103"]) });
 
             return devs;
 
@@ -259,79 +259,79 @@ define([
          * @return Array of the temperature sensors
          */
         getTemperatureSensors: function() {
-            return devices.where({type: 0});
+            return devices.where({type: "0"});
         },
         /**
          * @return Array of the illumination sensors
          */
         getIlluminationSensors: function() {
-            return devices.where({type: 1});
+            return devices.where({type: "1"});
         },
         /**
          * @return Array of the switches
          */
         getSwitches: function() {
-            return devices.where({type: 2});
+            return devices.where({type: "2"});
         },
         /**
          * @return Array of the switches
          */
         getCO2Sensors: function() {
-            return devices.where({type: 32});
+            return devices.where({type: "32"});
         },
         /**
          * @return Array of the contact sensors
          */
         getContactSensors: function() {
-            return devices.where({type: 3});
+            return devices.where({type: "3"});
         },
         /**
          * @return Array of the key-card readers
          */
         getKeyCardReaders: function() {
-            return devices.where({type: 4});
+            return devices.where({type: "4"});
         },
         /**
          * @returns Array of the ARD Locks
          */
         getARDLocks: function() {
-            return devices.where({type: 5});
+            return devices.where({type: "5"});
         },
         /**
          * @return Array of the plugs
          */
         getPlugs: function() {
-            return devices.where({type: 6});
+            return devices.where({type: "6"});
         },
         /**
          * @return Array of the lamps
          */
         getLamps: function() {
-            return devices.where({type: 7});
+            return devices.where({type: "7"});
         },
         /**
          * @return Array of the switch actuators
          */
         getActuators: function() {
-            return devices.where({type: 8});
+            return devices.where({type: "8"});
         },
         /**
          * @return Core clock of the home - unique device
          */
         getCoreClock: function() {
-            return devices.findWhere({type: 21});
+            return devices.findWhere({type: "21"});
         },
         /**
          * @return Array of UPnP media players
          */
         getMediaPlayers: function() {
-            return devices.where({type: 31});
+            return devices.where({type: "31"});
         },
         /**
          * @return Array of UPnP media browsers
          */
         getMediaBrowsers: function() {
-            return devices.where({type: 36});
+            return devices.where({type: "36"});
         },
         /**
          * @return Array of the unlocated devices
@@ -375,7 +375,7 @@ define([
         },
         emergencyStop:function() {
           _.each(devices.models, function(device) {
-            if($.inArray(device.get("type"), [6,7,8])){
+            if($.inArray(device.get("type"), ["6","7","8"])){
                 device.emergencyStop();
             }
           });

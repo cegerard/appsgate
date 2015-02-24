@@ -1,6 +1,6 @@
 <div class="lead">
 
-        <% if (services.where({type:102})[0].getFavorites().length === 1) { %>
+        <% if (services.where({type:"102"})[0].getFavorites().length === 1) { %>
             <span data-i18n="services.mail.name.singular"></span>
         <% } else { %>
             <span data-i18n="services.mail.name.plural"></span>

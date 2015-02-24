@@ -335,10 +335,9 @@ define([
           else {
             $(".programInput").children(".set-block-node").children(".separator").last().remove();
           }
-            $(".programInput").find(".seq-block-node").each(function(n, o) {
-              console.log(n + ": " + o);
-              $(o).children(".separator").last().remove();
-              });
+          $(".programInput").find(".seq-block-node").each(function(n, o) {
+            $(o).children(".separator").last().remove();
+            });
           
 
           $(".input-spot:not(.mandatory-spot)").remove();

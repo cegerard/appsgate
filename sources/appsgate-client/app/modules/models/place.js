@@ -163,10 +163,10 @@ define([
          * @return Array of devices w/ good type
          */
         getTypeSensors: function(type) {
-            type = parseInt(type);
+            intType = parseInt(type);
 
             // in case of wrong type, return an empty array
-            if (isNaN(type)) {
+            if (isNaN(intType)) {
                 return [];
             }
 
@@ -189,10 +189,10 @@ define([
          * @return Array of services w/ good type
          */
         getTypeServices: function(type) {
-            type = parseInt(type);
+            var intType = parseInt(type);
 
             // in case of wrong type, return an empty array
-            if (isNaN(type)) {
+            if (isNaN(intType)) {
                 return [];
             }
 
@@ -212,76 +212,76 @@ define([
          * @return Array of temperature sensors in the place
          */
         getTemperatureSensors: function() {
-            return this.getTypeSensors(0);
+            return this.getTypeSensors("0");
         },
         /**
          * @return Array of illumination sensors in the place
          */
         getIlluminationSensors: function() {
-            return this.getTypeSensors(1);
+            return this.getTypeSensors("1");
         },
         /**
          * @return Array of switches in the place
          */
         getSwitches: function() {
-            return this.getTypeSensors(2);
+            return this.getTypeSensors("2");
         },
         /**
          * @return Array of contact sensors in the place
          */
         getContactSensors: function() {
-            return this.getTypeSensors(3);
+            return this.getTypeSensors("3");
         },
         /**
          * @return Array of key-card readers in the place
          */
         getKeyCardReaders: function() {
-            return this.getTypeSensors(4);
+            return this.getTypeSensors("4");
         },
         /**
          * @return Array of ARD in the place
          */
         getARDLock: function() {
-            return this.getTypeSensors(5);
+            return this.getTypeSensors("5");
         },
         getCO2Sensors: function() {
-            return this.getTypeSensors(32);
+            return this.getTypeSensors("32");
         },
         /**
          * @returns Array of plugs in the place
          */
         getPlugs: function() {
-            return this.getTypeSensors(6);
+            return this.getTypeSensors("6");
         },
         /**
          * @return Array of Philips Hue lamps in the place
          */
         getPhilipsHueLamps: function() {
-            return this.getTypeSensors(7);
+            return this.getTypeSensors("7");
         },
         /**
          * @return Array of the actuators in the place
          */
         getActuators: function() {
-            return this.getTypeSensors(8)
+            return this.getTypeSensors("8")
         },
         /**
          * @return Array of the DomiCubes in the place
          */
         getDomiCubes: function() {
-            return this.getTypeSensors(210);
+            return this.getTypeSensors("210");
         },
         /**
          * @return Array of the MediaPlayers in the place
          */
         getMediaPlayers: function() {
-            return this.getTypeSensors(31);
+            return this.getTypeSensors("31");
         },
         /**
          * @return Array of the TV in the place
          */
         getTVs: function() {
-            return this.getTypeSensors(124);
+            return this.getTypeSensors("124");
         },
         /**
          * Send a message to the server to perform a remote call

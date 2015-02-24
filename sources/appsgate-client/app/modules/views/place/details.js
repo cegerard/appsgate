@@ -42,7 +42,7 @@ define([
                 var device = devices.get(deviceId);
 
                 // if the device has been found in the collection
-                if (typeof device !== "undefined" && device.get("type") != 21) {
+                if (typeof device !== "undefined" && device.get("type") != "21") {
                     self.listenTo(device, "change", self.autoupdate);
                 }
             });
@@ -60,16 +60,16 @@ define([
             this.$el.find("#device-" + device.cid + "-name").html(device.get("name") !== "" ?device.get("name") : $.i18n.t(places-details.body.device-no-name));
 
             switch (type) {
-              case 0:
+              case "0":
                 $("#device-" + device.cid + "-value").text(device.getValue() + " &deg;C");
                 break;
-              case 32:
+              case "32":
                   $("#device-" + device.cid + "-value").text(device.getValue());
                   break;
-              case 1:
+              case "1":
                 $("#device-" + device.cid + "-value").attr("data-i18n", "devices.illumination.scale." + device.get("label"));
                 break;
-              case 2:
+              case "2":
                 if (device.get("buttonStatus") === "true") {
                   $("#device-" + device.cid + "-value").attr("class","label label-yellow");
                   $("#device-" + device.cid + "-value").attr("data-i18n", "devices.switch.value.opened");
@@ -78,7 +78,7 @@ define([
                   $("#device-" + device.cid + "-value").attr("data-i18n", "devices.switch.value.closed");
                 }
                 break;
-              case 3:
+              case "3":
                 if (device.get("contact") !== "true") {
                   $("#device-" + device.cid + "-value").attr("class","label label-yellow");
                   $("#device-" + device.cid + "-value").attr("data-i18n", "devices.contact.value.opened");
@@ -87,7 +87,7 @@ define([
                   $("#device-" + device.cid + "-value").attr("data-i18n", "devices.contact.value.closed");
                 }
                 break;
-              case 4:
+              case "4":
                 if (device.get("inserted") === "true") {
                   $("#device-" + device.cid + "-value").attr("class","label label-yellow");
                   $("#device-" + device.cid + "-value").attr("data-i18n", "devices.cardswitch.value.inserted");
@@ -96,7 +96,7 @@ define([
                   $("#device-" + device.cid + "-value").attr("data-i18n", "devices.cardswitch.value.not-inserted");
                 }
                 break;
-              case 6:
+              case "6":
                 if (device.get("plugState") === "true" || device.get("plugState") === true) {
                   $("#device-" + device.cid + "-button").attr("data-i18n", "devices.plug.action.turnOff");
                   $("#device-" + device.cid + "-value").attr("data-i18n", "devices.plug.status.turnedOn");
@@ -108,7 +108,7 @@ define([
                 }
                 $("#device-" + device.cid + "-consumption").text(device.getValue() + " W");
                 break;
-              case 7:
+              case "7":
                 if (device.get("value") === "true" || device.get("value") === true) {
                   $("#device-" + device.cid + "-button").attr("data-i18n", "devices.lamp.action.turnOff");
                   $("#device-" + device.cid + "-value").attr("data-i18n", "devices.lamp.status.turnedOn");
@@ -122,7 +122,7 @@ define([
                 }
                 $("#device-" + device.cid + "-color").attr("style", "background-color:" + device.getCurrentColor());
                 break;
-              case 8:
+              case "8":
                 if (device.get("value") === "true" || device.get("value") === true) {
                   $("#device-" + device.cid + "-button").attr("data-i18n", "devices.actuator.action.turnOff");
                   $("#device-" + device.cid + "-value").attr("data-i18n", "devices.actuator.status.turnedOn");
@@ -133,7 +133,7 @@ define([
                   $("#device-" + device.cid + "-value").attr("class","label label-default");
                 }
                 break;
-              case 210:
+              case "210":
                 var activeFace = "";
                 switch (device.get("activeFace")) {
                   case "1":

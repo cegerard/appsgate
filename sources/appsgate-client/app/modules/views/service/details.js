@@ -143,7 +143,7 @@ define([
 
         if (!appRouter.isModalShown) {
           switch (this.model.get("type")) {
-            case 102: // mail
+            case "102": // mail
             this.$el.html(this.template({
               service: this.model,
               sensorType: $.i18n.t("services.mail.name.singular"),
@@ -166,8 +166,8 @@ define([
           // translate the view
           this.$el.i18n();
 
-          return this;
         }
+        return this;
       }
     });
     return ServiceDetailsView;

@@ -531,7 +531,7 @@ define([
           return;
         }
         $(".programInput").clearQueue();
-        if (typeof e === "undefined" || ((typeof e.attributes != "undefined") && e.attributes["type"] !== 21)) {
+        if (typeof e === "undefined" || ((typeof e.attributes != "undefined") && e.attributes["type"] !== "21")) {
           this.refreshing = true;
           this.Mediator.buildInputFromJSON();
           this.Mediator.buildKeyboard();

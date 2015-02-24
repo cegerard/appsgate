@@ -83,43 +83,43 @@ define([
 
           var device = devices.get(id);
           switch (device.get("type")) {
-            case 0: // temperature sensor
+            case "0": // temperature sensor
             appRouter.showDetailsView(new TemperatureSensorView({model:device}));
             break;
-            case 1: // illumination sensor
+            case "1": // illumination sensor
             appRouter.showDetailsView(new LightSensorView({model:device}));
             break;
-            case 2: // switch sensor
+            case "2": // switch sensor
             appRouter.showDetailsView(new SwitchView({model:device}));
             break;
-            case 3: // contact sensor
+            case "3": // contact sensor
             appRouter.showDetailsView(new ContactSensorView({model:device}));
             break;
-            case 4: // card switch sensor
+            case "4": // card switch sensor
             appRouter.showDetailsView(new CardSwitchView({model:device}));
             break;
-            case 5: // ARD lock
+            case "5": // ARD lock
             appRouter.showDetailsView(new ArdView({model:device}));
             break;
-            case 6: // smart plug
+            case "6": // smart plug
             appRouter.showDetailsView(new SmartPlugView({model:device}));
             break;
-            case 7: // phillips hue
+            case "7": // phillips hue
             appRouter.showDetailsView(new PhillipsHueView({model:device}));
             break;
-            case 8: // switch actuator
+            case "8": // switch actuator
             appRouter.showDetailsView(new SwitchView({model:device}));
             break;
-            case 31: // media player
+            case "31": // media player
             appRouter.showDetailsView(new MediaPlayerView({model:device}));
             break;
-            case 32: // Capteur CO2
+            case "32": // Capteur CO2
               appRouter.showDetailsView(new CO2SensorView({model:device}));
               break;
-            case 124: // CoreTV
+            case "124": // CoreTV
                   appRouter.showDetailsView(new CoreTVView({model:device}));
                   break;
-            case 210: // domicube
+            case "210": // domicube
             appRouter.showDetailsView(new DomiCubeView({model:device}));
             break;
           }

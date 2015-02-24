@@ -53,16 +53,15 @@ define([
          */
         addService: function(brick) {
             var self = this;
-            brick.type = parseInt(brick.type);
             var service = null;
             switch (brick.type) {
-                case 102:
+                case "102":
                     service = new Mail(brick);
                     break;
-                case 103:
+                case "103":
                     service = new Weather(brick);
                     break;
-                case 104:
+                case "104":
                     service = new TTS(brick);
                     break;
                 default:
@@ -89,19 +88,19 @@ define([
          * @return Core mail of the home - unique device
          */
         getCoreMail: function() {
-            return services.findWhere({type: 102});
+            return services.findWhere({type: "102"});
         },
         /**
          * @return Core weather of the home - unique device
          */
         getCoreWeather: function() {
-            return services.findWhere({type: 103});
+            return services.findWhere({type: "103"});
         },
         /**
          * @return Core TTS of the home - unique Service
          */
         getCoreTTS: function() {
-            return services.findWhere({type: 104});
+            return services.findWhere({type: "104"});
         },
         /**
          * @returns the template corresponding to the device

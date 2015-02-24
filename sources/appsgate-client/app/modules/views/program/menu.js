@@ -244,6 +244,7 @@ define([
 
                 return this;
             }
+            return null;
         }
 
     });
