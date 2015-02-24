@@ -11,8 +11,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import appsgate.lig.core.object.messages.CoreNotificationMsg;
+import appsgate.lig.core.object.messages.NotificationMsg;
+import appsgate.lig.core.object.spec.CoreObjectBehavior;
+import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.enocean.ubikit.adapter.source.event.*;
 import fr.imag.adele.apam.impl.ComponentBrokerImpl;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -61,8 +66,8 @@ import fr.immotronic.ubikit.pems.enocean.event.in.TurnOnActuatorEvent;
  * 
  */
 
-public class UbikitAdapter implements
-		UbikitAdapterService, EnOceanPairingService {
+public class UbikitAdapter extends CoreObjectBehavior implements
+		UbikitAdapterService, EnOceanPairingService, CoreObjectSpec {
 
 	/**
 	 * Event management members
@@ -525,12 +530,18 @@ public class UbikitAdapter implements
 			pairingState.put("pairingMode", mode);
 			enoceanMsg.put("pairingModeChanged", pairingState);
 			enoceanMsg.put("TARGET", UbikitAdapter.CONFIG_TARGET);
+			fireNotificationMessage("pairingMode", null, String.valueOf(mode));
 
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 		sendToClientService.send(enoceanMsg.toString());
 	}
+	
+	public NotificationMsg fireNotificationMessage(String varName, String oldValue, String newValue) {
+		return new CoreNotificationMsg(varName, oldValue, newValue, this);
+	}
+
 
 	// /**
 	// * Create and send the newActuator event to ubikit
@@ -608,5 +619,55 @@ public class UbikitAdapter implements
     public void removeTempEventCapability(String sid ) {
         tempEventCapabilitiesMap.remove(sid);
     }
+    
+    
+    /**
+     * CoreObject Stuff
+     */
+	private String serviceId;
+	private String userType;
+	private int status;
+
+	@Override
+	public String getAbstractObjectId() {
+		return serviceId;
+	}
+
+	@Override
+	public String getUserType() {
+		return userType;
+	}
+
+	@Override
+	public int getObjectStatus() {
+		return status;
+	}
+
+	@Override
+	public String getPictureId() {
+		// Deprecated
+		return null;
+	}
+
+	@Override
+	public JSONObject getDescription() throws JSONException {
+		JSONObject descr = new JSONObject();
+		descr.put("id", serviceId);
+		descr.put("type", userType);
+		descr.put("status", status);
+		descr.put("pairingMode", "unknown");
+
+		return descr;
+	}
+
+	@Override
+	public void setPictureId(String pictureId) {
+		// Deprecated
+	}
+
+	@Override
+	public CORE_TYPE getCoreType() {
+		return CORE_TYPE.ADAPTER;
+	}
 
 }

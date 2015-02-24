@@ -4,7 +4,10 @@
 	 org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
 	<specification name="UbikitAdapterSpec"
-		interfaces="appsgate.lig.enocean.ubikit.adapter.spec.UbikitAdapterService, 
-		appsgate.lig.enocean.ubikit.adapter.spec.EnOceanPairingService" />
+	    interfaces="appsgate.lig.enocean.ubikit.adapter.spec.UbikitAdapterService,
+	    appsgate.lig.enocean.ubikit.adapter.spec.EnOceanPairingService,
+	    appsgate.lig.core.object.spec.CoreObjectSpec"
+        messages="appsgate.lig.core.object.messages.NotificationMsg">
+    </specification>
 
 </apam>
