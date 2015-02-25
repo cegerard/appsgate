@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.persistence.DBHelper;
 import appsgate.lig.persistence.MongoDBConfiguration;
-import appsgate.lig.tts.yakitome.AdapterListener;
+import appsgate.lig.tts.yakitome.TTSAdapter;
 import appsgate.lig.tts.yakitome.DAOSpeechTextItems;
 import appsgate.lig.tts.yakitome.SpeechTextItem;
 
@@ -32,7 +32,7 @@ public class DAOSpeechTextItemsMongo implements DAOSpeechTextItems {
 	 * @param dbHelper
 	 */
 	public DAOSpeechTextItemsMongo(MongoDBConfiguration dbConfig,
-			AdapterListener adapterListener) {
+			TTSAdapter adapterListener) {
 		this.dbConfig = dbConfig;
 		this.adapterListener = adapterListener;
 		dbHelper = dbConfig.getDBHelper(dbName, dbCollectionName);
@@ -40,7 +40,7 @@ public class DAOSpeechTextItemsMongo implements DAOSpeechTextItems {
 
 	MongoDBConfiguration dbConfig;
 	DBHelper dbHelper;
-	AdapterListener adapterListener;
+	TTSAdapter adapterListener;
 	
 	/* (non-Javadoc)
 	 * @see appsgate.lig.tts.yakitome.utils.DAOSpeechTextItems#testService()

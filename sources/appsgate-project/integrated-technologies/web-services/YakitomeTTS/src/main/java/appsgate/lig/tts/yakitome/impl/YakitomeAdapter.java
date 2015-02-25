@@ -12,12 +12,12 @@ import fr.imag.adele.apam.Implementation;
 import fr.imag.adele.apam.Instance;
 import fr.imag.adele.apam.impl.ComponentBrokerImpl;
 import appsgate.lig.persistence.MongoDBConfiguration;
-import appsgate.lig.tts.yakitome.AdapterListener;
+import appsgate.lig.tts.yakitome.TTSAdapter;
 import appsgate.lig.tts.yakitome.DAOSpeechTextItems;
 import appsgate.lig.tts.yakitome.YakitomeAPI;
 import appsgate.lig.tts.yakitome.utils.DAOSpeechTextItemsMongo;
 
-public class YakitomeAdapter extends Thread implements AdapterListener{
+public class YakitomeAdapter extends Thread implements TTSAdapter{
 	
 	
 	
@@ -135,8 +135,7 @@ public class YakitomeAdapter extends Thread implements AdapterListener{
 			return;
 		}
 		
-		logger.trace("createTTSInstance(), instance created");
-		((TTSServiceImpl)ttsInstance.getServiceObject()).configure(apiClient, dao);
+		logger.trace("createTTSInstance(), instance created, it should retrieve its properties");
 		logger.trace("createTTSInstance(), bound to api and adapter");
 	}
 	
@@ -160,6 +159,16 @@ public class YakitomeAdapter extends Thread implements AdapterListener{
 		if(ttsInstance != null) {
 			checkAndUpdateTTSInstance();
 		}
+	}
+
+	@Override
+	public DAOSpeechTextItems getDAO() {
+		return dao;
+	}
+
+	@Override
+	public YakitomeAPI getAPI() {
+		return apiClient;
 	}	
 
 	

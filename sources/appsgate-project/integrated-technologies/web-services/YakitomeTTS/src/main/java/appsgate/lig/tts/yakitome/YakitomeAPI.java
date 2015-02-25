@@ -86,5 +86,5 @@ public interface YakitomeAPI {
 	
 	public int checkAndgetSpeed(int speed);
 	
-	public boolean testService(AdapterListener callback);
+	public boolean testService(TTSAdapter callback);
 }

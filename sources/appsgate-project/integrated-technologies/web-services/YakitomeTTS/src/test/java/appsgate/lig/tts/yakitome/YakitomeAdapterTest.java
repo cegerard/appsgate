@@ -26,13 +26,9 @@ public class YakitomeAdapterTest {
 
 	@Before
 	public void setUp() throws Exception {
-		YakitomeAPI api = new YakitomeAPIClient(new AdapterListenerMock());
-		// api key registered for smarthome.inria at gmail.com
-		api.configure("5otuvhvboadAgcLPwy69P");
 
-		testing = new TTSServiceImpl();
-		testing.configure(api,new DAOSpeechTextItemsMock());
-
+		testing = new TTSServiceImpl(new AdapterListenerMock());
+		testing.configure();
 	}
 
 	@After

@@ -11,7 +11,7 @@ import org.osgi.framework.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import appsgate.lig.tts.yakitome.AdapterListener;
+import appsgate.lig.tts.yakitome.TTSAdapter;
 import appsgate.lig.tts.yakitome.YakitomeAPI;
 import appsgate.lig.tts.yakitome.utils.HttpUtils;
 
@@ -24,11 +24,11 @@ import appsgate.lig.tts.yakitome.utils.HttpUtils;
  * 
  */
 public class YakitomeAPIClient implements YakitomeAPI {
-	public YakitomeAPIClient(AdapterListener adapter) {
+	public YakitomeAPIClient(TTSAdapter adapter) {
 		this.adapter=adapter;
 	}
 
-	AdapterListener adapter;
+	TTSAdapter adapter;
 	private static Logger logger = LoggerFactory
 			.getLogger(YakitomeAPIClient.class);
 
@@ -94,7 +94,7 @@ public class YakitomeAPIClient implements YakitomeAPI {
 	 * @see appsgate.lig.tts.yakitome.YakitomeAPI#testService()
 	 */
 	@Override
-	public boolean testService(AdapterListener callback) {
+	public boolean testService(TTSAdapter callback) {
 		logger.trace("testService()");
 
 		if (!HttpUtils.testURLTimeout(YAKITOME_API_URL, 3000)) {

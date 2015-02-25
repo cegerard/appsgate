@@ -15,7 +15,10 @@
 	    push="stateChanged">
 	            <definition name="serviceId" type="string" field="serviceId"/>
 	            <property name="serviceId" value="$this$name"/>
-	           
+	            
+	   <relation field="adapter" resolve="exist"></relation>
+	          
+	   <callback onInit="configure"/>
     </implementation>
     
    

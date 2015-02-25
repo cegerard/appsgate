@@ -10,8 +10,6 @@ import org.osgi.framework.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mongodb.util.JSON;
-
 import appsgate.lig.core.object.messages.CoreNotificationMsg;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectBehavior;
@@ -19,6 +17,7 @@ import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.tts.CoreTTSService;
 import appsgate.lig.tts.yakitome.DAOSpeechTextItems;
 import appsgate.lig.tts.yakitome.SpeechTextItem;
+import appsgate.lig.tts.yakitome.TTSAdapter;
 import appsgate.lig.tts.yakitome.TTSItemsListener;
 import appsgate.lig.tts.yakitome.YakitomeAPI;
 
@@ -43,6 +42,8 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 
 	YakitomeAPI apiClient;
 	
+	TTSAdapter adapter;
+	
 	int coreObjectStatus = 0;
 	DAOSpeechTextItems dao;
 	
@@ -51,19 +52,35 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 	
 	JSONObject currentVoices = null;
 	
+	public TTSServiceImpl() {
+		
+	}
+
+	/**
+	 * This one should be used without OSGi/iPojo/ApAM that provides dynamic injection of the adapter
+	 * @param adapter
+	 */
+	public TTSServiceImpl(TTSAdapter adapter) {
+		this.adapter = adapter;
+	}
 	
 	/**
-	 * This method should be accessible only by the adapter
+	 * This method calls the adapter to get configuration stuff
+	 * (we cannot push these as arguments or injected properties)
 	 * @param apiClient
 	 */
-	public void configure(YakitomeAPI apiClient,
-			DAOSpeechTextItems dao) {
-		logger.trace("configure(YakitomeAPI apiClient : {}"
-				+ ", DAOSpeechTextItem dao : {})"
-				, apiClient, dao);
+	public void configure() {
+		logger.trace("configure()");
 
-		this.apiClient = apiClient;
-		this.dao = dao;
+		if(adapter != null) {
+			apiClient= adapter.getAPI();
+			dao = adapter.getDAO();
+		}
+		
+		logger.trace("configure(), apiClient : {}"
+				+ ", DAOSpeechTextItem dao : {}"
+				, apiClient, dao);
+		
 		if ( testStatus()) {
 			logger.trace("configure(...), test OK, populating from DB");
 			for(SpeechTextItem item : dao.getSpeechItemsFromDB()) {
@@ -491,11 +508,15 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 		logger.trace("getAvailableVoices()");
 		if(currentVoices== null || currentVoices.length()<1) {
 			if(apiClient != null ) {
-				return apiClient.getVoices();
+				currentVoices = apiClient.getVoices();
+				logger.trace("getAvailableVoices(), returning : "+currentVoices);
+				return currentVoices;
 			} else {
+				logger.warn("getAvailableVoices(), returning null");
 				return null;
 			}
 		} else {
+			logger.trace("getAvailableVoices(), returning : "+currentVoices);
 			return currentVoices;
 		}
 	}
