@@ -32,7 +32,7 @@
                 <span data-i18n="services.tts.name.plural"></span>
             <% } %>
         <% } %>
-        <span class="pull-right badge">
+        <span class="pull-right badge badge-number">
             <% if (type === "102") { %>
             <span id='mailFavCnt'><%= services[0].getNumberOfFavorites() %></span>
             <% } else if (type === "104") { %>
@@ -54,7 +54,7 @@
                         <% } else { %>
                             <em data-i18n="places-details.place-no-name"></em>
                         <% } %>
-                        <span class="pull-right badge">
+                        <span class="pull-right badge-number badge">
                             <%= place.getTypeSensors(type).length %>
                         </span>
                     </li>

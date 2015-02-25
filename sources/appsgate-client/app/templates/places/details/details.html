@@ -39,7 +39,7 @@
 					<span data-i18n="places-details.header.device-number-title"></span>
 				</td>
 				<td>
-					<span id="place-device-number" class="badge pull-right"><%= place.getDevicesNumber() %></span>
+					<span id="place-device-number" class="badge badge-number pull-right"><%= place.getDevicesNumber() %></span>
 				</td>
 			</tr>
 			<td>
@@ -67,7 +67,7 @@
 			<% } else { %>
 				<span data-i18n="devices.temperature.name.plural"></span>
 			<% } %>
-			<span class="badge pull-right">
+			<span class="badge badge-number pull-right">
 				<%= place.getTemperatureSensors().length %>
 			</span>
 		</h3>
@@ -110,7 +110,7 @@
 				<% } else { %>
 				<span data-i18n="devices.co2.name.plural"></span>
 				<% } %>
-			<span class="badge pull-right">
+			<span class="badge badge-number pull-right">
 				<%= place.getCO2Sensors().length %>
 			</span>
 			</h3>
@@ -153,7 +153,7 @@
 			<% } else { %>
 				<span data-i18n="devices.illumination.name.plural"></span>
 			<% } %>
-			<span class="badge pull-right">
+			<span class="badge badge-number pull-right">
 				<%= place.getIlluminationSensors().length %>
 			</span>
 		</h3>
@@ -196,7 +196,7 @@
 			<% } else { %>
 				<span data-i18n="devices.switch.name.plural"></span>
 			<% } %>
-			<span class="badge pull-right">
+			<span class="badge badge-number pull-right">
 				<%= place.getSwitches().length %>
 			</span>
 		</h3>
@@ -243,7 +243,7 @@
 			<% } else { %>
 				<span data-i18n="devices.contact.name.plural"></span>
 			<% } %>
-			<span class="badge pull-right">
+			<span class="badge badge-number pull-right">
 				<%= place.getContactSensors().length %>
 			</span>
 		</h3>
@@ -290,7 +290,7 @@
 			<% } else { %>
 				<span data-i18n="devices.cardswitch.name.plural"></span>
 			<% } %>
-			<span class="badge pull-right">
+			<span class="badge badge-number pull-right">
 				<%= place.getKeyCardReaders().length %>
 			</span>
 		</h3>
@@ -337,7 +337,7 @@
 			<% } else { %>
 				<span data-i18n="devices.ard.name.plural"></span>
 			<% } %>
-			<span class="badge pull-right">
+			<span class="badge badge-number pull-right">
 				<%= place.getARDLock().length %>
 			</span>
 		</h3>
@@ -379,7 +379,7 @@
 			<% } else { %>
 				<span data-i18n="devices.plug.name.plural"></span>
 			<% } %>
-			<span class="badge pull-right">
+			<span class="badge badge-number pull-right">
 				<%= place.getPlugs().length %>
 			</span>
 		</h3>
@@ -432,7 +432,7 @@
 			<% } else { %>
 				<span data-i18n="devices.lamp.name.plural"></span>
 			<% } %>
-			<div class="badge pull-right">
+			<div class="badge badge-number pull-right">
 				<%= place.getPhilipsHueLamps().length %>
 			</div>
 		</h3>
@@ -493,7 +493,7 @@
 			<% } else { %>
 				<span data-i18n="devices.actuator.name.plural"></span>
 			<% } %>
-			<div class="badge pull-right">
+			<div class="badge badge-number pull-right">
 				<%= place.getActuators().length %>
 			</div>
 		</h3>
@@ -545,7 +545,7 @@
 			<% } else { %>
 				<span data-i18n="devices.domicube.name.plural"></span>
 			<% } %>
-			<div class="badge pull-right">
+			<div class="badge badge-number pull-right">
 				<%= place.getDomiCubes().length %>
 			</div>
 		</h3>
@@ -603,7 +603,7 @@
 			<% } else { %>
 				<span data-i18n="devices.mediaplayer.name.plural"></span>
 			<% } %>
-			<div class="badge pull-right">
+			<div class="badge badge-number pull-right">
 				<%= place.getMediaPlayers().length %>
 			</div>
 		</h3>
