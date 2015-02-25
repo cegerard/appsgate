@@ -17,7 +17,7 @@ public class TraceFile implements TraceHistory {
     /**
      * The logger
      */
-    private final static Logger LOGGER = LoggerFactory.getLogger(TraceMongo.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(TraceFile.class);
 
     private int cptTrace = 0;
         /**
@@ -56,11 +56,11 @@ public class TraceFile implements TraceHistory {
 
     @Override
     public JSONArray get(Long timestamp, Integer count) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet."); 
     }
     @Override
     public JSONArray getInterval(Long start, Long end) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
