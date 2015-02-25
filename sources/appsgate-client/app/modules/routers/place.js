@@ -19,18 +19,22 @@ define([
 			// set active the first element - displayed by default
 			$($($(".aside-menu .list-group")[1]).find(".list-group-item")[0]).addClass("active");
 
-			// update the url
-			appRouter.navigate("#places/" + places.at(0).get("id"), {
-				replace: true
-			});
+			// display the first places
+			var placeId = $($($(".aside-menu .list-group")[1]).find(".list-group-item")[0]).attr("id").split("place-")[1];
+			if (placeId) {
 
-			$(".nav-item").removeClass("active");
-			$(".places-nav").addClass("active");
+				// update the url
+				appRouter.navigate("#places/" + placeId, {
+					replace: true
+				});
 
-			// display the first place
-			appRouter.showDetailsView(new PlaceDetailsView({
-				model: places.at(0)
-			}));
+				$(".nav-item").removeClass("active");
+				$(".places-nav").addClass("active");
+
+				appRouter.showDetailsView(new PlaceDetailsView({
+					model: places.get(placeId)
+				}));
+			}
 
 			dispatcher.trigger("router:loaded");
 		},
