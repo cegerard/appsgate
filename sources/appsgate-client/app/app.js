@@ -86,7 +86,7 @@ define(function(require, exports, module) {
             // devices
             dispatcher.on("devicesReady", function() {
               devicesReady = true;
-              if (placesReady && devicesReady && servicesReady && programsReady) {
+              if (placesReady && devicesReady && servicesReady && programsReady && adaptersReady) {
                 dispatcher.trigger("dataReady");
               }
             });
@@ -94,7 +94,7 @@ define(function(require, exports, module) {
             // services
             dispatcher.on("servicesReady", function() {
               servicesReady = true;
-              if (placesReady && devicesReady && servicesReady && programsReady) {
+              if (placesReady && devicesReady && servicesReady && programsReady && adaptersReady) {
                 dispatcher.trigger("dataReady");
               }
             });
@@ -102,7 +102,7 @@ define(function(require, exports, module) {
             // programs
             dispatcher.on("programsReady", function() {
               programsReady = true;
-              if (placesReady && devicesReady && servicesReady && programsReady) {
+              if (placesReady && devicesReady && servicesReady && programsReady && adaptersReady) {
                 dispatcher.trigger("dataReady");
               }
             });
@@ -110,7 +110,7 @@ define(function(require, exports, module) {
             // adapters
             dispatcher.on("adaptersReady", function() {
                 adaptersReady = true;
-                if (placesReady && devicesReady && servicesReady && programsReady) {
+                if (placesReady && devicesReady && servicesReady && programsReady && adaptersReady) {
                     dispatcher.trigger("dataReady");
                 }
             });
@@ -155,7 +155,7 @@ define(function(require, exports, module) {
 
             // Initialize the collection adapters
             require(['collections/adapters'], function(Adapters) {
-            //    window.adapters = new Adapters();
+                window.adapters = new Adapters();
             });
 
         });

@@ -53,9 +53,8 @@ define([
         addAdapter: function(brick) {
             var self = this;
             var adapter = null;
-            brick.type = parseInt(brick.type);
             switch (brick.type) {
-                case 1001:
+                case "1001":
                     adapter = new EnoceanAdapter(brick);
                     break;
 
