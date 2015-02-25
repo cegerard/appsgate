@@ -21,12 +21,17 @@
 				<td>
 				<% if (place.getTemperatureSensors().length === 1) { %>
 					<span data-i18n="devices.temperature.name.singular"></span>
+					<span class="label-value">
+						<%= place.getTotalTemperature() %> &deg;C
+					</span>
 				<% } else { %>
 					<span data-i18n="devices.temperature.name.plural"></span>
+					<% if (place.get('id') !== "-1") { %>
+						<span class="label-value">
+							<%= place.getAverageTemperature() %> &deg;C
+						</span>
+					<% } %>
 				<% } %>
-				<span class="label-value">
-					<%= place.getAverageTemperature() %> &deg;C
-				</span>
 			</td>
 			<td>
 				<span class="badge badge-number">
@@ -41,13 +46,17 @@
 			<tr>
 				<td>
 					<% if (place.getCO2Sensors().length === 1) { %>
-					<span data-i18n="devices.co2.name.singular"></span>
+						<span data-i18n="devices.co2.name.singular"></span>
+						<%= place.getTotalCO2Sensor() %> ppm
 					<% } else { %>
-					<span data-i18n="devices.co2.name.plural"></span>
+						<span data-i18n="devices.co2.name.plural"></span>
+						<!-- don't show avg if unlocated -->
+						<% if (place.get('id') !== "-1") { %>
+							<span class="label-value">
+								<%= place.getAverageCO2Sensor() %> ppm
+							</span>
+						<% } %>
 					<% } %>
-				<span class="label-value">
-					<%= place.getAverageCO2Sensor() %> ppm
-				</span>
 				</td>
 				<td>
 				<span class="badge badge-number">
@@ -63,12 +72,18 @@
 				<td>
 				<% if (place.getIlluminationSensors().length === 1) { %>
 					<span data-i18n="devices.illumination.name.singular"></span>
+					<span class="label-value">
+						<%= place.getTotalIlluminationValue() %> Lux
+					</span>
 				<% } else { %>
 					<span data-i18n="devices.illumination.name.plural"></span>
+					<!-- don't show avg if unlocated -->
+					<% if (place.get('id') !== "-1") { %>
+						<span class="label-value">
+							<%= place.getAverageIllumination() %> Lux
+						</span>
+					<% } %>
 				<% } %>
-				<span class="label-value">
-					<%= place.getAverageIllumination() %> Lux
-				</span>
 			</td>
 			<td>
 				<span class="badge badge-number">

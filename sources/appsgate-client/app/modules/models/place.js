@@ -124,6 +124,13 @@ define([
         getAverageTemperature: function() {
             return this.getAverageValue(this.getTemperatureSensors(),999);
         },
+		/**
+		* Method to get the total of temperature value, without any format. 
+		* @return the total of temperature value
+		*/
+		getTotalTemperatureValue: function() {
+		 	return this.getTotalValue(this.getTemperatureSensors(), 9999);
+		},
         /**
          * Compute the average co2 of the place from the co2 sensors in the place
          *
@@ -132,6 +139,13 @@ define([
         getAverageCO2Sensor: function() {
             return this.getAverageValue(this.getCO2Sensors(),-1);
         },
+		/**
+		* Method to get the total of co2 value, without any format. 
+		* @return the total of co2 value
+		*/
+		getTotalCO2Value: function() {
+		 	return this.getTotalValue(this.getCO2Sensors(), -1);
+		},
         /**
          * Compute the average illumination of the place from the illumination sensors in the place
          *
@@ -140,6 +154,13 @@ define([
         getAverageIllumination: function() {
             return this.getAverageValue(this.getIlluminationSensors(),9999);
         },
+		/**
+		* Method to get the total of illumination value, without any format. 
+		* @return the total of illumination value
+		*/
+		getTotalIlluminationValue: function() {
+		 	return this.getTotalValue(this.getIlluminationSensors(), 9999);
+		},
         /**
          * Compute the average consumption of the place from the plugs in the place
          *
