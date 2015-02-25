@@ -182,7 +182,7 @@ define([
 		 */
 		checkFireEvent: function (evt) {
 			// List of events from entites we process
-			var eventFiringUpdate = ["runningState", "inserted", "name", "contact", "plugState"];
+			var eventFiringUpdate = ["runningState", "inserted", "name", "contact", "plugState", "state"];
 			return (evt.varName && _.contains(eventFiringUpdate, evt.varName));
 		},
 

@@ -600,7 +600,7 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
             return descr;
         }
         descr.put("status", status);
-        descr.put("value", getCurrentState());
+        descr.put("state", getCurrentState());
         descr.put("color", getLightColor());
         descr.put("saturation", getLightColorSaturation());
         descr.put("brightness", getLightBrightness());
@@ -661,7 +661,7 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
      */
     public void stateChanged(String newState) {
         logger.info("The actuator, " + actuatorId + " state changed to " + newState);
-        notifyChanges("value", on, newState);
+        notifyChanges("state", on, newState);
         on = newState;
     }
 

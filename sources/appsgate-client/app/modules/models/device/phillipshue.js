@@ -123,7 +123,7 @@ define([
           $(btn).append("<span>" + $.i18n.t('devices.lamp.keyboard.turnOnEvt', {
             myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.lamp.keyboard.lamp') + "</span>",
           }));
-          v.eventName = "value";
+          v.eventName = "state";
           v.eventValue = "true";
           v.phrase = "devices.lamp.language.turnOnEvt";
           $(btn).attr("json", JSON.stringify(v));
@@ -132,7 +132,7 @@ define([
           $(btn).append("<span>" + $.i18n.t('devices.lamp.keyboard.turnOffEvt', {
             myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.lamp.keyboard.lamp') + "</span>",
           }));
-          v.eventName = "value";
+          v.eventName = "state";
           v.eventValue = "false";
           v.phrase = "devices.lamp.language.turnOffEvt";
           $(btn).attr("json", JSON.stringify(v));
