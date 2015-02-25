@@ -45,6 +45,7 @@ define([
           v.returnType = "number";
           v.phrase = "devices.temperature.language.get";
           v.unit = "&deg; C";
+          v.defaultValue = "18.5";
           $(btn).attr("json", JSON.stringify(v));
           break;
         default:

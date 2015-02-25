@@ -297,6 +297,7 @@ define([
                         if(param.node.leftOperand.returnType !== 'undefined' && param.node.leftOperand.returnType == "boolean")
                             param.node.rightOperand.value="true";
                         param.node.rightOperand.unit = (param.node.leftOperand.unit) ? param.node.leftOperand.unit: "";
+                        param.node.rightOperand.value = (param.node.leftOperand.defaultValue) ? param.node.leftOperand.defaultValue: "";
                     }
                 }
                 if (param.node.leftOperand.target.serviceType) {
@@ -307,6 +308,7 @@ define([
                         if(param.node.leftOperand.returnType !== 'undefined' && param.node.leftOperand.returnType == "boolean")
                             param.node.rightOperand.value="true";
                         param.node.rightOperand.unit = (param.node.leftOperand.unit) ? param.node.leftOperand.unit: "";
+                        param.node.rightOperand.value = (param.node.leftOperand.defaultValue) ? param.node.leftOperand.defaultValue: "";
                     }
                 }
             }
