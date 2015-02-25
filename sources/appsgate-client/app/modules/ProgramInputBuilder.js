@@ -122,6 +122,7 @@ define([
                 case "device":
                     param.node.validDevice = this.isDeviceValid(param.node.value);
                     this.isComplete = this.isComplete && param.node.validDevice;
+                    param.node.name = this.getDeviceName(param.node.value, param.node.name);
                     if(!param.node["hideSelector"] || param.node.hideSelector!=true){
                         input += this.tplDeviceNode(param);
                     }
@@ -321,6 +322,17 @@ define([
             } else {
                 return leftOp + this.tplComparatorNode(param) + rightOp;
             }
+        },
+        getDeviceName: function(id, defaultName) {
+            var deviceName;
+            if (devices.get(id) == undefined) {
+                deviceName = defaultName;
+            } else if (devices.get(id).get("name") !== "") {
+                deviceName = devices.get(id).get("name");
+            } else {
+                deviceName = devices.get(id).get("id");
+            }
+            return deviceName;
         },
 
         getServiceName: function(id) {
