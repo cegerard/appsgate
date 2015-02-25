@@ -26,7 +26,11 @@ define([
           if (typeof updatedVariableJSON.varName === "undefined" && updatedVariableJSON.value.indexOf("DIDL-Lite") !== -1) {
             dispatcher.trigger("mediaBrowserResults", updatedVariableJSON.value);
           } else {
-            self.set(updatedVariableJSON.varName, updatedVariableJSON.value);
+//			  if () {
+//			  	
+//			  } else {
+			  	self.set(updatedVariableJSON.varName, updatedVariableJSON.value);
+//			  }
           }
         }
       });

@@ -268,7 +268,7 @@ public class GraphManager {
                         optArg.put("deviceState", o.getString("plugState"));
                         break;
                     case 7: // Lamp
-                        optArg.put("deviceState", String.valueOf(o.getBoolean("value")));
+                        optArg.put("deviceState", String.valueOf(o.getBoolean("state")));
                         break;
                     default:
                         break;
@@ -576,7 +576,7 @@ public class GraphManager {
                                 node.put("deviceState", currentDevice.getString("plugState"));
                                 break;
                             case 7: // Lamp
-                                node.put("deviceState", String.valueOf(currentDevice.getBoolean("value")));
+                                node.put("deviceState", String.valueOf(currentDevice.getBoolean("state")));
                                 break;
                             default:
                                 break;

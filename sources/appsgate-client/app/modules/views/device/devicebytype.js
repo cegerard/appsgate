@@ -78,7 +78,7 @@ define([
 
         var lamp = devices.get($(e.currentTarget).attr("device-id"));
 
-        if (lamp.get("value") === "true" || lamp.get("value") === true) {
+        if (lamp.get("state") === "true" || lamp.get("state") === true) {
           lamp.switchOff();
         } else {
           lamp.switchOn();
