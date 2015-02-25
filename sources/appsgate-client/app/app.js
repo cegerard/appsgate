@@ -155,7 +155,7 @@ define(function(require, exports, module) {
 
             // Initialize the collection adapters
             require(['collections/adapters'], function(Adapters) {
-                window.adapters = new Adapters();
+            //    window.adapters = new Adapters();
             });
 
         });
