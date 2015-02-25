@@ -80,7 +80,7 @@ public class YakitomeAdapter extends Thread implements AdapterListener{
 		logger.trace("checkAndUpdateTTSInstance()");
 		if(apiClient!= null
 				&&apiClient.getConfigurationHashkey() != null
-				&&apiClient.testService()) {
+				&&apiClient.testService(null)) {
 			logger.trace("checkAndUpdateTTSInstance(), Yakitome is (still ?) available");
 			if(ttsInstance != null
 				&& ttsInstance.getName() != null

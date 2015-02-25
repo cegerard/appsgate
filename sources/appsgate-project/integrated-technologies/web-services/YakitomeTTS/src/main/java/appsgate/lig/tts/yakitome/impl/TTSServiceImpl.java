@@ -81,7 +81,7 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 	
 	private boolean testStatus() {
 		if(apiClient!= null
-				&& apiClient.testService()
+				&& apiClient.getVoices() != null
 				&& dao!=null
 				&& dao.testService()) {
 			coreObjectStatus = 2;

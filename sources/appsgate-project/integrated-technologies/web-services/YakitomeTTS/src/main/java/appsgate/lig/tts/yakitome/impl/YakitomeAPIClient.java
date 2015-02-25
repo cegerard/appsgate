@@ -25,12 +25,10 @@ import appsgate.lig.tts.yakitome.utils.HttpUtils;
  */
 public class YakitomeAPIClient implements YakitomeAPI {
 	public YakitomeAPIClient(AdapterListener adapter) {
-
-		this.adapter = adapter;
+		this.adapter=adapter;
 	}
 
 	AdapterListener adapter;
-
 	private static Logger logger = LoggerFactory
 			.getLogger(YakitomeAPIClient.class);
 
@@ -96,27 +94,28 @@ public class YakitomeAPIClient implements YakitomeAPI {
 	 * @see appsgate.lig.tts.yakitome.YakitomeAPI#testService()
 	 */
 	@Override
-	public boolean testService() {
+	public boolean testService(AdapterListener callback) {
 		logger.trace("testService()");
 
 		if (!HttpUtils.testURLTimeout(YAKITOME_API_URL, 3000)) {
 			logger.warn("Yakitome service URL unavailable or unreachable");
 			isAvailable = false;
-			adapter.serviceUnavailable();
-			return false;
+		} else {
+			try {
+				getVoices();
+				logger.trace("testService(), responded correctly, the service is available and configuration is correct");
+				isAvailable = true;
+				isProperlyConfigured = true;
+				return true;
+	
+			} catch (ServiceException e) {
+				logger.warn("Yakitome service not responding correctly");
+			}
 		}
-
-		try {
-			getVoices();
-			logger.trace("testService(), responded correctly, the service is available and configuration is correct");
-			isAvailable = true;
-			isProperlyConfigured = true;
-			return true;
-
-		} catch (ServiceException e) {
-			logger.warn("Yakitome service not responding correctly");
+		
+		if(callback!= null) {
+			callback.serviceUnavailable();
 		}
-		adapter.serviceUnavailable();
 		return false;
 	}
 
@@ -135,7 +134,7 @@ public class YakitomeAPIClient implements YakitomeAPI {
 			this.api_key_value = api_key_value;
 		}
 
-		testService();
+		testService(null);
 	}
 
 	static Map<String, String> initHeaders() {
@@ -189,7 +188,7 @@ public class YakitomeAPIClient implements YakitomeAPI {
 		} catch (ServiceException e) {
 			logger.warn("checkVoice(...), Unable to check voice :"
 					+ e.getMessage());
-			testService();
+			testService(adapter);
 			return false;
 		}
 		logger.debug("checkVoice(...), no voice found matching name : " + voice);
@@ -219,7 +218,7 @@ public class YakitomeAPIClient implements YakitomeAPI {
 	JSONObject checkResponse(String result) throws ServiceException {
 		logger.trace("checkResponse(String result : {})", result);
 		if (result == null) {
-			testService();
+			testService(adapter);
 			logger.error("getVoices(), Yakitome service not available or misconfigured");
 			throw new ServiceException(
 					"Yakitome service not available or misconfigured");
@@ -230,7 +229,7 @@ public class YakitomeAPIClient implements YakitomeAPI {
 				&& response.getInt(HTTP_STATUS_KEY) != HTTP_STATUS_VALUE_OK) {
 			logger.warn("checkResponse(...), wrong http status : "
 					+ response.getInt(HTTP_STATUS_KEY));
-			adapter.serviceUnavailable();
+			testService(adapter);
 			throw new ServiceException(
 					"Yakitome service returned wrong http status : "
 							+ response.getInt(HTTP_STATUS_KEY));
@@ -241,7 +240,7 @@ public class YakitomeAPIClient implements YakitomeAPI {
 			logger.warn("checkResponse(...), error code : "
 					+ response.getInt(ERROR_CODE_KEY) + ", error message : "
 					+ response.optString(MSG_KEY));
-			adapter.serviceUnavailable();
+			testService(adapter);
 			throw new ServiceException(
 					"Yakitome service returned error code : "
 							+ response.getInt(ERROR_CODE_KEY)

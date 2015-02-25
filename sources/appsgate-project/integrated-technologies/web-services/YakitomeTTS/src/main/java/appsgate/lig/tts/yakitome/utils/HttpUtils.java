@@ -120,6 +120,12 @@ public class HttpUtils {
 	 */
 	private static HttpsURLConnection httpsRequest(String url, 
 			Map<String,String> requestProperties, String Method, Map<String,String> urlParameters ) {
+		
+		if(!testURLTimeout(url, 3000)) {
+			logger.error("Exception occured during creation of https connection, timeout for url :"+url);
+			return null;
+		}
+		
 		try {
 			
 			if(urlParameters != null && urlParameters.size()>0) {
@@ -129,6 +135,8 @@ public class HttpUtils {
 			}
 			
 			logger.debug("httpsRequest(URL url: " + url + ", ...)");
+			
+			
 			HttpsURLConnection httpsConnection = null;
 			httpsConnection = (HttpsURLConnection) new URL(url).openConnection();
 			logger.debug("httpsRequest(...), url connection opened successfully");
