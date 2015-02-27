@@ -166,7 +166,12 @@ define([
          */
         renderTTS: function(ttsItems) {
             $(".select-tts option").remove();
+            var latest_book = -1;
             for(var i=0; i<ttsItems.length; i++) {
+                if(latest_book == -1
+                    || ttsItems[i].book_id > ttsItems[latest_book].book_id) {
+                    latest_book = i;
+                }
                 $(".select-tts").append(this.tplTTSItem({
                     book_id: ttsItems[i].book_id,
                     text: ttsItems[i].text,
@@ -175,9 +180,9 @@ define([
                     audioUrl: ttsItems[i].audios[0]
                 }));
             }
-            if(ttsItems.length>0) {
-                this.showAudio(ttsItems[ttsItems.length-1].audios[0]);
-                $(".select-tts").selectedIndex=ttsItems.length-1;
+            if(latest_book>=0) {
+                this.showAudio(ttsItems[latest_book].audios[0]);
+                $(".select-tts").val(ttsItems[latest_book].book_id);
             } else {
                 this.hideAudio();
             }

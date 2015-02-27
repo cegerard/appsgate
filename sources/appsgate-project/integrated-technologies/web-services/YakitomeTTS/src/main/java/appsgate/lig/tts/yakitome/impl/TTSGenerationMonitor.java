@@ -39,9 +39,13 @@ public class TTSGenerationMonitor extends Thread {
 			if(item != null ) {
 				logger.trace("run(), item found, sending callback message to listener");
 				listener.onTTSItemAdded(item);
+			} else {
+				logger.warn("run(), still no TTS generated");
+				listener.onTTSItemAddedTimeout(book_id);
 			}
 		} catch (Exception e) {
 			logger.warn("run(), exception occured : "+e.getMessage());
+			listener.onTTSItemAddedTimeout(book_id);
 		}		
 	}
 	

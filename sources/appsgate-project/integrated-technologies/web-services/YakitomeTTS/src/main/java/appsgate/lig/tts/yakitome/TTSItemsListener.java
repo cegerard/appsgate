@@ -8,5 +8,11 @@ public interface TTSItemsListener {
 	 * @param item
 	 */
 	public void onTTSItemAdded(SpeechTextItem item);
+	
+	/**
+	 * This one should be called when TTS generation takes to much time
+	 * @param book_id
+	 */
+	public void onTTSItemAddedTimeout(int book_id);
 
 }

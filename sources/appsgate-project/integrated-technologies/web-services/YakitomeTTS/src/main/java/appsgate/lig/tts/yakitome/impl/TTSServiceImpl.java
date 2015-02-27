@@ -538,5 +538,12 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 	
 	private NotificationMsg stateChanged(String varName, String oldValue, String newValue) {
 		return new CoreNotificationMsg(varName, oldValue, newValue, this);
+	}
+
+	@Override
+	public void onTTSItemAddedTimeout(int book_id) {
+		logger.trace("onTTSItemAddedTimeout(int book_id : {})",book_id);
+		apiClient.deleteSpeechText(book_id);
+		ttsItemsRunning.remove(book_id);
 	}	
 }
