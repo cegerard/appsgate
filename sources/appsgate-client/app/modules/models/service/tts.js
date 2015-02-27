@@ -8,7 +8,9 @@ define([
 
   TTS = Service.extend({
 
-  /**
+    translationOngoing:[],
+
+    /**
      * @constructor
      */
     initialize: function() {
@@ -18,6 +20,10 @@ define([
       var self = this;
       var ttsItemsCollection = new TTSItemsCollection();
       ttsItemsCollection.set(self.get("ttsItems"));
+      var itemsRunning = this.get("ttsRunning");
+      for(var i = 0; i<itemsRunning.length; i++) {
+        this.translationOngoing.push(itemsRunning[i].book_id);
+      }
 
     dispatcher.on(this.get("id"), function(event) {
       console.log("TTS Service, received : ",event);
@@ -32,19 +38,42 @@ define([
         ttsItemsCollection.set(JSON.parse(event.value));
         self.set("ttsItems",ttsItemsCollection.toJSON());
         self.trigger("itemsChanged");
+      } else if(event.varName === 'ttsRunning') {
+        console.log("ttsItem onGoing  : ", event.value);
+        self.addOngoing(event.value);
+        self.trigger("ttsRunning");
+      } else if(event.varName === 'ttsDone') {
+        console.log("ttsItem done : ", event.value);
+        self.removeOngoing(event.value);
+        self.trigger("ttsDone");
       }
     });
 
-      dispatcher.on("varName:ttsItems", function(ttsItems) {
-        console.log("TTS Service, received : " + ttsItems.toString());
-        self.set("items", ttsItems);
-        ttsItemsCollection.set(ttsItems);
-        self.trigger("itemsChanged");
-      });
-    dispatcher.on("varName:voice", function(ttsItems) {
-      console.log("TTS Service, received : " + ttsItems.toString());
-      self.trigger("voiceChanged");
-    });
+    },
+
+    addOngoing: function(book_id) {
+      var index = this.getOngoingIndex(book_id);
+      if(index == -1) {
+        this.translationOngoing.push(book_id);
+      }
+    },
+    removeOngoing: function(book_id) {
+      var index = this.getOngoingIndex(book_id);
+      if(index != -1) {
+        this.translationOngoing.splice(index,1);
+      }
+    },
+    getOngoingIndex: function(book_id) {
+      if(this.translationOngoing.length ==0 ) {
+        return -1;
+      } else {
+        for(var i = 0; i<this.translationOngoing.length; i++) {
+          if(this.translationOngoing[i] == book_id) {
+            return i;
+          }
+        }
+        return -1;
+      }
 
     },
     getVoices: function() {

@@ -1008,7 +1008,8 @@
         "Male": "Homme",
         "Female": "Femme",
         "slow": "lente",
-        "fast": "rapide"
+        "fast": "rapide",
+        "inprogress": "Génération de synthèse vocale en cours..."
       },
       "lang": {
         "English": "Anglaise",

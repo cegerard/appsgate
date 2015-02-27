@@ -4,9 +4,10 @@ define([
     "text!templates/services/details/tts/tts.html",
     "text!templates/services/details/tts/ttsVoice.html",
     "text!templates/services/details/tts/ttsLang.html",
-    "text!templates/services/details/tts/ttsItem.html"
+    "text!templates/services/details/tts/ttsItem.html",
+    "text!templates/services/details/tts/ttsInProgress.html"
 
-  ], function(App, ServiceDetailsView, TTSDetailTemplate, TTSVoiceTemplate, TTSLangTemplate, TTSItemTemplate) {
+  ], function(App, ServiceDetailsView, TTSDetailTemplate, TTSVoiceTemplate, TTSLangTemplate, TTSItemTemplate, TTSProgressTemplate) {
 
     var TTSView = {};
     // detailed view for TTS Service
@@ -15,6 +16,7 @@ define([
         tplTTSVoice: _.template(TTSVoiceTemplate),
         tplTTSLang: _.template(TTSLangTemplate),
         tplTTSItem: _.template(TTSItemTemplate),
+        tplTTSProgress: _.template(TTSProgressTemplate),
 
 
         // map the events and their callback
@@ -33,6 +35,8 @@ define([
           this.model.on("itemsChanged", this.onItemsChangedModel, this);
           this.model.on("voiceChanged", this.onVoiceChangedModel, this);
           this.model.on("speedChanged", this.onSpeedChangedModel, this);
+          this.model.on("ttsRunning", this.onTTSonGoingModel, this);
+          this.model.on("ttsDone", this.onTTSonGoingModel, this);
 
           TTSView.__super__.initialize.apply(this, arguments);
 
@@ -51,6 +55,14 @@ define([
         onVoiceChangedModel: function() {
             console.log("onVoiceChanged");
             this.renderVoices(this.model.get("voice"));
+        },
+        onTTSonGoingModel: function() {
+            console.log("onTTSonGoingModel");
+            if(this.model.translationOngoing.length>0) {
+                this.showInProgress();
+            } else {
+                this.hideInProgress();
+            }
         },
 
       autoupdate: function() {
@@ -72,6 +84,7 @@ define([
 //            $(".select-gender").append(currentTarget.value[1]);
 
             this.model.setVoice(desc);
+
         },
 
         onChangeSpeedUI   : function(event) {
@@ -91,6 +104,7 @@ define([
             this.model.prepareTTS(text,
                 this.model.getVoice(),
                 this.model.getSpeed());
+            this.showInProgress();
             $(".new-tts").val("");
         },
 
@@ -116,6 +130,7 @@ define([
                 }));
             }
             $(".select-lang").i18n();
+
         },
         renderLang: function(voice) {
             $(".select-lang option").remove();
@@ -158,7 +173,13 @@ define([
             }
             $(".select-tts").i18n();
         },
-
+        showInProgress:function() {
+            $(".tts-progress").html(this.tplTTSProgress({}));
+            $(".tts-progress").i18n();
+        },
+        hideInProgress:function() {
+            $(".tts-progress").empty();
+        },
 
       /**
       * Render the detailed view of the service
@@ -174,6 +195,10 @@ define([
                 sensorImg: ["app/img/tts.png"],
                 sensorType: $.i18n.t("services.tts.name.singular"),
             }));
+
+            if(this.model.translationOngoing.length>0) {
+                this.showInProgress();
+            }
 
             this.renderVoices(this.model.getVoice());
             this.renderSpeed(this.model.getSpeed());

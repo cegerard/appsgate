@@ -391,6 +391,10 @@ body {
   border: .12em solid rgba(255, 255, 255, 0.3);
   border-radius: inherit;
 }
+.refresh-animate {
+  -webkit-animation: rotation 1s infinite linear;
+  animation: rotation 1s infinite linear;
+}
 @-webkit-keyframes rota {
   10% {
     transform: rotate(36deg);
@@ -454,6 +458,15 @@ body {
   100% {
     transform: rotate(360deg);
   }
+}
+
+@keyframes rotation {
+  from { transform: scale(1) rotate(0deg);}
+  to { transform: scale(1) rotate(360deg);}
+}
+@-webkit-keyframes rotation {
+  from { -webkit-transform: rotate(0deg);}
+  to { -webkit-transform: rotate(360deg);}
 }
 /* --------------------- Places styles ---------------------------------*/
 
