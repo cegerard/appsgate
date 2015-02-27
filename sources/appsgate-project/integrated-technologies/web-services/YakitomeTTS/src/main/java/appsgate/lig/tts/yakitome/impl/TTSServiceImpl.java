@@ -273,9 +273,8 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 		}
 		dao.addUpdateSpeechItem(item);
 		ttsItems.put(item.getBookId(), item);
-		stateChanged("ttsUpdated", null, item.toJSON().toString());
+		stateChanged("ttsDone", null, String.valueOf(item.getBookId()));
 		stateChanged("ttsItems", null, getSpeechTextItems().toString());
-
 	}
 
 	String serviceId;
@@ -391,6 +390,7 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 			}
 			book_id = response.getInt(YakitomeAPIClient.BOOK_ID_KEY);
 			ttsItemsRunning.put(book_id, new SpeechTextItem(book_id, text, voice, speed, response.optInt(YakitomeAPIClient.WORD_CNT_KEY),null));
+			stateChanged("ttsRunning", null, String.valueOf(book_id));
 
 			logger.trace("asynchronousTTSGeneration(...), Launching asynchronous monitor...");
 			TTSGenerationMonitor monitor = new TTSGenerationMonitor(book_id, text, voice, speed, this, apiClient);
@@ -434,6 +434,7 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 			}
 			book_id = response.getInt(YakitomeAPIClient.BOOK_ID_KEY);
 			ttsItemsRunning.put(book_id, new SpeechTextItem(book_id, text, voice, speed, response.optInt(YakitomeAPIClient.WORD_CNT_KEY),null));
+			stateChanged("ttsRunning", null, String.valueOf(book_id));
 
 			logger.trace("waitForTTSGeneration(...), Launching blocking method waiting for TTS...");
 			response = apiClient.waitForTTS(book_id);
