@@ -172,19 +172,17 @@ public class TraceMan implements TraceManSpec {
      * @param o the event to trace
      */
     private void trace(JSONObject o, long timeStamp) {
-        synchronized (traceQueue) {
-            try {
-                o.put("timestamp", timeStamp);
+        try {
+            o.put("timestamp", timeStamp);
 
-                //Delayed in queue to by aggregate by policy if real time tracing is actived
-                if (liveTraceActivated || fileTraceActivated) {
-                    traceQueue.offer(o);
-                }
-                //Simple trace always save in data base
-                dbTracer.trace(o);
-            } catch (JSONException e) {
-                e.printStackTrace();
+            //Delayed in queue to by aggregate by policy if real time tracing is actived
+            if (liveTraceActivated || fileTraceActivated) {
+                traceQueue.offer(o);
             }
+            //Simple trace always save in data base
+            dbTracer.trace(o);
+        } catch (JSONException e) {
+            //Exception won't occur
         }
     }
 
@@ -214,7 +212,7 @@ public class TraceMan implements TraceManSpec {
                 throw new Error("Multiple trace request with the same time stamp value. Entry with time stamp " + timeStamp + " are skipped.");
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            LOGGER.error("No timestamp attached to the trace: {}", trace);
         }
     }
 
@@ -230,7 +228,8 @@ public class TraceMan implements TraceManSpec {
             try {
                 sendTrace(traceArray.getJSONObject(i));
             } catch (JSONException e) {
-                e.printStackTrace();
+                LOGGER.error("SendTraces: No Object {}", i);
+                return;
             }
         }
     }
@@ -238,14 +237,13 @@ public class TraceMan implements TraceManSpec {
     @Override
     public synchronized void commandHasBeenPassed(String objectID, String command, String caller, ArrayList<Object> args, long timeStamp) {
         //if the equipment has been instantiated from ApAM spec before
-        GrammarDescription grammar = EHMIProxy.getGrammarFromDevice(objectID);
-        if (grammar != null) {
-
-            JSONObject deviceJson = getJSONDevice(objectID, null,
-                    Trace.getJSONDecoration(Trace.DECORATION_TYPE.access, "write", caller, timeStamp, null, objectID,
-                            grammar.getTraceMessageFromCommand(command), grammar.getContextFromParams(command, args)));
+        GrammarDescription grammar = getGrammar(objectID);
+        if (grammar != null && grammar.generateTrace()) {
+            JSONObject jsonDecoration = Trace.getJSONDecoration(Trace.DECORATION_TYPE.access, "write", caller, timeStamp, null, objectID,
+                    grammar.getTraceMessageFromCommand(command), grammar.getContextFromParams(command, args));
+            JSONObject deviceJson = Trace.getJSONDevice(objectID, null, jsonDecoration, grammar, this);
             //Create the notification JSON object
-            JSONObject coreNotif = getCoreNotif(deviceJson, null);
+            JSONObject coreNotif = Trace.getCoreNotif(deviceJson, null);
             //Trace the notification JSON object in the trace file
             trace(coreNotif, timeStamp);
         }
@@ -254,11 +252,11 @@ public class TraceMan implements TraceManSpec {
     @Override
     public synchronized void coreEventNotify(long timeStamp, String srcId, String varName, String value) {
 
-        GrammarDescription desc = EHMIProxy.getGrammarFromDevice(srcId);
+        GrammarDescription desc = getGrammar(srcId);
         if (desc != null && applyFilters(desc, srcId, varName, value) && desc.generateTrace()) {
             //Create the event description device entry
             JSONObject event = new JSONObject();
-            JSONObject JDecoration = null;
+            JSONObject JDecoration;
             try {
 
                 if (varName.equalsIgnoreCase("status")) {
@@ -286,7 +284,7 @@ public class TraceMan implements TraceManSpec {
                             Trace.getDecorationType(desc.getType(), varName), "update", "technical", timeStamp, srcId, null, msg, context);
                 }
 
-                JSONObject jsonState = getDeviceState(srcId, varName, value);
+                JSONObject jsonState = Trace.getDeviceState(srcId, varName, value, this);
 
                 if (event.getString("type").equalsIgnoreCase("update")) {
                     String pictoState = Trace.getPictoState(desc.getType(), varName, value, jsonState);
@@ -296,11 +294,11 @@ public class TraceMan implements TraceManSpec {
 
                 event.put("state", jsonState);
 
-                JSONObject deviceJson = getJSONDevice(srcId, event, JDecoration);
+                JSONObject deviceJson = Trace.getJSONDevice(srcId, event, JDecoration, desc, this);
                 //Check if the trace is correclty formatted (v4)
                 if (!deviceJson.getString("type").equalsIgnoreCase("")) {
                     //Create the notification JSON object
-                    JSONObject coreNotif = getCoreNotif(deviceJson, null);
+                    JSONObject coreNotif = Trace.getCoreNotif(deviceJson, null);
                     //Trace the notification JSON object in the trace file
                     trace(coreNotif, timeStamp);
                 }
@@ -311,75 +309,6 @@ public class TraceMan implements TraceManSpec {
         }
     }
 
-    private JSONObject getCoreNotif(JSONObject device, JSONObject program) {
-        JSONObject coreNotif = new JSONObject();
-        try {
-            //Create the device tab JSON entry
-            JSONArray deviceTab = new JSONArray();
-            {
-                if (device != null) {
-                    deviceTab.put(device);
-                }
-                coreNotif.put("devices", deviceTab);
-            }
-            //Create the device tab JSON entry
-            JSONArray pgmTab = new JSONArray();
-            {
-                if (program != null) {
-                    pgmTab.put(program);
-                }
-                coreNotif.put("programs", pgmTab);
-            }
-        } catch (JSONException e) {
-
-        }
-        return coreNotif;
-    }
-
-    /**
-     * Method to build a trace for an event on a device
-     *
-     * @param srcId
-     * @param event
-     * @param cause
-     * @return
-     */
-    private JSONObject getJSONDevice(String srcId, JSONObject event, JSONObject cause) {
-        JSONObject objectNotif = new JSONObject();
-        try {
-            objectNotif.put("id", srcId);
-            objectNotif.put("name", devicePropTable.getName(srcId, ""));
-            GrammarDescription g = EHMIProxy.getGrammarFromDevice(srcId);
-            if (g != null) {
-                objectNotif.put("type", g.getType());
-            } else {
-                LOGGER.error("Unable to build a trace on an unknown type for {}", srcId);
-                LOGGER.debug("No trace have been produced for {} with cause: {}", event, cause);
-                return null;
-            }
-            JSONObject location = new JSONObject();
-            location.put("id", placeManager.getCoreObjectPlaceId(srcId));
-            SymbolicPlace place = placeManager.getPlaceWithDevice(srcId);
-            if (place != null) {
-                location.put("name", place.getName());
-            } else {
-                LOGGER.trace("Place not found for this device {}", srcId);
-            }
-
-            objectNotif.put("location", location);
-            objectNotif.put("decorations", new JSONArray().put(cause));
-
-            if (event != null) {
-                objectNotif.put("event", event);
-            }
-
-        } catch (JSONException e) {
-
-        }
-        return objectNotif;
-
-    }
-
     @Override
     public synchronized void coreUpdateNotify(long timeStamp, String srcId, String coreType,
             String userType, String name, JSONObject description, String eventType) {
@@ -387,7 +316,7 @@ public class TraceMan implements TraceManSpec {
         if (coreType.equalsIgnoreCase("newService")) {
             return;
         }
-        if (!filterType(userType)) {
+        if (filterType(userType)) {
             return;
         }
 
@@ -399,7 +328,7 @@ public class TraceMan implements TraceManSpec {
                 cause = Trace.getJSONDecoration(
                         Trace.DECORATION_TYPE.state, "appear", "technical", timeStamp, srcId, null, "decorations.appear",
                         Trace.addJSONPair(new JSONObject(), "name", name));
-                event.put("state", getDeviceState(srcId, "", ""));
+                event.put("state", Trace.getDeviceState(srcId, "", "", this));
 
             } else if (eventType.contentEquals("remove")) {
                 event.put("type", "disappear");
@@ -411,9 +340,8 @@ public class TraceMan implements TraceManSpec {
         } catch (JSONException e) {
 
         }
-
-        JSONObject jsonDevice = getJSONDevice(srcId, event, cause);
-        JSONObject coreNotif = getCoreNotif(jsonDevice, null);
+        JSONObject jsonDevice = Trace.getJSONDevice(srcId, event, cause, getGrammar(srcId), this);
+        JSONObject coreNotif = Trace.getCoreNotif(jsonDevice, null);
         //Trace the notification JSON object in the trace file
         trace(coreNotif, timeStamp);
 
@@ -431,7 +359,7 @@ public class TraceMan implements TraceManSpec {
         long timeStamp = getCurrentTimeInMillis();
 
         if (n instanceof ProgramTraceNotification) {
-            JSONObject o = getDecorationNotification((ProgramTraceNotification) n, timeStamp);
+            JSONObject o = Trace.getDecorationNotification((ProgramTraceNotification) n, timeStamp, this);
             trace(o, timeStamp);
             return;
         }
@@ -439,9 +367,9 @@ public class TraceMan implements TraceManSpec {
         //Create the notification JSON object
         //Create a device trace entry
         //Trace the notification JSON object in the trace file
-        JSONObject jsonProgram = getJSONProgram(notif.getProgramId(), notif.getProgramName(), notif.getVarName(), notif.getRunningState(), null, timeStamp);
+        JSONObject jsonProgram = Trace.getJSONProgram(notif.getProgramId(), notif.getProgramName(), notif.getVarName(), notif.getRunningState(), null, timeStamp);
 
-        trace(getCoreNotif(null, jsonProgram), timeStamp);
+        trace(Trace.getCoreNotif(null, jsonProgram), timeStamp);
     }
 
     @Override
@@ -464,10 +392,10 @@ public class TraceMan implements TraceManSpec {
     }
 
     /**
-     * Send the last traces from now to windows millesconds in the past
+     * Send the last traces from now to windows milliseconds in the past
      *
      * @param dateNow the start date for data base request
-     * @param window the time window in milisecond
+     * @param window the time window in millisecond
      * @param obj the request from client
      */
     private void sendWindowPastTrace(long dateNow, long window, JSONObject obj) {
@@ -486,7 +414,8 @@ public class TraceMan implements TraceManSpec {
             EHMIProxy.sendFromConnection(DEBUGGER_COX_NAME, obj.getInt("clientId"), requestResult.toString());
 
         } catch (JSONException e) {
-            e.printStackTrace();
+            LOGGER.error("Unable to send windowPastTraces, missing argument in JSON: {}", obj);
+            LOGGER.debug("Error message was: {}", e.getMessage());
         }
     }
 
@@ -520,13 +449,14 @@ public class TraceMan implements TraceManSpec {
             EHMIProxy.sendFromConnection(DEBUGGER_COX_NAME, request.getInt("clientId"), requestResult.toString());
 
         } catch (JSONException e) {
-            e.printStackTrace();
+            LOGGER.error("Unable to getTracesBetweenIntervall, missing argument in JSON: {}", request);
+            LOGGER.debug("Error message was: {}", e.getMessage());
         }
     }
 
     /**
      * Compute groups to display By default the type is to make group. If a
-     * focus is define, the gourping policy can be type of dep
+     * focus is define, the grouping policy can be type of dep
      *
      * @param tracesTab the trace tab use to compute group from
      * @return a JSONArray containing each group
@@ -597,7 +527,7 @@ public class TraceMan implements TraceManSpec {
                         ArrayList<JSONObject> innerTraces = mergeInnerTraces(superTrace);
 
                         for (JSONObject trace : innerTraces) {
-                            JSONArray objs = null;
+                            JSONArray objs;
 
                             if (trace.has("id") && !trace.getString("id").equalsIgnoreCase(focus)) {//Not a trace from the focused id
                                 if (trace.toString().contains(focus)) { //dep
@@ -653,7 +583,7 @@ public class TraceMan implements TraceManSpec {
                     ArrayList<JSONObject> innerTraces = mergeInnerTraces(superTrace);
 
                     for (JSONObject trace : innerTraces) {
-                        JSONArray objs = null;
+                        JSONArray objs;
                         if (trace.has("location")) { //Equipment
                             JSONObject loc = trace.getJSONObject("location");
 
@@ -702,7 +632,7 @@ public class TraceMan implements TraceManSpec {
                     ArrayList<JSONObject> innerTraces = mergeInnerTraces(superTrace);
 
                     for (JSONObject trace : innerTraces) {
-                        JSONArray objs = null;
+                        JSONArray objs;
 
                         String type = "program"; //Defaut it is a program
                         if (trace.has("type")) { //in fact it is an equipment
@@ -874,105 +804,8 @@ public class TraceMan implements TraceManSpec {
         return innerTraces;
     }
 
-    private JSONObject getJSONProgram(String id, String name, String change, String state, String iid, long timeStamp) {
-        JSONObject progNotif = new JSONObject();
-        try {
-            progNotif.put("id", id);
-            progNotif.put("name", name);
 
-            //Create the event description device entry
-            JSONObject event = new JSONObject();
-            JSONObject cause = null;
-            {
-                JSONObject s = new JSONObject();
 
-                s.put("name", state.toLowerCase());
-
-                s.put("instruction_id", iid);
-                event.put("state", s);
-                if (change != null) {
-                    JSONObject pName = Trace.addJSONPair(new JSONObject(), "name", name);
-                    if (change.contentEquals("newProgram")) {
-                        event.put("type", "appear");
-                        cause = Trace.getJSONDecoration(
-                                Trace.DECORATION_TYPE.state, "newProgram", "user", timeStamp, name, null, "decorations.program_added", pName);
-                    } else if (change.contentEquals("removeProgram")) {
-                        event.put("type", "disappear");
-                        cause = Trace.getJSONDecoration(
-                                Trace.DECORATION_TYPE.state, "removeProgram", "user", timeStamp, name, null, "decorations.program_deleted", pName);
-
-                    } else { //change == "updateProgram"
-                        event.put("type", "update");
-                        cause = Trace.getJSONDecoration(
-                                Trace.DECORATION_TYPE.state, "updateProgram", "user", timeStamp, name, null, "decorations.program_saved", pName);
-                    }
-                }
-
-            }
-            progNotif.put("event", event);
-            progNotif.put("decorations", new JSONArray().put(cause));
-
-        } catch (JSONException e) {
-
-        }
-        return progNotif;
-    }
-
-    private JSONObject getDeviceState(String srcId, String varName, String value) {
-        JSONObject deviceState = new JSONObject();
-        GrammarDescription g = EHMIProxy.getGrammarFromDevice(srcId);
-        // If the state of a device is complex
-
-        JSONObject deviceProxyState = EHMIProxy.getDevice(srcId);
-        ArrayList<String> props = g.getProperties();
-        for (String k : props) {
-            if (k != null && !k.isEmpty()) {
-                try {
-                    deviceState.put(g.getValueVarName(k), deviceProxyState.get(k));
-                } catch (JSONException ex) {
-                    LOGGER.error("Unable to retrieve key[{}] from {} for {}", k, srcId, g.getType());
-                    LOGGER.error("DeviceState: " + deviceProxyState.toString());
-                }
-            }
-        }
-        try {
-            if (varName.equalsIgnoreCase("status")) {
-                deviceState.put("status", value);
-            } else {
-                deviceState.put("status", "2");
-            }
-
-        } catch (JSONException ex) {
-        }
-        return deviceState;
-    }
-
-    /**
-     * Method that build a decoration notification for program trace
-     * notification
-     *
-     * @param n the notification
-     * @param timeStamp
-     * @return a JSONObject corresponding to the notification
-     */
-    private JSONObject getDecorationNotification(ProgramTraceNotification n, long timeStamp) {
-        JSONObject p = getJSONProgram(n.getProgramId(), n.getProgramName(), null, n.getRunningState(), n.getInstructionId(), timeStamp);
-        JSONObject context = null;
-        String desc = "decorations.defaultMessage";
-        GrammarDescription gram = EHMIProxy.getGrammarFromDevice(n.getDeviceId());
-        if (gram != null) {
-            context = gram.getContextFromParams(n.getDescription(), n.getParams());
-            desc = gram.getTraceMessageFromCommand(n.getDescription());
-        }
-        JSONObject d = getJSONDevice(n.getTargetId(), null,
-                Trace.getJSONDecoration(Trace.DECORATION_TYPE.state, n.getType(), "Program", timeStamp, n.getSourceId(), null, desc, context));
-        try {
-            p.put("decorations", new JSONArray().put(
-                    Trace.getJSONDecoration(Trace.DECORATION_TYPE.state, n.getType(), "Program", timeStamp, null, n.getTargetId(), desc, context)));
-        } catch (JSONException ex) {
-        }
-        return getCoreNotif(d, p);
-    }
 
     /**
      * Get the current delta time for trace aggregation
@@ -1043,20 +876,12 @@ public class TraceMan implements TraceManSpec {
         //Filter on those conditions
 
         if (descr.getType().equalsIgnoreCase("ColorLight")) {
-            if (varName.contentEquals("x")
-                    || varName.contentEquals("y")
-                    || varName.contentEquals("ct")
-                    || varName.contentEquals("speed")
-                    || varName.contentEquals("mode")) {
-                return false;
-            } else {
-                return true;
-            }
+            return !varName.contentEquals("x") && !varName.contentEquals("y") && !varName.contentEquals("ct") && !varName.contentEquals("speed") && !varName.contentEquals("mode");
         }
         if (descr.getType().equalsIgnoreCase("Illumination") && varName.contentEquals("label")) {
             return false;
         }
-        if (descr.getType().equalsIgnoreCase("Domicube") && ! varName.contentEquals("activeFace")) {
+        if (descr.getType().equalsIgnoreCase("Domicube") && !varName.contentEquals("activeFace")) {
             return false;
         }
         if (descr.getType().equalsIgnoreCase("Temperature") && varName.contentEquals("change")) {
@@ -1134,7 +959,7 @@ public class TraceMan implements TraceManSpec {
         try {
             liveTracer.addSubscriber(obj.getInt("clientId"));
         } catch (JSONException e) {
-            e.printStackTrace();
+            LOGGER.error("No clientId in initLiveTracer: {}", obj);
             liveTracer.close();
             liveTraceActivated = false;
             return false;
@@ -1215,7 +1040,7 @@ public class TraceMan implements TraceManSpec {
             status.put("mode", mode);
 
         } catch (JSONException e) {
-            e.printStackTrace();
+            // Won't happen
         }
 
         return status;
@@ -1250,4 +1075,54 @@ public class TraceMan implements TraceManSpec {
 
     }
 
+    /**
+     *
+     * @param srcId
+     * @return
+     */
+    public String getDeviceName(String srcId) {
+        return devicePropTable.getName(srcId, "");
+    }
+
+    /**
+     * 
+     * @param srcId
+     * @return 
+     */
+    public String getPlaceId(String srcId) {
+        return placeManager.getCoreObjectPlaceId(srcId);
+    }
+
+    /**
+     * 
+     * @param srcId
+     * @return 
+     */
+    public String getPlaceName(String srcId) {
+        SymbolicPlace place = placeManager.getPlaceWithDevice(srcId);
+        if (place != null) {
+            return place.getName();
+        }
+        LOGGER.trace("Place not found for this device {}", srcId);
+        return null;
+
+    }
+    
+    /**
+     *
+     * @param id
+     * @return
+     */
+    public GrammarDescription getGrammar(String id) {
+        return EHMIProxy.getGrammarFromDevice(id);
+    }
+
+    /**
+     * 
+     * @param srcId
+     * @return 
+     */
+    JSONObject getDevice(String srcId) {
+        return EHMIProxy.getDevice(srcId);
+    }
 }

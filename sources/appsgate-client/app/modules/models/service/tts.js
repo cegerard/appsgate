@@ -21,8 +21,10 @@ define([
       var ttsItemsCollection = new TTSItemsCollection();
       ttsItemsCollection.set(self.get("ttsItems"));
       var itemsRunning = this.get("ttsRunning");
-      for(var i = 0; i<itemsRunning.length; i++) {
-        this.translationOngoing.push(itemsRunning[i].book_id);
+      if (itemsRunning) {
+        for(var i = 0; i<itemsRunning.length; i++) {
+          this.translationOngoing.push(itemsRunning[i].book_id);
+        }
       }
 
     dispatcher.on(this.get("id"), function(event) {

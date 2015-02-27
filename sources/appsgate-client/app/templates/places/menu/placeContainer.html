@@ -22,7 +22,7 @@
 				<% if (place.getTemperatureSensors().length === 1) { %>
 					<span data-i18n="devices.temperature.name.singular"></span>
 					<span class="label-value">
-						<%= place.getTotalTemperature() %> &deg;C
+						<%= place.getTotalTemperatureValue() %> &deg;C
 					</span>
 				<% } else { %>
 					<span data-i18n="devices.temperature.name.plural"></span>

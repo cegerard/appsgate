@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package appsgate.lig.ehmi.trace;
 
 import appsgate.lig.persistence.MongoDBConfiguration;
@@ -30,6 +25,9 @@ public class TraceMongo implements TraceHistory {
      */
     private final static Logger LOGGER = LoggerFactory.getLogger(TraceMongo.class);
 
+    /**
+     * The db name
+     */
     private static final String DBNAME = "TraceHistory";
     /**
      * The collection containing symbol table
@@ -37,10 +35,15 @@ public class TraceMongo implements TraceHistory {
     private static final String TRACES = "traces";
 
     /**
-     *
+     * The connection to the mongo db
      */
     private final MongoDBConfiguration conf;
 
+    /**
+     * Constructor
+     *
+     * @param c
+     */
     public TraceMongo(MongoDBConfiguration c) {
         this.conf = c;
     }
@@ -117,13 +120,23 @@ public class TraceMongo implements TraceHistory {
 
     @Override
     public Boolean init() {
-        if (conf != null && conf.isValid()) {
-            return true;
+        if (conf == null) {
+            LOGGER.error("Unable to init TraceMongo, no MongoDB configuration");
+            return false;
         }
-        LOGGER.error("Unable to init the MongoDB connection");
-        return false;
+        if (!conf.isValid()) {
+            LOGGER.error("Unable to init TraceMongo, configuration not valid");
+            return false;
+        }
+        return true;
     }
 
+    /**
+     * Method to format data
+     *
+     * @param cursor the cursor on the database
+     * @return a JSON array containing the trace
+     */
     private JSONArray formatData(DBCursor cursor) {
         JSONArray a = new JSONArray();
         for (DBObject cur : cursor) {
