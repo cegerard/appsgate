@@ -1002,6 +1002,7 @@
       "control": {
         "existing": "Notifications existantes",
         "delete": "Supprimer",
+        "test": "Tester",
         "add": "Ajouter une notification",
         "use-voice": "Utiliser la voix",
         "from": "de",

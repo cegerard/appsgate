@@ -10,11 +10,15 @@
 			</li>
 			<% } %>
 
-			<div class="form-inline" style="margin-top:30px;">
-				<span data-i18n="services.tts.control.existing"/>
-				<select class="form-control select-tts" style="max-width:60%;">
-				</select>
+			<div class="panel panel-default">
+				<div class="panel-heading" data-i18n="services.tts.control.existing"/>
+
+				<div class="panel-body">
+					<select class="form-control select-tts" style="max-width:60%;">
+					</select>
+				</div>
 				<button type="button" class="btn btn-info btn-tts-delete" data-i18n="services.tts.control.delete"></button>
+				<div class="tts-audio"/>
 			</div>
 
 			<div class="tts-progress" style="text-align: right;"/>

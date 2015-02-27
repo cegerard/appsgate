@@ -5,9 +5,10 @@ define([
     "text!templates/services/details/tts/ttsVoice.html",
     "text!templates/services/details/tts/ttsLang.html",
     "text!templates/services/details/tts/ttsItem.html",
-    "text!templates/services/details/tts/ttsInProgress.html"
+    "text!templates/services/details/tts/ttsInProgress.html",
+    "text!templates/services/details/tts/ttsAudio.html"
 
-  ], function(App, ServiceDetailsView, TTSDetailTemplate, TTSVoiceTemplate, TTSLangTemplate, TTSItemTemplate, TTSProgressTemplate) {
+  ], function(App, ServiceDetailsView, TTSDetailTemplate, TTSVoiceTemplate, TTSLangTemplate, TTSItemTemplate, TTSProgressTemplate, TTSAudioTemplate) {
 
     var TTSView = {};
     // detailed view for TTS Service
@@ -17,6 +18,7 @@ define([
         tplTTSLang: _.template(TTSLangTemplate),
         tplTTSItem: _.template(TTSItemTemplate),
         tplTTSProgress: _.template(TTSProgressTemplate),
+        tplTTSAudio: _.template(TTSAudioTemplate),
 
 
         // map the events and their callback
@@ -25,8 +27,8 @@ define([
             "click button.btn-tts-add": "onAddTTSUI",
             "change select.select-voice": "onChangeVoiceUI",
             "change input.select-speed": "onChangeSpeedUI",
-            "change select.select-lang": "onChangeLangUI"
-
+            "change select.select-lang": "onChangeLangUI",
+            "change select.select-tts": "onChangeTTSUI"
         },
 
       initialize: function() {
@@ -81,10 +83,7 @@ define([
         onChangeVoiceUI: function(event) {
             console.log("onChangeVoice");
             var desc = event.currentTarget.value;
-//            $(".select-gender").append(currentTarget.value[1]);
-
             this.model.setVoice(desc);
-
         },
 
         onChangeSpeedUI   : function(event) {
@@ -98,7 +97,11 @@ define([
             this.model.setVoice(voices[lang][0][2]);
             $(".select-voice option").remove();
         },
-
+        onChangeTTSUI: function(event) {
+            var book_id = event.currentTarget.value;
+            var url =$('option[value='+book_id+']').attr('url');
+            this.showAudio(url);
+        },
         onAddTTSUI: function(event) {
             var text = $(".new-tts").val();
             this.model.prepareTTS(text,
@@ -168,8 +171,15 @@ define([
                     book_id: ttsItems[i].book_id,
                     text: ttsItems[i].text,
                     voice: ttsItems[i].voice,
-                    speed: ttsItems[i].speed
+                    speed: ttsItems[i].speed,
+                    audioUrl: ttsItems[i].audios[0]
                 }));
+            }
+            if(ttsItems.length>0) {
+                this.showAudio(ttsItems[ttsItems.length-1].audios[0]);
+                $(".select-tts").selectedIndex=ttsItems.length-1;
+            } else {
+                this.hideAudio();
             }
             $(".select-tts").i18n();
         },
@@ -179,6 +189,14 @@ define([
         },
         hideInProgress:function() {
             $(".tts-progress").empty();
+        },
+        showAudio:function(url) {
+            $(".tts-audio").html(this.tplTTSAudio({
+                audioUrl: url
+            }));
+        },
+        hideAudio:function() {
+            $(".tts-audio").empty();
         },
 
       /**

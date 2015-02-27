@@ -1002,6 +1002,7 @@
       "control": {
         "existing": "Existing notifications",
         "delete": "Delete",
+        "test": "Test",
         "add": "Add a new notification",
         "use-voice": "Use voice",
         "from": "from",
