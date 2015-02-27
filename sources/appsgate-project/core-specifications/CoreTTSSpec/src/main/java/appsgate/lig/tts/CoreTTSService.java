@@ -68,6 +68,9 @@ public interface CoreTTSService {
 
 	public JSONArray getSpeechTextItems();
 	
+	public JSONArray getSpeechTextItemsRunning();
+	
+	
 	/**
 	 * @return The current default voice name (which should be unique)
 	 * (one voice might refer to one specific language and country)

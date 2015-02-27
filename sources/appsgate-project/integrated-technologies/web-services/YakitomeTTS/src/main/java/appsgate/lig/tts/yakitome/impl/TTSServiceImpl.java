@@ -289,6 +289,9 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 		descr.put("speed", getDefaultSpeed());
 		descr.put("voices", getAvailableVoices());
 		descr.put("ttsItems", getSpeechTextItems());
+		
+		descr.put("ttsRunning", getSpeechTextItemsRunning());
+
 		return descr;
 	}
 
@@ -355,6 +358,17 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 		JSONArray response = new JSONArray();
 		for(SpeechTextItem item : ttsItems.values()){
 			logger.trace("getSpeechTextItems(), adding {} to the result", item.toJSON());
+			response.put(item.toJSON());
+		}
+		return response;
+	}
+	
+	@Override
+	public JSONArray getSpeechTextItemsRunning() {
+		logger.trace("getSpeechTextItemsRunning()");
+		JSONArray response = new JSONArray();
+		for(SpeechTextItem item : ttsItemsRunning.values()){
+			logger.trace("getSpeechTextItemsRunning(), adding {} to the result", item.toJSON());
 			response.put(item.toJSON());
 		}
 		return response;
