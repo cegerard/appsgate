@@ -1,8 +1,13 @@
 package appsgate.lig.ehmi.trace;
 
+import appsgate.lig.ehmi.spec.GrammarDescription;
+import appsgate.lig.eude.interpreter.spec.ProgramTraceNotification;
+import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility class
@@ -10,6 +15,11 @@ import org.json.JSONObject;
  * @author jr
  */
 public class Trace {
+
+    /**
+     * The logger
+     */
+    private final static Logger LOGGER = LoggerFactory.getLogger(Trace.class);
 
     /**
      * Method to format a causality JSON object.
@@ -366,6 +376,166 @@ public class Trace {
 
         }
         return coreNotif;
+    }
+
+    /**
+     * Method to build a trace for an event on a device
+     *
+     * @param srcId
+     * @param event
+     * @param cause
+     * @param g
+     * @param t
+     * @return
+     */
+    public static JSONObject getJSONDevice(String srcId, JSONObject event, JSONObject cause, GrammarDescription g, TraceMan t) {
+        JSONObject objectNotif = new JSONObject();
+        try {
+            objectNotif.put("id", srcId);
+            objectNotif.put("name", t.getDeviceName(srcId));
+            if (g != null) {
+                objectNotif.put("type", g.getType());
+            } else {
+                LOGGER.error("Unable to build a trace on an unknown type for {}", srcId);
+                LOGGER.debug("No trace have been produced for {} with cause: {}", event, cause);
+                return null;
+            }
+            JSONObject location = new JSONObject();
+            location.put("id", t.getPlaceId(srcId));
+            String placeName = t.getPlaceName(srcId);
+            if (placeName != null) {
+                location.put("place", placeName);
+            }
+
+            objectNotif.put("location", location);
+            objectNotif.put("decorations", new JSONArray().put(cause));
+
+            if (event != null) {
+                objectNotif.put("event", event);
+            }
+
+        } catch (JSONException e) {
+
+        }
+        return objectNotif;
+
+    }
+
+    /**
+     *
+     * @param id
+     * @param name
+     * @param change
+     * @param state
+     * @param iid
+     * @param timeStamp
+     * @return
+     */
+    public static JSONObject getJSONProgram(String id, String name, String change, String state, String iid, long timeStamp) {
+        JSONObject progNotif = new JSONObject();
+        try {
+            progNotif.put("id", id);
+            progNotif.put("name", name);
+
+            //Create the event description device entry
+            JSONObject event = new JSONObject();
+            JSONObject cause = null;
+            {
+                JSONObject s = new JSONObject();
+
+                s.put("name", state.toLowerCase());
+
+                s.put("instruction_id", iid);
+                event.put("state", s);
+                if (change != null) {
+                    JSONObject pName = Trace.addJSONPair(new JSONObject(), "name", name);
+                    if (change.contentEquals("newProgram")) {
+                        event.put("type", "appear");
+                        cause = Trace.getJSONDecoration(
+                                Trace.DECORATION_TYPE.state, "newProgram", "user", timeStamp, name, null, "decorations.program_added", pName);
+                    } else if (change.contentEquals("removeProgram")) {
+                        event.put("type", "disappear");
+                        cause = Trace.getJSONDecoration(
+                                Trace.DECORATION_TYPE.state, "removeProgram", "user", timeStamp, name, null, "decorations.program_deleted", pName);
+
+                    } else { //change == "updateProgram"
+                        event.put("type", "update");
+                        cause = Trace.getJSONDecoration(
+                                Trace.DECORATION_TYPE.state, "updateProgram", "user", timeStamp, name, null, "decorations.program_saved", pName);
+                    }
+                }
+
+            }
+            progNotif.put("event", event);
+            progNotif.put("decorations", new JSONArray().put(cause));
+
+        } catch (JSONException e) {
+
+        }
+        return progNotif;
+    }
+    /**
+     * Method that build a decoration notification for program trace
+     * notification
+     *
+     * @param n the notification
+     * @param timeStamp
+     * @param t
+     * @return a JSONObject corresponding to the notification
+     */
+    public static JSONObject getDecorationNotification(ProgramTraceNotification n, long timeStamp, TraceMan t) {
+        JSONObject p = Trace.getJSONProgram(n.getProgramId(), n.getProgramName(), null, n.getRunningState(), n.getInstructionId(), timeStamp);
+        JSONObject context = null;
+        String desc = "decorations.defaultMessage";
+        GrammarDescription gram = t.getGrammar(n.getDeviceId());
+        if (gram != null) {
+            context = gram.getContextFromParams(n.getDescription(), n.getParams());
+            desc = gram.getTraceMessageFromCommand(n.getDescription());
+        }
+        JSONObject jsonDecoration = Trace.getJSONDecoration(Trace.DECORATION_TYPE.state, n.getType(), "Program", timeStamp, n.getSourceId(), null, desc, context);
+        JSONObject d = Trace.getJSONDevice(n.getTargetId(), null, jsonDecoration, gram,t);
+        try {
+            p.put("decorations", new JSONArray().put(
+                    Trace.getJSONDecoration(Trace.DECORATION_TYPE.state, n.getType(), "Program", timeStamp, null, n.getTargetId(), desc, context)));
+        } catch (JSONException ex) {
+        }
+        return Trace.getCoreNotif(d, p);
+    }
+    /**
+     * 
+     * @param srcId
+     * @param varName
+     * @param value
+     * @param t
+     * @return 
+     */
+    public static JSONObject getDeviceState(String srcId, String varName, String value, TraceMan t) {
+        JSONObject deviceState = new JSONObject();
+        GrammarDescription g = t.getGrammar(srcId);
+        // If the state of a device is complex
+
+        JSONObject deviceProxyState = t.getDevice(srcId);
+        ArrayList<String> props = g.getProperties();
+        for (String k : props) {
+            if (k != null && !k.isEmpty()) {
+                try {
+                    deviceState.put(g.getValueVarName(k), deviceProxyState.get(k));
+                } catch (JSONException ex) {
+                    LOGGER.error("Unable to retrieve key[{}] from {} for {}", k, srcId, g.getType());
+                    LOGGER.error("DeviceState: " + deviceProxyState.toString());
+                }
+            }
+        }
+        try {
+            if (varName.equalsIgnoreCase("status")) {
+                deviceState.put("status", value);
+            } else {
+                deviceState.put("status", "2");
+            }
+
+        } catch (JSONException ex) {
+        }
+        return deviceState;
     }
 
 }
