@@ -24,6 +24,8 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.cybergarage.http.HTTPRequest;
 import org.cybergarage.upnp.ControlPoint;
@@ -39,7 +41,6 @@ import org.cybergarage.upnp.event.NotifyRequest;
 import org.cybergarage.upnp.event.Property;
 import org.cybergarage.upnp.event.PropertyList;
 import org.cybergarage.upnp.ssdp.SSDPPacket;
-
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
@@ -52,7 +53,6 @@ import org.osgi.service.upnp.UPnPDevice;
 import org.osgi.service.upnp.UPnPEventListener;
 import org.osgi.service.upnp.UPnPService;
 import org.osgi.service.upnp.UPnPStateVariable;
-
 import org.apache.felix.upnp.basedriver.Activator;
 import org.apache.felix.upnp.basedriver.importer.core.event.message.FirstMessage;
 import org.apache.felix.upnp.basedriver.importer.core.event.message.ListenerModified;
@@ -75,7 +75,7 @@ public class MyCtrlPoint extends ControlPoint
         ServiceListener {
 
     private BundleContext context;
-    private Hashtable devices;//key UDN value OsgideviceInfo(Osgi)
+    private ConcurrentMap<String, OSGiDeviceInfo> devices;//key UDN value OsgideviceInfo(Osgi)
     private SubscriptionQueue subQueue;
     private NotifierQueue notifierQueue;
 
@@ -127,7 +127,7 @@ public class MyCtrlPoint extends ControlPoint
             setExpiredDeviceMonitoringInterval(researchRenewal);
         }
 
-        devices = new Hashtable();
+        devices = new ConcurrentHashMap<String, OSGiDeviceInfo>();
         addNotifyListener(this);
         addSearchResponseListener(this);
         try {
@@ -251,7 +251,7 @@ public class MyCtrlPoint extends ControlPoint
         if (refs != null) {
             for (int i = 0; i < refs.length; i++) {
                 UPnPDevice dev = (UPnPDevice) context.getService(refs[i]);
-                Dictionary dic = dev.getDescriptions(null);
+                Dictionary<?, ?> dic = dev.getDescriptions(null);
                 Activator.logger.DEBUG("[Importer] dev.getDescriptions() : " + dev.getDescriptions(null));
                 if (((String) dic.get(UPnPDevice.UDN)).equals(udn)) {
                     return;
@@ -300,7 +300,7 @@ public class MyCtrlPoint extends ControlPoint
                                 = (String[]) (device.getDescriptions(null).get(UPnPService.TYPE));
 
                         Device cyberDevice = findDeviceCtrl(this, udn);
-                        Vector vec = new Vector();
+                        Vector<String> vec = new Vector<String>();
                         for (int i = 0; i < oldServiceType.length; i++) {
                             Service ser = cyberDevice.getService(oldServicesID[i]);
                             if (!(ser.getServiceType().equals(parseUSN.getServiceType()))) {
@@ -365,7 +365,8 @@ public class MyCtrlPoint extends ControlPoint
             return;
         } else {
             for (int i = 0; i < childrenUDN.length; i++) {
-                if (devices.get(childrenUDN[i]) != null) {
+                if (devices.get(childrenUDN[i]) != null
+                		&& !udn.equals(childrenUDN[i])) {
                     removeOSGiandUPnPDeviceHierarchy(((OSGiDeviceInfo) devices.get(childrenUDN[i])).getOSGiDevice());
                 }
             }
@@ -394,7 +395,7 @@ public class MyCtrlPoint extends ControlPoint
     }
 
     public void registerUPnPDevice(Device dev, UPnPDeviceImpl upnpDev,
-            Dictionary prop) {
+            Dictionary<?, ?> prop) {
         /*
          * registering the new Device as OSGi UPnPDevice and then add 
          * ServiceRegistration and UPnPDevice reference to the hashtable
@@ -416,7 +417,7 @@ public class MyCtrlPoint extends ControlPoint
                     = context.registerService(UPnPDevice.class.getName(), upnpDev, prop);
             OSGiDeviceInfo deviceInfo
                     = new OSGiDeviceInfo(upnpDev, registration);
-            devices.put(upnpDev.getDescriptions(null).get(UPnPDevice.UDN), deviceInfo);
+            devices.put(upnpDev.getDescriptions(null).get(UPnPDevice.UDN).toString(), deviceInfo);
         }
     }
 
@@ -496,7 +497,7 @@ public class MyCtrlPoint extends ControlPoint
         if (refs != null) {
             for (int i = 0; i < refs.length; i++) {
                 UPnPDevice dev = (UPnPDevice) context.getService(refs[i]);
-                Dictionary dic = dev.getDescriptions(null);
+                Dictionary<?, ?> dic = dev.getDescriptions(null);
                 if (((String) dic.get(UPnPDevice.UDN)).equals(udn)) {
                     return;
                 }
@@ -763,26 +764,25 @@ public class MyCtrlPoint extends ControlPoint
 
 
     public Service serviceFromSid(String sid) {
-        Enumeration e = devices.elements();
         Service cyberService = null;
-        while (e.hasMoreElements()) {
-            OSGiDeviceInfo deviceinfo = (OSGiDeviceInfo) e.nextElement();
-            UPnPDevice device = deviceinfo.getOSGiDevice();
-            UPnPService[] services = (UPnPService[]) device.getServices();
-            UPnPServiceImpl[] servicesImpl = new UPnPServiceImpl[services.length];
-            for (int i = 0; i < servicesImpl.length; i++) {
-                servicesImpl[i] = (UPnPServiceImpl) services[i];
-            }
-            for (int i = 0; i < servicesImpl.length; i++) {
-                cyberService = servicesImpl[i].getCyberService();
-                boolean bool = cyberService.isSubscribed();
-                if (bool) {
-                    if (cyberService.getSID().equals(sid)) {
-                        return cyberService;
-                    }
-                }
-            }
-        }
+        if(devices != null && devices.values() != null)
+	        for(OSGiDeviceInfo deviceinfo : devices.values()) {
+	            UPnPDevice device = deviceinfo.getOSGiDevice();
+	            UPnPService[] services = (UPnPService[]) device.getServices();
+	            UPnPServiceImpl[] servicesImpl = new UPnPServiceImpl[services.length];
+	            for (int i = 0; i < servicesImpl.length; i++) {
+	                servicesImpl[i] = (UPnPServiceImpl) services[i];
+	            }
+	            for (int i = 0; i < servicesImpl.length; i++) {
+	                cyberService = servicesImpl[i].getCyberService();
+	                boolean bool = cyberService.isSubscribed();
+	                if (bool) {
+	                    if (cyberService.getSID().equals(sid)) {
+	                        return cyberService;
+	                    }
+	                }
+	            }
+	        }
         return null;
     }
 
