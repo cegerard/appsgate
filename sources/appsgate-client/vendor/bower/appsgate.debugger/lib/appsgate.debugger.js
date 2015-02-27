@@ -1375,7 +1375,8 @@
             this._create_focusline(mode);
     
             // Reset domain.
-            this._domain = [_.now() - this.options.livetrace.delayBeforeFlush, _.now()];
+            //this._domain = [_.now() - this.options.livetrace.delayBeforeFlush, _.now()];
+            this._domain = [_.now(), 0];
     
             // Keep track of new mode
             this._mode = mode;
