@@ -378,10 +378,13 @@ define([
 						.attr("class", "label-name")
 						.attr("opacity", 0)
 						.text(function (d) {
-							if (d.type === "selector")
+							if (d.type === "selector") {
 								return $.i18n.t("dependancy.type.entity.selector.type-" + d.name);
-							else
+							} else if (d.type === "time") {
+								return $.i18n.t("dependancy.type.entity.time." + d.name);
+							} else {
 								return d.name;
+							}
 						})
 
 					// shape STATUS PROGRAMS

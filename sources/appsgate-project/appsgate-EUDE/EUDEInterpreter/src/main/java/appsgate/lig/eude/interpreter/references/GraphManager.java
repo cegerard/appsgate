@@ -65,6 +65,7 @@ public class GraphManager {
     private final String SELECTOR_ENTITY = "selector";
 
     private final String CLOCK_ID = "21106637055";
+    private final String SCHEDULER_ID = "-21106637055";
 
     /**
      * @param interpreter
@@ -102,6 +103,8 @@ public class GraphManager {
         // Collection to store the program ghost we will add
         HashSet<ProgramReference> ghostPrograms = new HashSet<ProgramReference>();
 
+        boolean isSchedulerAdded = false;
+
         /* BUILD NODES FROM PROGRAMS */
         for (String pid : programsId) {
             NodeProgram p = interpreter.getNodeProgram(pid);
@@ -116,11 +119,7 @@ public class GraphManager {
                 ReferenceTable references = p.getReferences();
                 // Links to the devices
                 for (DeviceReference rdevice : references.getDevicesReferences()) {
-                    if (rdevice.getDeviceId().equals(CLOCK_ID)) {
-                        addLink(PLANIFIED_LINK, pid, rdevice.getDeviceId());
-                    } else {
-                        addLink(REFERENCE_LINK, pid, rdevice.getDeviceId(), rdevice.getReferencesData());
-                    }
+                    addLink(REFERENCE_LINK, pid, rdevice.getDeviceId(), rdevice.getReferencesData());
                     entitiesAdded.add(rdevice);
                 }
                 // Links to the programs
@@ -137,7 +136,10 @@ public class GraphManager {
             }
 
             // Link to the scheduler
-            buildPlanificationLink(pid);
+            if (buildPlanificationLink(pid) && !isSchedulerAdded) {
+                addNode(TIME_ENTITY, SCHEDULER_ID, "schedule");
+                isSchedulerAdded = true;
+            }
         }
 
         /* BUILD NODES FROM DEVICES */
@@ -205,7 +207,9 @@ public class GraphManager {
      *
      * @param pid : id of the program we want to build planificatin links
      */
-    private void buildPlanificationLink(String pid) {
+    private boolean buildPlanificationLink(String pid) {
+        boolean isOnePlanification = false;
+
         // Planification of the checkPrograms to avoid stucking if no scheduling service
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Callable<Object> task = new Callable<Object>() {
@@ -220,7 +224,8 @@ public class GraphManager {
 
             // Links program - scheduler
             if (programsScheduled != null && programsScheduled.toString().contains(pid)) {
-                addLink(PLANIFIED_LINK, pid, CLOCK_ID);
+                addLink(PLANIFIED_LINK, pid, SCHEDULER_ID);
+                isOnePlanification = true;
             }
         } catch (TimeoutException ex) {
             LOGGER.error("Time Out trying to reach scheduling service, aborting)");
@@ -232,6 +237,8 @@ public class GraphManager {
         } finally {
             future.cancel(true); // may or may not desire this
         }
+
+        return isOnePlanification;
     }
 
     /**
@@ -280,7 +287,7 @@ public class GraphManager {
 
             // Time special case
             if (o.getString("id").equals(CLOCK_ID)) {
-                addNode(TIME_ENTITY, o.getString("id"), o.getString("name"), optArg);
+                addNode(TIME_ENTITY, o.getString("id"), "clock", optArg);
             } else {
                 addNode(DEVICE_ENTITY, o.getString("id"), o.getString("name"), optArg);
             }
