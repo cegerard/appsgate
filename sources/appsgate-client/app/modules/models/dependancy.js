@@ -387,13 +387,13 @@ define([
 		getLinkDistance: function (node) {
 			switch (this.getDepthNeighbor(node)) {
 			case 0:
-				return 150;
+				return 180;
 			case 1:
-				return 100;
+				return 120;
 			case 2:
 			case 3:
 			default:
-				return 90;
+				return 100;
 			}
 		},
 

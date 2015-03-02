@@ -540,9 +540,9 @@ define([
 				})
 				.charge(function (d) {
 					if (d === model.get("rootNode")) {
-						return -450;
+						return -550;
 					} else {
-						return -100;
+						return -180;
 					}
 				});
 
