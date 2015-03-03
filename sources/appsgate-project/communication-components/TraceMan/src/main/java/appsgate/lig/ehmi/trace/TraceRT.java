@@ -70,6 +70,11 @@ public class TraceRT implements TraceHistory {
         LOGGER.error("Trying to get information from TraceRT");
         return null;
     }
+    @Override
+    public JSONArray getLastState(JSONArray ids, Long timestamp) {
+        LOGGER.error("Trying to get information from TraceRT");
+        return null;
+    }
 
     /**
      * Method that remove all subscribers

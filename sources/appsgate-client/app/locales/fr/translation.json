@@ -47,7 +47,11 @@
 				"place": "$t(navbar.places)",
 				"program": "$t(navbar.programs)",
 				"service": "$t(navbar.services)",
-				"time": "Temps",
+				"time": {
+					"filter-label": "Temps",
+					"clock": "Horloge",
+					"schedule": "Planificateur"
+				},
 				"device": "$t(navbar.devices)",
 				"selector": {
 					"filter-label" : "Sélecteurs",
@@ -81,7 +85,7 @@
 					"place": "$t(dependancy.type.entity.place)",
 					"program": "$t(dependancy.type.entity.program)",
 					"service": "$t(dependancy.type.entity.service)",
-					"time": "$t(dependancy.type.entity.time)",
+					"time": "$t(dependancy.type.entity.time.filter-label)",
 					"device": "$t(dependancy.type.entity.device)",
 					"selector": "$t(dependancy.type.entity.selector.filter-label)"
 				},

@@ -14,7 +14,7 @@ define([
 			"click button.refresh-button": "onRefreshButton",
 			"click button.unfix-button": "onUnfixButton",
 			"click button.search-button": "onSearchButton",
-			"keyup .search-input-text": "onSearchButton",
+			"keyup .search-input-text": "onSearchButton"
 		},
 
 		initialize: function () {
@@ -97,7 +97,7 @@ define([
 
 				// There is only one result, typing enter select it
 				if (nodesFound.length === 1) {
-					$(".search-button").prop('disabled', false);;
+					$(".search-button").prop('disabled', false);
 					$($(".search-button")[0]).addClass("btn-success");
 					if ((e.type === "keyup" && e.keyCode === 13) || (e.type === "click" && e.target.className === "btn btn-default search-button btn-success")) {
 						force.stop();
@@ -117,7 +117,7 @@ define([
 			var self = this;
 			force.nodes().forEach(function (d) {
 				if (self.model.get("rootNode") !== d) {
-					d.fixed = false
+					d.fixed = false;
 				}
 			});
 			if (force.alpha() === 0) {
@@ -127,7 +127,7 @@ define([
 
 		render: function () {
 			this.$el.html(this.template({
-				dependancy: this.model,
+				dependancy: this.model
 			}));
 
 			// Pour le moment, largeur en fonction de ce qu'on a sur l'ecran et hauteur en dur dans le modèle
@@ -188,7 +188,7 @@ define([
 				.attr("viewBox", "0 -5 10 10")
 				.attr("refX", function (t) {
 					if (t === "targetingFocus" || t === "targetingRefFocus") {
-						return 38
+						return 38;
 					} else {
 						return 28;
 					}
@@ -242,10 +242,13 @@ define([
 				return d.id;
 			});
 			nModified.text(function (d) {
-				if (d.type === "selector")
+				if (d.type === "selector") {
 					return $.i18n.t("dependancy.type.entity.selector.type-" + d.name);
-				else
+				} else if (d.type === "time") {
+					return $.i18n.t("dependancy.type.entity.time." + d.name);
+				} else {
 					return d.name;
+				}
 			});
 
 			// Update: selection on all the element
@@ -311,7 +314,7 @@ define([
 							.attr("r", 7);
 					}
 				}
-			})
+			});
 
 			// New nodes
 			var nEnter = nodeEntity.enter().append("svg:g")
@@ -343,10 +346,10 @@ define([
 					d3.select(this).append("circle")
 						.attr("class", "circleNode")
 						.attr("cx", function (m) {
-							return 0
+							return 0;
 						})
 						.attr("cy", function (m) {
-							return 0
+							return 0;
 						})
 						.attr("r", 0);
 					// IMAGE
@@ -378,10 +381,13 @@ define([
 						.attr("class", "label-name")
 						.attr("opacity", 0)
 						.text(function (d) {
-							if (d.type === "selector")
+							if (d.type === "selector") {
 								return $.i18n.t("dependancy.type.entity.selector.type-" + d.name);
-							else
+							} else if (d.type === "time") {
+								return $.i18n.t("dependancy.type.entity.time." + d.name);
+							} else {
 								return d.name;
+							}
 						})
 
 					// shape STATUS PROGRAMS
@@ -537,9 +543,9 @@ define([
 				})
 				.charge(function (d) {
 					if (d === model.get("rootNode")) {
-						return -450;
+						return -550;
 					} else {
-						return -100;
+						return -180;
 					}
 				});
 

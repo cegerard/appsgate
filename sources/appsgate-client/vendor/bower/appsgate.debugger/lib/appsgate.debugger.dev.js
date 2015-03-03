@@ -788,6 +788,11 @@
                 brushResolution: 930,
                 order: 'type'
             });
+            params.ids =  [];
+            var pgs = programs.each();
+            for (var i = 0; i < pgs.length ; i++) {
+                params.ids.push(pgs[i].id);
+            }
     
             return this._exec({
                 name: 'historytrace',
@@ -1291,6 +1296,11 @@
             this._setState(params);
     
             if (this.connector) {
+                params.ids =  [];
+                var pgs = programs.each();
+                for (var i = 0; i < pgs.length ; i++) {
+                    params.ids.push(pgs[i].id);
+                }
                 this.connector.requestHistoryTrace(params)
             }
         },

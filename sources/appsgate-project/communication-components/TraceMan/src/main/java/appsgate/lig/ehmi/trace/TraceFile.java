@@ -62,6 +62,10 @@ public class TraceFile implements TraceHistory {
     public JSONArray getInterval(Long start, Long end) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+    @Override
+    public JSONArray getLastState(JSONArray ids, Long timestamp) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
     @Override
     public Boolean init() {

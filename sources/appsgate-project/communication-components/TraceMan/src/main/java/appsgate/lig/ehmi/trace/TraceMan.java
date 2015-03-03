@@ -21,6 +21,7 @@ import appsgate.lig.eude.interpreter.spec.ProgramTraceNotification;
 import appsgate.lig.manager.place.spec.PlaceManagerSpec;
 import appsgate.lig.manager.place.spec.SymbolicPlace;
 import appsgate.lig.persistence.MongoDBConfiguration;
+import java.util.logging.Level;
 
 /**
  * This component get CHMI from the EHMI proxy and got notifications for each
@@ -63,7 +64,7 @@ public class TraceMan implements TraceManSpec {
      * Default tracer use to have complete trace history Only simple trace (no
      * aggregation) are log in.
      */
-    private TraceHistory dbTracer;
+    private TraceMongo dbTracer;
 
     /**
      * Boolean for file tracer activation
@@ -422,7 +423,16 @@ public class TraceMan implements TraceManSpec {
     @Override
     public void getTracesBetweenInterval(Long from, Long to, boolean withEventLine, JSONObject request) {
         JSONObject requestResult = new JSONObject();
-        JSONArray tracesTab = dbTracer.getInterval(from, to);
+        JSONArray tracesTab;
+        try {
+            tracesTab = dbTracer.getLastState(request.getJSONObject("args").optJSONArray("ids"), from);
+        } catch (JSONException ex) {
+            LOGGER.error("Unable to get args");
+            return;
+        }
+        //JSONArray tracesTab = dbTracer.getInterval(from, to);
+        tracesTab = dbTracer.appendTraces(tracesTab, from, to);
+        
         JSONObject result = new JSONObject();
         try {
 
