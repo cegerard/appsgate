@@ -245,8 +245,8 @@ define([
 
       // make sure the tree is empty
       $(".browser-container").jstree('destroy');
-
       var xml_data = "";
+
       for (var i = 0; i < browsers.length; i++) {
         var name = browsers[i].get("friendlyName") !== "" ? browsers[i].get("friendlyName") : browsers[i].get("id");
         xml_data += "<item id='" + browsers[i].get("id") + "' rel='root'>" + "<content><name>" + name + "</name></content></item>";

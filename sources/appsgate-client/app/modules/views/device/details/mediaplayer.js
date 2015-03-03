@@ -99,8 +99,12 @@ define([
       * Called when browse button is pressed, displays a tree of available media
       */
       onBrowseMedia: function(e) {
-
-        this.model.onBrowseMedia($("#selectedMedia"));
+        if(devices.getMediaBrowsers() != undefined && devices.getMediaBrowsers().length>0) {
+          $('#media-browser-modal').modal('show');
+          this.model.onBrowseMedia($("#selectedMedia"));
+        } else {
+          $('#media-browser-modal').modal('hide');
+        }
       },
       /**
        * Called when click on AudioNotification
