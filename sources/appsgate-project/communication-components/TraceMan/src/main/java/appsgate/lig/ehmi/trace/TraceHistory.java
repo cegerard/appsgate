@@ -13,4 +13,5 @@ public interface TraceHistory {
     void trace(JSONObject o);
     JSONArray get(Long timestamp, Integer count);
     JSONArray getInterval(Long start, Long end);
+    JSONArray getLastState(JSONArray ids, Long timestamp);
 }

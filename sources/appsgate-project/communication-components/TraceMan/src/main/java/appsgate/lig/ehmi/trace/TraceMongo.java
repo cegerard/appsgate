@@ -54,14 +54,14 @@ public class TraceMongo implements TraceHistory {
      * @param o
      * @return
      */
-    private boolean add(Long timestamp, JSONObject o) {
-        if (conf != null && conf.isValid()) {
+    private boolean add(Long timestamp, String id, String trace) {
+        if (isValidConf()) {
             try {
                 DBCollection context = conf.getDB(DBNAME).getCollection(TRACES);
 
-                BasicDBObject newVal = new BasicDBObject("name", "")
+                BasicDBObject newVal = new BasicDBObject("name", id)
                         .append("time", timestamp)
-                        .append("trace", o.toString());
+                        .append("trace", trace);
 
                 context.insert(newVal);
                 return true;
@@ -75,7 +75,7 @@ public class TraceMongo implements TraceHistory {
 
     @Override
     public JSONArray get(Long timestamp, Integer count) {
-        if (conf != null && conf.isValid()) {
+        if (isValidConf()) {
 
             DBCollection context = conf.getDB(DBNAME).getCollection(TRACES);
             DBCursor cursor = context
@@ -93,7 +93,7 @@ public class TraceMongo implements TraceHistory {
 
     @Override
     public JSONArray getInterval(Long start, Long end) {
-        if (conf != null && conf.isValid()) {
+        if (isValidConf()) {
 
             DBCollection context = conf.getDB(DBNAME).getCollection(TRACES);
             DBCursor cursor = context
@@ -106,13 +106,81 @@ public class TraceMongo implements TraceHistory {
     }
 
     @Override
+    public JSONArray getLastState(JSONArray ids, Long timestamp) {
+        JSONArray arr = new JSONArray();
+        if (isValidConf() && ids != null) {
+            DBCollection collection = conf.getDB(DBNAME).getCollection(TRACES);
+            for (int i = 0; i < ids.length(); i++) {
+                String id = ids.optString(i);
+                DBCursor cursor = collection
+                        .find(BasicDBObjectBuilder.start().add("time", BasicDBObjectBuilder.start("$lte", timestamp).get()).add("name", id).get())
+                        .sort(new BasicDBObject("time", -1)).limit(1);
+                try {
+                    if (!cursor.hasNext()) {
+                        LOGGER.debug("No logs for {} before the start of window", id);
+                        continue;
+                    }
+                } catch (Exception e) {
+                    LOGGER.error("Unable to parse cursor" + e.getMessage());
+                    continue;
+                }
+                String trace = cursor.next().get("trace").toString();
+                try {
+                    JSONObject o = new JSONObject(trace);
+                    o.put("timestamp", timestamp);
+                    JSONArray array = o.optJSONArray("devices");
+                    for (int a = 0; a < array.length(); a++) {
+                        array.getJSONObject(i).put("decorations", new JSONArray());
+                    }
+                    array = o.optJSONArray("programs");
+                    for (int a = 0; a < array.length(); a++) {
+                        array.getJSONObject(i).put("decorations", new JSONArray());
+                    }
+                    arr.put(o);
+                } catch (JSONException ex) {
+
+                }
+            }
+
+        }
+        return arr;
+    }
+
+    /**
+     *
+     * @param a
+     * @param from
+     * @param to
+     * @return
+     */
+    public JSONArray appendTraces(JSONArray a, Long from, Long to) {
+        JSONArray traces = getInterval(from, to);
+        for (int i = 0; i < traces.length(); i++) {
+            try {
+                a.put(traces.get(i));
+            } catch (JSONException ex) {
+                // Never happens
+            }
+        }
+        return a;
+    }
+
+    @Override
     public void close() {
     }
 
     @Override
     public void trace(JSONObject o) {
         try {
-            add(o.getLong("timestamp"), o);
+            JSONArray programs = o.getJSONArray("programs");
+            if (programs.length() > 0) {
+                String id = programs.getJSONObject(0).getString("id");
+                add(o.getLong("timestamp"), id, o.toString());
+            } else {
+                JSONArray devices = o.getJSONArray("devices");
+                String id = devices.getJSONObject(0).getString("id");
+                add(o.getLong("timestamp"), id, o.toString());
+            }
         } catch (JSONException ex) {
             // if there is no timestamp, just don't log the trace
         }
@@ -120,15 +188,7 @@ public class TraceMongo implements TraceHistory {
 
     @Override
     public Boolean init() {
-        if (conf == null) {
-            LOGGER.error("Unable to init TraceMongo, no MongoDB configuration");
-            return false;
-        }
-        if (!conf.isValid()) {
-            LOGGER.error("Unable to init TraceMongo, configuration not valid");
-            return false;
-        }
-        return true;
+        return isValidConf();
     }
 
     /**
@@ -149,6 +209,18 @@ public class TraceMongo implements TraceHistory {
         }
         return a;
 
+    }
+
+    private boolean isValidConf() {
+        if (conf == null) {
+            LOGGER.error("Unable to init TraceMongo, no MongoDB configuration");
+            return false;
+        }
+        if (!conf.isValid()) {
+            LOGGER.error("Unable to init TraceMongo, configuration not valid");
+            return false;
+        }
+        return true;
     }
 
 }
