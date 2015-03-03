@@ -103,7 +103,7 @@ public class AudioPlayerImpl extends CoreObjectBehavior implements MediaPlayer, 
 
 	@Override
 	public void play(String mediaURL, String mediaName) {
-		logger.trace("play(String mediaURL : {}, String mediaName : {})");
+		logger.trace("play(String mediaURL : {}, String mediaName : {})", mediaURL, mediaName);
 		this.currentMediaURL = mediaURL;
 		this.currentMediaName = mediaName;
 		
