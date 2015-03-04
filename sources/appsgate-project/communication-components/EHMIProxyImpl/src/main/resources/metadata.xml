@@ -10,7 +10,7 @@
 		
 		<relation field="coreProxy" resolve="exist" creation="eager" added="synchroCoreProxy"/>
 
-		<relation specification="CoreClockSpec" resolve="exist" fail="wait">
+		<relation specification="CoreClockSpec" resolve="exist">
 		    <interface field="systemClock"/>
             <interface field="systemClockCoreObject"/>
 		</relation>
