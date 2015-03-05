@@ -4,5 +4,8 @@
     "properties": [
     ],
     "states": [
-    ]
+    ],
+    "commands" : {
+        "sendMailSimple" : {"params" : [{"name" : "to"}, {"name" : "subject"}, {"name" : "content"}]}
+    }
 }

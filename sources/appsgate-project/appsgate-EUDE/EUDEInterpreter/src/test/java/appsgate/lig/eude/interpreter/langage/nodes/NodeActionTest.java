@@ -3,10 +3,7 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 import appsgate.lig.eude.interpreter.impl.TestUtilities;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
-import appsgate.lig.eude.interpreter.spec.ProgramCommandNotification;
 import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.jmock.Expectations;
 import org.jmock.States;
 import org.json.JSONArray;
@@ -58,7 +55,7 @@ public class NodeActionTest extends NodeTest {
     public void testCall() throws Exception {
         context.checking(new Expectations() {
             {
-                exactly(1).of(mediator).executeCommand(with(any(String.class)), with(any(String.class)), with(any(JSONArray.class)), with(any(ProgramCommandNotification.class)));
+                exactly(1).of(mediator).executeCommand(with(any(String.class)), with(any(String.class)), with(any(JSONArray.class)));
                 allowing(mediator).notifyChanges(with(any(NotificationMsg.class)));
             }
         });
@@ -76,7 +73,7 @@ public class NodeActionTest extends NodeTest {
         final States tested = context.states("NotYet");
         context.checking(new Expectations() {
             {
-                allowing(mediator).executeCommand(with(any(String.class)), with(any(String.class)), with(any(JSONArray.class)), with(any(ProgramCommandNotification.class)));
+                allowing(mediator).executeCommand(with(any(String.class)), with(any(String.class)), with(any(JSONArray.class)));
                 then(tested.is("Yes"));
                 allowing(mediator).notifyChanges(with(any(NotificationMsg.class)));
 

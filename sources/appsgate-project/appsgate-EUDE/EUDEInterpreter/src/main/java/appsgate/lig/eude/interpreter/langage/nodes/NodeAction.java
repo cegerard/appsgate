@@ -135,14 +135,13 @@ public class NodeAction extends Node implements ICanBeEvaluated {
     private void callDeviceAction(String target) throws SpokException {
         // get the runnable from the interpreter
         LOGGER.debug("Device action {} on {}", methodName, target);
-        ProgramTraceNotification notif;
-        if (returnType.isEmpty()) {
-            notif = new ProgramCommandNotification(this.getProgramNode(), this.getIID(), target, methodName, args);
-        } else {
-            notif = new ProgramDeviceStateNotification(this.getProgramNode(), this.getIID(), target, methodName);
-        }
 
-        command = getMediator().executeCommand(target, methodName, args, notif);
+        command = getMediator().executeCommand(target, methodName, args);
+        if (returnType.isEmpty()) {
+            ProgramTraceNotification notif;
+            notif = new ProgramCommandNotification(this.getProgramNode(), this.getIID(), target, methodName, args);
+            this.getMediator().notifyChanges(notif);
+        }
     }
 
     /**
@@ -313,11 +312,11 @@ public class NodeAction extends Node implements ICanBeEvaluated {
     }
 
     @Override
-    protected void buildReferences(ReferenceTable r, HashMap<String,String> args) {
+    protected void buildReferences(ReferenceTable r, HashMap<String, String> args) {
         if (target != null) {
-            HashMap<String,String> refData = new HashMap<String, String>();
+            HashMap<String, String> refData = new HashMap<String, String>();
             refData.put("method", this.methodName);
-            if (this.returnType.equals("")){
+            if (this.returnType.equals("")) {
                 refData.put("referenceType", REFERENCE_TYPE.WRITING.toString());
             } else {
                 refData.put("referenceType", REFERENCE_TYPE.READING.toString());

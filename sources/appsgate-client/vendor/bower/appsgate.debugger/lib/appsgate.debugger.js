@@ -367,7 +367,7 @@
     
 
     // Inline include of templates files.
-    var DECORATIONS_TO_HTML_TPL = '<table class="tabular decorations">\n<% _.forEach(decorations, function(decoration) { %>\n    <tr>\n        <td class="decoration-head">\n\n            <% if(decoration.context !== undefined && decoration.context.rgbcolor !== undefined) { %>\n\t    <div class="picto" style="background-color: <%- decoration.context.rgbcolor %>"></div>\n\t    <%} else { %>\n            <div class="picto picto-<%- decoration.picto %>"></div>\n\t    <%}%>\n            <div class="datetime">\n                <span class="date"><%- timeFormat(\'%x\')(new Date(decoration.time))%></span>\n                <span class="time"><%- timeFormat(\'%X\')(new Date(decoration.time))%></span>\n            </div>\n        </td>\n        <td class="decoration-body">\n\t\t\t<% var obj = {} ;\n\t\t\tif (decoration.context) {obj = decoration.context}\n\t\t\tobj["ns"] = options.i18n.ns;%>\n            <div class="description"><%- i18n.t(decoration.description, obj ) %></div>\n            <div class="extra">\n                <span class="source"><%- decoration.source %></span> |\n                <span class="causality"><%- decoration.causality %></span>\n            </div>\n        </td>\n    </tr>\n<% }); %>\n</table>\n';
+    var DECORATIONS_TO_HTML_TPL = '<table class="tabular decorations">\n\t<tr>\n\t\t<th colspan="2"><%- name %></th>\n\t</tr>\n<% _.forEach(decorations, function(decoration) { %>\n    <tr>\n        <td class="decoration-head">\n\n        <div class="picto picto-<%- decoration.picto %>"></div>\n            <div class="datetime">\n                <span class="date"><%- timeFormat(\'%x\')(new Date(decoration.time))%></span>\n                <span class="time"><%- timeFormat(\'%X\')(new Date(decoration.time))%></span>\n            </div>\n        </td>\n        <td class="decoration-body">\n\t\t\t<% var obj = {} ;\n\t\t\tif (decoration.context) {\n\t\t\t\tcolorspan = ""\n\t\t\t\tif(decoration.context !== undefined && decoration.context.rgbcolor !== undefined) {\n\t\t\t\t\tcolorspan = "<span class=\'decoColor\' style=\'background-color: " + decoration.context.rgbcolor + "\'>XX</span>";\n\t\t\t\t}\n\t\t\t\tif (decoration.context.boolean !== undefined) {\n\t\t\t\t\tif (decoration.context.boolean) {\n\t\t\t\t\t\tdecoration.description += ".on";\n\t\t\t\t\t} else {\n\t\t\t\t\t\tdecoration.description += ".off";\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\tobj = decoration.context;\n\t\t\t}\n\t\t\tobj["ns"] = options.i18n.ns;%>\n            <div class="description"><%- i18n.t(decoration.description, obj ) %><%- colorspan %></div>\n\n            <div class="extra">\n                <span class="source"><%- decoration.source %></span> |\n                <span class="causality"><%- decoration.causality %></span>\n            </div>\n        </td>\n    </tr>\n<% }); %>\n</table>\n';
 
     // Inline include of templates files.
     var DECORATIONS_TO_TXT_TPL = '<% _.forEach(decorations, function(decoration) { %>\n<%- timeFormat(\'%x\')(new Date(decoration.time))%> <%- timeFormat(\'%X\')(new Date(decoration.time)) %> | <%- i18n.t(decoration.description, decoration.context, { ns: options.i18n.ns }) %> <<%- decoration.source %>, <%- decoration.causality %>>\n<% }); %>';
@@ -1130,8 +1130,10 @@
                         switch (packet.request.args.focusType) {
                             case 'id':
                                 (this._devices[packet.request.args.focus] || this._programs[packet.request.args.focus]).markAsFocused(true);
+                                break;
                             default:
                                 Debugger.logger.warn('Only focus by `id` is supported');
+                                break;
                         }
                     }
                 } else if (packet.isLiveTrace) {
@@ -1436,7 +1438,7 @@
     
         // Widget marker click callback.
         // `decorations` is an array of decorations associated to the marker.
-        _onWidgetMarkerClick: function(decorations) {
+        _onWidgetMarkerClick: function(param) {
             var self = this;
     
             // Default options for template processor
@@ -1447,16 +1449,17 @@
                     'options': self.options
                 }
             };
-    
+            
             // Build basic string representation of `decorations` array
             // both as plain text and HTML.
             var htmlContent = _.template(this.options.template.decorations_to_html,
-                { 'decorations': _.sortBy(decorations, function(decoration) { return parseInt(decoration.order) }) },
+                { 'decorations': _.sortBy(param.decorations, function(decoration) { return parseInt(decoration.order) }),
+                  'name' : param.name},
                 tpl_options
             );
     
             var textContent = _.template(this.options.template.decorations_to_txt,
-                { 'decorations': _.sortBy(decorations, function(decoration) { return parseInt(decoration.order) }) },
+                { 'decorations': _.sortBy(param.decorations, function(decoration) { return parseInt(decoration.order) }) },
                 tpl_options
             );
     
@@ -1464,7 +1467,7 @@
             // - decorations: Arrays - list of decorations associated to the marker
             // - textContent: String - concatenations of all decorations to plain text
             // - htmlContent: String - concatenations of all decorations to HTML
-            this.triggerMethod.apply(this, ['marker:click'].concat([decorations, textContent, htmlContent]));
+            this.triggerMethod.apply(this, ['marker:click'].concat([param, textContent, htmlContent]));
         },
     
         // Widget focus request
@@ -2626,7 +2629,7 @@
                             ')'
                     })
                     .on("click", function (d) {
-                        self.triggerMethod.apply(this, ['marker:click'].concat([d.data.decorations]));
+                        self.triggerMethod.apply(this, ['marker:click'].concat([d.data]));
                     });
                 markers.attr({
                     transform: function (d) {

@@ -347,7 +347,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * @param args the args to pass to the command
      * @return the command to be executed
      */
-    public GenericCommand executeCommand(String objectId, String methodName, JSONArray args, ProgramTraceNotification notif) {
+    public GenericCommand executeCommand(String objectId, String methodName, JSONArray args) {
         if (ehmiProxy == null) {
             LOGGER.warn("No EHMI Proxy bound");
             return null;
@@ -357,9 +357,6 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
         if (command == null) {
             LOGGER.error("Command not found {}, for {}", methodName, objectId);
         } else {
-            if (notif != null) {
-                notifyChanges(notif);
-            }
             command.run();
         }
         return command;

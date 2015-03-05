@@ -33,7 +33,7 @@ public class NodeKeepStateTest extends NodeTest {
         context.checking(new Expectations() {
             {
                 allowing(mediator).notifyChanges(with(any(NotificationMsg.class)));
-                allowing(mediator).executeCommand(with(any(String.class)), with(any(String.class)), with(any(JSONArray.class)), with(any(ProgramCommandNotification.class)));
+                allowing(mediator).executeCommand(with(any(String.class)), with(any(String.class)), with(any(JSONArray.class)));
                 will(returnValue(cmd));
                 allowing(cmd).run();
                 allowing(cmd).getReturn();

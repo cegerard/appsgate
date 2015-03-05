@@ -452,16 +452,16 @@ public class Trace {
                     if (change.contentEquals("newProgram")) {
                         event.put("type", "appear");
                         cause = Trace.getJSONDecoration(
-                                Trace.DECORATION_TYPE.state, "newProgram", "user", timeStamp, name, null, "decorations.program_added", pName);
+                                Trace.DECORATION_TYPE.state, "newProgram", "user", timeStamp, name, null, "decorations.program.added", pName);
                     } else if (change.contentEquals("removeProgram")) {
                         event.put("type", "disappear");
                         cause = Trace.getJSONDecoration(
-                                Trace.DECORATION_TYPE.state, "removeProgram", "user", timeStamp, name, null, "decorations.program_deleted", pName);
+                                Trace.DECORATION_TYPE.state, "removeProgram", "user", timeStamp, name, null, "decorations.program.deleted", pName);
 
                     } else { //change == "updateProgram"
                         event.put("type", "update");
                         cause = Trace.getJSONDecoration(
-                                Trace.DECORATION_TYPE.state, "updateProgram", "user", timeStamp, name, null, "decorations.program_saved", pName);
+                                Trace.DECORATION_TYPE.state, "updateProgram", "user", timeStamp, name, null, "decorations.program.update." + state.toLowerCase(), pName);
                     }
                 }
 
@@ -474,40 +474,47 @@ public class Trace {
         }
         return progNotif;
     }
+
     /**
      * Method that build a decoration notification for program trace
      * notification
      *
-     * @param n the notification
+     * @param notif the notification
      * @param timeStamp
      * @param t
      * @return a JSONObject corresponding to the notification
      */
-    public static JSONObject getDecorationNotification(ProgramTraceNotification n, long timeStamp, TraceMan t) {
-        JSONObject p = Trace.getJSONProgram(n.getProgramId(), n.getProgramName(), null, n.getRunningState(), n.getInstructionId(), timeStamp);
+    public static JSONObject getDecorationNotification(ProgramTraceNotification notif, long timeStamp, TraceMan t) {
+        JSONObject pJson = Trace.getJSONProgram(notif.getProgramId(), notif.getProgramName(), null, notif.getRunningState(), notif.getInstructionId(), timeStamp);
         JSONObject context = null;
         String desc = "decorations.defaultMessage";
-        GrammarDescription gram = t.getGrammar(n.getDeviceId());
+        GrammarDescription gram = t.getGrammar(notif.getDeviceId());
         if (gram != null) {
-            context = gram.getContextFromParams(n.getDescription(), n.getParams());
-            desc = gram.getTraceMessageFromCommand(n.getDescription());
+            context = gram.getContextFromParams(notif.getDescription(), notif.getParams());
+            try {
+                context.put("value", notif.getResult());
+            } catch (JSONException e) {
+                // Do nothing
+            }
+            desc = gram.getTraceMessageFromCommand(notif.getDescription());
         }
-        JSONObject jsonDecoration = Trace.getJSONDecoration(Trace.DECORATION_TYPE.state, n.getType(), "Program", timeStamp, n.getSourceId(), null, desc, context);
-        JSONObject d = Trace.getJSONDevice(n.getTargetId(), null, jsonDecoration, gram,t);
+        JSONObject jsonDecoration = Trace.getJSONDecoration(Trace.DECORATION_TYPE.state, notif.getType(), "Program", timeStamp, notif.getSourceId(), null, desc, context);
+        JSONObject d = Trace.getJSONDevice(notif.getTargetId(), null, jsonDecoration, gram, t);
         try {
-            p.put("decorations", new JSONArray().put(
-                    Trace.getJSONDecoration(Trace.DECORATION_TYPE.state, n.getType(), "Program", timeStamp, null, n.getTargetId(), desc, context)));
+            pJson.put("decorations", new JSONArray().put(
+                    Trace.getJSONDecoration(Trace.DECORATION_TYPE.state, notif.getType(), "Program", timeStamp, null, notif.getTargetId(), desc, context)));
         } catch (JSONException ex) {
         }
-        return Trace.getCoreNotif(d, p);
+        return Trace.getCoreNotif(d, pJson);
     }
+
     /**
-     * 
+     *
      * @param srcId
      * @param varName
      * @param value
      * @param t
-     * @return 
+     * @return
      */
     public static JSONObject getDeviceState(String srcId, String varName, String value, TraceMan t) {
         JSONObject deviceState = new JSONObject();
