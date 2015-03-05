@@ -12,7 +12,7 @@
     xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
                           
-	<implementation name="ContextHistoryMongoImpl"
+	<implementation name="ContextHistoryImpl"
 		classname="appsgate.lig.context.ContextHistory"
         specification="ContextHistorySpec"
 		singleton="true">

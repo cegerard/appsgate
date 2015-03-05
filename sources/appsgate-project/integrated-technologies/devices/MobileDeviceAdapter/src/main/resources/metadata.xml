@@ -9,7 +9,7 @@
 
 		<callback onInit="newInst" onRemove="deleteInst" />
         
-        <relation specification="AppsgateClientCommunicationManagerSpec"
+        <relation specification="CommunicationManagerSpec"
 			creation="eager"  resolve="external" >
             <interface field="listenerService"/>
             <interface field="sendToClientService"/>

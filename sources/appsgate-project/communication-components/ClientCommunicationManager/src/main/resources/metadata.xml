@@ -4,13 +4,13 @@
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
 
-	<specification name="AppsgateClientCommunicationManagerSpec"
+	<specification name="CommunicationManagerSpec"
 		interfaces="appsGate.lig.manager.client.communication.service.subscribe.ListenerService,
         appsGate.lig.manager.client.communication.service.send.SendWebsocketsService" />
 
-	<implementation name="AppsgateClientCommunicationManager"
+	<implementation name="CommunicationManager"
 		classname="appsGate.lig.manager.client.communication.ClientCommunicationManager"
-		specification="AppsgateClientCommunicationManagerSpec">
+		specification="CommunicationManagerSpec">
 		<callback onInit="newInst" onRemove="deleteInst" />
 	</implementation>
 

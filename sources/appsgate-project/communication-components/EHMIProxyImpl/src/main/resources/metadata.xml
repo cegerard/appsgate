@@ -25,7 +25,7 @@
         
 
 
-        <relation specification="AppsgateClientCommunicationManagerSpec" resolve="exist"
+        <relation specification="CommunicationManagerSpec" resolve="exist"
 			fail="exception" >
 			<interface field="addListenerService" />
 			<interface field="sendToClientService" />

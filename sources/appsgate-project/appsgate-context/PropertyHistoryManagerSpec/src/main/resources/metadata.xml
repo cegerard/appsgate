@@ -11,7 +11,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd">
 
-	<specification name="PropertyHistoryManagerSpec"
+	<specification name="PropertyHistorySpec"
 		interfaces="appsgate.lig.manager.propertyhistory.services.PropertyHistoryManager">
 
 	</specification>

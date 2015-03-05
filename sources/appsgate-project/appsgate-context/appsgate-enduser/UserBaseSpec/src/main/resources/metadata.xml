@@ -3,7 +3,7 @@
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
-	<specification name="AppsGateContextUseBaseSpec" interfaces="appsgate.lig.context.userbase.spec.UserBaseSpec">
+	<specification name="UserBaseSpec" interfaces="appsgate.lig.context.userbase.spec.UserBaseSpec">
 	</specification>
 	
 
