@@ -523,7 +523,7 @@
                                 </artifactItem>  
                                 <artifactItem>
                                     <groupId>appsgate.components</groupId>
-                                    <artifactId>DependencyManagerImpl</artifactId>
+                                    <artifactId>DependencyManagerMongoImpl</artifactId>
                                     <version>${project.version}</version>
                                 </artifactItem>  
                                 
