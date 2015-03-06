@@ -102,7 +102,12 @@
             <artifactId>commons-collections4</artifactId>
             <version>4.0</version>
         </dependency>
-
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>DependencyManagerSpec</artifactId>
+            <version>1.0.0</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
 
     <!-- Build Description -->

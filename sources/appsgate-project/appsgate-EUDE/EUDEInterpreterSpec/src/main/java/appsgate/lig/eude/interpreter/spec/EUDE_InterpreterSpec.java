@@ -102,6 +102,6 @@ public interface EUDE_InterpreterSpec {
      * the graph or no
      * @return The JSONObject of the graph built
      */
-    public JSONObject getGraph(Boolean buildGraph);
+    public JSONObject buildGraph();
 
 }
