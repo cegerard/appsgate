@@ -87,11 +87,6 @@ public class EnoceanCO2SensorImpl extends CoreObjectBehavior implements CoreObje
 	 * 2 = In line or connected
 	 */
 	private String status;
-
-	/**
-	 * The current picture identifier
-	 */
-	private String pictureId;
 	
 	/**
 	 * EnOcean proxy service uses to validate the sensor configuration with the
@@ -144,17 +139,6 @@ public class EnoceanCO2SensorImpl extends CoreObjectBehavior implements CoreObje
 	@Override
 	public int getObjectStatus() {
 		return Integer.valueOf(status);
-	}
-
-	@Override
-	public String getPictureId() {
-		return pictureId;
-	}
-
-	@Override
-	public void setPictureId(String pictureId) {
-		this.pictureId = pictureId;
-		notifyChanges("pictureId", pictureId);
 	}
 	
 	@Override

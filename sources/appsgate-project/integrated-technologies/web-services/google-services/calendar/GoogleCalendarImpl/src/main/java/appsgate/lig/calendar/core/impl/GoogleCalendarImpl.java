@@ -460,11 +460,6 @@ public class GoogleCalendarImpl extends CoreObjectBehavior implements CoreCalend
 	}
 
 	@Override
-	public String getPictureId() {
-		return null;
-	}
-
-	@Override
 	public JSONObject getDescription() throws JSONException {
 		JSONObject descr = new JSONObject();
 		
@@ -478,9 +473,6 @@ public class GoogleCalendarImpl extends CoreObjectBehavior implements CoreCalend
 		return descr;
 	}
 
-	@Override
-	public void setPictureId(String pictureId) {}
-	
 	/**
 	 * Convert a calendar in iCal format to JSONObject calendar
 	 * @param calendar the calendar in iCal format

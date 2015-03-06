@@ -63,11 +63,6 @@ public class EnoceanUndefinedSensorImpl extends CoreObjectBehavior implements Co
 	 * 2 = In line or connected
 	 */
 	private String status;
-
-	/**
-	 * The current picture identifier
-	 */
-	private String pictureId;
 	
 	/**
 	 * EnOcean proxy service uses to validate the sensor configuration with the
@@ -111,10 +106,6 @@ public class EnoceanUndefinedSensorImpl extends CoreObjectBehavior implements Co
 		return Integer.valueOf(status);
 	}
 
-	@Override
-	public String getPictureId() {
-		return pictureId;
-	}
 	
 	@Override
 	public JSONObject getDescription() throws JSONException {
@@ -127,11 +118,6 @@ public class EnoceanUndefinedSensorImpl extends CoreObjectBehavior implements Co
 		descr.put("deviceType", sensoreType);
 		
 		return descr;
-	}
-
-	@Override
-	public void setPictureId(String pictureId) {
-		this.pictureId = pictureId;
 	}
 	
 	/**

@@ -75,11 +75,6 @@ public class EnoceanContactSensorImpl extends CoreObjectBehavior implements Core
 	private String status = "";
 
 	/**
-	 * The current picture identifier
-	 */
-	private String pictureId = "";
-
-	/**
 	 * EnOcean proxy service uses to validate the sensor configuration with the
 	 * EnOcean proxy (pairing phase)
 	 */
@@ -131,18 +126,6 @@ public class EnoceanContactSensorImpl extends CoreObjectBehavior implements Core
 	@Override
 	public int getObjectStatus() {
 		return Integer.valueOf(status);
-	}
-
-	@Override
-	public String getPictureId() {
-		return pictureId;
-	}
-
-	@Override
-	public void setPictureId(String pictureId) {
-		notifyChanges("pictureId",  this.pictureId, pictureId);
-        this.pictureId = pictureId;
-
 	}
 	
 	@Override

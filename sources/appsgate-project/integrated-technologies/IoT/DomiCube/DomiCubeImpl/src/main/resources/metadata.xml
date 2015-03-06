@@ -14,7 +14,6 @@
 		<definition name="deviceType" type="string" default="domicube"   field="deviceType" />
 
 		<!-- device client meta data -->
-		<definition name="pictureId" type="string"               field="pictureId" />
 		<definition name="userType"  type="string" default="210" field="userType" />
 		<definition name="status"    type="string" default="2"   field="status" method="statusChanged" />
 

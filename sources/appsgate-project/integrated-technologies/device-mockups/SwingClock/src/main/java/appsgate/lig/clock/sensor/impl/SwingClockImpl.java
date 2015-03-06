@@ -67,7 +67,7 @@ public class SwingClockImpl extends ConfigurableClockImpl implements CoreClockSp
     }
 
     /**
-     * Called by APAM when an instance of this implementation is created
+     * Called by APAM when an instce of this implementation is created
      */
     public void start() {
 	logger.info("New swing clock created");

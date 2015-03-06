@@ -76,10 +76,6 @@ public class SimulatedTemperatureSensorImpl extends CoreObjectBehavior implement
 	 */
 	private String status;
 
-	/**
-	 * The current picture identifier
-	 */
-	private String pictureId;
 	
 	/**
 	 * The timer that trigger the refresh task each "rate" milliseconds
@@ -143,10 +139,6 @@ public class SimulatedTemperatureSensorImpl extends CoreObjectBehavior implement
 		statusChanged(newStatus);
 	}
 
-	@Override
-	public String getPictureId() {
-		return pictureId;
-	}
 	
 	public void setSensorName(String sensorName) {
 		this.sensorName = sensorName;
@@ -164,11 +156,6 @@ public class SimulatedTemperatureSensorImpl extends CoreObjectBehavior implement
 		return descr;
 	}
 
-	@Override
-	public void setPictureId(String pictureId) {
-		this.pictureId = pictureId;
-		notifyChanges("pictureId", pictureId);
-	}
 	
 	/**
 	 * Called by APAM when an instance of this implementation is created

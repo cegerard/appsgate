@@ -47,7 +47,6 @@ public class MediaBrowserAdapter extends CoreObjectBehavior implements MediaBrow
     /**
      * Core Object Spec properties
      */
-    private String appsgatePictureId;
     private String appsgateUserType;
     private String appsgateStatus;
     private String appsgateServiceName;
@@ -73,7 +72,6 @@ public class MediaBrowserAdapter extends CoreObjectBehavior implements MediaBrow
 
         logger.info("proxies instanciated: "+proxies);
 
-        appsgatePictureId = null;
         appsgateServiceName = "Appsgate UPnP Media browser";
         appsgateUserType = "36";
         appsgateStatus = "2";
@@ -120,15 +118,6 @@ public class MediaBrowserAdapter extends CoreObjectBehavior implements MediaBrow
         return Integer.parseInt(appsgateStatus);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see appsgate.lig.core.object.spec.CoreObjectSpec#getPictureId()
-     */
-    @Override
-    public String getPictureId() {
-        return appsgatePictureId;
-    }
 
     /*
      * (non-Javadoc)
@@ -140,17 +129,6 @@ public class MediaBrowserAdapter extends CoreObjectBehavior implements MediaBrow
         return appsgateUserType;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * appsgate.lig.core.object.spec.CoreObjectSpec#setPictureId(java.lang.String
-     * )
-     */
-    @Override
-    public void setPictureId(String pictureId) {
-        this.appsgatePictureId = pictureId;
-    }
 
     @Override
     public String browse(String objectID, String browseFlag, String filter,

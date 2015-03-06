@@ -38,7 +38,6 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 	private String serviceId;
 	private String userType;
 	private String status;
-	private String pictureId;	
 	
 	public final static String IMPL_NAME = "PaceTVImpl";
 	
@@ -64,11 +63,6 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 	}
 
 	@Override
-	public String getPictureId() {
-		return pictureId;
-	}
-
-	@Override
 	public JSONObject getDescription() throws JSONException {
 		JSONObject descr = new JSONObject();
 
@@ -77,11 +71,6 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 		descr.put("status", status);
 
 		return descr;
-	}
-
-	@Override
-	public void setPictureId(String pictureId) {
-		this.pictureId=pictureId;
 	}
 
 	@Override

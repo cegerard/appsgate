@@ -215,14 +215,12 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements
 		fireClockSetNotificationMsg(oldCalendar, calendar);
 	}
 
-	private String appsgatePictureId;
 	private String appsgateObjectId;
 	private String appsgateUserType;
 	private String appsgateStatus;
 	private String appsgateServiceName;
 
 	protected void initAppsgateFields() {
-		appsgatePictureId = null;
 		appsgateServiceName = "SystemClock";
 		appsgateUserType = "21";
 		appsgateStatus = "2";
@@ -284,16 +282,6 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see appsgate.lig.core.object.spec.CoreObjectSpec#getPictureId()
-	 */
-	@Override
-	public String getPictureId() {
-		return appsgatePictureId;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see appsgate.lig.core.object.spec.CoreObjectSpec#getUserType()
 	 */
 	@Override
@@ -301,17 +289,6 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements
 		return appsgateUserType;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * appsgate.lig.core.object.spec.CoreObjectSpec#setPictureId(java.lang.String
-	 * )
-	 */
-	@Override
-	public void setPictureId(String pictureId) {
-		this.appsgatePictureId = pictureId;
-	}
 
 	/*
 	 * (non-Javadoc)

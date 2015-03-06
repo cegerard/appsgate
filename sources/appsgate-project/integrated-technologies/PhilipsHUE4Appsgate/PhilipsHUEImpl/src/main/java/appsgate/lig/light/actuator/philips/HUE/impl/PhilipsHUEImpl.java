@@ -50,7 +50,6 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
     private String actuatorId;
     private String actuatorType;
 
-    private String pictureId;
     private String userType;
 
     private String lightBridgeId;
@@ -584,11 +583,6 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
     }
 
     @Override
-    public String getPictureId() {
-        return pictureId;
-    }
-
-    @Override
     public JSONObject getDescription() throws JSONException {
 
         JSONObject descr = new JSONObject();
@@ -605,17 +599,10 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
         descr.put("saturation", getLightColorSaturation());
         descr.put("brightness", getLightBrightness());
         descr.put("rgbcolor", getHTMLColor());
-        //Entry added for configuration GUI
 
         return descr;
     }
 
-    @Override
-    public void setPictureId(String pictureId) {
-        notifyChanges("pictureId", this.pictureId, pictureId);
-        this.pictureId = pictureId;
-
-    }
 
     public String getActuatorType() {
         return actuatorType;
