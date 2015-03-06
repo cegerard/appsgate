@@ -16,7 +16,7 @@ public class ContactNotificationMsg extends CoreNotificationMsg {
      *
 
      */
-    public ContactNotificationMsg(String varName, String oldValue, String newValue,  CoreObjectSpec source) {
+    public ContactNotificationMsg(String varName, String oldValue, String newValue, String source) {
         super(varName, oldValue, newValue, source);
     }
 

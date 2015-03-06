@@ -90,7 +90,7 @@ public class WattecoCO2Impl extends CoreObjectBehavior implements CoreObjectSpec
 	 *         posted.
 	 */
 	public NotificationMsg notifyChanges( String varName, String oldValue,String newValue) {
-		return new Co2NotificationMsg(varName, oldValue, newValue, this);
+		return new Co2NotificationMsg(varName, oldValue, newValue, this.getAbstractObjectId());
 	}
 
 	@Override

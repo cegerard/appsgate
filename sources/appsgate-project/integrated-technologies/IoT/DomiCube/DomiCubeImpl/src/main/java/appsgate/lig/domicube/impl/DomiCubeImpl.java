@@ -112,7 +112,7 @@ public class DomiCubeImpl extends CoreObjectBehavior implements CoreObjectSpec, 
 	 *         posted.
 	 */
 	public NotificationMsg notifyChanges(String varName, String value) {//TODO: add the old value (and probably refactor all this stuff)
-		return new DomiCubeNotificationMsg(varName,"",value,this);
+		return new DomiCubeNotificationMsg(varName,"",value,this.getAbstractObjectId());
 	}
 	
 

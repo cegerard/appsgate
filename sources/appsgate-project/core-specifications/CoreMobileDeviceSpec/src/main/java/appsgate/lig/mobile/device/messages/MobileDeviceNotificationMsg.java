@@ -18,7 +18,7 @@ public class MobileDeviceNotificationMsg extends CoreNotificationMsg {
 	 * @param value the new value of the variable
 	 * @param source the instance that trigger this notification message
 	 */
-	public MobileDeviceNotificationMsg(String varName, String value, CoreObjectSpec source) {
+	public MobileDeviceNotificationMsg(String varName, String value, String source) {
 		super(varName, value, source);
 		// TODO Auto-generated constructor stub
 	}

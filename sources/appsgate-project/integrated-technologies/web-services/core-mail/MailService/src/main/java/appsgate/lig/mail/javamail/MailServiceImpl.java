@@ -237,7 +237,7 @@ public class MailServiceImpl extends CoreObjectBehavior implements Mail, MailSer
 	}
 	
 	private NotificationMsg fireMessageSentNotificationMsg(String recipient) {
-		return new CoreNotificationMsg("mailSent", null, recipient, this);
+		return new CoreNotificationMsg("mailSent", null, recipient, this.getAbstractObjectId());
 	}
 
 	@Override
@@ -297,8 +297,8 @@ public class MailServiceImpl extends CoreObjectBehavior implements Mail, MailSer
 		return new NotificationMsg() {
 
 			@Override
-			public CoreObjectSpec getSource() {
-				return null;
+			public String getSource() {
+				return serviceId;
 			}
 
 			@Override
@@ -437,7 +437,7 @@ public class MailServiceImpl extends CoreObjectBehavior implements Mail, MailSer
 	}
 
     private NotificationMsg fireMessage(String varName, String oldValue, String newValue) {
-        return new CoreNotificationMsg(varName, oldValue, newValue, this);
+        return new CoreNotificationMsg(varName, oldValue, newValue, this.getAbstractObjectId());
     }	
 	
 	@Override

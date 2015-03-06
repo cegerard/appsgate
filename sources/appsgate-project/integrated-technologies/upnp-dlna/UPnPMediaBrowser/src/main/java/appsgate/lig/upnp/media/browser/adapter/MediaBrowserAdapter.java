@@ -219,7 +219,7 @@ public class MediaBrowserAdapter extends CoreObjectBehavior implements MediaBrow
     }
 
     private NotificationMsg stateChanged(String varName, String oldValue, String newValue) {
-        return new CoreNotificationMsg(varName, oldValue, newValue, this);
+        return new CoreNotificationMsg(varName, oldValue, newValue, this.getAbstractObjectId());
     }
 
 	@Override

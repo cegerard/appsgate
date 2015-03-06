@@ -245,7 +245,7 @@ public class SwingClockImpl extends ConfigurableClockImpl implements CoreClockSp
 
 
     public NotificationMsg fireClockSetNotificationMsg(Calendar currentTime) {
-	return new ClockSetNotificationMsg(this, currentTime.getTime()
+	return new ClockSetNotificationMsg(this.getAbstractObjectId().getAbstractObjectId(), currentTime.getTime()
 		.toString());
     }
     

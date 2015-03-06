@@ -223,7 +223,7 @@ public class EnoceanCO2SensorImpl extends CoreObjectBehavior implements CoreObje
 	 *         posted.
 	 */
 	public NotificationMsg notifyChanges(String varName, String value) {
-		return new Co2NotificationMsg(varName, value, value, this);
+		return new Co2NotificationMsg(varName, value, value, this.getAbstractObjectId());
 	}
 
 	@Override

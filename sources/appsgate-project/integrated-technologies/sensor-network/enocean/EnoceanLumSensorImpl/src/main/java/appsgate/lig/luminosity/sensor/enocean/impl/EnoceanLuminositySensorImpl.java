@@ -226,7 +226,7 @@ public class EnoceanLuminositySensorImpl extends CoreObjectBehavior implements C
      * posted.
      */
     public NotificationMsg notifyChanges(String varName, String value) {
-        return new IlluminationNotificationMsg(Integer.valueOf(currentIllumination), varName, value, this);
+        return new IlluminationNotificationMsg(Integer.valueOf(currentIllumination), varName, value, this.getAbstractObjectId());
     }
 
     @Override

@@ -29,7 +29,7 @@ public class TemperatureNotificationMsg extends CoreNotificationMsg {
      * @param value
      * @param source
      */
-    public TemperatureNotificationMsg(float newTemperature, String varName, String value, CoreObjectSpec source) {
+    public TemperatureNotificationMsg(float newTemperature, String varName, String value, String source) {
         super(varName, value, source);
         this.newTemperature = newTemperature;
     }

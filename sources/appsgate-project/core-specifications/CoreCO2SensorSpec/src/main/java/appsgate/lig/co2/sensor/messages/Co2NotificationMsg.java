@@ -18,7 +18,7 @@ public class Co2NotificationMsg extends CoreNotificationMsg {
      * @param varName
      * @param source
      */
-    public Co2NotificationMsg(String varName, String oldValue, String newValue, CoreObjectSpec source) {
+    public Co2NotificationMsg(String varName, String oldValue, String newValue,String source) {
         super(varName, oldValue, newValue, source);
     }
 }

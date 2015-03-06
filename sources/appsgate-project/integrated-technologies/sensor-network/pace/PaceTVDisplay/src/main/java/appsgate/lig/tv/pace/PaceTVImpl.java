@@ -150,7 +150,7 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 	
 
 	public NotificationMsg fireNotificationMessage(String varName, String oldValue, String newValue) {
-		return new CoreNotificationMsg(varName, oldValue, newValue, this);
+		return new CoreNotificationMsg(varName, oldValue, newValue, this.getAbstractObjectId());
 	}
 
 	@Override

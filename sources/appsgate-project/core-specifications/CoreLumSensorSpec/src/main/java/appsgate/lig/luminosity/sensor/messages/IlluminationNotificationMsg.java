@@ -26,7 +26,7 @@ public class IlluminationNotificationMsg extends CoreNotificationMsg {
      * @param source
      * @param value
      */
-    public IlluminationNotificationMsg(int newIllumination, String varName, String value, CoreObjectSpec source) {
+    public IlluminationNotificationMsg(int newIllumination, String varName, String value, String source) {
         super(varName, value, source);
         this.newIllumination = newIllumination;
     }

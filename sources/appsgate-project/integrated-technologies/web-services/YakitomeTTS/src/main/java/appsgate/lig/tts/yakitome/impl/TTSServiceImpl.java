@@ -520,7 +520,7 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 	}
 	
 	private NotificationMsg stateChanged(String varName, String oldValue, String newValue) {
-		return new CoreNotificationMsg(varName, oldValue, newValue, this);
+		return new CoreNotificationMsg(varName, oldValue, newValue, this.getAbstractObjectId());
 	}
 
 	@Override

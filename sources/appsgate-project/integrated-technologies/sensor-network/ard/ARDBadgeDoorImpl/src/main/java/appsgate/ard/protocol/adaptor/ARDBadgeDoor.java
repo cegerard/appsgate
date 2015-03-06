@@ -335,8 +335,8 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
             Integer newDoorID=eventNode.getInt("door_idx");
             String newArdClass=eventNode.getString("class");
 
-            triggerApamMessage(new ARDBadgeDoorContactNotificationMsg("door_idx",doorID.toString(),newDoorID.toString(),this));
-            triggerApamMessage(new ARDBadgeDoorContactNotificationMsg("ardClass",ardClass,newArdClass,this));
+            triggerApamMessage(new ARDBadgeDoorContactNotificationMsg("door_idx",doorID.toString(),newDoorID.toString(),this.getAbstractObjectId()));
+            triggerApamMessage(new ARDBadgeDoorContactNotificationMsg("ardClass",ardClass,newArdClass,this.getAbstractObjectId()));
 
             doorID=newDoorID;
             ardClass=newArdClass;
@@ -351,7 +351,7 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
     public void apamMessageReceived(NotificationMsg mesg){
 
             if(mesg.getVarName().equals("contact")){
-                syncAppsgateContactWithARDInput(mesg.getSource().getAbstractObjectId(),!Boolean.parseBoolean(mesg.getNewValue()));
+                syncAppsgateContactWithARDInput(mesg.getSource(),!Boolean.parseBoolean(mesg.getNewValue()));
                 logger.debug("Apam Message received var name {} old value {} new value {}", mesg.getVarName(), mesg.getOldValue(),mesg.getNewValue());
             }
 

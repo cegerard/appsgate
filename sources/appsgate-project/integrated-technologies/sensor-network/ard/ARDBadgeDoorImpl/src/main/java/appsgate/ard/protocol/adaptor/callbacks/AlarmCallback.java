@@ -19,6 +19,6 @@ public class AlarmCallback implements ARDMessage {
 
     @Override
     public void ardMessageReceived(JSONObject json) throws JSONException {
-        door.triggerApamMessage(new ARDBadgeDoorContactNotificationMsg("alarmFired", "false", "true", door));
+        door.triggerApamMessage(new ARDBadgeDoorContactNotificationMsg("alarmFired", "false", "true", door.getAbstractObjectId()));
     }
 }

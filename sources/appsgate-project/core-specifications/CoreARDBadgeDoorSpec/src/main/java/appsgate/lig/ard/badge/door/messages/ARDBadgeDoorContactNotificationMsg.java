@@ -5,7 +5,7 @@ import appsgate.lig.core.object.spec.CoreObjectSpec;
 
 public class ARDBadgeDoorContactNotificationMsg extends CoreNotificationMsg {
 
-    public ARDBadgeDoorContactNotificationMsg(String varName, String oldValue, String newValue,  CoreObjectSpec source) {
+    public ARDBadgeDoorContactNotificationMsg(String varName, String oldValue, String newValue, String source) {
         super(varName, oldValue, newValue, source);
     }
 

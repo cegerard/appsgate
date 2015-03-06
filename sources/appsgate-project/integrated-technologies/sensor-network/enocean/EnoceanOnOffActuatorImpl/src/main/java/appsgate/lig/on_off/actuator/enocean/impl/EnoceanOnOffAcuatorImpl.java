@@ -192,7 +192,7 @@ public class EnoceanOnOffAcuatorImpl extends CoreObjectBehavior implements CoreO
 	 *         posted.
 	 */
 	public NotificationMsg notifyChanges(String varName, String value) {
-		return new OnOffActuatorNotificationMsg(isOn, varName, value, this);
+		return new OnOffActuatorNotificationMsg(isOn, varName, value, this.getAbstractObjectId());
 	}
 	
 	@Override

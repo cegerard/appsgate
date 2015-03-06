@@ -175,7 +175,7 @@ public class WeatherObserverImpl extends AbstractObjectSpec implements
 
 	private NotificationMsg fireWeatherNotificationMsg(String varName,
 			String oldValue, String newValue) {
-		return new CoreNotificationMsg(varName, oldValue, newValue, this);
+		return new CoreNotificationMsg(varName, oldValue, newValue, this.getAbstractObjectId());
 	}
 
 	@Override

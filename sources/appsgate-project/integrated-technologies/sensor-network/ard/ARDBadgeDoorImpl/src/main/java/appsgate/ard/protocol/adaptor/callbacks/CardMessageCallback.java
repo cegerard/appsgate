@@ -29,8 +29,8 @@ public class CardMessageCallback implements ARDMessage {
         }catch(JSONException e){
             logger.warn("No ID CARD received.",e);
         }finally {
-            door.triggerApamMessage(new ARDBadgeDoorContactNotificationMsg("lastCard", oldvalue, newCard, door));
-            door.triggerApamMessage(new ARDBadgeDoorContactNotificationMsg("card_idx","",newCard,door));
+            door.triggerApamMessage(new ARDBadgeDoorContactNotificationMsg("lastCard", oldvalue, newCard, door.getAbstractObjectId()));
+            door.triggerApamMessage(new ARDBadgeDoorContactNotificationMsg("card_idx","",newCard,door.getAbstractObjectId()));
             door.setLastCard(newCard);
         }
     }

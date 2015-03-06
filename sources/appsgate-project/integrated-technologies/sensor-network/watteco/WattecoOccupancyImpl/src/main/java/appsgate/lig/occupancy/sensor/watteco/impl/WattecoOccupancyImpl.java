@@ -79,7 +79,7 @@ public class WattecoOccupancyImpl extends CoreObjectBehavior implements CoreObje
 	 *         posted.
 	 */
 	public NotificationMsg notifyChanges(String varName, String value) {
-		return new OccupancyNotificationMsg(this, Boolean.valueOf(occupied), varName, value);
+		return new OccupancyNotificationMsg(this.getAbstractObjectId(), Boolean.valueOf(occupied), varName, value);
 	}
 	
 	@Override

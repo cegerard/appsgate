@@ -95,7 +95,7 @@ public class WattecoSmartPlugImpl extends CoreObjectBehavior implements CoreObje
 	 *         posted.
 	 */
 	public NotificationMsg notifyChanges(String varName, String value) {
-		return new SmartPlugNotificationMsg(this, varName, value);
+		return new SmartPlugNotificationMsg(this.getAbstractObjectId(), varName, value);
 	}
 	
 	/* ***********************************************************************

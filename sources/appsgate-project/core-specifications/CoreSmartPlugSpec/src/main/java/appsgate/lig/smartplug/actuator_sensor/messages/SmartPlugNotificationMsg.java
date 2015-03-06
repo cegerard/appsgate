@@ -18,7 +18,7 @@ public class SmartPlugNotificationMsg extends CoreNotificationMsg{
      * @param varName the variable that changed
      * @param value the new variable value
      */
-    public SmartPlugNotificationMsg(CoreObjectSpec source, String varName, String value) {
+    public SmartPlugNotificationMsg(String source, String varName, String value) {
         super(varName, value, source);
     }
 }

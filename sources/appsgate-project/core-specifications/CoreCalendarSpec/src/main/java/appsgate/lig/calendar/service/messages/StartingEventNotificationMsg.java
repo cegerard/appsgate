@@ -32,7 +32,7 @@ public class StartingEventNotificationMsg implements NotificationMsg {
     }
 
     @Override
-    public CoreObjectSpec getSource() {
+    public String getSource() {
         return null;
     }
     

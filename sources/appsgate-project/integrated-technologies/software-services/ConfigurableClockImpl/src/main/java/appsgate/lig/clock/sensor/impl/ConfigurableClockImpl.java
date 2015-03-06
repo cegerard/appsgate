@@ -130,7 +130,7 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements
 
 	public ClockSetNotificationMsg fireClockSetNotificationMsg(
 			Calendar oldTime, Calendar newTime) {
-		return new ClockSetNotificationMsg(this, oldTime.getTime().toString(),
+		return new ClockSetNotificationMsg(this.getAbstractObjectId(), oldTime.getTime().toString(),
 				newTime.getTime().toString());
 	}
 
@@ -601,14 +601,14 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements
 	}
 
 	public NotificationMsg fireClockAlarmNotificationMsg(int alarmEventId) {
-		return new ClockAlarmNotificationMsg(this, alarmEventId);
+		return new ClockAlarmNotificationMsg(this.getAbstractObjectId(), alarmEventId);
 	}
 
 
 
 	public FlowRateSetNotification fireFlowRateSetNotificationMsg(
 			double oldFlowRate, double newFlowRate) {
-		return new FlowRateSetNotification(this, String.valueOf(oldFlowRate),
+		return new FlowRateSetNotification(this.getAbstractObjectId(), String.valueOf(oldFlowRate),
 				String.valueOf(newFlowRate));
 	}
 	

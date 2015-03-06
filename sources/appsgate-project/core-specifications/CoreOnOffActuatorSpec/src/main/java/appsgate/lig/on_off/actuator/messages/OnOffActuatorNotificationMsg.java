@@ -26,7 +26,7 @@ public class OnOffActuatorNotificationMsg extends CoreNotificationMsg {
      * @param value the value corresponding to the variable
      * @param source the source of this message
      */
-    public OnOffActuatorNotificationMsg(String isOn, String varName, String value, CoreObjectSpec source) {
+    public OnOffActuatorNotificationMsg(String isOn, String varName, String value, String source) {
         super(varName, value, source);
         this.isOn = Boolean.valueOf(isOn);
     }

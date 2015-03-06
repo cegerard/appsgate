@@ -62,7 +62,7 @@ public class MobileDeviceImpl extends CoreObjectBehavior implements CoreObjectSp
 	 *         posted.
 	 */
 	public NotificationMsg notifyChanges(String varName, String value) {
-		return new MobileDeviceNotificationMsg(varName, value, this);
+		return new MobileDeviceNotificationMsg(varName, value, this.getAbstractObjectId());
 	}
 	
 	

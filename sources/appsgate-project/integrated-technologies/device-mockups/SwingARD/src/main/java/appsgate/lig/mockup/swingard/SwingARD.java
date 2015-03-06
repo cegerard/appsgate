@@ -156,7 +156,7 @@ public class SwingARD implements CoreKeyCardSensorSpec, CoreObjectSpec, ActionLi
      * posted.
      */
     public NotificationMsg notifyChanges(String varName, String value) {
-        return new KeyCardNotificationMsg(Boolean.valueOf(true), varName, value, this);
+        return new KeyCardNotificationMsg(Boolean.valueOf(true), varName, value, this.getAbstractObjectId());
     }
 
     /*

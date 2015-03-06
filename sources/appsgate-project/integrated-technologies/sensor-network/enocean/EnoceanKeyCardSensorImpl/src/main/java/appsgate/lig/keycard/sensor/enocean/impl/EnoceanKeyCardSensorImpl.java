@@ -199,7 +199,7 @@ public class EnoceanKeyCardSensorImpl extends CoreObjectBehavior implements Core
 	 *         posted.
 	 */
 	public NotificationMsg notifyChanges(String varName, String value) {
-		return new KeyCardNotificationMsg(Boolean.valueOf(currentStatus), varName, value, this);
+		return new KeyCardNotificationMsg(Boolean.valueOf(currentStatus), varName, value, this.getAbstractObjectId());
 	}
 
 	@Override

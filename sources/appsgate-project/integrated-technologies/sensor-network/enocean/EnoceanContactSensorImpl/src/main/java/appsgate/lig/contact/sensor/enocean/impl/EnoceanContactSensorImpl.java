@@ -199,7 +199,7 @@ public class EnoceanContactSensorImpl extends CoreObjectBehavior implements Core
 	 *         posted.
 	 */
 	public NotificationMsg notifyChanges(String varName, String oldValue, String newValue) {
-		return new ContactNotificationMsg(varName, oldValue, newValue, this);
+		return new ContactNotificationMsg(varName, oldValue, newValue, this.getAbstractObjectId());
 	}
 
 	@Override

@@ -230,7 +230,7 @@ public class EnoceanSwitchSensorImpl extends CoreObjectBehavior implements CoreO
      * posted.
      */
     public NotificationMsg notifyChanges(String varName, String value) {
-        return new SwitchNotificationMsg(new Integer(switchNumber), "true", varName, value, this);
+        return new SwitchNotificationMsg(new Integer(switchNumber), "true", varName, value, this.getAbstractObjectId());
     }
 
     @Override

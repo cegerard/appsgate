@@ -271,7 +271,7 @@ public class CHMIProxyImpl implements CHMIProxySpec {
     public void gotNotification(NotificationMsg notif) {
     	JSONObject not = notif.JSONize();
         logger.debug("Notification message received, " + not);
-        notifyAllEventsListeners(notif.getSource().getAbstractObjectId(), notif.getVarName(), not.getString("value"));
+        notifyAllEventsListeners(notif.getSource(), notif.getVarName(), not.getString("value"));
         try{
         	sendToClientService.send(not.toString());
     	}catch(ExternalComDependencyException comException) {

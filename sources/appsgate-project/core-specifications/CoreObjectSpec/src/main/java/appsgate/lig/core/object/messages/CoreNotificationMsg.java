@@ -6,7 +6,6 @@
 
 package appsgate.lig.core.object.messages;
 
-import appsgate.lig.core.object.spec.CoreObjectSpec;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -18,7 +17,7 @@ public class CoreNotificationMsg implements NotificationMsg{
     /**
      * The source sensor of this notification
      */
-    private final CoreObjectSpec source;
+    private final String source;
 
 
     /**
@@ -43,7 +42,7 @@ public class CoreNotificationMsg implements NotificationMsg{
      * @param newValue the new property newValue
      * @param source the source instance of this notification
      */
-    public CoreNotificationMsg(String varName, String oldValue, String newValue, CoreObjectSpec source) {
+    public CoreNotificationMsg(String varName, String oldValue, String newValue, String source) {
         this.source = source;
         this.varName = varName;
         this.newValue = newValue;
@@ -58,13 +57,13 @@ public class CoreNotificationMsg implements NotificationMsg{
      * @param newValue the new property newValue
      * @param source the source instance of this notification
      */
-    public CoreNotificationMsg(String varName, String newValue, CoreObjectSpec source) {
+    public CoreNotificationMsg(String varName, String newValue, String source) {
         this(varName, "", newValue, source);
     }
 
 
     @Override
-    public CoreObjectSpec getSource() {
+    public String getSource() {
         return source;
     }
 
@@ -87,7 +86,7 @@ public class CoreNotificationMsg implements NotificationMsg{
     public JSONObject JSONize() {
         JSONObject notif = new JSONObject();
         try {
-            notif.put("objectId", source.getAbstractObjectId());
+            notif.put("objectId", source);
             notif.put("varName", varName);
             notif.put("value", newValue);
             notif.put("oldValue", oldValue);

@@ -78,7 +78,7 @@ public class AppsgateOnOffKNXDevice extends CoreObjectBehavior implements CoreOb
     }
 
     private NotificationMsg notifyChanges(String varName, String oldValue, String newValue) {
-        return new OnOffActuatorNotificationMsg(varName, oldValue, newValue, this);
+        return new OnOffActuatorNotificationMsg(varName, oldValue, newValue, this.getAbstractObjectId());
     }
 
     public void statusChanged(String newStatus) {

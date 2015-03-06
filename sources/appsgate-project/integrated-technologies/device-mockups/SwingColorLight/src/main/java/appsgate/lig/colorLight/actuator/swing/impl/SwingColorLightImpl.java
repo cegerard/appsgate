@@ -173,7 +173,7 @@ public class SwingColorLightImpl implements CoreObjectSpec, CoreColorLightSpec {
      *         posted.
      */
     public NotificationMsg notifyChanges(String varName, String value) {
-	return new ColorLightNotificationMsg(this, varName, value);
+	return new ColorLightNotificationMsg(this.getAbstractObjectId(), varName, value);
     }
 
     /*

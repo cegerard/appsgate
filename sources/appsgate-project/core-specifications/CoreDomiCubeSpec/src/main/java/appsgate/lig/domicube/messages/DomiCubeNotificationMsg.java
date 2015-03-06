@@ -28,7 +28,7 @@ public class DomiCubeNotificationMsg extends CoreNotificationMsg {
 	private final float currentDimValue=0;
 
 
-    public DomiCubeNotificationMsg(String varName, String oldValue, String newValue, CoreObjectSpec source) {
+    public DomiCubeNotificationMsg(String varName, String oldValue, String newValue, String source) {
         super(varName, oldValue, newValue , source);
     }
 	

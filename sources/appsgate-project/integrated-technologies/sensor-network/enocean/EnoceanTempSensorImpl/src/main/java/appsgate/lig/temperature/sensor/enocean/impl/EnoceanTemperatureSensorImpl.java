@@ -216,7 +216,7 @@ public class EnoceanTemperatureSensorImpl extends CoreObjectBehavior implements 
 	 *         posted.
 	 */
 	public NotificationMsg notifyChanges(String varName, String value) {
-		return new TemperatureNotificationMsg(Float.valueOf(currentTemperature), varName, value, this);
+		return new TemperatureNotificationMsg(Float.valueOf(currentTemperature), varName, value, this.getAbstractObjectId());
 	}
 
 	@Override

@@ -48,7 +48,7 @@ public class AppsgateShutterKNXDevice extends CoreObjectBehavior implements Core
     }
 
     private NotificationMsg notifyChanges(String varName, String oldValue, String newValue) {
-        return new ColorLightNotificationMsg(varName, oldValue, newValue, this);
+        return new ColorLightNotificationMsg(varName, oldValue, newValue, this.getAbstractObjectId());
     }
 
     private Step getDevice(){

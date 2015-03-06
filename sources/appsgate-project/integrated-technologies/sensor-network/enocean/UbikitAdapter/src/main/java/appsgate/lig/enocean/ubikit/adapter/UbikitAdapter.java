@@ -539,7 +539,7 @@ public class UbikitAdapter extends CoreObjectBehavior implements
 	}
 	
 	public NotificationMsg fireNotificationMessage(String varName, String oldValue, String newValue) {
-		return new CoreNotificationMsg(varName, oldValue, newValue, this);
+		return new CoreNotificationMsg(varName, oldValue, newValue, this.getAbstractObjectId());
 	}
 
 

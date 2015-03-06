@@ -19,7 +19,7 @@ public class ColorLightNotificationMsg extends CoreNotificationMsg {
      * @param oldValue the old variable value
      * @param newValue the new variable value
      */
-    public ColorLightNotificationMsg(String varName, String oldValue, String newValue, CoreObjectSpec source) {
+    public ColorLightNotificationMsg(String varName, String oldValue, String newValue, String source) {
         super(varName, oldValue, newValue, source);
 
     }

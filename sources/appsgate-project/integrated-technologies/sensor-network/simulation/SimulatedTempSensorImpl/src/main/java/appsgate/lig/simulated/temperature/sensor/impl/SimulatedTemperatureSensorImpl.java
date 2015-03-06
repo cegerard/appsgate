@@ -267,7 +267,7 @@ public class SimulatedTemperatureSensorImpl extends CoreObjectBehavior implement
 	 *         posted.
 	 */
 	public NotificationMsg notifyChanges(String varName, String value) {
-		return new TemperatureNotificationMsg(Float.valueOf(currentTemperature), varName, value, this);
+		return new TemperatureNotificationMsg(Float.valueOf(currentTemperature), varName, value, this.getAbstractObjectId());
 	}
 	
 	/**

@@ -166,7 +166,7 @@ public class SimulatedOnOffAcuatorImpl extends CoreObjectBehavior implements Cor
 	 *         posted.
 	 */
 	public NotificationMsg notifyChanges(String varName, String value) {
-		return new OnOffActuatorNotificationMsg(isOn, varName, value, this);
+		return new OnOffActuatorNotificationMsg(isOn, varName, value, this.getAbstractObjectId());
 	}
 	
 	@Override

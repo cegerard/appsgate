@@ -90,7 +90,7 @@ public class WattecoTemperatureImpl extends CoreObjectBehavior implements CoreOb
 	 *         posted.
 	 */
 	public NotificationMsg notifyChanges(String varName, String value) {
-		return new TemperatureNotificationMsg((float) (Float.valueOf(currentTemperature)/100.0), varName, value, this);
+		return new TemperatureNotificationMsg((float) (Float.valueOf(currentTemperature)/100.0), varName, value, this.getAbstractObjectId());
 	}
 	
 	@Override

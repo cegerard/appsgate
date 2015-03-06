@@ -15,7 +15,7 @@ public class ClockSetNotificationMsg extends CoreNotificationMsg {
      * @param source the CoreObjectSource for this message
      * @param currentDate a String representation of the current date and time
      */
-    public ClockSetNotificationMsg(CoreObjectSpec source, String oldDate, String currentDate) {
+    public ClockSetNotificationMsg(String source, String oldDate, String currentDate) {
         super("ClockSet", oldDate, currentDate, source);
 
     }
