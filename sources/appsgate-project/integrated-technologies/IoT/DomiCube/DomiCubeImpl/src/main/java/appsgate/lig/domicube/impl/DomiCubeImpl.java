@@ -39,12 +39,7 @@ public class DomiCubeImpl extends CoreObjectBehavior implements CoreObjectSpec, 
 	 * The system device type 
 	 */
 	private String deviceType;
-	
-	/**
-	 * The icon of this device
-	 */
-	private String pictureId;
-	
+		
 	/**
 	 * The user type of this device
 	 */
@@ -137,11 +132,6 @@ public class DomiCubeImpl extends CoreObjectBehavior implements CoreObjectSpec, 
 	}
 
 	@Override
-	public String getPictureId() {
-		return pictureId;
-	}
-
-	@Override
 	public JSONObject getDescription() throws JSONException { 
 		
 		JSONObject descr = new JSONObject();
@@ -157,12 +147,6 @@ public class DomiCubeImpl extends CoreObjectBehavior implements CoreObjectSpec, 
 		descr.put("systemName", deviceName);
 		
 		return descr;
-	}
-
-	@Override
-	public void setPictureId(String pictureId) {
-		this.pictureId = pictureId;
-		notifyChanges("pictureId", pictureId);
 	}
 	
 	/**

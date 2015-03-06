@@ -65,12 +65,6 @@ public class SimulatedOnOffAcuatorImpl extends CoreObjectBehavior implements Cor
 	 * 2 = In line or connected
 	 */
 	private String status;
-
-	/**
-	 * The current picture identifier
-	 */
-	private String pictureId;
-	
 	
 	public String getActuatorName() {
 		return actuatorName;
@@ -116,11 +110,6 @@ public class SimulatedOnOffAcuatorImpl extends CoreObjectBehavior implements Cor
 	}
 
 	@Override
-	public String getPictureId() {
-		return pictureId;
-	}
-
-	@Override
 	public JSONObject getDescription() throws JSONException {
 		JSONObject descr = new JSONObject();
 		
@@ -130,12 +119,6 @@ public class SimulatedOnOffAcuatorImpl extends CoreObjectBehavior implements Cor
 		descr.put("isOn", isOn);
 		
 		return descr;
-	}
-
-	@Override
-	public void setPictureId(String pictureId) {
-		this.pictureId = pictureId;
-		notifyChanges("pictureId", pictureId);
 	}
 	
 	/**

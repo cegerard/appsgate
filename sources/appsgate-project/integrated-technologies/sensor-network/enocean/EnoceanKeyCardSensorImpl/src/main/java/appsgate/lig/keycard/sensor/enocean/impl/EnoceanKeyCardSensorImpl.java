@@ -72,11 +72,6 @@ public class EnoceanKeyCardSensorImpl extends CoreObjectBehavior implements Core
 	 * 2 = In line or connected
 	 */
 	private String status;
-
-	/**
-	 * The current picture identifier
-	 */
-	private String pictureId;
 	
 	@Override
 	public JSONObject getDescription() throws JSONException {
@@ -147,17 +142,6 @@ public class EnoceanKeyCardSensorImpl extends CoreObjectBehavior implements Core
 	@Override
 	public int getObjectStatus() {
 		return Integer.valueOf(status);
-	}
-
-	@Override
-	public String getPictureId() {
-		return pictureId;
-	}
-
-	@Override
-	public void setPictureId(String pictureId) {
-		this.pictureId = pictureId;
-		notifyChanges("picturedId", pictureId);
 	}
 	
 	/**

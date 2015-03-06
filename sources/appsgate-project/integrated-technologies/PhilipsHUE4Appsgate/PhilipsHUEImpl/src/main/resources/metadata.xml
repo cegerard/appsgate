@@ -20,7 +20,6 @@
 			field="actuatorType" />
 
 		<!-- device client meta data -->
-		<definition name="pictureId" type="string" field="pictureId" />
 		<definition name="userType" type="string" default="7"
 			field="userType" />
 		<definition name="status" type="string" field="status"

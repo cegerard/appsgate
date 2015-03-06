@@ -319,23 +319,6 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 	public int getObjectStatus() {
 		return coreObjectStatus;
 	}	
-	
-	/**
-	 * @deprecated
-	 */
-	@Override
-	public String getPictureId() {
-		// Will be removed
-		return null;
-	}
-
-	/**
-	 * @deprecated
-	 */
-	@Override
-	public void setPictureId(String pictureId) {
-		// will be removed
-	}
 
 	@Override
 	public JSONObject getSpeechTextItem(int book_id) {

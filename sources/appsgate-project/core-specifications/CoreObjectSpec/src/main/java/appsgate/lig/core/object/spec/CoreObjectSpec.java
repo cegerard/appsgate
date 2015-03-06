@@ -51,26 +51,11 @@ public interface CoreObjectSpec {
 	public int getObjectStatus();
 	
 	/**
-	 * This method allow the caller to get the current picture
-	 * of this object.
-	 * 
-	 * @return the id of the corresponding picture
-	 */
-	public String getPictureId();
-	
-	/**
 	 * Get the JSON of an object
 	 * @return the description as an JSONObject
      * @throws org.json.JSONException
 	 */
 	public JSONObject getDescription() throws JSONException;
-	
-	/**
-	 * Change the current picture for this device
-	 * 
-	 * @param pictureId the new picture identifier
-	 */
-	public void setPictureId(String pictureId);
 	
 	/**
 	 * Get the type of the core object it can

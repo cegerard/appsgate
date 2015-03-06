@@ -23,7 +23,6 @@
 		<definition name="deviceId" 	 type="string" default="000000" 		  field="sensorId"/>
 		<definition name="deviceType" 	 type="string" default="ARD_DEVICE" field="sensorType"/>
 
-		<definition name="pictureId" 	 type="string" default="/dev/null"		field="pictureId"/>
 		<definition name="userType" 	 type="string" default="5" 			  field="userType"/>
 		<definition name="status" 		 type="string" default="2" 			  field="status" /> <!-- method="statusChanged" -->
 

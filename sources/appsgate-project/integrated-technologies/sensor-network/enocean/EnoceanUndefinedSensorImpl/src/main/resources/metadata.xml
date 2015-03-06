@@ -12,7 +12,6 @@
 		<definition name="deviceName" type="string" default="Unknown" field="sensorName"/>
 		<definition name="deviceId" type="string" default="000000" field="sensorId"/>
 		<definition name="deviceType" type="string" default="Sensor_DEVICE" field="sensoreType"/>
-		<definition name="pictureId" type="string" field="pictureId"/>
 		<definition name="userType" type="string" default="undefined" field="userType"/>
 		<definition name="status" type="string" default="1" field="status" method="statusChanged"/>
 		<definition name="signal"		 type="string" default="0" 		  	  field="signal" 		method="signalChanged"/>

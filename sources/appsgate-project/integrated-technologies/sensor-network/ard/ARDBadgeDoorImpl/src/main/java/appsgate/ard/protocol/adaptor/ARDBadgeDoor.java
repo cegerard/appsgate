@@ -48,7 +48,6 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
      * 2 = In line or connected
      */
     private String status;
-    private String pictureId;
     private Integer doorID=-1;
 
     public void setLastCard(String lastCard) {
@@ -88,9 +87,6 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
         return 0;
     }
 
-    public String getPictureId() {
-        return pictureId;
-    }
 
     public JSONObject getDescription() throws JSONException {
 
@@ -110,10 +106,6 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
         fillUpCards(descr);
 
         return descr;
-    }
-
-    public void setPictureId(String pictureId) {
-
     }
 
     public CORE_TYPE getCoreType() {

@@ -22,7 +22,6 @@ public class WattecoOccupancyImpl extends CoreObjectBehavior implements CoreObje
 	private String sensorName;
 	private String sensorId;
 	private String sensoreType;
-	private String pictureId;
 	private String userType;
 	private String status;
 	private String isPaired;
@@ -104,10 +103,6 @@ public class WattecoOccupancyImpl extends CoreObjectBehavior implements CoreObje
 		return Integer.valueOf(status);
 	}
 
-	@Override
-	public String getPictureId() {
-		return pictureId;
-	}
 
 	@Override
 	public JSONObject getDescription() throws JSONException {
@@ -118,11 +113,6 @@ public class WattecoOccupancyImpl extends CoreObjectBehavior implements CoreObje
 		descr.put("occupied", occupied);
 		
 		return descr;
-	}
-
-	@Override
-	public void setPictureId(String pictureId) {
-		this.pictureId = pictureId;
 	}
 
 	public boolean isPaired() {

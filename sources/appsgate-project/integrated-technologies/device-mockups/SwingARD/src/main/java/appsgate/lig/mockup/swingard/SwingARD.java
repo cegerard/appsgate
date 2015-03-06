@@ -30,10 +30,8 @@ public class SwingARD implements CoreKeyCardSensorSpec, CoreObjectSpec, ActionLi
     private String appsgateSensorType;
     private String appsgateUserType;
     private String appsgateStatus;
-    private String appsgatePictureId;
 
     private void initAppsgateFields() {
-        appsgatePictureId = null;
         switchNumber = "-1";
         buttonStatus = "false";
         appsgateDeviceName = "Unknown";
@@ -99,16 +97,6 @@ public class SwingARD implements CoreKeyCardSensorSpec, CoreObjectSpec, ActionLi
         return Integer.valueOf(appsgateStatus);
     }
 
-    @Override
-    public String getPictureId() {
-        return appsgatePictureId;
-    }
-
-    @Override
-    public void setPictureId(String pictureId) {
-        this.appsgatePictureId = pictureId;
-        notifyChanges("pictureId", pictureId);
-    }
 
     /**
      * Called by APAM when an instance of this implementation is created

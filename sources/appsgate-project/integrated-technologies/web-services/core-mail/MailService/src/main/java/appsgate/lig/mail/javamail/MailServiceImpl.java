@@ -381,10 +381,6 @@ public class MailServiceImpl extends CoreObjectBehavior implements Mail, MailSer
 		return Integer.parseInt(status);
 	}
 
-	@Override
-	public String getPictureId() {
-		return "";
-	}
 
 	@Override
 	public JSONObject getDescription() throws JSONException {
@@ -407,9 +403,6 @@ public class MailServiceImpl extends CoreObjectBehavior implements Mail, MailSer
 		return descr;
 	}
 
-	@Override
-	public void setPictureId(String pictureId) {
-	}
 
 	@Override
 	public CORE_TYPE getCoreType() {

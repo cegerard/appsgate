@@ -27,7 +27,6 @@ public class WattecoSmartPlugImpl extends CoreObjectBehavior implements CoreObje
 	private String sensorName;
 	private String sensorId;
 	private String sensoreType;
-	private String pictureId;
 	private String userType;
 	private String status;
 	private String isPaired;
@@ -202,11 +201,6 @@ public class WattecoSmartPlugImpl extends CoreObjectBehavior implements CoreObje
 	}
 
 	@Override
-	public String getPictureId() {
-		return pictureId;
-	}
-
-	@Override
 	public JSONObject getDescription() throws JSONException {
 		JSONObject descr = new JSONObject();
 		descr.put("id", sensorId);
@@ -217,11 +211,6 @@ public class WattecoSmartPlugImpl extends CoreObjectBehavior implements CoreObje
 		descr.put("activeEnergy", activeEnergy);
 		
 		return descr;
-	}
-
-	@Override
-	public void setPictureId(String pictureId) {
-		this.pictureId = pictureId;
 	}
 	
 	public boolean isPaired() {

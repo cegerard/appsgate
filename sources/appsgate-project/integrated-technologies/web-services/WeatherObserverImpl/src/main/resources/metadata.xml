@@ -14,7 +14,6 @@
         <property name="deviceId" value="$WeatherObserver-+.$currentLocation"/>
 
         <!-- device client meta data -->
-        <definition name="pictureId" type="string" field="appsgatePictureId" />
         <definition name="userType" type="string" default="103"
                     field="appsgateUserType" />
         <definition name="status" type="string" default="2" field="appsgateDeviceStatus"/>

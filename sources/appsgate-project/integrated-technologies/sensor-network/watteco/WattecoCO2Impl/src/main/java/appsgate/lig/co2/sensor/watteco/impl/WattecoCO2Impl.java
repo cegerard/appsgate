@@ -27,7 +27,6 @@ public class WattecoCO2Impl extends CoreObjectBehavior implements CoreObjectSpec
 	private String sensorName;
 	private String sensorId;
 	private String sensoreType;
-	private String pictureId;
 	private String userType;
 	private String status;
 	private String isPaired;
@@ -128,11 +127,6 @@ public class WattecoCO2Impl extends CoreObjectBehavior implements CoreObjectSpec
 	}
 
 	@Override
-	public String getPictureId() {
-		return pictureId;
-	}
-
-	@Override
 	public JSONObject getDescription() throws JSONException {
 		JSONObject descr = new JSONObject();
 		descr.put("id", sensorId);
@@ -141,11 +135,6 @@ public class WattecoCO2Impl extends CoreObjectBehavior implements CoreObjectSpec
 		descr.put("value", String.valueOf(getCO2Concentration()));
 		
 		return descr;
-	}
-
-	@Override
-	public void setPictureId(String pictureId) {
-			this.pictureId = pictureId;
 	}
 	
 	public boolean isPaired() {
