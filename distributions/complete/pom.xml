@@ -515,7 +515,18 @@
                                     <groupId>appsgate.components</groupId>
                                     <artifactId>YakitomeTTS</artifactId>
                                     <version>${project.version}</version>
-                                </artifactItem>                                  
+                                </artifactItem>  
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
+                                    <artifactId>DependencyManagerSpec</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>  
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
+                                    <artifactId>DependencyManagerImpl</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>  
+                                
                                 
                             </artifactItems>
                             <outputDirectory>${basedir}/load</outputDirectory>
