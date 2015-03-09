@@ -35,6 +35,7 @@ import appsgate.lig.ehmi.impl.listeners.ObjectEventListener;
 import appsgate.lig.ehmi.impl.listeners.ObjectUpdateListener;
 import appsgate.lig.ehmi.impl.listeners.TimeObserver;
 import appsgate.lig.ehmi.spec.EHMIProxySpec;
+import appsgate.lig.ehmi.spec.SpokObject;
 import appsgate.lig.ehmi.spec.StateDescription;
 import appsgate.lig.ehmi.spec.listeners.CoreListener;
 import appsgate.lig.ehmi.spec.messages.ClockAlarmNotificationMsg;
@@ -1503,4 +1504,9 @@ public class EHMIProxyImpl implements EHMIProxySpec {
     		}
     		return programsScheduled;
         }
+
+    @Override
+    public SpokObject getProgramDependencies(String programid) {
+        return dependency.getProgramDependencies(programid);
+    }
 }

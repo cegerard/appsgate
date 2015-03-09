@@ -407,6 +407,7 @@ public interface EHMIProxySpec {
     /**
      * Check a location upon the first letters of its place name
      *
+     * @param firstLetters
      * @param location A human place name : a town, a country, a particular
      * place or point of interest (poi)
      * @return A JSONArray with 0..5 objects describing the location (formatted
@@ -729,4 +730,11 @@ public interface EHMIProxySpec {
      * @return the complete status of trace man as a JSONObject
      */
     public JSONObject getTraceManStatus();
+    
+    /**
+     * Return a list of 
+     * @param programid
+     * @return 
+     */
+    public SpokObject getProgramDependencies(String programid);
 }

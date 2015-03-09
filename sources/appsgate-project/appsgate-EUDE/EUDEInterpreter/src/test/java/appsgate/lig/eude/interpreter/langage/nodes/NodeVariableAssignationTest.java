@@ -1,6 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.langage.components.SpokObject;
+import appsgate.lig.ehmi.spec.SpokObject;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;

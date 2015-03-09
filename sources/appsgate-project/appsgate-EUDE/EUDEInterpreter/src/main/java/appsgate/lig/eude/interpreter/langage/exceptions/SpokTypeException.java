@@ -5,7 +5,7 @@
  */
 package appsgate.lig.eude.interpreter.langage.exceptions;
 
-import appsgate.lig.eude.interpreter.langage.components.SpokObject;
+import appsgate.lig.ehmi.spec.SpokObject;
 
 /**
  *

@@ -5,6 +5,7 @@
  */
 package appsgate.lig.eude.interpreter.langage.components;
 
+import appsgate.lig.ehmi.spec.SpokObject;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

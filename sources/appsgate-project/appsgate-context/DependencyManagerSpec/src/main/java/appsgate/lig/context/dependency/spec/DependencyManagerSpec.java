@@ -27,4 +27,10 @@ public interface DependencyManagerSpec {
      * Dependencies getProgramDependencies(String pid)
      * Dependencies getDeviceDependencies(String id)
      */
+    /**
+     * 
+     * @param pid the program id
+     * @return 
+     */
+    Dependencies getProgramDependencies(String pid);
 }

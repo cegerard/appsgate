@@ -1,4 +1,4 @@
-package appsgate.lig.eude.interpreter.langage.components;
+package appsgate.lig.ehmi.spec;
 
 import org.json.JSONObject;
 
