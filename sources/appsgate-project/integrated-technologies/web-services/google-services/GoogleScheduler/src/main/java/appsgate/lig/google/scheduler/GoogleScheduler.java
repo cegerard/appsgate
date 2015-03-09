@@ -383,6 +383,12 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 		currentRefresh = (long)refresh;
 		refreshTask(currentRefresh);
 		logger.debug("refresh Task successfully changed");
+		try {
+			resetScheduler();
+			logger.debug("All schedules have been computed again");
+		} catch(SchedulingException exc) {
+			logger.error("Error occured, scheduler has not been refreshed : "+exc.getMessage());
+		}
 	}
 
 	/**

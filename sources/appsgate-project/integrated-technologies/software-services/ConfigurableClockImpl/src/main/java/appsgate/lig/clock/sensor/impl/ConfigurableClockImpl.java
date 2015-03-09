@@ -537,7 +537,7 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements
 			long nearestSingle = nearestSingleAlarmDelay(currentTime);
 			long nearestPeriodic = nearestPeriodicAlarmDelay(currentTime);
 
-			logger.trace("calculateNextTimer(), nextAlarmId : " + nextAlarmId
+			logger.trace("calculateNextTimer(), nextAlarmId (real milliseconds) : " + nextAlarmId
 					+ ", nextAlarmTime : " + nextAlarmTime
 					+ ", nearestSingle :" + nearestSingle + ", nearestPeriodic"
 					+ nearestPeriodic);
@@ -555,7 +555,9 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements
 				nextAlarmDelay = (long) (nextAlarmDelay / flowRate);
 
 				logger.trace("calculateNextTimer(), next alarm should ring in : "
-						+ nextAlarmDelay + "ms");
+						+ nextAlarmDelay + "ms" +
+						", representing " + nextAlarmDelay/60000 + " min "
+						+" and " + (nextAlarmDelay-((nextAlarmDelay/60000)*60000))%1000 +  "secs");
 				AlarmFiringTask nextAlarm = new AlarmFiringTask(this);
 				if (timer != null)
 					timer.cancel();
