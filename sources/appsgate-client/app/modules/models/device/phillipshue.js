@@ -223,7 +223,7 @@ define([
      * Send a message to the backend to update the attribute value
      */
     sendValue: function() {
-      if (this.get("value") === "true" || this.get("value") === true) {
+      if (this.get("state") === "true" || this.get("state") === true) {
         this.switchOn();
       } else {
         this.switchOff();
