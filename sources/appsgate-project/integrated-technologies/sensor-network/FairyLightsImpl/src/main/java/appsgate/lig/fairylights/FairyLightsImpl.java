@@ -59,14 +59,22 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 	public static final String KEY_ID = "id";
 	
 	public FairyLightsImpl() {
-		
-		try {
-			Inet4Address address = (Inet4Address) Inet4Address.getByName(DEFAULT_HOST);
-			host=DEFAULT_PROTOCOL + address.getHostAddress();
-			coreObjectId = FairyLightsImpl.class.getSimpleName()+"-"+host;
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		logger.trace("FairyLightsImpl(), default constructor");
+		if(HttpUtils.testURLTimeout(DEFAULT_PROTOCOL+DEFAULT_HOST+LUMIPIXEL_API_URL, 30*1000) ) {		
+			try {
+
+				Inet4Address address = (Inet4Address) Inet4Address.getByName(DEFAULT_HOST);
+				host=DEFAULT_PROTOCOL + address.getHostAddress();
+				coreObjectId = FairyLightsImpl.class.getSimpleName()+"-"+host;
+				logger.trace("FairyLightsImpl(), the device is available, instanciation success");
+
+			} catch (UnknownHostException e) {
+				logger.info("FairyLightsImpl(), the device is NOT available,"+ e.getMessage());
+				throw new RuntimeException("FairyLights unavailable, must destroy the instance");
+			}
+		} else {
+			logger.info("FairyLightsImpl(), timeout when calling the lumipixel device, it is NOT available");
+			throw new RuntimeException("FairyLights unavailable, must destroy the instance");
 		}
 	}
 	
