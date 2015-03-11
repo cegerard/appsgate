@@ -30,8 +30,6 @@ import java.util.Timer;
 public class WeatherObserverImpl extends AbstractObjectSpec implements
 		ExtendedWeatherObserver, AlarmEventObserver, CoreObjectSpec {
 
-	protected String appsgatePictureId;
-
 	protected String appsgateUserType;
 	protected String appsgateDeviceStatus;
 	protected String appsgateObjectId;
@@ -116,7 +114,6 @@ public class WeatherObserverImpl extends AbstractObjectSpec implements
 		descr.put("type", appsgateUserType);
 		descr.put("status", appsgateDeviceStatus);
 		descr.put("woeid", currentWoeid);
-		descr.put("pictureId", appsgatePictureId);
 		try {
 			this.refresh();
 			descr.put("presentationURL", getPresentationURL());
@@ -178,7 +175,7 @@ public class WeatherObserverImpl extends AbstractObjectSpec implements
 
 	private NotificationMsg fireWeatherNotificationMsg(String varName,
 			String oldValue, String newValue) {
-		return new CoreNotificationMsg(varName, oldValue, newValue, this);
+		return new CoreNotificationMsg(varName, oldValue, newValue, this.getAbstractObjectId());
 	}
 
 	@Override

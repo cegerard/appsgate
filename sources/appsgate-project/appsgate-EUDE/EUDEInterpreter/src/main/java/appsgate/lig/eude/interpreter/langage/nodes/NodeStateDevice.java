@@ -10,7 +10,8 @@ import appsgate.lig.ehmi.spec.EHMIProxySpec;
 import appsgate.lig.ehmi.spec.StateDescription;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
-import appsgate.lig.eude.interpreter.spec.ProgramCommandNotification;
+import appsgate.lig.eude.interpreter.spec.ProgramDeviceStateNotification;
+import appsgate.lig.eude.interpreter.spec.ProgramNotification;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -148,12 +149,11 @@ public class NodeStateDevice extends NodeState {
         }
         String targetId = object.getResult().getValue();
         LOGGER.trace("Asking for {}, {}", object.getResult().getValue(), desc.getStateName());
-        ProgramCommandNotification notif = null;
-               //getProgramLineNotification(null, targetId, "Reading from", ProgramCommandNotification.Type.READ, null);
 
+        
         GenericCommand cmd = null;
         try {
-            cmd = getMediator().executeCommand(targetId, desc.getStateName(), new JSONArray(), notif);
+            cmd = getMediator().executeCommand(targetId, desc.getStateName(), new JSONArray());
         } catch (SpokExecutionException ex) {
         }
         if (cmd == null) {
@@ -166,6 +166,13 @@ public class NodeStateDevice extends NodeState {
             LOGGER.error("There was no return value, returning null");
             return null;
         }
+        ProgramNotification notif = new ProgramDeviceStateNotification(this.getProgramNode(), this.getIID(), targetId, desc.getStateName(), aReturn.toString());
+        try {
+            getMediator().notifyChanges(notif);
+        } catch (SpokExecutionException ex) {
+            LOGGER.error("Unable to get Mediator");
+        }
+
         LOGGER.debug("Is of state: [" + aReturn.toString() + "] compared to: [" + desc.getStateValue() + "]");
         return (desc.getStateValue().equalsIgnoreCase(aReturn.toString()));
     }

@@ -13,7 +13,7 @@
 			<ipojo:callback type="unbind" method="unboundDevice" />
 		</ipojo:requires>
 
-        <relation specification="AppsgateClientCommunicationManagerSpec" creation="eager"  resolve="external" >
+        <relation specification="CommunicationManagerSpec" creation="eager"  resolve="external" >
             <interface field="listenerService"/>
             <interface field="sendToClientService"/>
         </relation>     

@@ -18,7 +18,6 @@ public class AppsgateOnOffKNXDevice extends CoreObjectBehavior implements CoreOb
     protected String deviceId;
     protected String deviceType;
 
-    protected String pictureId;
     protected String userType;
     protected String status;
 
@@ -40,11 +39,6 @@ public class AppsgateOnOffKNXDevice extends CoreObjectBehavior implements CoreOb
     }
 
     @Override
-    public String getPictureId() {
-        return null;
-    }
-
-    @Override
     public JSONObject getDescription() throws JSONException {
 
 
@@ -61,11 +55,6 @@ public class AppsgateOnOffKNXDevice extends CoreObjectBehavior implements CoreOb
 
     private Switch getDevice(){
         return (Switch) CST.apamResolver.findInstByName(null,deviceName).getServiceObject();
-    }
-
-    @Override
-    public void setPictureId(String pictureId) {
-
     }
 
     @Override
@@ -89,7 +78,7 @@ public class AppsgateOnOffKNXDevice extends CoreObjectBehavior implements CoreOb
     }
 
     private NotificationMsg notifyChanges(String varName, String oldValue, String newValue) {
-        return new OnOffActuatorNotificationMsg(varName, oldValue, newValue, this);
+        return new OnOffActuatorNotificationMsg(varName, oldValue, newValue, this.getAbstractObjectId());
     }
 
     public void statusChanged(String newStatus) {

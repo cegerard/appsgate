@@ -16,7 +16,6 @@
             field="appsgateSensorType" />
 
         <!-- device client meta data -->
-        <definition name="pictureId" type="string" field="appsgatePictureId" />
         <definition name="userType" type="string" field="appsgateUserType" />
         <definition name="status" type="string" field="appsgateStatus" />
 

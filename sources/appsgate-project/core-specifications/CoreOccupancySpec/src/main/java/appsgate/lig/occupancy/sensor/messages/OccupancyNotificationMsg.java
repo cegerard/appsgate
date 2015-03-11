@@ -26,7 +26,7 @@ public class OccupancyNotificationMsg extends CoreNotificationMsg {
      * @param varName the property name that change
      * @param value the new property value
      */
-    public OccupancyNotificationMsg(CoreObjectSpec source, boolean newOccupancy, String varName, String value) {
+    public OccupancyNotificationMsg(String source, boolean newOccupancy, String varName, String value) {
         super(varName, value, source);
         this.newOccupancy = newOccupancy;
     }

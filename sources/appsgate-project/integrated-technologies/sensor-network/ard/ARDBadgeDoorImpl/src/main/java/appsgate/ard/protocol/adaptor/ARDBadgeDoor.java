@@ -48,7 +48,6 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
      * 2 = In line or connected
      */
     private String status;
-    private String pictureId;
     private Integer doorID=-1;
 
     public void setLastCard(String lastCard) {
@@ -88,9 +87,6 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
         return 0;
     }
 
-    public String getPictureId() {
-        return pictureId;
-    }
 
     public JSONObject getDescription() throws JSONException {
 
@@ -110,10 +106,6 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
         fillUpCards(descr);
 
         return descr;
-    }
-
-    public void setPictureId(String pictureId) {
-
     }
 
     public CORE_TYPE getCoreType() {
@@ -343,8 +335,8 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
             Integer newDoorID=eventNode.getInt("door_idx");
             String newArdClass=eventNode.getString("class");
 
-            triggerApamMessage(new ARDBadgeDoorContactNotificationMsg("door_idx",doorID.toString(),newDoorID.toString(),this));
-            triggerApamMessage(new ARDBadgeDoorContactNotificationMsg("ardClass",ardClass,newArdClass,this));
+            triggerApamMessage(new ARDBadgeDoorContactNotificationMsg("door_idx",doorID.toString(),newDoorID.toString(),this.getAbstractObjectId()));
+            triggerApamMessage(new ARDBadgeDoorContactNotificationMsg("ardClass",ardClass,newArdClass,this.getAbstractObjectId()));
 
             doorID=newDoorID;
             ardClass=newArdClass;
@@ -359,7 +351,7 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
     public void apamMessageReceived(NotificationMsg mesg){
 
             if(mesg.getVarName().equals("contact")){
-                syncAppsgateContactWithARDInput(mesg.getSource().getAbstractObjectId(),!Boolean.parseBoolean(mesg.getNewValue()));
+                syncAppsgateContactWithARDInput(mesg.getSource(),!Boolean.parseBoolean(mesg.getNewValue()));
                 logger.debug("Apam Message received var name {} old value {} new value {}", mesg.getVarName(), mesg.getOldValue(),mesg.getNewValue());
             }
 

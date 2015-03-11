@@ -52,7 +52,6 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 	/**
 	 * Core Object Spec properties
 	 */
-	private String appsgatePictureId;
 	private String appsgateUserType;
 	private String appsgateStatus;
 	private String appsgateServiceName;
@@ -78,33 +77,9 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 		deviceId 	= instance.getProperty(UPnPDevice.ID);
 		logger.trace("initialize(Instance instance), deviceId: "+deviceId);
 
-		appsgatePictureId = null;
 		appsgateServiceName = "Appsgate UPnP Media player";
 		appsgateUserType = "31";
 		appsgateStatus = "2";	
-
-		// TODO, check previous status of the player, and check the volume
-		// Note that metadata MUST have been set during the "play" method (this is not the case actually)
-//		if(aVTransport == null) {
-//			logger.info("No avTransport service available");
-//		} else {	
-//		try {
-//			aVTransport.g
-//			aVTransport.setAVTransportURI(0,mediaURL,"");
-//			aVTransport.play(0,"1");
-//			stateChanged("mediaURL", currentMediaURL, mediaURL);
-//			currentMediaURL = mediaURL;			
-//			if(mediaName != null) {
-//				stateChanged("mediaName", currentMediaName, mediaName);
-//				currentMediaName = mediaName;
-//			}
-//
-//
-//		} catch (UPnPException ignored) {
-//			logger.error("Cannot Play, cause : "+ignored.getMessage()
-//					+"UPnP error code : "+ignored.getUPnPError_Code());
-//		}
-//		}
 	}
 
 	/*
@@ -150,15 +125,6 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 		return Integer.parseInt(appsgateStatus);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see appsgate.lig.core.object.spec.CoreObjectSpec#getPictureId()
-	 */
-	@Override
-	public String getPictureId() {
-		return appsgatePictureId;
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -170,17 +136,6 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 		return appsgateUserType;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * appsgate.lig.core.object.spec.CoreObjectSpec#setPictureId(java.lang.String
-	 * )
-	 */
-	@Override
-	public void setPictureId(String pictureId) {
-		this.appsgatePictureId = pictureId;
-	}
 
 	@Override
 	public void play(String mediaURL) {
@@ -379,7 +334,7 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 
 
 	private NotificationMsg stateChanged(String varName, String oldValue, String newValue) {
-		return new CoreNotificationMsg(varName, oldValue, newValue, this);
+		return new CoreNotificationMsg(varName, oldValue, newValue, this.getAbstractObjectId());
 	}
 
 	@Override

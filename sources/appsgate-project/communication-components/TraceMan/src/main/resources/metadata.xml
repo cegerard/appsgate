@@ -13,7 +13,7 @@
             <interface field="EHMIProxy"/>
         </relation>
 
-        <relation specification="AppsGateContextDevicePropertiesTableSpec" resolve="exist" >
+        <relation specification="DevicePropertiesTableSpec" resolve="exist" >
             <interface field="devicePropTable"/>
         </relation>
         <relation specification="PlaceManagerSpec" resolve="exist" >

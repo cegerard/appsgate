@@ -77,11 +77,6 @@ public class EnoceanTemperatureSensorImpl extends CoreObjectBehavior implements 
 	 * 2 = In line or connected
 	 */
 	private String status;
-
-	/**
-	 * The current picture identifier
-	 */
-	private String pictureId;
 	
 	/**
 	 * EnOcean proxy service uses to validate the sensor configuration with the
@@ -144,17 +139,6 @@ public class EnoceanTemperatureSensorImpl extends CoreObjectBehavior implements 
 	@Override
 	public int getObjectStatus() {
 		return Integer.valueOf(status);
-	}
-
-	@Override
-	public String getPictureId() {
-		return pictureId;
-	}
-
-	@Override
-	public void setPictureId(String pictureId) {
-		this.pictureId = pictureId;
-		notifyChanges("pictureId", pictureId);
 	}
 	
 	@Override
@@ -232,7 +216,7 @@ public class EnoceanTemperatureSensorImpl extends CoreObjectBehavior implements 
 	 *         posted.
 	 */
 	public NotificationMsg notifyChanges(String varName, String value) {
-		return new TemperatureNotificationMsg(Float.valueOf(currentTemperature), varName, value, this);
+		return new TemperatureNotificationMsg(Float.valueOf(currentTemperature), varName, value, this.getAbstractObjectId());
 	}
 
 	@Override

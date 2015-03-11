@@ -12,7 +12,6 @@
 		<definition name="deviceName" 	 type="string" default="Unknown" 		field="sensorName"/>
 		<definition name="deviceId"   	 type="string" default="000000"		    field="sensorId"/>
 		<definition name="deviceType" 	 type="string" default="EnOcean_DEVICE" field="sensoreType"/>
-		<definition name="pictureId"  	 type="string"			 			    field="pictureId"/>
 		<definition name="userType"	  	 type="string" default="4" 			    field="userType"/>
 		<definition name="status"	  	 type="string" default="2" 			    field="status" 		  method="statusChanged"/>
 		<definition name="isPaired"   	 type="string" default="false" 		    field="isPaired" 	  method="isPairedChanged"/>

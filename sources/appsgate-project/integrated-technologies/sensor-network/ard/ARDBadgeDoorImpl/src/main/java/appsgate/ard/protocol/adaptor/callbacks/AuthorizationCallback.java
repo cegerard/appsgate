@@ -31,7 +31,7 @@ public class AuthorizationCallback implements ARDMessage {
         }catch(JSONException e){
             logger.warn("No status received.",e);
         } finally {
-            door.triggerApamMessage(new ARDBadgeDoorContactNotificationMsg("authorized", oldvalue, newAuthorized.toString(), door));
+            door.triggerApamMessage(new ARDBadgeDoorContactNotificationMsg("authorized", oldvalue, newAuthorized.toString(), door.getAbstractObjectId()));
             door.setAuthorized(newAuthorized);
         }
     }

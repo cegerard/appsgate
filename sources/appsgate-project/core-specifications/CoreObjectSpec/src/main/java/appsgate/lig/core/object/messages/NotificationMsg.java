@@ -19,7 +19,7 @@ public interface NotificationMsg {
 	 * Get the source of this notification
 	 * @return the AbstractObject view of the source object or service
 	 */
-	public CoreObjectSpec getSource();
+	public String getSource();
 	
 	/**
 	 * Get the new value.

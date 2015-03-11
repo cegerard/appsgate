@@ -31,7 +31,7 @@ public class KeyCardNotificationMsg extends CoreNotificationMsg {
      * @param value the new value for the variable that changed
      * @param source the source object reference
      */
-    public KeyCardNotificationMsg(boolean isCardInserted, int cardNumber, String varName, String value, CoreObjectSpec source) {
+    public KeyCardNotificationMsg(boolean isCardInserted, int cardNumber, String varName, String value, String source) {
         super(varName, value, source);
         this.isCardInserted = isCardInserted;
         this.cardNumber = cardNumber;
@@ -45,7 +45,7 @@ public class KeyCardNotificationMsg extends CoreNotificationMsg {
      * @param value the new value for the variable that changed
      * @param source the source object reference
      */
-    public KeyCardNotificationMsg(boolean isCardInserted, String varName, String value, CoreObjectSpec source) {
+    public KeyCardNotificationMsg(boolean isCardInserted, String varName, String value, String source) {
         super(varName, value, source);
         this.isCardInserted = isCardInserted;
         this.cardNumber = -1;
@@ -59,7 +59,7 @@ public class KeyCardNotificationMsg extends CoreNotificationMsg {
      * @param value the new value for the variable that changed
      * @param source the source object reference
      */
-    public KeyCardNotificationMsg(int cardNumber, String varName, String value, CoreObjectSpec source) {
+    public KeyCardNotificationMsg(int cardNumber, String varName, String value, String source) {
         super(varName, value, source);
         this.isCardInserted = false;
         this.cardNumber = cardNumber;

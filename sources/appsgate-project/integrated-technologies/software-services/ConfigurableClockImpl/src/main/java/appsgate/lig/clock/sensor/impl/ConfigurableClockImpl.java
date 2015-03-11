@@ -130,7 +130,7 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements
 
 	public ClockSetNotificationMsg fireClockSetNotificationMsg(
 			Calendar oldTime, Calendar newTime) {
-		return new ClockSetNotificationMsg(this, oldTime.getTime().toString(),
+		return new ClockSetNotificationMsg(this.getAbstractObjectId(), oldTime.getTime().toString(),
 				newTime.getTime().toString());
 	}
 
@@ -215,14 +215,12 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements
 		fireClockSetNotificationMsg(oldCalendar, calendar);
 	}
 
-	private String appsgatePictureId;
 	private String appsgateObjectId;
 	private String appsgateUserType;
 	private String appsgateStatus;
 	private String appsgateServiceName;
 
 	protected void initAppsgateFields() {
-		appsgatePictureId = null;
 		appsgateServiceName = "SystemClock";
 		appsgateUserType = "21";
 		appsgateStatus = "2";
@@ -284,16 +282,6 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see appsgate.lig.core.object.spec.CoreObjectSpec#getPictureId()
-	 */
-	@Override
-	public String getPictureId() {
-		return appsgatePictureId;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see appsgate.lig.core.object.spec.CoreObjectSpec#getUserType()
 	 */
 	@Override
@@ -301,17 +289,6 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements
 		return appsgateUserType;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * appsgate.lig.core.object.spec.CoreObjectSpec#setPictureId(java.lang.String
-	 * )
-	 */
-	@Override
-	public void setPictureId(String pictureId) {
-		this.appsgatePictureId = pictureId;
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -560,7 +537,7 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements
 			long nearestSingle = nearestSingleAlarmDelay(currentTime);
 			long nearestPeriodic = nearestPeriodicAlarmDelay(currentTime);
 
-			logger.trace("calculateNextTimer(), nextAlarmId : " + nextAlarmId
+			logger.trace("calculateNextTimer(), nextAlarmId (real milliseconds) : " + nextAlarmId
 					+ ", nextAlarmTime : " + nextAlarmTime
 					+ ", nearestSingle :" + nearestSingle + ", nearestPeriodic"
 					+ nearestPeriodic);
@@ -578,7 +555,9 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements
 				nextAlarmDelay = (long) (nextAlarmDelay / flowRate);
 
 				logger.trace("calculateNextTimer(), next alarm should ring in : "
-						+ nextAlarmDelay + "ms");
+						+ nextAlarmDelay + "ms" +
+						", representing " + nextAlarmDelay/60000 + " min "
+						+" and " + (nextAlarmDelay-((nextAlarmDelay/60000)*60000))%1000 +  "secs");
 				AlarmFiringTask nextAlarm = new AlarmFiringTask(this);
 				if (timer != null)
 					timer.cancel();
@@ -624,14 +603,14 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements
 	}
 
 	public NotificationMsg fireClockAlarmNotificationMsg(int alarmEventId) {
-		return new ClockAlarmNotificationMsg(this, alarmEventId);
+		return new ClockAlarmNotificationMsg(this.getAbstractObjectId(), alarmEventId);
 	}
 
 
 
 	public FlowRateSetNotification fireFlowRateSetNotificationMsg(
 			double oldFlowRate, double newFlowRate) {
-		return new FlowRateSetNotification(this, String.valueOf(oldFlowRate),
+		return new FlowRateSetNotification(this.getAbstractObjectId(), String.valueOf(oldFlowRate),
 				String.valueOf(newFlowRate));
 	}
 	

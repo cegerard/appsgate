@@ -30,7 +30,7 @@ public class ARDMessageCallback implements ARDMessage {
         }catch(JSONException e){
             logger.warn("No cause received.",e);
         }finally {
-            door.triggerApamMessage(new ARDBadgeDoorContactNotificationMsg("lastMessage", oldvalue, newLastMessage, door));
+            door.triggerApamMessage(new ARDBadgeDoorContactNotificationMsg("lastMessage", oldvalue, newLastMessage, door.getAbstractObjectId()));
             door.setLastMessage(newLastMessage);
         }
 

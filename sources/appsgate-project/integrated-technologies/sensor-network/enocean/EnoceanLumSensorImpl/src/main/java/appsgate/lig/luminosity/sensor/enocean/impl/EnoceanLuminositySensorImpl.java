@@ -76,11 +76,6 @@ public class EnoceanLuminositySensorImpl extends CoreObjectBehavior implements C
     private String status;
 
     /**
-     * The current picture identifier
-     */
-    private String pictureId;
-
-    /**
      * EnOcean proxy service uses to validate the sensor configuration with the
      * EnOcean proxy (pairing phase)
      */
@@ -160,17 +155,6 @@ public class EnoceanLuminositySensorImpl extends CoreObjectBehavior implements C
     }
 
     @Override
-    public String getPictureId() {
-        return pictureId;
-    }
-
-    @Override
-    public void setPictureId(String pictureId) {
-        this.pictureId = pictureId;
-        notifyChanges("pictureId", pictureId);
-    }
-
-    @Override
     public JSONObject getDescription() throws JSONException {
         JSONObject descr = new JSONObject();
         descr.put("id", sensorId);
@@ -242,7 +226,7 @@ public class EnoceanLuminositySensorImpl extends CoreObjectBehavior implements C
      * posted.
      */
     public NotificationMsg notifyChanges(String varName, String value) {
-        return new IlluminationNotificationMsg(Integer.valueOf(currentIllumination), varName, value, this);
+        return new IlluminationNotificationMsg(Integer.valueOf(currentIllumination), varName, value, this.getAbstractObjectId());
     }
 
     @Override

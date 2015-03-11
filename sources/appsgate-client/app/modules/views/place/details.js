@@ -109,7 +109,7 @@ define([
                 $("#device-" + device.cid + "-consumption").text(device.getValue() + " W");
                 break;
               case "7":
-                if (device.get("value") === "true" || device.get("value") === true) {
+                if (device.get("state") === "true" || device.get("state") === true) {
                   $("#device-" + device.cid + "-button").attr("data-i18n", "devices.lamp.action.turnOff");
                   $("#device-" + device.cid + "-value").attr("data-i18n", "devices.lamp.status.turnedOn");
                   $("#device-" + device.cid + "-value").attr("class", "label label-yellow");
@@ -355,7 +355,7 @@ define([
 
             var lamp = devices.get($(e.currentTarget).attr("device-id"));
 
-            if (lamp.get("value") === "true" || lamp.get("value") === true) {
+            if (lamp.get("state") === "true" || lamp.get("state") === true) {
               lamp.switchOff();
             } else {
               lamp.switchOn();

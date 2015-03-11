@@ -31,7 +31,6 @@ public class MobileDeviceImpl extends CoreObjectBehavior implements CoreObjectSp
 	private String deviceName;
 	private String deviceId;
 	private String deviceType;
-	private String pictureId;
 	private String userType;
 	private String status;
 	
@@ -63,7 +62,7 @@ public class MobileDeviceImpl extends CoreObjectBehavior implements CoreObjectSp
 	 *         posted.
 	 */
 	public NotificationMsg notifyChanges(String varName, String value) {
-		return new MobileDeviceNotificationMsg(varName, value, this);
+		return new MobileDeviceNotificationMsg(varName, value, this.getAbstractObjectId());
 	}
 	
 	
@@ -122,21 +121,9 @@ public class MobileDeviceImpl extends CoreObjectBehavior implements CoreObjectSp
 	}
 
 	@Override
-	public String getPictureId() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public JSONObject getDescription() throws JSONException {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public void setPictureId(String pictureId) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override

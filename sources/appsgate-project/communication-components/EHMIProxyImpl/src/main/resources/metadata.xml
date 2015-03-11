@@ -19,13 +19,14 @@
 		<relation field="placeManager" resolve="exist" />
 		<relation field="userManager" resolve="exist"/>
 		<relation field="interpreter"  resolve="exist"/>
+		<relation field="dependency"  resolve="exist"/>
 		<relation field="traceManager" resolve="exist" creation="eager" added="traceManBound"/>
         <relation field="weatherAdapter" resolve="exist" fail="wait" />
         <relation field="schedulerService" resolve="exist" />
         
 
 
-        <relation specification="AppsgateClientCommunicationManagerSpec" resolve="exist"
+        <relation specification="CommunicationManagerSpec" resolve="exist"
 			fail="exception" >
 			<interface field="addListenerService" />
 			<interface field="sendToClientService" />

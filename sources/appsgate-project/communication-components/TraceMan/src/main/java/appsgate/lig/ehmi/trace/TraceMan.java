@@ -21,7 +21,6 @@ import appsgate.lig.eude.interpreter.spec.ProgramTraceNotification;
 import appsgate.lig.manager.place.spec.PlaceManagerSpec;
 import appsgate.lig.manager.place.spec.SymbolicPlace;
 import appsgate.lig.persistence.MongoDBConfiguration;
-import java.util.logging.Level;
 
 /**
  * This component get CHMI from the EHMI proxy and got notifications for each
@@ -247,6 +246,8 @@ public class TraceMan implements TraceManSpec {
             JSONObject coreNotif = Trace.getCoreNotif(deviceJson, null);
             //Trace the notification JSON object in the trace file
             trace(coreNotif, timeStamp);
+        } else {
+            LOGGER.debug("This command [{}] to {} from [{}] does not generate a trace", command, objectID, caller);
         }
     }
 

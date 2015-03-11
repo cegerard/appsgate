@@ -515,8 +515,30 @@
                                     <groupId>appsgate.components</groupId>
                                     <artifactId>YakitomeTTS</artifactId>
                                     <version>${project.version}</version>
-                                </artifactItem>                                  
+                                </artifactItem>  
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
+                                    <artifactId>DependencyManagerSpec</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>  
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
+                                    <artifactId>DependencyManagerMongoImpl</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>  
                                 
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
+                                    <artifactId>CoreFairyLightsSpec</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>  
+                                
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
+                                    <artifactId>FairyLightsImpl</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>  
+                                                                
                             </artifactItems>
                             <outputDirectory>${basedir}/load</outputDirectory>
                             <overWriteSnapshots>true</overWriteSnapshots>

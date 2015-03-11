@@ -539,7 +539,7 @@ public class UbikitAdapter extends CoreObjectBehavior implements
 	}
 	
 	public NotificationMsg fireNotificationMessage(String varName, String oldValue, String newValue) {
-		return new CoreNotificationMsg(varName, oldValue, newValue, this);
+		return new CoreNotificationMsg(varName, oldValue, newValue, this.getAbstractObjectId());
 	}
 
 
@@ -643,11 +643,6 @@ public class UbikitAdapter extends CoreObjectBehavior implements
 		return status;
 	}
 
-	@Override
-	public String getPictureId() {
-		// Deprecated
-		return null;
-	}
 
 	@Override
 	public JSONObject getDescription() throws JSONException {
@@ -658,11 +653,6 @@ public class UbikitAdapter extends CoreObjectBehavior implements
 		descr.put("pairingMode", "unknown");
 
 		return descr;
-	}
-
-	@Override
-	public void setPictureId(String pictureId) {
-		// Deprecated
 	}
 
 	@Override

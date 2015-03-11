@@ -7,7 +7,7 @@
         <contentMngt>
             <start implementation="ConfigurableClockImpl" name="ConfigurableClockInst"></start>
             
-            <start  implementation="AppsgateClientCommunicationManager" name="WebSocketCommunicationManagerInst" ></start>
+            <start  implementation="CommunicationManager" name="WebSocketCommunicationManagerInst" ></start>
             
             <start  implementation="EHMIProxyImpl" name="EHMIProxyImplInst" ></start>
             
@@ -19,8 +19,6 @@
 
             <start implementation="AppsGatePersistency" name="AppsGatePersistencyInst"></start>
             
-            <start implementation="TraceMan" name="TraceManInst"></start>
-
             <start implementation="AppsGateGoogleServices" name="AppsGateGoogleServicesInst"></start>
 
             <start implementation="AppsGateHUEServices" name="AppsGateHUEServicesInst"></start>
@@ -43,6 +41,7 @@
             
             <start implementation="LocalAudioPlayer" name="LocalAudioPlayerInst"></start>
             
+            <start implementation="FairyLightsImpl" name="FairyLightsInst"></start>
             
             
         </contentMngt>
@@ -119,11 +118,12 @@
     <composite name="AppsGatePersistency" singleton="true">
         <contentMngt>
             <start implementation="MongoDBConfigFactory" name="Global-MongoDBConfigFactory" />
-            <start implementation="PropertyHistoryManagerMongoImpl" name="Global-PropertyHistoryManager" />
-            <start implementation="ContextHistoryMongoImpl" name="Global-ContextHistoryManager" />
+            <start implementation="PropertyHistoryImpl" name="Global-PropertyHistoryManager" />
+            <start implementation="ContextHistoryImpl" name="Global-ContextHistoryManager" />
             <start implementation="PlaceManagerImpl" name="Global-PlaceManager" />
-            <start implementation="AppsGateContextDevicePorpertiesTableImpl" name="Global-DevicePropertiesTableManager" />
-            <start implementation="AppsGateContextUserBaseImpl" name="Global-UserBaseManager" />
+            <start implementation="DevicePropertiesTableImpl" name="Global-DevicePropertiesTableManager" />
+            <start implementation="UserBaseImpl" name="Global-UserBaseManager" />
+            <start implementation="TraceMan" name="TraceManInst"></start>
         </contentMngt>
     </composite>
 

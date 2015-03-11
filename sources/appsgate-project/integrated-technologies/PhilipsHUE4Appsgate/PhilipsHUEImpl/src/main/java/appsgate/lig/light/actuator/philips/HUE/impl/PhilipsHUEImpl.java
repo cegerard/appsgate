@@ -50,7 +50,6 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
     private String actuatorId;
     private String actuatorType;
 
-    private String pictureId;
     private String userType;
 
     private String lightBridgeId;
@@ -240,6 +239,8 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
     public boolean on(Integer transitionTime) {
         if (PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "on", true, transitionTime)) {
             on = String.valueOf(true);
+            notifyChanges("state", null, "on");
+
             return true;
         }
 
@@ -262,6 +263,8 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
     public boolean off(Integer transitionTime) {
         if (PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "on", false, transitionTime)) {
             on = String.valueOf(false);
+            notifyChanges("state", null, "false");
+
             return true;
         }
 
@@ -584,11 +587,6 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
     }
 
     @Override
-    public String getPictureId() {
-        return pictureId;
-    }
-
-    @Override
     public JSONObject getDescription() throws JSONException {
 
         JSONObject descr = new JSONObject();
@@ -605,17 +603,10 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
         descr.put("saturation", getLightColorSaturation());
         descr.put("brightness", getLightBrightness());
         descr.put("rgbcolor", getHTMLColor());
-        //Entry added for configuration GUI
 
         return descr;
     }
 
-    @Override
-    public void setPictureId(String pictureId) {
-        notifyChanges("pictureId", this.pictureId, pictureId);
-        this.pictureId = pictureId;
-
-    }
 
     public String getActuatorType() {
         return actuatorType;
@@ -733,7 +724,7 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
      * posted.
      */
     public NotificationMsg notifyChanges(String varName, String oldValue, String newValue) {
-        return new ColorLightNotificationMsg(varName, oldValue, newValue, this);
+        return new ColorLightNotificationMsg(varName, oldValue, newValue, this.getAbstractObjectId());
     }
 
     /**

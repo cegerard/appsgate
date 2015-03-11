@@ -319,23 +319,6 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 	public int getObjectStatus() {
 		return coreObjectStatus;
 	}	
-	
-	/**
-	 * @deprecated
-	 */
-	@Override
-	public String getPictureId() {
-		// Will be removed
-		return null;
-	}
-
-	/**
-	 * @deprecated
-	 */
-	@Override
-	public void setPictureId(String pictureId) {
-		// will be removed
-	}
 
 	@Override
 	public JSONObject getSpeechTextItem(int book_id) {
@@ -537,7 +520,7 @@ public class TTSServiceImpl extends CoreObjectBehavior implements TTSItemsListen
 	}
 	
 	private NotificationMsg stateChanged(String varName, String oldValue, String newValue) {
-		return new CoreNotificationMsg(varName, oldValue, newValue, this);
+		return new CoreNotificationMsg(varName, oldValue, newValue, this.getAbstractObjectId());
 	}
 
 	@Override

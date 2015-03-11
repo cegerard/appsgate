@@ -5,6 +5,7 @@
  */
 package appsgate.lig.eude.interpreter.references;
 
+import appsgate.lig.ehmi.spec.EHMIProxySpec;
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
 import appsgate.lig.eude.interpreter.langage.components.SpokParser;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
@@ -92,7 +93,7 @@ public class GraphManager {
     public void buildGraph() {
         initJSONObject();
         // Retrieving programs id
-        this.programsId = interpreter.getListProgramIds(null);
+        refreshProgramIdList();
 
         // Collection used to store the selector we added
         ArrayList<NodeSelect> selectorsSaved = new ArrayList<NodeSelect>();
@@ -107,7 +108,7 @@ public class GraphManager {
 
         /* BUILD NODES FROM PROGRAMS */
         for (String pid : programsId) {
-            NodeProgram p = interpreter.getNodeProgram(pid);
+            NodeProgram p = getProgramNode(pid);
             if (p != null) {
 
                 // Get the current status of the program
@@ -144,7 +145,7 @@ public class GraphManager {
 
         /* BUILD NODES FROM DEVICES */
         // Retrieving devices id
-        JSONArray devices = this.interpreter.getContext().getDevices();
+        JSONArray devices = getContext().getDevices();
         for (int i = 0; i < devices.length(); i++) {
             try {
                 JSONObject o = devices.getJSONObject(i);
@@ -175,14 +176,15 @@ public class GraphManager {
 
         /* BUILD PLACE NODES */
         buildPlaces();
-
+        
+        saveDependencyGraph();
     }
 
     /**
      * Method add the node placs to the json object
      */
     private void buildPlaces() {
-        JSONArray places = this.interpreter.getContext().getPlaces();
+        JSONArray places = getContext().getPlaces();
         for (int i = 0; i < places.length(); i++) {
             try {
                 addPlace(places.getJSONObject(i));
@@ -205,7 +207,7 @@ public class GraphManager {
     /**
      * Method to build the planification link of a program
      *
-     * @param pid : id of the program we want to build planificatin links
+     * @param pid : id of the program we want to build planification links
      */
     private boolean buildPlanificationLink(String pid) {
         boolean isOnePlanification = false;
@@ -215,7 +217,7 @@ public class GraphManager {
         Callable<Object> task = new Callable<Object>() {
             @Override
             public Object call() {
-                return interpreter.getContext().checkProgramsScheduled();
+                return getContext().checkProgramsScheduled();
             }
         };
         Future<Object> future = executor.submit(task);
@@ -519,7 +521,7 @@ public class GraphManager {
                 // Save the type of the devices once (because they have all the same type, so that avoid to make multiple call to the interpreter)
                 if (typeDevices.equals("")) {
                     try {
-                        typeDevices = interpreter.getContext().getDevice(deviceId).getString(("type"));
+                        typeDevices = getContext().getDevice(deviceId).getString(("type"));
                     } catch (JSONException ex) {
                         java.util.logging.Logger.getLogger(GraphManager.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -568,7 +570,7 @@ public class GraphManager {
                     // "isGhost" not presented in JSON, so catch JSONException
                     if (node.get("type") == DEVICE_ENTITY) {
                         // Device
-                        JSONObject currentDevice = this.interpreter.getContext().getDevice(node.getString("id"));
+                        JSONObject currentDevice = getContext().getDevice(node.getString("id"));
                         // If null it is a ghost, so no need to update
                         if (currentDevice == null) {
                             continue;
@@ -594,7 +596,7 @@ public class GraphManager {
                         node.put("name", currentDevice.getString("name"));
                     } else if (node.get("type") == PROGRAM_ENTITY) {
                         // Program
-                        NodeProgram currentProgram = interpreter.getNodeProgram(node.getString("id"));
+                        NodeProgram currentProgram = getProgramNode(node.getString("id"));
                         // If null it is a ghost, so no need to update
                         if (currentProgram != null) {
                             // Update state
@@ -602,8 +604,8 @@ public class GraphManager {
                         }
                     } else if (node.get("type") == PLACE_ENTITY) {
                         // Place
-                        for (int j = 0; j < this.interpreter.getContext().getPlaces().length(); j++) {
-                            JSONObject place = this.interpreter.getContext().getPlaces().getJSONObject(j);
+                        for (int j = 0; j < getContext().getPlaces().length(); j++) {
+                            JSONObject place = getContext().getPlaces().getJSONObject(j);
                             if (place.getString("id").equals(node.getString("id"))) {
                                 // Update Name
                                 node.put("name", place.getString("name"));
@@ -615,6 +617,34 @@ public class GraphManager {
         } catch (JSONException ex) {
             java.util.logging.Logger.getLogger(GraphManager.class.getName()).log(Level.SEVERE, null, ex);
         }
+        saveDependencyGraph();
+    }
+    
+    /**
+     * @return the EHMI Proxy
+     */
+    private EHMIProxySpec getContext() {
+        return this.interpreter.getContext();
+    }
+
+    /**
+     * @return the list of program ids
+     */
+    private void refreshProgramIdList() {
+        this.programsId = interpreter.getListProgramIds(null);
+    }
+
+    /**
+     * 
+     * @param pid
+     * @return the program id corresponding to the pid
+     */
+    private NodeProgram getProgramNode(String pid) {
+        return interpreter.getNodeProgram(pid);
+    }
+
+    private void saveDependencyGraph() {
+        this.interpreter.saveDependencyGraph(returnJSONObject);
     }
 
 }

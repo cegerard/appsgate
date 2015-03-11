@@ -271,3 +271,4 @@ distributions/Appsgate-distribution-light/*
 distributions/demo-android/*
 sources/appsgate-project/communication-components/EHMIProxyImpl/src/main/resources/WEB/spok/*
 distributions/complete/philips.properties
+distributions/light/philips.properties

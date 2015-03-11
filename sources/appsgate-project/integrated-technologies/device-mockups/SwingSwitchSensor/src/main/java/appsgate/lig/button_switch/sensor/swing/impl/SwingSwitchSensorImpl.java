@@ -35,10 +35,8 @@ public class SwingSwitchSensorImpl implements CoreSwitchSensorSpec,
     private String appsgateSensorType;
     private String appsgateUserType;
     private String appsgateStatus;
-    private String appsgatePictureId;
 
     private void initAppsgateFields() {
-	appsgatePictureId = null;
 	switchNumber = "-1";
 	buttonStatus = "false";
 	appsgateDeviceName = "Unknown";
@@ -109,17 +107,6 @@ public class SwingSwitchSensorImpl implements CoreSwitchSensorSpec,
     @Override
     public int getObjectStatus() {
 	return Integer.valueOf(appsgateStatus);
-    }
-
-    @Override
-    public String getPictureId() {
-	return appsgatePictureId;
-    }
-
-    @Override
-    public void setPictureId(String pictureId) {
-	this.appsgatePictureId = pictureId;
-	notifyChanges("pictureId", pictureId);
     }
 
     /**

@@ -32,7 +32,7 @@ public class SwitchNotificationMsg extends CoreNotificationMsg {
      * @param value
      * @param source
      */
-    public SwitchNotificationMsg(int switchNumber, String state, String varName, String value, CoreObjectSpec source) {
+    public SwitchNotificationMsg(int switchNumber, String state, String varName, String value, String source) {
         super(varName, value, source);
         this.switchNumber = switchNumber;
         this.state = state;

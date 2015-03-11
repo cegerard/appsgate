@@ -23,6 +23,7 @@ import appsgate.lig.chmi.spec.CHMIProxySpec;
 import appsgate.lig.chmi.spec.listeners.CoreEventsListener;
 import appsgate.lig.chmi.spec.listeners.CoreUpdatesListener;
 import appsgate.lig.clock.sensor.spec.CoreClockSpec;
+import appsgate.lig.context.dependency.spec.DependencyManagerSpec;
 import appsgate.lig.context.device.properties.table.spec.DevicePropertiesTableSpec;
 import appsgate.lig.context.userbase.spec.UserBaseSpec;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
@@ -102,6 +103,11 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	 * Reference to the EUDE interpreter to manage end user programs
 	 */
 	private EUDE_InterpreterSpec interpreter;
+        
+        /**
+         * Reference to the Dependency manager
+         */
+        private DependencyManagerSpec dependency;
 
 	/**
 	 * The user manager ApAM component to handle the user base
@@ -983,7 +989,10 @@ public class EHMIProxyImpl implements EHMIProxySpec {
         
         @Override
         public JSONObject getGraph(Boolean buildGraph) {
-            return interpreter.getGraph(buildGraph);
+            if (buildGraph) {
+                return interpreter.buildGraph();
+            }
+            return dependency.getGraph();
         }
 
 	@Override

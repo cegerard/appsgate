@@ -9,7 +9,6 @@ import org.json.JSONObject;
  */
 public abstract class AbstractObjectSpec extends CoreObjectBehavior implements CoreObjectSpec {
 
-    protected String appsgatePictureId;
     protected String appsgateUserType;
     protected String appsgateDeviceStatus;
     protected String appsgateObjectId;
@@ -33,11 +32,6 @@ public abstract class AbstractObjectSpec extends CoreObjectBehavior implements C
     }
 
     @Override
-    public String getPictureId() {
-        return appsgatePictureId;
-    }
-
-    @Override
     public JSONObject getDescription() throws JSONException {
         JSONObject descr = new JSONObject();
 
@@ -45,18 +39,11 @@ public abstract class AbstractObjectSpec extends CoreObjectBehavior implements C
         descr.put("id", appsgateObjectId);
         descr.put("type", appsgateUserType);
         descr.put("status", appsgateDeviceStatus);
-
-        descr.put("pictureId", appsgatePictureId);
         descr.put("name", appsgateServiceName);
 
         return descr;
     }
 
-    @Override
-    public void setPictureId(String pictureId) {
-        this.appsgatePictureId = pictureId;
-
-    }
 
     @Override
     public CORE_TYPE getCoreType() {

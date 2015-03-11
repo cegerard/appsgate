@@ -46,7 +46,7 @@ public class WeatherUpdateNotificationMsg extends CoreNotificationMsg {
      * @param value the new variable value
      * @param eventType
      */
-    public WeatherUpdateNotificationMsg(CoreObjectSpec source, String varName,
+    public WeatherUpdateNotificationMsg(String source, String varName,
             String value, String eventType) {
         super(varName, value, source);
         this.eventType = eventType;

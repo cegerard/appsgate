@@ -199,6 +199,7 @@ define([
                 content: "<div class='popover-div'><button type='button' class='btn btn-default cancel-delete-weather-button'>" + $.i18n.t("form.cancel-button") + "</button><button type='button' class='btn btn-danger delete-weather-button'>" + $.i18n.t("form.delete-button") + "</button></div>",
                 placement: "bottom"
             });
+
             // listen the hide event to destroy the popup, because it is created to every click on Edit
             this.$el.find("#" + weatherObserverID).on('hidden.bs.popover', function () {
                 self.onCancelDeletePopover();

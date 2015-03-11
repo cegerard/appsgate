@@ -67,10 +67,8 @@ public class SwingColorLightImpl implements CoreObjectSpec, CoreColorLightSpec {
     private String appsgateSensorType;
     private String appsgateUserType;
     private String appsgateStatus;
-    private String appsgatePictureId;
 
     private void initAppsgateFields() {
-	    appsgatePictureId=null;
 	    appsgateDeviceName="Swnig Color Lamp";
 	    appsgateUserType="7";
 	    appsgateStatus="2";
@@ -124,17 +122,6 @@ public class SwingColorLightImpl implements CoreObjectSpec, CoreColorLightSpec {
 	return Integer.valueOf(appsgateStatus);
     }
 
-    @Override
-    public String getPictureId() {
-	return appsgatePictureId;
-    }
-
-    @Override
-    public void setPictureId(String pictureId) {
-	this.appsgatePictureId = pictureId;
-	notifyChanges("pictureId", pictureId);
-    }
-
     /**
      * Called by APAM when an instance of this implementation is created
      */
@@ -186,7 +173,7 @@ public class SwingColorLightImpl implements CoreObjectSpec, CoreColorLightSpec {
      *         posted.
      */
     public NotificationMsg notifyChanges(String varName, String value) {
-	return new ColorLightNotificationMsg(this, varName, value);
+	return new ColorLightNotificationMsg(this.getAbstractObjectId(), varName, value);
     }
 
     /*

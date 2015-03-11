@@ -1,8 +1,17 @@
 {
   "decorations": {
-    "program_added" : "le programme __name__ a été ajouté",
-    "program_deleted" : "le programme __name__ a été supprimé",
-    "program_saved" : "le programme __name__ a été modifié",
+    "program" : {
+      "added" : "le programme __name__ a été ajouté",
+      "deleted" : "le programme __name__ a été supprimé",
+      "update" : {
+        "user" : "le programme __name__ a été modifié",
+        "deployed" : "le programme est arrêté",
+        "invalid" : "le programme est invalide",
+        "incomplete" : "il manque des équipements pour que le programme tourne correctement",
+        "limping" : "le programme tourne en mode dégradé",
+        "processing" : "le programme tourne normalement"
+      }
+    },
     "connection" : "l'équipement s'est connecté",
     "disconnection" : "l'équipement a été déconnecté",
     "error" : "une erreur s'est produite",
@@ -12,8 +21,11 @@
 	"defaultMessage" : "Une ligne de programme a été exécutée",
     "ColorLight" : {
 	  "change" : {
-		"value" : "la lampe est allumée : __text__",
-		"colorChanged" : "la couleur a changé pour __text__"
+		"value" : {
+          "on" : "la lampe est allumée",
+          "off" : "la lampe est éteinte"
+        },
+		"colorChanged" : "la couleur a changé pour __spancolor__"
 	  },
       "blink30" : "Faire clignoter",
       "setRed" : "allumer en rouge",
@@ -31,14 +43,19 @@
 	"Temperature" : {
 	  "change" : {
 		"value" : "la température est de __text__ °C"
-	  }
+	  },
+      "getTemperature" : "Etat lu par __source__ : la temperature mesurée par __target__ est __valeur__ °C"
     },
 	"SmartPlug" : {
 		"on" : "Allumer la prise",
 		"off" : "Eteindre la prise",
+        "activePower": "Etat lu par “__pgName__” : la consommation mesurée indique __conso__ W",
         "change" : {
           "consumption" : "La consommation est de __text__ W",
-          "plugState" : "La prise est __text__"
+          "plugState" : {
+            "on" : "La prise est allumée",
+            "off" : "la prise est fermée"
+          }
         }
 	},
     "DomiCube" : {
@@ -60,6 +77,9 @@
       "change" : {
         "contact" : "Le capteur de contact est __text__, __value__, __contact__"
       }
+    },
+    "MailAccount" : {
+      "sendMailSimple" : "Le programme __source__ envoit un mail à __to__"
     }
   },
   "groups": {
@@ -90,5 +110,4 @@
     "all": "Tous",
     "all_plural": "Tous"
   }
-
 }

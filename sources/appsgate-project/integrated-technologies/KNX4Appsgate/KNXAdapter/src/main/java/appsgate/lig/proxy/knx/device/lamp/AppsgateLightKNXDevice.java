@@ -20,7 +20,6 @@ public class AppsgateLightKNXDevice extends CoreObjectBehavior implements CoreCo
     protected String deviceId;
     protected String deviceType;
 
-    protected String pictureId;
     protected String userType;
     protected String status;
 
@@ -49,7 +48,7 @@ public class AppsgateLightKNXDevice extends CoreObjectBehavior implements CoreCo
     }
 
     private NotificationMsg notifyChanges(String varName, String oldValue, String newValue) {
-        return new ColorLightNotificationMsg(varName, oldValue, newValue, this);
+        return new ColorLightNotificationMsg(varName, oldValue, newValue, this.getAbstractObjectId());
     }
 
     @Override
@@ -251,16 +250,6 @@ public class AppsgateLightKNXDevice extends CoreObjectBehavior implements CoreCo
     @Override
     public int getObjectStatus() {
         return 0;
-    }
-
-    @Override
-    public String getPictureId() {
-        return null;
-    }
-
-    @Override
-    public void setPictureId(String pictureId) {
-
     }
 
     @Override

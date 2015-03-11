@@ -85,11 +85,6 @@ public class EnoceanSwitchSensorImpl extends CoreObjectBehavior implements CoreO
     private String status;
 
     /**
-     * The current picture identifier
-     */
-    private String pictureId;
-
-    /**
      * EnOcean proxy service uses to validate the sensor configuration with the
      * EnOcean proxy (pairing phase)
      */
@@ -161,17 +156,6 @@ public class EnoceanSwitchSensorImpl extends CoreObjectBehavior implements CoreO
     @Override
     public int getObjectStatus() {
         return Integer.valueOf(status);
-    }
-
-    @Override
-    public String getPictureId() {
-        return pictureId;
-    }
-
-    @Override
-    public void setPictureId(String pictureId) {
-        this.pictureId = pictureId;
-        notifyChanges("pictureId", pictureId);
     }
 
     /**
@@ -246,7 +230,7 @@ public class EnoceanSwitchSensorImpl extends CoreObjectBehavior implements CoreO
      * posted.
      */
     public NotificationMsg notifyChanges(String varName, String value) {
-        return new SwitchNotificationMsg(new Integer(switchNumber), "true", varName, value, this);
+        return new SwitchNotificationMsg(new Integer(switchNumber), "true", varName, value, this.getAbstractObjectId());
     }
 
     @Override

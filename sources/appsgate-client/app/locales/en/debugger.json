@@ -1,8 +1,17 @@
 {
   "decorations": {
-    "program_added" : "program __name__ has been added",
-    "program_deleted" : "program __name__ has been deleted",
-    "program_saved" : "program __name__ updated",
+    "program" : {
+      "added" : "program __name__ has been added",
+      "deleted" : "program __name__ has been deleted",
+      "update" : {
+        "user" : "program __name__ updated",
+        "deployed" : "programm stopped",
+        "invalid" : "program is invalid",
+        "incomplete" : "missing device for the program to run correctly",
+        "limping" : "program is running not fully",
+        "processing" : "program is running"
+      }
+    },
     "connection" : "device connected",
     "disconnection" : "device disconnected",
     "error" : "something unexpected happen",
@@ -12,7 +21,10 @@
 	"defaultMessage" : "default message",
     "ColorLight" : {
 	  "change" : {
-		"value" : "lamp is on : __text__",
+		"value" : {
+          "on" : "lamp is on",
+          "off" : "lamp is off"
+        },
 		"colorChanged" : "color changed to __text__"
 	  },
       "blink30" : "Blink",
@@ -31,14 +43,19 @@
 	"Temperature" : {
 	  "change" : {
 		"value" : "Temperature is __text__ °C"
-	  }
+	  },
+      "getTemperature" : "State read by __source__ : temperature measure by __target__ is __valeur__ °C"
     },
 	"SmartPlug" : {
 		"on" : "Switch plug on",
 		"off" : "Switch plug off",
+        "activePower": "State read by “__source__” : consumption indicated by __target__ indicates __conso__ W",
         "change" : {
           "consumption" : "consumption indicates __text__ W",
-          "plugState" : "Plug is __text__"
+          "plugState" : {
+            "on" : "La prise est allumée",
+            "off" : "la prise est fermée"
+          }
         }
 	},
     "DomiCube" : {
@@ -60,6 +77,9 @@
       "change" : {
         "contact" : "Contact changes _text__"
       }
+    },
+    "MailAccount" : {
+      "sendMailSimple" : "program __source__ send mail to __to__"
     }
   },
   "groups": {

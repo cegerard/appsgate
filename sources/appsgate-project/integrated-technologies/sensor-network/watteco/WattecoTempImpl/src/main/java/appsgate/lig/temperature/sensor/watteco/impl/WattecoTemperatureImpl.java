@@ -28,7 +28,6 @@ public class WattecoTemperatureImpl extends CoreObjectBehavior implements CoreOb
 	private String sensorName;
 	private String sensorId;
 	private String sensoreType;
-	private String pictureId;
 	private String userType;
 	private String status;
 	private String isPaired;
@@ -91,7 +90,7 @@ public class WattecoTemperatureImpl extends CoreObjectBehavior implements CoreOb
 	 *         posted.
 	 */
 	public NotificationMsg notifyChanges(String varName, String value) {
-		return new TemperatureNotificationMsg((float) (Float.valueOf(currentTemperature)/100.0), varName, value, this);
+		return new TemperatureNotificationMsg((float) (Float.valueOf(currentTemperature)/100.0), varName, value, this.getAbstractObjectId());
 	}
 	
 	@Override
@@ -129,11 +128,6 @@ public class WattecoTemperatureImpl extends CoreObjectBehavior implements CoreOb
 	}
 
 	@Override
-	public String getPictureId() {
-		return pictureId;
-	}
-
-	@Override
 	public JSONObject getDescription() throws JSONException {
 		JSONObject descr = new JSONObject();
 		descr.put("id", sensorId);
@@ -142,11 +136,6 @@ public class WattecoTemperatureImpl extends CoreObjectBehavior implements CoreOb
 		descr.put("value", currentTemperature);
 		
 		return descr;
-	}
-
-	@Override
-	public void setPictureId(String pictureId) {
-			this.pictureId = pictureId;
 	}
 	
 	public boolean isPaired() {

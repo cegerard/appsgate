@@ -12,7 +12,6 @@
                     field="serviceId" default=""/>
 
         <!-- device client meta data -->
-        <definition name="pictureId" type="string" field="pictureId" />
         <definition name="userType" type="string" default="124"
                     field="userType" />
         <definition name="status" type="string" default="2" field="status"/>

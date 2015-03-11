@@ -71,11 +71,6 @@ public class EnoceanOnOffAcuatorImpl extends CoreObjectBehavior implements CoreO
 	 * 2 = In line or connected
 	 */
 	private String status;
-
-	/**
-	 * The current picture identifier
-	 */
-	private String pictureId;
 	
 	/**
 	 * EnOcean proxy service uses to validate the sensor configuration with the
@@ -131,11 +126,6 @@ public class EnoceanOnOffAcuatorImpl extends CoreObjectBehavior implements CoreO
 	}
 
 	@Override
-	public String getPictureId() {
-		return pictureId;
-	}
-
-	@Override
 	public JSONObject getDescription() throws JSONException {
 		JSONObject descr = new JSONObject();
 		
@@ -146,12 +136,6 @@ public class EnoceanOnOffAcuatorImpl extends CoreObjectBehavior implements CoreO
 		descr.put("deviceType", actuatorType);
 		
 		return descr;
-	}
-
-	@Override
-	public void setPictureId(String pictureId) {
-		this.pictureId = pictureId;
-		notifyChanges("pictureId", pictureId);
 	}
 	
 	/**
@@ -208,7 +192,7 @@ public class EnoceanOnOffAcuatorImpl extends CoreObjectBehavior implements CoreO
 	 *         posted.
 	 */
 	public NotificationMsg notifyChanges(String varName, String value) {
-		return new OnOffActuatorNotificationMsg(isOn, varName, value, this);
+		return new OnOffActuatorNotificationMsg(isOn, varName, value, this.getAbstractObjectId());
 	}
 	
 	@Override

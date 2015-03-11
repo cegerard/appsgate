@@ -64,14 +64,6 @@ public class AudioPlayerImpl extends CoreObjectBehavior implements MediaPlayer, 
 		return Integer.parseInt(appsgateStatus);
 	}
 
-
-	@Override
-	public String getPictureId() {
-		// useless an to be deprecated
-		return null;
-	}
-
-
 	@Override
 	public JSONObject getDescription() throws JSONException {
 		JSONObject descr = new JSONObject();
@@ -88,12 +80,6 @@ public class AudioPlayerImpl extends CoreObjectBehavior implements MediaPlayer, 
 
 		return descr;
 	}
-
-	@Override
-	public void setPictureId(String pictureId) {
-		// useless and to be deprecated		
-	}
-
 
 	@Override
 	public CORE_TYPE getCoreType() {
@@ -219,7 +205,7 @@ public class AudioPlayerImpl extends CoreObjectBehavior implements MediaPlayer, 
 	
 	@SuppressWarnings("unused")
 	private NotificationMsg stateChanged(String varName, String oldValue, String newValue) {
-		return new CoreNotificationMsg(varName, oldValue, newValue, this);
+		return new CoreNotificationMsg(varName, oldValue, newValue, this.getAbstractObjectId());
 	}	
 
 }

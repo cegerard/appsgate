@@ -11,9 +11,9 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd">
 
-	<implementation name="PropertyHistoryManagerMongoImpl"
+	<implementation name="PropertyHistoryImpl"
 		classname="appsgate.lig.manager.propertyhistory.PropertyHistoryManagerMongoImpl"
- 		specification="PropertyHistoryManagerSpec">
+ 		specification="PropertyHistorySpec">
 
         <relation implementation="MongoDBConfiguration" field="myConfiguration" creation="eager"
             resolve="exist" fail="wait" added="bindConfiguration" removed="unbindConfiguration"/>

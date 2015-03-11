@@ -20,12 +20,21 @@ public  class ProgramTraceNotification extends ProgramNotification{
      */
     private final String desc;
 
+    /**
+     * 
+     */
     public enum Type { READ, WRITE};
     
     protected final Type t;
     
+    /**
+     * 
+     */
     private JSONArray params = null;
 
+    
+    
+    private String result = null;
     /**
      * 
      * @param d the program description
@@ -43,12 +52,26 @@ public  class ProgramTraceNotification extends ProgramNotification{
         this.t = type;
     }
 
+    
+    /**
+     * @param stringResult 
+     */
+    protected final void setResult(String stringResult) {
+        this.result = stringResult;
+    }
+    
+    /**
+     * @return the result if it exists
+     */
+    public final String getResult() {
+        return this.result;
+    }
     /**
      * 
-     * @param p 
+     * @param paramArray 
      */
-    protected final void setParams(JSONArray p) {
-        this.params = p;
+    protected final void setParams(JSONArray paramArray) {
+        this.params = paramArray;
     }
    
     /**
