@@ -18,11 +18,21 @@ define([
 				height: 800,
 				width: 960,
 				mapDepthNeighbors: {},
-				entitiesTypes: ["time", "place", "device", "service", "program", "selector"],
-				relationsTypes: ["isPlanified", "isLocatedIn", "READING", "WRITING", "denotes"],
-				currentEntitiesTypes: ["place", "program", "service", "time", "device", "selector"],
-				currentRelationsTypes: ["isPlanified", "isLocatedIn", "READING", "WRITING", "denotes"],
+				//				entitiesTypes: ["time", "place", "device", "service", "program", "selector"],
+				//				relationsTypes: ["isPlanified", "isLocatedIn", "READING", "WRITING", "denotes"],
+				//				currentEntitiesTypes: ["place", "program", "service", "time", "device", "selector"],
+				//				currentRelationsTypes: ["isPlanified", "isLocatedIn", "READING", "WRITING", "denotes"]
+
+				filterEntities: [],
+				subFilterDevice: {},
+				subFilterProgram: {},
+				currentEntitiesFilters: [],
+				filterRelations: [],
+				currentRelationsFilters: []
+
 			});
+
+			self.intializeFilters();
 
 			self.on("change:rootNode", function (model) {
 				// If the root node is not null, calculate the new mapDepthNeighbors
@@ -274,6 +284,143 @@ define([
 
 			self.updateEntitiesShown();
 
+		},
+
+		checkEntityFilter: function (entity) {
+			var self = this;
+			var isShown = false;
+
+			if (entity.type === "device") {
+
+				var stateFilter = function (e) {
+					var stateFilter = true;
+					if (e.isGhost) {
+						return _.contains(self.get("currentEntitiesFilters"), "isGhostDevice");
+					}
+					if (e.deviceState) {
+						stateFilter = stateFilter & _.contains(self.get("currentEntitiesFilters"), e.deviceState);
+					}
+					return stateFilter;
+				}(entity);
+
+				if (entity.isGhost) {
+					// In Ghost case we don't have always the type, so don't take type filter in count
+					isShown = _.contains(self.get("currentEntitiesFilters"), entity.type) && stateFilter;
+				} else {
+					isShown = _.contains(self.get("currentEntitiesFilters"), entity.type) && _.contains(self.get("currentEntitiesFilters"), entity.deviceType) && stateFilter;
+				}
+			} else if (entity.type === "program") {
+				if (entity.isGhost) {
+					isShown = _.contains(self.get("currentEntitiesFilters"), entity.type) && _.contains(self.get("currentEntitiesFilters"), "isGhostProgram");
+				} else {
+					isShown = _.contains(self.get("currentEntitiesFilters"), entity.type) && _.contains(self.get("currentEntitiesFilters"), entity.state);
+				}
+			} else {
+				isShown = _.contains(self.get("currentEntitiesFilters"), entity.type);
+			}
+			return isShown;
+		},
+
+		getFilteredEntities: function () {
+			var self = this;
+			return this.get("entities").filter(function (e) {
+				return self.checkEntityFilter(e);
+			});
+		},
+
+		getFilteredRelations: function () {
+			var self = this;
+			return this.get("relations").filter(function (r) {
+
+				// Special test for the reference type. Test if one of its type of reference is to show
+				var isReferenceShown = function () {
+					// Test type reference and if it has reference data
+					if (r.type === "reference" && r.referenceData) {
+						// function to test if the a reference of type : typeToTest exists in the reference data
+						var testTypeRef = function (typeToTest) {
+							var index;
+							for (index = 0; index < r.referenceData.length; index++) {
+								if (r.referenceData[index].referenceType === typeToTest) {
+									return true;
+								}
+							}
+							return false;
+						};
+
+						// Test writing type reference
+						var getWritingRefToShow = false;
+						if (testTypeRef("WRITING")) {
+							// If it contains writing type reference, check if they have to be shown
+							getWritingRefToShow = _.contains(self.get("currentRelationsFilters"), "WRITING");
+						}
+
+						// Test reading type reference
+						var getReadingRefToShow = false;
+						if (testTypeRef("READING")) {
+							// If it contains reading type reference, check if they have to be shown
+							getReadingRefToShow = _.contains(self.get("currentRelationsFilters"), "READING");
+						}
+
+						return getWritingRefToShow || getReadingRefToShow;
+					} else {
+						return false;
+					}
+				}();
+
+				return _.contains(self.getFilteredEntities(), r.source) && _.contains(self.getFilteredEntities(), r.target) && (_.contains(self.get("currentRelationsFilters"), r.type) || isReferenceShown);
+			});
+		},
+
+		intializeFilters: function () {
+			this.initEntitiesFilter();
+			this.initCurrentEntitiesFilter();
+			this.initRelationsFilter();
+		},
+
+		initEntitiesFilter: function () {
+			var filterEntitiesType = [];
+			var subFilterDevice = {};
+			var subFilterProgram = {};
+
+			filterEntitiesType = ["time", "place", "service", "device", "program", "selector"];
+
+			subFilterDevice["deviceType"] = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "32", "36", "124", "210"];
+			subFilterDevice["deviceState"] = ["true", "false", "isGhostDevice", "isMultipleTargeted"];
+
+			subFilterProgram["state"] = ["INVALID", "DEPLOYED", "PROCESSING", "LIMPING", "INCOMPLETE", "isGhostProgram"];
+
+			this.set({
+				filterEntities: filterEntitiesType,
+				subFilterDevice: subFilterDevice,
+				subFilterProgram: subFilterProgram
+			});
+
+		},
+
+		initCurrentEntitiesFilter: function () {
+			var self = this;
+			var currentFilters = [];
+
+			Array.prototype.push.apply(currentFilters, self.get("filterEntities"));
+
+			for (subFilterType in self.get("subFilterDevice")) {
+				Array.prototype.push.apply(currentFilters, self.get("subFilterDevice")[subFilterType]);
+			}
+
+			for (subFilterType in self.get("subFilterProgram")) {
+				Array.prototype.push.apply(currentFilters, self.get("subFilterProgram")[subFilterType]);
+			}
+
+			this.set({
+				currentEntitiesFilters: currentFilters
+			});
+		},
+
+		initRelationsFilter: function () {
+			this.set({
+				filterRelations: ["isPlanified", "isLocatedIn", "READING", "WRITING", "denotes"],
+				currentRelationsFilters: ["isPlanified", "isLocatedIn", "READING", "WRITING", "denotes"]
+			});
 		},
 
 		/**

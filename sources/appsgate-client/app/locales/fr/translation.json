@@ -87,7 +87,37 @@
 					"service": "$t(dependancy.type.entity.service)",
 					"time": "$t(dependancy.type.entity.time.filter-label)",
 					"device": "$t(dependancy.type.entity.device)",
-					"selector": "$t(dependancy.type.entity.selector.filter-label)"
+					"selector": "$t(dependancy.type.entity.selector.filter-label)",
+					"device-type": {
+						"0": "$t(devices.temperature.name.plural)",
+						"1": "$t(devices.illumination.name.plural)",
+						"2": "$t(devices.switch.name.plural)",
+						"3": "$t(devices.contact.name.plural)",
+						"4": "$t(devices.cardswitch.name.plural)",
+						"5": "$t(devices.ard.name.plural)",
+						"6": "$t(devices.plug.name.plural)",
+						"7": "$t(devices.lamp.name.plural)",
+						"8": "$t(devices.actuator.name.plural)",
+						"31": "$t(devices.mediaplayer.name.plural)",
+						"32": "$t(devices.co2.name.plural)",
+						"36": "$t(devices.mediaplayer.name.plural)",
+						"124": "$t(devices.tv.name.plural)",
+						"210": "$t(devices.domicube.name.plural)"
+					},
+					"device-state": {
+						"true": "Allumé",
+						"false": "Eteint",
+						"isGhostDevice": "Disparu",
+						"isMultipleTargeted": "Multiples modifications d'états"
+					},
+					"program-state" : {
+						"INVALID": "Invalide",
+						"DEPLOYED": "Valide",
+						"PROCESSING": "En cours d'exécution",
+						"LIMPING": "Instable",
+						"INCOMPLETE": "Incomplet",
+						"isGhostProgram": "Disparu"
+					}
 				},
 				"relation": {
 					"title": "Filtres sur les relations",

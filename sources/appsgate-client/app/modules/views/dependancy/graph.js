@@ -35,6 +35,12 @@ define([
 				self.update(self.model);
 				force.start();
 			});
+			
+			this.model.on("change:currentEntitiesFilters", function () {
+				force.stop();
+				self.update(self.model);
+				force.start();
+			});
 
 			// Update the graph when the modifications need to reload
 			self.listenTo(dispatcher, "UpdateGraph", function (args) {
@@ -140,9 +146,9 @@ define([
 			});
 
 
-			this.createFilters(this.model);
-			this.updateCheckAllEntities();
-			this.updateCheckAllRelations();
+//			this.createFilters(this.model);
+//			this.updateCheckAllEntities();
+//			this.updateCheckAllRelations();
 			// update model, if we have an entity disable by default (ie selector)
 			this.model.updateEntitiesShown();
 
@@ -227,8 +233,10 @@ define([
 		update: function (model) {
 			var self = this;
 
-			force.nodes(model.get("currentEntities"));
-			force.links(model.get("currentRelations"));
+//			force.nodes(model.get("currentEntities"));
+			force.nodes(model.getFilteredEntities());
+//			force.links(model.get("currentRelations"));
+			force.links(model.getFilteredRelations());
 
 			/******* NODES (=Entities) *******/
 
@@ -238,7 +246,10 @@ define([
 			});
 
 			// Text node modified - TODO : check 
-			var nModified = svg.select("#groupNode").selectAll(".nodeGroup").select("text").data(model.get("currentEntities"), function (d) {
+//			var nModified = svg.select("#groupNode").selectAll(".nodeGroup").select("text").data(model.get("currentEntities"), function (d) {
+//				return d.id;
+//			});
+			var nModified = svg.select("#groupNode").selectAll(".nodeGroup").select("text").data(model.getFilteredEntities(), function (d) {
 				return d.id;
 			});
 			nModified.text(function (d) {
@@ -735,15 +746,15 @@ define([
 				});
 
 
-			filterNodes.select("input")
-				.property("checked", function (d) {
-					return _.contains(self.model.get("currentEntitiesTypes"), d);
-				});
-
-			filterLinks.select("input")
-				.property("checked", function (d) {
-					return _.contains(self.model.get("currentRelationsTypes"), d);
-				});
+//			filterNodes.select("input")
+//				.property("checked", function (d) {
+//					return _.contains(self.model.get("currentEntitiesTypes"), d);
+//				});
+//
+//			filterLinks.select("input")
+//				.property("checked", function (d) {
+//					return _.contains(self.model.get("currentRelationsTypes"), d);
+//				});
 
 		},
 
