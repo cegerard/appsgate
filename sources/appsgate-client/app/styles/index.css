@@ -1095,7 +1095,7 @@ button.program-incomplete{
     margin-left: 10px;
 }
 
-#filterContainerNodes>input, #filterContainerNodes>div>label>input, #filterContainerLinks>input, #filterContainerLinks>div>label>input, #filterContainerLinks>div>label>div>label>input {
+#entitiesGroupFilter>div>div>div>div>div>label>input, #entitiesGroupFilter>div>div>label>input, #relationsGroupFilter>div>div>div>div>div>label>input, #relationsGroupFilter>div>div>label>input {
 	margin-right: 5px;
 }
 
@@ -1192,6 +1192,7 @@ button.program-incomplete{
 	font-size: 70%;
     content:"\e114";
     float: left;
+	margin-right: 5px;
     color: grey;
 }
 .subfilter-title a.collapsed:after {
