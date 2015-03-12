@@ -124,6 +124,7 @@
             <start implementation="DevicePropertiesTableImpl" name="Global-DevicePropertiesTableManager" />
             <start implementation="UserBaseImpl" name="Global-UserBaseManager" />
             <start implementation="TraceMan" name="TraceManInst"></start>
+            <start implementation="DependencyManagerImpl" name="DependencyManagerInst"></start>
         </contentMngt>
     </composite>
 
