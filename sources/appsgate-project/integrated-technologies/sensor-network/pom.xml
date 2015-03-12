@@ -20,5 +20,6 @@
 		<module>simulation</module>
         <module>ard</module>
         <module>pace</module>
+        <module>FairyLightsImpl</module>
 	</modules>
 </project>

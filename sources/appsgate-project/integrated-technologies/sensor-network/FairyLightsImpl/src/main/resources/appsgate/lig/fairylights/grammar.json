@@ -1,0 +1,15 @@
+{
+    "friendlyName": "LumiPixel(FairyLights)",
+    "typename": "FairyLights",
+    "properties": [],
+    "states": [],
+    "commands" : {
+        "getAllLights" : {"params" : []},
+        "getOneLight" : {"params" : [{"name" : "lightNumber"}]},
+        "setOneColorLight" : {"params" : [{"name" : "lightNumber"},{"name" : "color"}]},
+        "setAllColorLight" : {"params" : [{"name" : "color"}]},
+        "setColorPattern" : {"params" : [{"name" : "pattern"}]},
+        "singleChaserAnimation" : {"params" : [{"name" : "start"},{"name" : "end"},{"name" : "color"}]},
+        "roundChaserAnimation" : {"params" : [{"name" : "start"},{"name" : "end"},{"name" : "color"},{"name" : "rounds"}]}
+    }
+}

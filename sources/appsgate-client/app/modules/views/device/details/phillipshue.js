@@ -13,7 +13,7 @@ define([
        events: {
             "click button.toggle-lamp-button": "onToggleLampButton",
             "click button.blink-lamp-button": "onBlinkLampButton",
-            "click button.toggle-actuator-button": "onToggleActuatorButton",
+            "click button.toggle-actuator-button": "onToggleActuatorButton"
         },
       initialize: function() {
         var self = this;
@@ -37,7 +37,7 @@ define([
       * Callback to toggle a lamp - used when the displayed device is a lamp (!)
       */
       onToggleLampButton: function() {
-        if (this.model.get("value") === "true" || this.model.get("value") === true) {
+        if (this.model.get("state") === "true" || this.model.get("state") === true) {
           this.model.switchOff();
         } else {
           this.model.switchOn();
@@ -70,7 +70,7 @@ define([
         PhillipsHueView.__super__.autoupdate.apply(this);
 
         var lampState = ""
-        if (this.model.get("value")==="true" || this.model.get("value") === true) {
+        if (this.model.get("state")==="true" || this.model.get("state") === true) {
             lampState = "<span class='label label-yellow' data-i18n='devices.lamp.status.turnedOn'></span>";
         } else {
             lampState = "<span class='label label-default' data-i18n='devices.lamp.status.turnedOff'></span>";
@@ -78,7 +78,7 @@ define([
         this.$el.find("#lamp-status").html(lampState);
 
         var lampButton = "";
-        if (this.model.get("value") === "true" || this.model.get("value") === true) {
+        if (this.model.get("state") === "true" || this.model.get("state") === true) {
             lampButton = "<span data-i18n='devices.lamp.action.turnOff'></span>";
         } else {
             lampButton = "<span data-i18n='devices.lamp.action.turnOn'></span>";

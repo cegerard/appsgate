@@ -171,7 +171,7 @@ define([
             $("#device-" + device.cid + "-consumption").text(device.get("consumption") + " W");
             break;
           case "7":
-            if (device.get("value") === "true" || device.get("value") === true) {
+            if (device.get("state") === "true" || device.get("state") === true) {
               $("#device-" + device.cid + "-button").attr("data-i18n", "devices.lamp.action.turnOff");
               $("#device-" + device.cid + "-value").attr("data-i18n", "devices.lamp.status.turnedOn");
               $("#device-" + device.cid + "-value").attr("class", "label label-yellow");

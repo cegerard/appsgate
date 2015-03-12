@@ -331,10 +331,12 @@ public class GraphManager {
      */
     private void addGhost(String typeGhost, String name, String id) {
         HashMap<String, String> optArg = new HashMap<String, String>();
-        optArg.put("isGhost", Boolean.TRUE.toString());
+//        optArg.put("isGhost", Boolean.TRUE.toString());
         if (typeGhost.equals("device")) {
+            optArg.put("isGhost", "ghostDevice");
             addNode(DEVICE_ENTITY, id, name, optArg);
         } else {
+            optArg.put("isGhost", "ghostProgram");
             addNode(PROGRAM_ENTITY, id, name, optArg);
         }
     }

@@ -1186,3 +1186,14 @@ button.program-incomplete{
 	margin-bottom: 30px;
 	margin-right: 30px;
 }
+
+.subfilter-title a:after {
+    font-family:'Glyphicons Halflings';
+	font-size: 70%;
+    content:"\e114";
+    float: left;
+    color: grey;
+}
+.subfilter-title a.collapsed:after {
+    content:"\e080";
+}
