@@ -1,5 +1,6 @@
 package appsgate.lig.ehmi.trace;
 
+import appsgate.lig.context.dependency.spec.Dependencies;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -12,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import appsgate.lig.context.device.properties.table.spec.DevicePropertiesTableSpec;
 import appsgate.lig.ehmi.spec.EHMIProxySpec;
 import appsgate.lig.ehmi.spec.GrammarDescription;
+import appsgate.lig.ehmi.spec.SpokObject;
 import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 import appsgate.lig.ehmi.spec.trace.TraceManSpec;
 import appsgate.lig.ehmi.trace.listener.TraceCmdListener;
@@ -433,7 +435,7 @@ public class TraceMan implements TraceManSpec {
         }
         //JSONArray tracesTab = dbTracer.getInterval(from, to);
         tracesTab = dbTracer.appendTraces(tracesTab, from, to);
-        
+
         JSONObject result = new JSONObject();
         try {
 
@@ -475,45 +477,20 @@ public class TraceMan implements TraceManSpec {
      */
     private JSONArray computeGroupsFromPolicy(JSONArray tracesTab) throws JSONException {
 
-        JSONArray groups = new JSONArray();
-        HashMap<String, GroupTuple> groupFollower = new HashMap<String, GroupTuple>();
+        HashMap<String, GroupTuple> groupFollower;
         int l = tracesTab.length();
 
         if (focus.equalsIgnoreCase(TraceMan.NOFOCUS)) { //No specific focus required
 
             if (grouping.equalsIgnoreCase("type")) { //One group for each type	
-                for (int i = 0; i < l; i++) {
-                    JSONObject superTrace = tracesTab.getJSONObject(i);
-                    ArrayList<JSONObject> innerTraces = mergeInnerTraces(superTrace);
-
-                    for (JSONObject trace : innerTraces) {
-                        String type = "program"; //Defaut it is a program
-                        int order = 4; //Programm order
-                        if (trace.has("type")) { //in fact it is an equipment
-                            type = trace.getString("type");
-                            order = 2; //Device order
-                        }
-                        if (!groupFollower.containsKey(type)) {
-                            if (trace.has("id")) {
-                                JSONArray objs = new JSONArray();
-                                objs.put(trace.get("id"));
-                                groupFollower.put(type, new GroupTuple(order, objs));
-                            }
-                        } else {
-                            JSONArray objs = groupFollower.get(type).getMembers();
-                            if (trace.has("id")) {
-                                if (!objs.toString().contains(trace.getString("id"))) {
-                                    objs.put(trace.get("id"));
-                                }
-                            }
-                        }
-                    }
-                }
+                groupFollower = TraceTools.getTracesByType(tracesTab);
             } else { //just the all group
+                groupFollower = new HashMap<>();
+
                 groupFollower.put("all", new GroupTuple(2, new JSONArray()));
                 for (int i = 0; i < l; i++) {
                     JSONObject superTrace = tracesTab.getJSONObject(i);
-                    ArrayList<JSONObject> innerTraces = mergeInnerTraces(superTrace);
+                    ArrayList<JSONObject> innerTraces = TraceTools.mergeInnerTraces(superTrace);
 
                     for (JSONObject trace : innerTraces) {
                         JSONArray objs = groupFollower.get("all").getMembers();
@@ -526,143 +503,44 @@ public class TraceMan implements TraceManSpec {
 
         } else { //Focus required check the kind of focus
 
-            if (focusType.equalsIgnoreCase("id")) { //Focus on something (equipment or program)
-                groupFollower.put("focus", new GroupTuple(1, new JSONArray().put(focus)));
-                groupFollower.put("others", new GroupTuple(3, new JSONArray()));
+            switch (focusType) {
+                case "id":
+                    if (grouping.equalsIgnoreCase("dep")) { //Group based on id dependency (focus, dependencies, others)
+                        Dependencies programDependencies = (Dependencies) EHMIProxy.getProgramDependencies(focus);
+                        groupFollower = TraceTools.getTracesByDep(tracesTab, focus, programDependencies);
 
-                if (grouping.equalsIgnoreCase("dep")) {//Group based on id dependency (focus, dependencies, others)
-                    groupFollower.put("dependencies", new GroupTuple(2, new JSONArray()));
+                    } else { //One group focus and all in other
+                        groupFollower = new HashMap<>();
+                        groupFollower.put("focus", new GroupTuple(1, new JSONArray().put(focus)));
+                        groupFollower.put("others", new GroupTuple(3, new JSONArray()));
+                        JSONArray objs = groupFollower.get("others").getMembers();
+                        for (int i = 0; i < l; i++) {
+                            JSONObject superTrace = tracesTab.getJSONObject(i);
+                            ArrayList<JSONObject> innerTraces = TraceTools.mergeInnerTraces(superTrace);
 
-                    for (int i = 0; i < l; i++) {
-                        JSONObject superTrace = tracesTab.getJSONObject(i);
-                        ArrayList<JSONObject> innerTraces = mergeInnerTraces(superTrace);
-
-                        for (JSONObject trace : innerTraces) {
-                            JSONArray objs;
-
-                            if (trace.has("id") && !trace.getString("id").equalsIgnoreCase(focus)) {//Not a trace from the focused id
-                                if (trace.toString().contains(focus)) { //dep
-                                    objs = groupFollower.get("dependencies").getMembers();
-                                    //Remove dependency id from others array
-                                    JSONArray others = new JSONArray();
-
-                                    for (int j = 0; j < groupFollower.get("others").getMembers().length(); j++) {
-                                        String id = groupFollower.get("others").getMembers().getString(j);
-                                        if (trace.has("id") && !id.equalsIgnoreCase(trace.getString("id"))) {
-                                            others.put(id);
-                                        }
-                                    }
-
-                                    groupFollower.get("others").setMembers(others);
-
-                                } else { //others
-                                    if (trace.has("id") && !groupFollower.get("dependencies").toString().contains(trace.getString("id"))) {
-                                        objs = groupFollower.get("others").getMembers();
-                                    } else {
-                                        objs = groupFollower.get("dependencies").getMembers();
-                                    }
-                                }
-
-                                if (trace.has("id") && !objs.toString().contains(trace.getString("id"))) { //Check if the id is already in the array
+                            for (JSONObject trace : innerTraces) {
+                                if (trace.has("id") && !trace.getString("id").equalsIgnoreCase(focus) && !objs.toString().contains(trace.getString("id"))) {
                                     objs.put(trace.get("id"));
                                 }
                             }
                         }
                     }
+                    break;
+                case "location":
+                    groupFollower = TraceTools.getTracesByLocation(tracesTab, focus);
+                    break;
+                case "type":
+                    groupFollower = TraceTools.getTracesByType(tracesTab, focus);
+                    break;
+                default:
+                    LOGGER.error("FocusType not recognized: {}", focusType);
+                    groupFollower = new HashMap<>();
+                    break;
 
-                } else { //One group focus and all in other
-                    JSONArray objs = groupFollower.get("others").getMembers();
-                    for (int i = 0; i < l; i++) {
-                        JSONObject superTrace = tracesTab.getJSONObject(i);
-                        ArrayList<JSONObject> innerTraces = mergeInnerTraces(superTrace);
-
-                        for (JSONObject trace : innerTraces) {
-                            if (trace.has("id") && !trace.getString("id").equalsIgnoreCase(focus) && !objs.toString().contains(trace.getString("id"))) {
-                                objs.put(trace.get("id"));
-                            }
-                        }
-                    }
-                }
-
-            } else if (focusType.equalsIgnoreCase("location")) { //focus on location name (location name, others)
-
-                groupFollower.put(focus, new GroupTuple(1, new JSONArray()));
-                groupFollower.put("others", new GroupTuple(3, new JSONArray()));
-
-                for (int i = 0; i < l; i++) {
-                    JSONObject superTrace = tracesTab.getJSONObject(i);
-                    ArrayList<JSONObject> innerTraces = mergeInnerTraces(superTrace);
-
-                    for (JSONObject trace : innerTraces) {
-                        JSONArray objs;
-                        if (trace.has("location")) { //Equipment
-                            JSONObject loc = trace.getJSONObject("location");
-
-                            if (loc.has("id") && loc.getString("id").equalsIgnoreCase("-1")) {
-                                if (!groupFollower.get(focus).toString().contains(trace.getString("id"))) {
-                                    objs = groupFollower.get("others").getMembers();
-                                } else {
-                                    objs = groupFollower.get("focus").getMembers();
-                                }
-                            } else {
-                                if (loc.getString("name").equalsIgnoreCase(focus)) {
-                                    objs = groupFollower.get(focus).getMembers();
-                                    //Remove dependency id from others array
-                                    JSONArray others = new JSONArray();
-                                    for (int j = 0; j < groupFollower.get("others").getMembers().length(); j++) {
-                                        String id = groupFollower.get("others").getMembers().getString(j);
-                                        if (trace.has("id") && !id.equalsIgnoreCase(trace.getString("id"))) {
-                                            others.put(id);
-                                        }
-                                    }
-                                    groupFollower.get("others").setMembers(others);
-                                } else {
-                                    if (trace.has("id") && !groupFollower.get(focus).toString().contains(trace.getString("id"))) {
-                                        objs = groupFollower.get("others").getMembers();
-                                    } else {
-                                        objs = groupFollower.get("focus").getMembers();
-                                    }
-                                }
-                            }
-                        } else { //Program
-                            objs = groupFollower.get("others").getMembers();
-                        }
-
-                        if (trace.has("id") && !objs.toString().contains(trace.getString("id"))) {
-                            objs.put(trace.get("id"));
-                        }
-                    }
-                }
-
-            } else if (focusType.equalsIgnoreCase("type")) { //focus on type (type, others)
-                groupFollower.put(focus, new GroupTuple(1, new JSONArray()));
-                groupFollower.put("others", new GroupTuple(3, new JSONArray()));
-
-                for (int i = 0; i < l; i++) {
-                    JSONObject superTrace = tracesTab.getJSONObject(i);
-                    ArrayList<JSONObject> innerTraces = mergeInnerTraces(superTrace);
-
-                    for (JSONObject trace : innerTraces) {
-                        JSONArray objs;
-
-                        String type = "program"; //Defaut it is a program
-                        if (trace.has("type")) { //in fact it is an equipment
-                            type = trace.getString("type");
-                        }
-
-                        if (type.equalsIgnoreCase(focus)) {
-                            objs = groupFollower.get(focus).getMembers();
-                        } else {
-                            objs = groupFollower.get("others").getMembers();
-                        }
-
-                        if (trace.has("id") && !objs.toString().contains(trace.getString("id"))) {
-                            objs.put(trace.get("id"));
-                        }
-                    }
-                }
             }
         }
+
+        JSONArray groups = new JSONArray();
 
         //Fill the JSONArray with HashMap
         for (String key : groupFollower.keySet()) {
@@ -692,7 +570,7 @@ public class TraceMan implements TraceManSpec {
         JSONObject trace;
         long beg = from;
         long end = from + timeLineDelta;
-        ArrayList<JSONObject> interval = new ArrayList<JSONObject>();
+        ArrayList<JSONObject> interval = new ArrayList<>();
 
         if (size > 0) {
 
@@ -754,29 +632,6 @@ public class TraceMan implements TraceManSpec {
         return eventLine;
     }
 
-//	/**
-//     * Filter trace on focus identifier
-//     * @param tracesTab the focuses equipment identifier
-//     * @throws JSONException 
-//     */
-//    private void filteringOnFocus(JSONArray tracesTab) throws JSONException {
-//    	if(!focus.equalsIgnoreCase(TraceMan.NOFOCUS)) {
-//    		int l = tracesTab.length();
-//    		int i = 0;
-//    	
-//    		JSONArray filteredArray = new JSONArray();
-//    	
-//    		while(i < l) {
-//    			JSONObject obj = tracesTab.getJSONObject(i);
-//    			if(obj.toString().contains(focus)){
-//    				filteredArray.put(obj);
-//    			}
-//    			i++;
-//    		}
-//    	
-//    		tracesTab = filteredArray;
-//    	}
-//	}
     /**
      * Get the key use for internationalization from a type
      *
@@ -786,37 +641,6 @@ public class TraceMan implements TraceManSpec {
     private String getIntKey(String type) {
         return "groups." + type.toLowerCase();
     }
-
-    /**
-     * Merge programs and equipment traces from a super traces into a simple
-     * arraylist of JSONbject
-     *
-     * @param superTrace the super traces from any sources
-     * @return an ArrayList<JSONObject> of all inner traces
-     * @throws JSONException
-     */
-    private ArrayList<JSONObject> mergeInnerTraces(JSONObject superTrace) throws JSONException {
-        ArrayList<JSONObject> innerTraces = new ArrayList<JSONObject>();
-
-        JSONArray pgms = superTrace.getJSONArray("programs");
-        JSONArray devices = superTrace.getJSONArray("devices");
-
-        int nbPgms = pgms.length();
-        int nbDev = devices.length();
-
-        for (int i = 0; i < nbPgms; i++) {
-            innerTraces.add(pgms.getJSONObject(i));
-        }
-
-        for (int j = 0; j < nbDev; j++) {
-            innerTraces.add(devices.getJSONObject(j));
-        }
-
-        return innerTraces;
-    }
-
-
-
 
     /**
      * Get the current delta time for trace aggregation
@@ -1096,18 +920,18 @@ public class TraceMan implements TraceManSpec {
     }
 
     /**
-     * 
+     *
      * @param srcId
-     * @return 
+     * @return
      */
     public String getPlaceId(String srcId) {
         return placeManager.getCoreObjectPlaceId(srcId);
     }
 
     /**
-     * 
+     *
      * @param srcId
-     * @return 
+     * @return
      */
     public String getPlaceName(String srcId) {
         SymbolicPlace place = placeManager.getPlaceWithDevice(srcId);
@@ -1118,7 +942,7 @@ public class TraceMan implements TraceManSpec {
         return null;
 
     }
-    
+
     /**
      *
      * @param id
@@ -1129,9 +953,9 @@ public class TraceMan implements TraceManSpec {
     }
 
     /**
-     * 
+     *
      * @param srcId
-     * @return 
+     * @return
      */
     JSONObject getDevice(String srcId) {
         return EHMIProxy.getDevice(srcId);

@@ -993,7 +993,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
             if (buildGraph) {
                 return interpreter.buildGraph();
             }
-            return dependency.getGraph();
+            return dependency.getJSONGraph();
         }
 
 	@Override

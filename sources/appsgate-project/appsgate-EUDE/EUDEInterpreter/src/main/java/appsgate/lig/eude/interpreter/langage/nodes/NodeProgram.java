@@ -1,5 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import appsgate.lig.context.dependency.spec.Reference.STATUS;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
@@ -240,7 +241,7 @@ final public class NodeProgram extends Node implements ProgramDesc {
         if (this.body != null) {
             this.body.buildReferences(this.references, null);
         }
-        ReferenceTable.STATUS newStatus = this.references.checkReferences();
+        STATUS newStatus = this.references.checkReferences();
         return applyStatus(newStatus);
     }
 
@@ -667,7 +668,7 @@ final public class NodeProgram extends Node implements ProgramDesc {
      * @param id the id of the device
      * @param s the status
      */
-    public void setDeviceStatus(String id, ReferenceTable.STATUS s) {
+    public void setDeviceStatus(String id, STATUS s) {
         references.setDeviceStatus(id, s);
         changeStatus();
     }
@@ -678,7 +679,7 @@ final public class NodeProgram extends Node implements ProgramDesc {
      * @param id the id of the program
      * @param s the new status
      */
-    public void setProgramStatus(String id, ReferenceTable.STATUS s) {
+    public void setProgramStatus(String id, STATUS s) {
         // No need to update the status and the reference table if this is the same program
         if (!id.equalsIgnoreCase(this.id)) {
             if (references.setProgramStatus(id, s)){
@@ -699,7 +700,7 @@ final public class NodeProgram extends Node implements ProgramDesc {
      * @param s
      * @return
      */
-    private Boolean applyStatus(ReferenceTable.STATUS s) {
+    private Boolean applyStatus(STATUS s) {
         errorMessage = references.getErrorMessage();
         // Don't change the status if the program is not syntaxically correct
         if (this.isSyntaxicallyCorrect) {

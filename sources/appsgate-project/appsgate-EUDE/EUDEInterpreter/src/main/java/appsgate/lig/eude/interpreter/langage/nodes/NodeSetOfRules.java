@@ -9,7 +9,7 @@ import org.json.JSONException;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.references.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
-import java.util.HashMap;
+import appsgate.lig.context.dependency.spec.ReferenceDescription;
 import java.util.List;
 import org.json.JSONObject;
 
@@ -193,7 +193,7 @@ public class NodeSetOfRules extends Node implements INodeSet {
     }
 
     @Override
-    protected void buildReferences(ReferenceTable table, HashMap<String,String> args) {
+    protected void buildReferences(ReferenceTable table, ReferenceDescription d) {
         for (Node n : this.instructions) {
             n.buildReferences(table, null);
         }

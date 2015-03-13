@@ -1,17 +1,17 @@
-package appsgate.lig.eude.interpreter.references;
+package appsgate.lig.context.dependency.spec;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  *
  * Class used to store data about the program's references.
  *
  * @author bidoismorgan
+ *
  */
 public class ProgramReference extends Reference {
 
-    public ProgramReference(String pid, ReferenceTable.STATUS status, String name, ArrayList<HashMap<String, String>> referencesData) {
+    public ProgramReference(String pid, STATUS status, String name, ArrayList<ReferenceDescription> referencesData) {
         super(pid, status, name, referencesData);
     }
 
@@ -27,7 +27,7 @@ public class ProgramReference extends Reference {
      * @param programStatus
      * @return true if the programStatus has changed
      */
-    public Boolean setProgramStatus(ReferenceTable.STATUS programStatus) {
+    public Boolean setProgramStatus(STATUS programStatus) {
         if (this.getStatus() == programStatus) {
             return false;
         }
@@ -35,7 +35,7 @@ public class ProgramReference extends Reference {
         return true;
     }
 
-    public ReferenceTable.STATUS getProgramStatus() {
+    public STATUS getProgramStatus() {
         return getStatus();
     }
 

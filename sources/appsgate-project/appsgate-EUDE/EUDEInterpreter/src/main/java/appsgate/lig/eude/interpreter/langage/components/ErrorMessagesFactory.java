@@ -1,9 +1,9 @@
 package appsgate.lig.eude.interpreter.langage.components;
 
+import appsgate.lig.context.dependency.spec.Selector;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
-import appsgate.lig.eude.interpreter.langage.nodes.NodeSelect;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -89,7 +89,7 @@ public class ErrorMessagesFactory {
         return error;
     }
 
-    public static JSONObject getMessageFromEmptySelect(NodeSelect s) {
+    public static JSONObject getMessageFromEmptySelect(Selector s) {
         JSONObject error = new JSONObject();
         try {
             error.put("msg", "programs.error.emptySelec");

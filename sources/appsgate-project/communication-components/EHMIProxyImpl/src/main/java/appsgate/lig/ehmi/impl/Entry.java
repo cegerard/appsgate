@@ -4,7 +4,6 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import appsgate.lig.ehmi.impl.listeners.ObjectEventListener;
 import appsgate.lig.ehmi.spec.listeners.CoreListener;
 
 /**

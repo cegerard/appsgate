@@ -6,7 +6,7 @@ import org.json.JSONObject;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.references.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
-import java.util.HashMap;
+import appsgate.lig.context.dependency.spec.ReferenceDescription;
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -150,7 +150,7 @@ public class NodeWhen extends Node implements INodeRule{
 
     }
     @Override
-    protected void buildReferences(ReferenceTable table, HashMap<String,String> args) {
+    protected void buildReferences(ReferenceTable table, ReferenceDescription d) {
         if (this.seqEventNode != null) {
             seqEventNode.buildReferences(table, null);
         }

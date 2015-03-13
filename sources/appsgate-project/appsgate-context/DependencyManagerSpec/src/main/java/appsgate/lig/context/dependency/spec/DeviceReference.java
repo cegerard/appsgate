@@ -3,11 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package appsgate.lig.eude.interpreter.references;
+package appsgate.lig.context.dependency.spec;
 
-import appsgate.lig.eude.interpreter.references.ReferenceTable.STATUS;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Class used to store data about the device's references.
@@ -16,9 +14,12 @@ import java.util.HashMap;
  */
 public class DeviceReference extends Reference {
 
-
-    public DeviceReference(String deviceId, STATUS deviceStatus, String name, ArrayList<HashMap<String, String>> referencesData) {
+    //
+    private final String type;
+    
+    public DeviceReference(String deviceId, STATUS deviceStatus, String name, ArrayList<ReferenceDescription> referencesData, String type) {
         super(deviceId, deviceStatus, name, referencesData);
+        this.type = type;
     }
     
 
@@ -30,8 +31,13 @@ public class DeviceReference extends Reference {
         setStatus(deviceStatus);
     }
 
+    
     public STATUS getDeviceStatus() {
         return getStatus();
+    }
+
+    public String getType() {
+        return type;
     }
 
 

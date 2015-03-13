@@ -4,6 +4,8 @@ import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.references.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
+import appsgate.lig.context.dependency.spec.ReferenceDescription;
+import appsgate.lig.context.dependency.spec.Selector;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +20,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author jr
  */
-public class NodeSelect extends Node implements INodeList, ICanBeEvaluated {
+public class NodeSelect extends Node implements INodeList, ICanBeEvaluated, Selector {
 
     /**
      * Static class member uses to log what happened in each instances
@@ -157,6 +159,7 @@ public class NodeSelect extends Node implements INodeList, ICanBeEvaluated {
         return WHAT;
     }
 
+    @Override
     public Map<String, ArrayList<String>> getPlaceDeviceSelector() {
         ArrayList<String> WHAT = getStringList(what);
         ArrayList<String> WHERE = getStringList(where);
@@ -241,8 +244,8 @@ public class NodeSelect extends Node implements INodeList, ICanBeEvaluated {
     }
 
     @Override
-    protected void buildReferences(ReferenceTable table, HashMap<String,String> args) {
-        table.addNodeSelect(this, args);
+    protected void buildReferences(ReferenceTable table, ReferenceDescription d) {
+        table.addNodeSelect(this, d);
     }
 
     @Override
@@ -250,26 +253,4 @@ public class NodeSelect extends Node implements INodeList, ICanBeEvaluated {
         return "Select: " + what.toString() + ", from: " + where.toString();
     }
 
-//    public List<JSONObject> getElementSelector(){
-//        ArrayList<JSONObject> arrayElem = new ArrayList<JSONObject>();
-//        ArrayList<JSONObject> arrayPlace= new ArrayList<JSONObject>();
-//        for (int i = 0; i < where.length(); i++) {
-//            
-//            try {
-//                JSONObject o = new JSONObject();
-//                o.putOpt("place", where.optJSONObject(i));
-//            } catch (JSONException ex) {
-//                java.util.logging.Logger.getLogger(NodeSelect.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//        }
-//        
-//         for (int i = 0; i < what.length(); i++) {
-//            JSONObject o = new JSONObject();
-//            try {
-//                o.putOpt("device", what.optJSONObject(i));
-//            } catch (JSONException ex) {
-//                java.util.logging.Logger.getLogger(NodeSelect.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//        }
-//    }
 }

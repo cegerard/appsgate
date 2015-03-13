@@ -9,8 +9,8 @@ import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.references.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
+import appsgate.lig.context.dependency.spec.ReferenceDescription;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
@@ -269,14 +269,14 @@ public class NodeValue extends Node implements INodeList, ICanBeEvaluated {
     }
 
     @Override
-    protected void buildReferences(ReferenceTable table, HashMap<String,String> args) {
+    protected void buildReferences(ReferenceTable table, ReferenceDescription d) {
         switch (this.type) {
             case PROGRAMCALL:
-                table.addProgram(value, this.getDefaultName(), args);
+                table.addProgram(value, this.getDefaultName(), d);
                 break;
             case SERVICE:
             case DEVICE:
-                table.addDevice(value, this.getDefaultName(), args);
+                table.addDevice(value, this.getDefaultName(), d);
                 break;
             default:
                 LOGGER.debug("[buildReferences] unknown case to handle: {}", this);

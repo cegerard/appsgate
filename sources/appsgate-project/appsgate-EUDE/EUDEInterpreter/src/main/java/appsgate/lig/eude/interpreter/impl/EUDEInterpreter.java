@@ -20,11 +20,12 @@ import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.EndEventListener;
 import appsgate.lig.eude.interpreter.references.GraphManager;
-import appsgate.lig.eude.interpreter.references.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEventListener;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeEvent;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
+import appsgate.lig.context.dependency.spec.Graph;
+import appsgate.lig.context.dependency.spec.Reference.STATUS;
 import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
 import appsgate.lig.eude.interpreter.spec.ProgramNotification;
 import appsgate.lig.manager.propertyhistory.services.PropertyHistoryManager;
@@ -93,10 +94,8 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      */
     public ClockProxy clock;
 
-    /**
-     *
-     */
-    private GraphManager gm;
+    //
+    private final GraphManager gm;
     
     private DependencyManagerSpec dependencyManager;
 
@@ -223,12 +222,8 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
         p.update(jsonProgram);
         notifyUpdateProgram(p.getId(), p.getState().toString(), p.getProgramName(), p.getJSONDescription());
         //save program map state
-
-        if (contextHistory_push.pushData_add(this.getClass().getSimpleName(), p.getId(), p.getProgramName(), getProgramsDesc())) {
-            return true;
-        }
         
-        return false;
+        return contextHistory_push.pushData_add(this.getClass().getSimpleName(), p.getId(), p.getProgramName(), getProgramsDesc());
     }
     
     @Override
@@ -444,9 +439,9 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      */
     private void notifyUpdateProgram(String id, String runningState, String name, JSONObject source) {
         if (runningState.equalsIgnoreCase("INVALID")) {
-            newProgramStatus(id, ReferenceTable.STATUS.INVALID);
+            newProgramStatus(id, STATUS.INVALID);
         } else {
-            newProgramStatus(id, ReferenceTable.STATUS.OK);
+            newProgramStatus(id, STATUS.OK);
         }
         notifyChanges(new ProgramNotification("updateProgram", id, runningState, name, source, null));
     }
@@ -467,7 +462,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      */
     private void notifyRemoveProgram(String id, String name) {
         
-        newProgramStatus(id, ReferenceTable.STATUS.MISSING);
+        newProgramStatus(id, STATUS.MISSING);
         notifyChanges(new ProgramNotification("removeProgram", id, "", name, null, null));
     }
 
@@ -714,9 +709,9 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
     
     @Override
     public void newDeviceStatus(String deviceId, Boolean statusOK) {
-        ReferenceTable.STATUS s = ReferenceTable.STATUS.OK;
+        STATUS s = STATUS.OK;
         if (!statusOK) {
-            s = ReferenceTable.STATUS.MISSING;
+            s = STATUS.MISSING;
         }
         for (NodeProgram p : mapPrograms.values()) {
             p.setDeviceStatus(deviceId, s);
@@ -728,7 +723,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * @param deviceId
      * @param status
      */
-    public void newProgramStatus(String deviceId, ReferenceTable.STATUS status) {
+    public void newProgramStatus(String deviceId, STATUS status) {
         for (NodeProgram p : mapPrograms.values()) {
             p.setProgramStatus(deviceId, status);
         }
@@ -751,7 +746,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
     /**
      * @param graph
      */
-    public void saveDependencyGraph(JSONObject graph) {
+    public void saveDependencyGraph(Graph graph) {
         if (dependencyManager != null) {
             dependencyManager.addGraph(graph);
         } else {

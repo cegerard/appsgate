@@ -1,15 +1,15 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.chmi.spec.GenericCommand;
+import appsgate.lig.context.dependency.spec.Reference;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.references.ReferenceTable;
-import appsgate.lig.eude.interpreter.references.ReferenceTable.REFERENCE_TYPE;
 import appsgate.lig.ehmi.spec.SpokObject;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.*;
+import appsgate.lig.context.dependency.spec.ReferenceDescription;
 import appsgate.lig.eude.interpreter.spec.ProgramCommandNotification;
 import appsgate.lig.eude.interpreter.spec.ProgramTraceNotification;
-import java.util.HashMap;
 import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -311,14 +311,13 @@ public class NodeAction extends Node implements ICanBeEvaluated {
     }
 
     @Override
-    protected void buildReferences(ReferenceTable r, HashMap<String, String> args) {
+    protected void buildReferences(ReferenceTable r, ReferenceDescription d) {
         if (target != null) {
-            HashMap<String, String> refData = new HashMap<String, String>();
-            refData.put("method", this.methodName);
+            ReferenceDescription refData;
             if (this.returnType.equals("")) {
-                refData.put("referenceType", REFERENCE_TYPE.WRITING.toString());
+                refData = new ReferenceDescription(Reference.REFERENCE_TYPE.WRITING, methodName);
             } else {
-                refData.put("referenceType", REFERENCE_TYPE.READING.toString());
+                refData = new ReferenceDescription(Reference.REFERENCE_TYPE.READING, methodName);
             }
             target.buildReferences(r, refData);
         }

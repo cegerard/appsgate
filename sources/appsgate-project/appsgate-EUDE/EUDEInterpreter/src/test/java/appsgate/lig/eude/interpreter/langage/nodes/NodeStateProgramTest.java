@@ -5,10 +5,10 @@
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import appsgate.lig.context.dependency.spec.Reference;
 import appsgate.lig.ehmi.spec.EHMIProxyMock;
 import appsgate.lig.ehmi.spec.EHMIProxySpec;
 import appsgate.lig.ehmi.spec.messages.NotificationMsg;
-import appsgate.lig.eude.interpreter.references.ReferenceTable;
 
 import org.jmock.Expectations;
 import static org.jmock.Expectations.any;
@@ -37,7 +37,7 @@ public class NodeStateProgramTest extends NodeTest {
 
         context.checking(new Expectations() {
             {
-                allowing(mediator).newProgramStatus(with(any(String.class)), with(any(ReferenceTable.STATUS.class)));
+                allowing(mediator).newProgramStatus(with(any(String.class)), with(any(Reference.STATUS.class)));
                 allowing(mediator).getContext();
                 will(returnValue(c));
                 allowing(mediator).addNodeListening(with(any(NodeEvent.class)));

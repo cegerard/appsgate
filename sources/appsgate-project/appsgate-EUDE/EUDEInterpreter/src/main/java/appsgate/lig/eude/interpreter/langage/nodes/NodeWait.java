@@ -12,7 +12,7 @@ import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
-import java.util.HashMap;
+import appsgate.lig.context.dependency.spec.ReferenceDescription;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -142,7 +142,7 @@ public class NodeWait extends Node {
     }
 
     @Override
-    protected void buildReferences(ReferenceTable table, HashMap<String,String> args) {
+    protected void buildReferences(ReferenceTable table, ReferenceDescription d) {
         if (this.event != null) {
             event.buildReferences(table, null);
         }

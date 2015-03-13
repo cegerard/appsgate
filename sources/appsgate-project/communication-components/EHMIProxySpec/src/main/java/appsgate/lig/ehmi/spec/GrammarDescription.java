@@ -147,20 +147,20 @@ public class GrammarDescription {
      */
     public JSONObject getContextFromParams(String cmd, JSONArray params) {
         int size = 0;
+        JSONObject ret = new JSONObject();
         if (params != null) {
             size = params.length();
         }
         ArrayList<String> arguments = getArgumentsFromCommand(cmd, size);
         if (params == null) {
-            return null;
+            return ret;
         }
-        JSONObject ret = new JSONObject();
         for (int i = 0 ; i < arguments.size(); i++) {
             try {
                 ret.put(arguments.get(i), params.getJSONObject(i).getString("value"));
             } catch (JSONException ex) {
                 LOGGER.error("GetContextFromParams, array invalid: {}", params.toString());
-                return null;
+                return new JSONObject();
             }
         }
         return ret;

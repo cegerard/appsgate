@@ -11,6 +11,7 @@ import appsgate.lig.eude.interpreter.langage.components.SpokParser;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
+import appsgate.lig.context.dependency.spec.ReferenceDescription;
 import java.util.HashMap;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -288,7 +289,7 @@ public class NodeBooleanExpression extends Node implements ICanBeEvaluated {
     }
     
     @Override
-    protected void buildReferences(ReferenceTable table, HashMap<String,String> args) {
+    protected void buildReferences(ReferenceTable table, ReferenceDescription d) {
         if (leftNode != null) {
             leftNode.buildReferences(table, null);
         }

@@ -2,16 +2,14 @@ package appsgate.lig.context.dependency.spec;
 
 import java.util.ArrayList;
 import appsgate.lig.ehmi.spec.SpokObject;
+import java.util.Set;
 import org.json.JSONObject;
 
 /**
  *
  * @author jr
  */
-public class Dependencies implements SpokObject{
-    public ArrayList<String> actsOn_ids = new ArrayList<String>();
-    public ArrayList<String> readedDeviceId = new ArrayList<String>();
-//    public ArrayList<String> referencedBy =
+public abstract class Dependencies implements SpokObject {
 
     @Override
     public JSONObject getJSONDescription() {
@@ -27,4 +25,10 @@ public class Dependencies implements SpokObject{
     public String getValue() {
         return null;
     }
+    
+    public abstract Set<String> getActsOnEntities();
+    public abstract Set<String> getReadedEntities();
+    public abstract Set<DeviceReference> getDevicesReferences();
+    public abstract Set<ProgramReference> getProgramsReferences();
+    public abstract Set<SelectReference> getSelectors();
 }

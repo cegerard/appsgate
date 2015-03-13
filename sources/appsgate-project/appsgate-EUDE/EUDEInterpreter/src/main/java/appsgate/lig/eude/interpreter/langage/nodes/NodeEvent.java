@@ -1,13 +1,14 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import appsgate.lig.context.dependency.spec.Reference.REFERENCE_TYPE;
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.references.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
+import appsgate.lig.context.dependency.spec.ReferenceDescription;
 import appsgate.lig.eude.interpreter.spec.ProgramEventNotification;
-import java.util.HashMap;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -237,11 +238,9 @@ public class NodeEvent extends Node implements INodeEvent {
     }
 
     @Override
-    protected void buildReferences(ReferenceTable table, HashMap<String,String> args) {
+    protected void buildReferences(ReferenceTable table, ReferenceDescription d) {
         if (source != null) {
-            HashMap<String,String> refData = new HashMap<String, String>();
-            refData.put("method", this.eventName);
-            refData.put("referenceType", ReferenceTable.REFERENCE_TYPE.READING.toString());
+            ReferenceDescription refData = new ReferenceDescription(REFERENCE_TYPE.READING, this.eventName);
             source.buildReferences(table, refData);
         }
     }

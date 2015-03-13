@@ -7,6 +7,7 @@ package appsgate.lig.eude.interpreter.impl;
 
 import appsgate.lig.chmi.spec.CHMIProxySpec;
 import appsgate.lig.chmi.spec.GenericCommand;
+import appsgate.lig.context.dependency.spec.Reference.STATUS;
 import appsgate.lig.context.services.DataBasePullService;
 import appsgate.lig.context.services.DataBasePushService;
 import appsgate.lig.ehmi.spec.EHMIProxyMock;
@@ -126,7 +127,7 @@ public class ReferenceTest {
         Assert.assertEquals(1, devicesId.size());
         Set<String> programsId = references.getProgramsId();
         Assert.assertEquals(1, programsId.size());
-        ReferenceTable.STATUS ret = references.checkReferences();
-        Assert.assertEquals(ReferenceTable.STATUS.INVALID, ret);
+        STATUS ret = references.checkReferences();
+        Assert.assertEquals(STATUS.INVALID, ret);
     }
 }
