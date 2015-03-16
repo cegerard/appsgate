@@ -387,7 +387,7 @@ define([
 			subFilterDevice["deviceType"] = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "32", "36", "124", "210"];
 			subFilterDevice["deviceState"] = ["true", "false", "isGhostDevice", "isMultipleTargeted"];
 
-			subFilterProgram["state"] = ["INVALID", "DEPLOYED", "PROCESSING", "LIMPING", "INCOMPLETE", "isGhostProgram"];
+			subFilterProgram["state"] = ["PROCESSING", "LIMPING", "DEPLOYED", "INCOMPLETE", "INVALID", "isGhostProgram"];
 
 			this.set({
 				filterEntities: filterEntitiesType,
@@ -421,6 +421,32 @@ define([
 				filterRelations: ["isPlanified", "isLocatedIn", "READING", "WRITING", "denotes"],
 				currentRelationsFilters: ["isPlanified", "isLocatedIn", "READING", "WRITING", "denotes"]
 			});
+		},
+
+		checkAllDeviceType: function () {
+			var self = this;
+			var currentFilter = self.get("currentEntitiesFilters");
+			var subFilterDeviceType = self.get("subFilterDevice")["deviceType"];
+			_.each(subFilterDeviceType, function (filterDeviceType) {
+				if (!_.contains(currentFilter, filterDeviceType)) {
+					currentFilter.push(filterDeviceType);
+				}
+			});
+			this.set({
+				currentEntitiesFilters: currentFilter
+			});
+			this.trigger("change:currentEntitiesFilters");
+		},
+
+		uncheckAllDeviceType: function () {
+			var self = this;
+			var subFilterDeviceType = self.get("subFilterDevice")["deviceType"];
+			_.each(subFilterDeviceType, function (filterDeviceType) {
+				if (_.contains(self.get("currentEntitiesFilters"), filterDeviceType)) {
+					self.get("currentEntitiesFilters").splice(self.get("currentEntitiesFilters").indexOf(filterDeviceType), 1);
+				}
+			});
+			this.trigger("change:currentEntitiesFilters");
 		},
 
 		/**

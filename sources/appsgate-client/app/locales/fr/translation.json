@@ -89,6 +89,9 @@
 					"device": "$t(dependancy.type.entity.device)",
 					"selector": "$t(dependancy.type.entity.selector.filter-label)",
 					"device-type": {
+						"title": "Types",
+						"all": "Tous",
+						"none": "Aucun",
 						"0": "$t(devices.temperature.name.plural)",
 						"1": "$t(devices.illumination.name.plural)",
 						"2": "$t(devices.switch.name.plural)",
@@ -105,18 +108,20 @@
 						"210": "$t(devices.domicube.name.plural)"
 					},
 					"device-state": {
+						"title": "Etat",
 						"true": "Allumé",
 						"false": "Eteint",
-						"isGhostDevice": "Disparu",
+						"isGhostDevice": "Manquant",
 						"isMultipleTargeted": "Multiples modifications d'états"
 					},
 					"program-state" : {
-						"INVALID": "Invalide",
-						"DEPLOYED": "Valide",
-						"PROCESSING": "En cours d'exécution",
-						"LIMPING": "Instable",
-						"INCOMPLETE": "Incomplet",
-						"isGhostProgram": "Disparu"
+						"title": "Etat",
+						"INVALID": "Inactif & Invalide",
+						"DEPLOYED": "Inactif & Valide",
+						"PROCESSING": "Actif & Valide",
+						"LIMPING": "Actif & Instable",
+						"INCOMPLETE": "Inactif & Instable",
+						"isGhostProgram": "Manquant"
 					}
 				},
 				"relation": {
