@@ -19,8 +19,9 @@ define([
     "models/device/mediaplayer",
     "models/device/mediabrowser",
     "models/device/coretv",
-    "models/device/coreclock"
-], function(App, Device, ActionTemplate, EventTemplate, PropertyTemplate, StateTemplate, TemperatureSensor, CO2Sensor, IlluminationSensor, SwitchSensor, ContactSensor, KeyCardSensor, ARDLock, Plug, PhillipsHue, Actuator, DomiCube, MediaPlayer, MediaBrowser, CoreTV, CoreClock) {
+    "models/device/coreclock",
+    "models/device/fairylights"
+], function(App, Device, ActionTemplate, EventTemplate, PropertyTemplate, StateTemplate, TemperatureSensor, CO2Sensor, IlluminationSensor, SwitchSensor, ContactSensor, KeyCardSensor, ARDLock, Plug, PhillipsHue, Actuator, DomiCube, MediaPlayer, MediaBrowser, CoreTV, CoreClock, FairyLights) {
 
     var Devices = {};
 
@@ -107,6 +108,9 @@ define([
                     break;
                 case "8":
                     device = new Actuator(brick);
+                    break;
+                case "12":
+                    device = new FairyLights(brick);
                     break;
                 case "21":
                     device = new CoreClock(brick);
@@ -244,6 +248,8 @@ define([
                 i18="devices.lamp.name.";
             } else if (type == "8") {
                 i18="devices.actuator.name.";
+            } else if (type == "12") {
+                i18="devices.fairylights.name.";
             } else if (type == "31") {
                 i18="devices.mediaplayer.name.";
             } else if (type == "32") {
@@ -314,6 +320,12 @@ define([
          */
         getActuators: function() {
             return devices.where({type: "8"});
+        },
+        /**
+         * @return Array of the FairyLights devices
+         */
+        getFairyLights: function() {
+            return devices.where({type: "12"});
         },
         /**
          * @return Core clock of the home - unique device

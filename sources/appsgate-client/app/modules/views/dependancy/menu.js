@@ -87,7 +87,11 @@ define([
 							// Reinitialize all the popover because some of them may have been recreated
 							$('[data-toggle="popover"]').popover();
 						})
+
+					self.addCaptionDrawing(this, d);
+
 					d3.select(this).append("span")
+						.attr("class", "caption-label-drawing")
 						.text(function (d) {
 							return $.i18n.t("dependancy.filters-label.entity." + d);
 						});
@@ -133,6 +137,7 @@ define([
 							$('[data-toggle="popover"]').popover();
 						})
 					d3.select(this).append("span")
+						.attr("class", "caption-subfilter-label")
 						.text(function (d) {
 							return $.i18n.t("dependancy.filters-label.entity.device-type." + d);
 						})
@@ -177,7 +182,11 @@ define([
 							// Reinitialize all the popover because some of them may have been recreated
 							$('[data-toggle="popover"]').popover();
 						})
+
+					self.addCaptionDrawing(this, d);
+
 					d3.select(this).append("span")
+						.attr("class", "caption-label-drawing caption-subfilter-label")
 						.text(function (d) {
 							return $.i18n.t("dependancy.filters-label.entity.device-state." + d);
 						})
@@ -223,11 +232,201 @@ define([
 							// Reinitialize all the popover because some of them may have been recreated
 							$('[data-toggle="popover"]').popover();
 						})
+
+					self.addCaptionDrawing(this, d);
+
 					d3.select(this).append("span")
+						.attr("class", "caption-label-drawing caption-subfilter-label")
 						.text(function (d) {
 							return $.i18n.t("dependancy.filters-label.entity.program-state." + d);
 						})
 				});
+		},
+
+		addCaptionDrawing: function (d3Element, entity) {
+			var drawElem = d3.select(d3Element)
+				.append("svg")
+				.attr("class", "caption-drawing")
+				.attr("width", 20)
+				.attr("height", 20)
+				.append("svg:g");
+
+			switch (entity) {
+			case "true":
+				drawElem.append("circle")
+					.attr("cx", 10)
+					.attr("cy", 10)
+					.attr("r", 7)
+					.attr("stroke", "black")
+					.attr("class", "circle-device-state-true");
+				break;
+			case "false":
+				drawElem.append("circle")
+					.attr("cx", 10)
+					.attr("cy", 10)
+					.attr("r", 7)
+					.attr("stroke", "black")
+					.attr("class", "circle-device-state-false");
+				break;
+			case "isGhostDevice":
+			case "isGhostProgram":
+				drawElem.append("circle")
+					.attr("cx", 10)
+					.attr("cy", 10)
+					.attr("r", 9)
+					.attr("fill", "white")
+					.attr("stroke-width", 2)
+					.attr("stroke", "blue");
+				drawElem.append("line")
+					.attr("x1", 3)
+					.attr("y1", 3)
+					.attr("x2", 17)
+					.attr("y2", 17)
+					.attr("class", "ghost-decoration");
+				drawElem.append("line")
+					.attr("x1", 3)
+					.attr("y1", 17)
+					.attr("x2", 17)
+					.attr("y2", 3)
+					.attr("class", "ghost-decoration");
+				break;
+			case "isMultipleTargeted":
+				drawElem.append("circle")
+					.attr("cx", 10)
+					.attr("cy", 10)
+					.attr("r", 9)
+					.attr("fill", "white")
+					.attr("stroke-width", 2)
+					.attr("stroke", "red");
+				break;
+			case "INVALID":
+				drawElem.append("rect")
+					.attr("x", 4)
+					.attr("y", 4)
+					.attr("width", 12)
+					.attr("height", 12)
+					.attr("fill", "red")
+					.attr("stroke", "black");
+				break;
+			case "DEPLOYED":
+				drawElem.append("rect")
+					.attr("x", 4)
+					.attr("y", 4)
+					.attr("width", 12)
+					.attr("height", 12)
+					.attr("fill", "#26d43b")
+					.attr("stroke", "black");
+				break;
+			case "INCOMPLETE":
+				drawElem.append("rect")
+					.attr("x", 4)
+					.attr("y", 4)
+					.attr("width", 12)
+					.attr("height", 12)
+					.attr("fill", "orange")
+					.attr("stroke", "black");
+				break;
+			case "PROCESSING":
+				drawElem.append("path")
+					.attr("d", "M5,5L20,13L5,20L5,5")
+					.attr("fill", "#26d43b")
+					.attr("stroke", "black");
+				break;
+			case "LIMPING":
+				drawElem.append("path")
+					.attr("d", "M5,5L20,13L5,20L5,5")
+					.attr("fill", "orange")
+					.attr("stroke", "black");
+				break;
+			case "time":
+				drawElem.append("circle")
+					.attr("cx", 10)
+					.attr("cy", 10)
+					.attr("r", 9)
+					.attr("fill", "transparent")
+					.attr("stroke", "black");
+				drawElem.append("image")
+					.attr("x", 2)
+					.attr("y", 2)
+					.attr('width', 16)
+					.attr('height', 16)
+					.attr("xlink:href", "app/img/home/calendar.svg");
+				break;
+			case "device":
+				drawElem.append("circle")
+					.attr("cx", 10)
+					.attr("cy", 10)
+					.attr("r", 9)
+					.attr("fill", "transparent")
+					.attr("stroke", "black");
+				drawElem.append("image")
+					.attr("x", 2)
+					.attr("y", 2)
+					.attr('width', 16)
+					.attr('height', 16)
+					.attr("xlink:href", "app/img/home/device3.svg");
+				break;
+			case "place":
+				drawElem.append("circle")
+					.attr("cx", 10)
+					.attr("cy", 10)
+					.attr("r", 9)
+					.attr("fill", "transparent")
+					.attr("stroke", "black");
+				drawElem.append("image")
+					.attr("x", 2)
+					.attr("y", 2)
+					.attr('width', 16)
+					.attr('height', 16)
+					.attr("xlink:href", "app/img/home/place1.svg");
+				break;
+			case "service":
+				drawElem.append("circle")
+					.attr("cx", 10)
+					.attr("cy", 10)
+					.attr("r", 9)
+					.attr("fill", "transparent")
+					.attr("stroke", "black");
+				drawElem.append("image")
+					.attr("x", 2)
+					.attr("y", 2)
+					.attr('width', 16)
+					.attr('height', 16)
+					.attr("xlink:href", "app/img/home/service1.svg");
+				break;
+			case "program":
+				drawElem.append("circle")
+					.attr("cx", 10)
+					.attr("cy", 10)
+					.attr("r", 9)
+					.attr("fill", "transparent")
+					.attr("stroke", "black");
+				drawElem.append("image")
+					.attr("x", 2)
+					.attr("y", 2)
+					.attr('width', 16)
+					.attr('height', 16)
+					.attr("xlink:href", "app/img/home/program2.svg");
+				break;
+			case "selector":
+				drawElem.append("circle")
+					.attr("cx", 10)
+					.attr("cy", 10)
+					.attr("r", 9)
+					.attr("fill", "transparent")
+					.attr("stroke", "black");
+				drawElem.append("image")
+					.attr("x", 2)
+					.attr("y", 2)
+					.attr('width', 16)
+					.attr('height', 16)
+					.attr("xlink:href", "app/img/home/devices-selector.svg");
+				break;
+			default:
+				break;
+			}
+
+
 		},
 
 		createRelationFilter: function (model) {
@@ -253,10 +452,7 @@ define([
 							// Reinitialize all the popover because some of them may have been recreated
 							$('[data-toggle="popover"]').popover();
 						})
-					d3.select(this).append("span")
-						.text(function (d) {
-							return $.i18n.t("dependancy.filters-label.relation." + d);
-						});
+
 					d3.select(this).append("svg")
 						.attr("class", "filter-svg-arrow")
 						.append("svg:defs").append("svg:marker")
@@ -280,6 +476,11 @@ define([
 						.attr("x2", "10")
 						.attr("y2", "5")
 						.attr("marker-end", "url(#markerArrow)");
+
+					d3.select(this).append("span")
+						.text(function (d) {
+							return $.i18n.t("dependancy.filters-label.relation." + d);
+						});
 				});
 		},
 
@@ -291,7 +492,7 @@ define([
 			}
 			this.model.trigger("change:currentEntitiesFilters");
 		},
-		
+
 		updateCurrentRelationsFilters: function (filter, checked) {
 			if (checked) {
 				this.model.get("currentRelationsFilters").push(filter);
