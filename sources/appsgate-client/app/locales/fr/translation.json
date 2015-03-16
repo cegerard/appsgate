@@ -555,6 +555,18 @@
         "singular": "Capteur de CO2"
       }
     },
+    "fairylights": {
+      "caption": {
+      },
+      "keyboard": {
+      },
+      "language": {
+      },
+      "name": {
+        "plural": "Guirlande",
+        "singular": "Guirlandes"
+      }
+    },
     "type-label": "Type",
     "value-label": "Valeur"
   },
