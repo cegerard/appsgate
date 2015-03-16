@@ -1095,14 +1095,13 @@ button.program-incomplete{
     margin-left: 10px;
 }
 
-#filterContainerNodes>input, #filterContainerNodes>div>label>input, #filterContainerLinks>input, #filterContainerLinks>div>label>input, #filterContainerLinks>div>label>div>label>input {
+#entitiesGroupFilter>div>div>div>div>div>label>input, #entitiesGroupFilter>div>div>label>input, #relationsGroupFilter>div>label>input {
 	margin-right: 5px;
 }
 
 .filter-svg-arrow {
 	width: 20px;
 	height: 10px;
-	margin-left: 15px;
 }
 
 .filter-arrow {
@@ -1147,7 +1146,7 @@ button.program-incomplete{
 	fill: #777;
 }
 
-#graph g>.ghost-decoration {
+#graph g>.ghost-decoration, .ghost-decoration  {
 	stroke: blue;
 	stroke-width: 2px;
 }
@@ -1160,8 +1159,16 @@ button.program-incomplete{
 	margin-bottom: 0px;
 }
 
-.caption-label {
-	vertical-align: super;
+.caption-drawing {
+	vertical-align: bottom;
+}
+
+.caption-label-drawing {
+	margin-left: 3px;
+}
+
+.caption-subfilter-label {
+	font-size: smaller;
 }
 
 .help-div {
@@ -1192,6 +1199,7 @@ button.program-incomplete{
 	font-size: 70%;
     content:"\e114";
     float: left;
+	margin-right: 5px;
     color: grey;
 }
 .subfilter-title a.collapsed:after {
