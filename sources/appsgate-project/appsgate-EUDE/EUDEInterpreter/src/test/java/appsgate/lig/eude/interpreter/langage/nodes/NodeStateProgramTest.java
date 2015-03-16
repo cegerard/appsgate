@@ -5,7 +5,7 @@
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.context.dependency.spec.Reference;
+import appsgate.lig.context.dependency.graph.Reference;
 import appsgate.lig.ehmi.spec.EHMIProxyMock;
 import appsgate.lig.ehmi.spec.EHMIProxySpec;
 import appsgate.lig.ehmi.spec.messages.NotificationMsg;

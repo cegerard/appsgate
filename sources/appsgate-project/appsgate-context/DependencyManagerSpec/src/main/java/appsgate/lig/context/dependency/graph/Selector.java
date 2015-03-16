@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package appsgate.lig.context.dependency.spec;
+package appsgate.lig.context.dependency.graph;
 
 import java.util.ArrayList;
 import java.util.Map;

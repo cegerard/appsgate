@@ -71,14 +71,18 @@ public class TraceTools {
         Set<String> ids = traces.getIds();
         ids.remove(focus);
         HashMap<String, GroupTuple> groupFollower = new HashMap<>();
+        groupFollower.put("focus", new GroupTuple(1, new JSONArray().put(focus)));
         if (dep != null) {
             ids.removeAll(dep.getActsOnEntities());
             ids.removeAll(dep.getReadedEntities());
+            ids.removeAll(dep.getEntitiesActsOn());
+            ids.removeAll(dep.getEntitiesRead());
             groupFollower.put("dependencies.act", new GroupTuple(2, new JSONArray(dep.getActsOnEntities())));
-            groupFollower.put("dependencies.read", new GroupTuple(3, new JSONArray(dep.getReadedEntities())));
+            groupFollower.put("dependencies.reads", new GroupTuple(3, new JSONArray(dep.getReadedEntities())));
+            groupFollower.put("dependencies.changed", new GroupTuple(4, new JSONArray(dep.getEntitiesActsOn())));
+            groupFollower.put("dependencies.readby", new GroupTuple(5, new JSONArray(dep.getEntitiesRead())));
         }
-        groupFollower.put("focus", new GroupTuple(1, new JSONArray().put(focus)));
-        groupFollower.put("others", new GroupTuple(4, new JSONArray(ids)));
+        groupFollower.put("others", new GroupTuple(6, new JSONArray(ids)));
         return groupFollower;
     }
 

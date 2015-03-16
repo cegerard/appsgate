@@ -1,6 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.components;
 
-import appsgate.lig.context.dependency.spec.Selector;
+import appsgate.lig.context.dependency.graph.Selector;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;

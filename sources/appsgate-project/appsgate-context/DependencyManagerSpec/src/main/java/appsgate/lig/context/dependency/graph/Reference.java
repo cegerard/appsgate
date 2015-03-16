@@ -1,4 +1,4 @@
-package appsgate.lig.context.dependency.spec;
+package appsgate.lig.context.dependency.graph;
 
 import java.util.ArrayList;
 
@@ -40,6 +40,14 @@ public class Reference  {
      */
     private final ArrayList<ReferenceDescription> referencesData;
 
+    /**
+     * Constructor
+     * 
+     * @param deviceId
+     * @param deviceStatus
+     * @param name
+     * @param referencesData 
+     */
     public Reference(String deviceId, STATUS deviceStatus, String name, ArrayList<ReferenceDescription> referencesData) {
         this.id = deviceId;
         this.status = deviceStatus;

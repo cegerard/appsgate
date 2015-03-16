@@ -4,8 +4,8 @@ import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.references.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
-import appsgate.lig.context.dependency.spec.ReferenceDescription;
-import appsgate.lig.context.dependency.spec.Selector;
+import appsgate.lig.context.dependency.graph.ReferenceDescription;
+import appsgate.lig.context.dependency.graph.Selector;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -181,6 +181,7 @@ public class NodeSelect extends Node implements INodeList, ICanBeEvaluated, Sele
     /**
      * @return true if the selection is an empty one
      */
+    @Override
     public Boolean isEmptySelection() {
         return getDevicesInSpaces(what, where).length() == 0;
     }

@@ -121,7 +121,7 @@ public class Traces {
      */
     Set<String> getIds() {
         Set<String> ret = new ConcurrentSkipListSet<>();
-        for (Set<String> s : entitiesByLocation.values()){
+        for (Set<String> s : entitiesByType.values()){
             ret.addAll(s);
         }
         return ret;

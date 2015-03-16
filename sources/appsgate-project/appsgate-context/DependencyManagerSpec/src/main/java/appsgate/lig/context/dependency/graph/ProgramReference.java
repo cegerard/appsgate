@@ -1,4 +1,4 @@
-package appsgate.lig.context.dependency.spec;
+package appsgate.lig.context.dependency.graph;
 
 import java.util.ArrayList;
 

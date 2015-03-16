@@ -1,6 +1,6 @@
 package appsgate.lig.eude.interpreter.references;
 
-import appsgate.lig.context.dependency.spec.Graph;
+import appsgate.lig.context.dependency.graph.Graph;
 import appsgate.lig.ehmi.spec.EHMIProxySpec;
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;

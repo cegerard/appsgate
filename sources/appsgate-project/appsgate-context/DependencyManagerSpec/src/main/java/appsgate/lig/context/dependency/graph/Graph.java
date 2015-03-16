@@ -1,6 +1,6 @@
-package appsgate.lig.context.dependency.spec;
+package appsgate.lig.context.dependency.graph;
 
-import appsgate.lig.context.dependency.spec.Reference.STATUS;
+import appsgate.lig.context.dependency.spec.Dependencies;
 import appsgate.lig.ehmi.spec.SpokObject;
 
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public class Graph implements SpokObject {
     private final HashSet<DeviceReference> ghostDevices;
 
     // Collection to store the program we added
-    private final HashMap<String, Dependencies> programs;
+    private final HashMap<String, String> programs;
 
     // Collection to store the program ghost we will add
     private final HashSet<String> ghostPrograms;
@@ -48,7 +48,8 @@ public class Graph implements SpokObject {
     private final HashMap<String, String> deviceState;
     // Map to store the program states
     private final HashMap<String, String> deviceName;
-    
+
+    private final HashMap<String, Dependencies> dependencies;
 
     //
     boolean isSchedulerAdded = false;
@@ -67,28 +68,29 @@ public class Graph implements SpokObject {
     private final String CLOCK_ID = "21106637055";
     private final String SCHEDULER_ID = "-21106637055";
 
-    //
+    // the json object that will be returned
     private final JSONObject returnJSONObject;
 
     /**
      * Constructor
      */
     public Graph() {
-        this.programs = new HashMap<String, Dependencies>();
-        this.ghostPrograms = new HashSet<String>();
-        this.devices = new HashMap<String, String>();
-        this.selectorsSaved = new ArrayList<Selector>();
+        this.dependencies = new HashMap<>();
+        this.programs = new HashMap<>();
+        this.ghostPrograms = new HashSet<>();
+        this.devices = new HashMap<>();
+        this.selectorsSaved = new ArrayList<>();
         this.returnJSONObject = new JSONObject();
         try {
             returnJSONObject.put("nodes", new JSONArray());
             returnJSONObject.put("links", new JSONArray());
         } catch (JSONException ex) {
         }
-        this.ghostDevices = new HashSet<DeviceReference>();
-        this.programState = new HashMap<String, String>();
-        this.placeName = new HashMap<String, String>();
-        this.deviceState = new HashMap<String, String>();
-        this.deviceName = new HashMap<String, String>();
+        this.ghostDevices = new HashSet<>();
+        this.programState = new HashMap<>();
+        this.placeName = new HashMap<>();
+        this.deviceState = new HashMap<>();
+        this.deviceName = new HashMap<>();
     }
 
     @Override
@@ -137,9 +139,9 @@ public class Graph implements SpokObject {
      * @param state
      */
     public void addProgram(String pid, String programName, Dependencies references, String state) {
-        programs.put(pid, references);
+        programs.put(pid, programName);
         // Get the current status of the program
-        HashMap<String, String> optArg = new HashMap<String, String>();
+        HashMap<String, String> optArg = new HashMap<>();
         optArg.put("state", state);
         addNode(PROGRAM_ENTITY, pid, programName, optArg);
 
@@ -153,7 +155,7 @@ public class Graph implements SpokObject {
         for (ProgramReference rProgram : references.getProgramsReferences()) {
             addLink(REFERENCE_LINK, pid, rProgram.getProgramId(), rProgram.getReferencesData());
 
-            if (rProgram.getProgramStatus() == STATUS.MISSING) {
+            if (rProgram.getProgramStatus() == Reference.STATUS.MISSING) {
                 ghostPrograms.add(pid);
             }
         }
@@ -223,7 +225,7 @@ public class Graph implements SpokObject {
         }
         try {
 
-            HashMap<String, String> optArg = new HashMap<String, String>();
+            HashMap<String, String> optArg = new HashMap<>();
             String deviceType = "";
             try {
                 // if it is a weather device, it will have a location, which will be used as a name
@@ -300,7 +302,7 @@ public class Graph implements SpokObject {
             addGhost("device", dRef.getDefaultName(), dRef.getDeviceId());
         }
         for (String ghost : this.ghostPrograms) {
-            addGhost("program", programs.get(ghost).getValue(),ghost);
+            addGhost("program", programs.get(ghost), ghost);
         }
 
     }
@@ -313,7 +315,7 @@ public class Graph implements SpokObject {
      * @param id : String id of ghost
      */
     private void addGhost(String typeGhost, String name, String id) {
-        HashMap<String, String> optArg = new HashMap<String, String>();
+        HashMap<String, String> optArg = new HashMap<>();
         if (typeGhost.equals("device")) {
             optArg.put("isGhost", "ghostDevice");
             addNode(DEVICE_ENTITY, id, name, optArg);
@@ -360,6 +362,7 @@ public class Graph implements SpokObject {
                 for (ReferenceDescription refOpt : optArgs) {
                     if (refOpt != null) {
                         refArray.put(refOpt.getJSONDescription());
+                        addDependencyLink(refOpt.getReferenceType(), source, target);
                     }
                 }
                 o.put("referenceData", refArray);
@@ -368,6 +371,25 @@ public class Graph implements SpokObject {
         } catch (JSONException ex) {
             // Nothing will be raised since there is no null value
         }
+    }
+
+    private void addDependencyLink(String type, String source, String target) {
+        Dependencies sDep = getDependencies(source);
+        Dependencies tDep = getDependencies(target);
+        switch (type.toUpperCase()) {
+            case "READING":
+                sDep.addLinkEntityReaded(target);
+                tDep.addLinkEntityReading(source);
+                break;
+            case "WRITING":
+                sDep.addLinkEntityChanged(target);
+                tDep.addLinkEntityChanging(source);
+                break;
+            default:
+                return;
+        }
+        dependencies.put(source, sDep);
+        dependencies.put(target, tDep);
     }
 
     /**
@@ -402,6 +424,10 @@ public class Graph implements SpokObject {
                 // Save the type of the devices once (because they have all the same type, so that avoid to make multiple call to the interpreter)
                 if (typeDevices.equals("")) {
                     typeDevices = devices.get(deviceId);
+                    if (typeDevices == null) {
+                        typeDevices = "UnknownType";
+                        LOGGER.error("Unknown type found for device {}", deviceId);
+                    }
                 }
                 if (!isSelectorAlreadySaved) {
                     // Add the link "denotes" if the selector isn't already created or we will have more than one link
@@ -416,7 +442,7 @@ public class Graph implements SpokObject {
                 // If the selector hasn't been add to the graph, create the entity
                 if (!isSelectorAlreadySaved) {
                     // Add selector : name = type devices selected and add type = selector
-                    HashMap<String, String> optArg = new HashMap<String, String>();
+                    HashMap<String, String> optArg = new HashMap<>();
                     optArg.put("type", "selector");
                     // id : selector - Type - Place, to be able to link different program to the same selector
                     addNode(SELECTOR_ENTITY, "selector-" + typeDevices + "-" + placeId, typeDevices, optArg);
@@ -523,10 +549,13 @@ public class Graph implements SpokObject {
 
     /**
      * 
-     * @param pid
+     * @param id
      * @return 
      */
-    public Dependencies getProgramDependencies(String pid) {
-        return programs.get(pid);
+    public Dependencies getDependencies(String id) {
+        if (dependencies.containsKey(id)) {
+            return dependencies.get(id);
+        }
+        return new Dependencies(id);
     }
 }

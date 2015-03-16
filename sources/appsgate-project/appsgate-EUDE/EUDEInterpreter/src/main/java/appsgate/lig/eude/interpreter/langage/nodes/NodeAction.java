@@ -1,13 +1,13 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.chmi.spec.GenericCommand;
-import appsgate.lig.context.dependency.spec.Reference;
+import appsgate.lig.context.dependency.graph.Reference;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.references.ReferenceTable;
 import appsgate.lig.ehmi.spec.SpokObject;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.*;
-import appsgate.lig.context.dependency.spec.ReferenceDescription;
+import appsgate.lig.context.dependency.graph.ReferenceDescription;
 import appsgate.lig.eude.interpreter.spec.ProgramCommandNotification;
 import appsgate.lig.eude.interpreter.spec.ProgramTraceNotification;
 import java.util.List;

@@ -1,13 +1,13 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.context.dependency.spec.Reference.REFERENCE_TYPE;
+import appsgate.lig.context.dependency.graph.Reference.REFERENCE_TYPE;
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.references.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
-import appsgate.lig.context.dependency.spec.ReferenceDescription;
+import appsgate.lig.context.dependency.graph.ReferenceDescription;
 import appsgate.lig.eude.interpreter.spec.ProgramEventNotification;
 import org.json.JSONException;
 import org.json.JSONObject;

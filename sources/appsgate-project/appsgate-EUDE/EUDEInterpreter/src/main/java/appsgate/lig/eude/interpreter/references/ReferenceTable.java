@@ -6,12 +6,12 @@
 package appsgate.lig.eude.interpreter.references;
 
 import appsgate.lig.context.dependency.spec.Dependencies;
-import appsgate.lig.context.dependency.spec.DeviceReference;
-import appsgate.lig.context.dependency.spec.ProgramReference;
-import appsgate.lig.context.dependency.spec.Reference;
-import appsgate.lig.context.dependency.spec.Reference.STATUS;
-import appsgate.lig.context.dependency.spec.ReferenceDescription;
-import appsgate.lig.context.dependency.spec.SelectReference;
+import appsgate.lig.context.dependency.graph.DeviceReference;
+import appsgate.lig.context.dependency.graph.ProgramReference;
+import appsgate.lig.context.dependency.graph.Reference;
+import appsgate.lig.context.dependency.graph.Reference.STATUS;
+import appsgate.lig.context.dependency.graph.ReferenceDescription;
+import appsgate.lig.context.dependency.graph.SelectReference;
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
 import appsgate.lig.eude.interpreter.langage.components.ErrorMessagesFactory;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
@@ -41,10 +41,6 @@ public class ReferenceTable extends Dependencies {
      *
      */
     private final EUDEInterpreter interpreter;
-    /**
-     *
-     */
-    private final String myProgId;
 
     /**
      *
@@ -82,12 +78,12 @@ public class ReferenceTable extends Dependencies {
      * @param pid
      */
     public ReferenceTable(EUDEInterpreter interpreter, String pid) {
+        super(pid);
         devices = new HashSet<DeviceReference>();
         programs = new HashSet<ProgramReference>();
         nodes = new HashSet<SelectReference>();
         this.interpreter = interpreter;
         this.state = STATUS.UNKNOWN;
-        this.myProgId = pid;
     }
 
     /**
@@ -97,7 +93,7 @@ public class ReferenceTable extends Dependencies {
      * @param refData - data about reference
      */
     public void addProgram(String programId, String name, ReferenceDescription refData) {
-        if (programId.equalsIgnoreCase(myProgId)) {
+        if (programId.equalsIgnoreCase(getId())) {
             LOGGER.debug("The program is self referenced (do not need to add it in the reference table.");
             return;
         }
@@ -411,4 +407,16 @@ public class ReferenceTable extends Dependencies {
         }
         return ret;
     }
+
+    @Override
+    public Set<String> getEntitiesActsOn() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Set<String> getEntitiesRead() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+
 }

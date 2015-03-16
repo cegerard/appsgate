@@ -9,7 +9,7 @@ import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.references.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
-import appsgate.lig.context.dependency.spec.ReferenceDescription;
+import appsgate.lig.context.dependency.graph.ReferenceDescription;
 import java.util.List;
 import org.apache.commons.collections4.ListUtils;
 import org.json.JSONArray;

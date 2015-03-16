@@ -11,7 +11,7 @@ import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
-import appsgate.lig.context.dependency.spec.ReferenceDescription;
+import appsgate.lig.context.dependency.graph.ReferenceDescription;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

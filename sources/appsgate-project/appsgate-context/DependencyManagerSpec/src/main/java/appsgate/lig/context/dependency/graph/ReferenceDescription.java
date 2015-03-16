@@ -1,6 +1,6 @@
-package appsgate.lig.context.dependency.spec;
+package appsgate.lig.context.dependency.graph;
 
-import appsgate.lig.context.dependency.spec.Reference.REFERENCE_TYPE;
+import appsgate.lig.context.dependency.graph.Reference.REFERENCE_TYPE;
 import appsgate.lig.ehmi.spec.SpokObject;
 import org.json.JSONException;
 import org.json.JSONObject;

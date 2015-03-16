@@ -4,7 +4,7 @@ import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.references.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
-import appsgate.lig.context.dependency.spec.ReferenceDescription;
+import appsgate.lig.context.dependency.graph.ReferenceDescription;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;

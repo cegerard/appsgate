@@ -105,6 +105,12 @@
     "others_plural": "Autres",
     "focus": "Référence",
     "focus_plural": "Références",
+    "dependencies" : {
+      "act" : "agit sur",
+      "read" : "lit des informations",
+      "changed" : "est modifié par",
+      "readby" : "est lu par"
+    },
     "dependencie": "Dépendance",
     "dependencie_plural": "Dépendances",
     "all": "Tous",

@@ -2,7 +2,7 @@ package appsgate.lig.context.dependency.impl;
 
 import appsgate.lig.context.dependency.spec.Dependencies;
 import appsgate.lig.context.dependency.spec.DependencyManagerSpec;
-import appsgate.lig.context.dependency.spec.Graph;
+import appsgate.lig.context.dependency.graph.Graph;
 import appsgate.lig.ehmi.spec.SpokObject;
 import appsgate.lig.persistence.MongoDBConfiguration;
 import org.json.JSONObject;
@@ -67,7 +67,7 @@ public class DependencyManagerImpl implements DependencyManagerSpec {
             LOGGER.error("Dependency graph has not been build yet");
             return null;
         }
-        return g.getProgramDependencies(pid);
+        return g.getDependencies(pid);
     }
 
 }

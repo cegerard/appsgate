@@ -7,7 +7,7 @@ package appsgate.lig.eude.interpreter.impl;
 
 import appsgate.lig.chmi.spec.CHMIProxySpec;
 import appsgate.lig.chmi.spec.GenericCommand;
-import appsgate.lig.context.dependency.spec.Reference.STATUS;
+import appsgate.lig.context.dependency.graph.Reference.STATUS;
 import appsgate.lig.context.services.DataBasePullService;
 import appsgate.lig.context.services.DataBasePushService;
 import appsgate.lig.ehmi.spec.EHMIProxyMock;

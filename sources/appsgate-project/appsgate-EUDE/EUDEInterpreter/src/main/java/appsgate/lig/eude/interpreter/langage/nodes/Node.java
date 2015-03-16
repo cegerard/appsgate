@@ -15,7 +15,7 @@ import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.ehmi.spec.SpokObject;
 import appsgate.lig.eude.interpreter.langage.components.SpokParser;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
-import appsgate.lig.context.dependency.spec.ReferenceDescription;
+import appsgate.lig.context.dependency.graph.ReferenceDescription;
 import appsgate.lig.eude.interpreter.spec.ProgramLineNotification;
 import appsgate.lig.eude.interpreter.spec.ProgramTraceNotification;
 import java.util.Set;
