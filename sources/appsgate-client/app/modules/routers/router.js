@@ -127,8 +127,9 @@ define(function(require, exports, module) {
       $("#main").append(this.circlemenutemplate());
 
       this.currentMenuView = menuView;
-      this.currentMenuView.render();
       $(".aside-menu").html(this.currentMenuView.$el);
+		this.currentMenuView.render();
+//      $(".aside-menu").html(this.currentMenuView.$el);
 
       // initialize the circle menu
       $(".controlmenu").circleMenu({
