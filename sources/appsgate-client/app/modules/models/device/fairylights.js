@@ -156,5 +156,5 @@ define([
       }]);
     }
   });
-  return TV;
+  return FairyLights;
 });
