@@ -173,15 +173,14 @@ public class TraceQueue extends ArrayBlockingQueue<JSONObject> {
      * Load the Queue with a collection of traces
      *
      * @param traces the collection to load
-     * @throws JSONException
      */
-    public synchronized void loadTraces(JSONArray traces) throws JSONException {
+    public synchronized void loadTraces(JSONArray traces) {
 
-        ArrayList<JSONObject> traceCollection = new ArrayList<JSONObject>();
+        ArrayList<JSONObject> traceCollection = new ArrayList<>();
         int nbTrace = traces.length();
 
         for (int i = 0; i < nbTrace; i++) {
-            traceCollection.add(traces.getJSONObject(i));
+            traceCollection.add(traces.optJSONObject(i));
         }
 
         this.clear();
@@ -242,9 +241,8 @@ public class TraceQueue extends ArrayBlockingQueue<JSONObject> {
      * @param from the starting date
      * @param policy the policy to apply to traces
      * @return a JSONArray of aggregate traces
-     * @throws JSONException
      */
-    public synchronized JSONArray applyAggregationPolicy(long from, JSONObject policy) throws JSONException {
+    public synchronized JSONArray applyAggregationPolicy(long from, JSONObject policy)  {
 
         JSONArray aggregateTraces = new JSONArray();
 
@@ -257,7 +255,7 @@ public class TraceQueue extends ArrayBlockingQueue<JSONObject> {
             while (!isEmpty()) {
 
                 JSONObject latestTrace = peek();
-                long latestTraceTS = latestTrace.getLong("timestamp");
+                long latestTraceTS = latestTrace.optLong("timestamp");
 
                 if (latestTraceTS >= beginInt && latestTraceTS < endInt) {
                     tracesPacket.put(poll());

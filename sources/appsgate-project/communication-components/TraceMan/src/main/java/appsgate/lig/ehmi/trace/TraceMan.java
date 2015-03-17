@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import appsgate.lig.context.device.properties.table.spec.DevicePropertiesTableSpec;
 import appsgate.lig.ehmi.spec.EHMIProxySpec;
 import appsgate.lig.ehmi.spec.GrammarDescription;
-import appsgate.lig.ehmi.spec.SpokObject;
 import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 import appsgate.lig.ehmi.spec.trace.TraceManSpec;
 import appsgate.lig.ehmi.trace.listener.TraceCmdListener;
@@ -327,18 +326,20 @@ public class TraceMan implements TraceManSpec {
         JSONObject event = new JSONObject();
         JSONObject cause = new JSONObject();
         try {
-            if (eventType.contentEquals("new")) {
-                event.put("type", "appear");
-                cause = Trace.getJSONDecoration(
-                        Trace.DECORATION_TYPE.state, "appear", "technical", timeStamp, srcId, null, "decorations.appear",
-                        Trace.addJSONPair(new JSONObject(), "name", name));
-                event.put("state", Trace.getDeviceState(srcId, "", "", this));
-
-            } else if (eventType.contentEquals("remove")) {
-                event.put("type", "disappear");
-                cause = Trace.getJSONDecoration(
-                        Trace.DECORATION_TYPE.state, "disappear", "technical", timeStamp, srcId, null, "decorations.remove",
-                        Trace.addJSONPair(new JSONObject(), "name", name));
+            switch (eventType) {
+                case "new":
+                    event.put("type", "appear");
+                    cause = Trace.getJSONDecoration(
+                            Trace.DECORATION_TYPE.state, "appear", "technical", timeStamp, srcId, null, "decorations.appear",
+                            Trace.addJSONPair(new JSONObject(), "name", name));
+                    event.put("state", Trace.getDeviceState(srcId, "", "", this));
+                    break;
+                case "remove":
+                    event.put("type", "disappear");
+                    cause = Trace.getJSONDecoration(
+                            Trace.DECORATION_TYPE.state, "disappear", "technical", timeStamp, srcId, null, "decorations.remove",
+                            Trace.addJSONPair(new JSONObject(), "name", name));
+                    break;
             }
 
         } catch (JSONException e) {
@@ -382,17 +383,12 @@ public class TraceMan implements TraceManSpec {
         if (traceQueue.getDeltaTinMillis() == 0) { //No aggregation
             return tracesTab;
         } else { // Apply aggregation policy
-            try {
-                //filteringOnFocus(tracesTab);
-                traceQueue.stop();
-                traceQueue.loadTraces(tracesTab);
-                return traceQueue.applyAggregationPolicy(timestamp, null); //Call with default aggregation policy (id and time)
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            //filteringOnFocus(tracesTab);
+            traceQueue.stop();
+            traceQueue.loadTraces(tracesTab);
+            return traceQueue.applyAggregationPolicy(timestamp, null); //Call with default aggregation policy (id and time)
         }
 
-        return tracesTab;
     }
 
     /**
@@ -710,29 +706,26 @@ public class TraceMan implements TraceManSpec {
     private boolean applyFilters(GrammarDescription descr, String srcId, String varName, String value) {
         //Filter on those conditions
 
-        if (descr.getType().equalsIgnoreCase("ColorLight")) {
-            return !varName.contentEquals("x") && !varName.contentEquals("y") && !varName.contentEquals("ct") && !varName.contentEquals("speed") && !varName.contentEquals("mode");
+        switch (descr.getType().toUpperCase()) {
+            case "COLORLIGHT":
+                return !varName.contentEquals("x")
+                        && !varName.contentEquals("y")
+                        && !varName.contentEquals("ct")
+                        && !varName.contentEquals("speed")
+                        && !varName.contentEquals("mode");
+            case "ILLUMINATION":
+                return !varName.contentEquals("label");
+            case "DOMICUBE":
+                return varName.contentEquals("activeFace");
+            case "TEMPERATURE":
+                return !varName.contentEquals("change");
+            case "WEATHEROBSERVER":
+            case "MEDIAPLAYER":
+            case "CLOCK":
+                return false;
+            default:
+                return true;
         }
-        if (descr.getType().equalsIgnoreCase("Illumination") && varName.contentEquals("label")) {
-            return false;
-        }
-        if (descr.getType().equalsIgnoreCase("Domicube") && !varName.contentEquals("activeFace")) {
-            return false;
-        }
-        if (descr.getType().equalsIgnoreCase("Temperature") && varName.contentEquals("change")) {
-            return false;
-        }
-        if (descr.getType().equalsIgnoreCase("WeatherObserver")) {
-            return false;
-        }
-        if (descr.getType().equalsIgnoreCase("MediaPlayer")) {
-            return false;
-        }
-        if (descr.getType().equalsIgnoreCase("Clock")) {
-            return false;
-        }
-        //Trace not filtered
-        return true;
     }
 
     @Override

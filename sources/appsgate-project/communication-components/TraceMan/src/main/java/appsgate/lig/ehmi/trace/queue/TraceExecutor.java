@@ -1,6 +1,8 @@
 package appsgate.lig.ehmi.trace.queue;
 
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -119,23 +121,24 @@ public class TraceExecutor implements Runnable {
      * @param aggregateTraces result of all aggregations
      * @param tracesPacket traces to aggregates
      * @param logTime timestamp for this trace
-     * @throws JSONException
      */
-    public void aggregation(JSONArray aggregateTraces, JSONArray tracesPacket, long logTime)
-            throws JSONException {
+    public void aggregation(JSONArray aggregateTraces, JSONArray tracesPacket, long logTime) {
         // Create new aggregate trace instance
         JSONObject jsonTrace = new JSONObject();
-        jsonTrace.put("timestamp", logTime);
-        HashMap<String, JSONObject> devicesToAgg = new HashMap<String, JSONObject>();
-        HashMap<String, JSONObject> programsToAgg = new HashMap<String, JSONObject>();
+        try {
+            jsonTrace.put("timestamp", logTime);
+        } catch (JSONException ex) {
+        }
+        HashMap<String, JSONObject> devicesToAgg = new HashMap<>();
+        HashMap<String, JSONObject> programsToAgg = new HashMap<>();
 
         int nbTraces = tracesPacket.length();
         int i = 0;
         while (i < nbTraces) {
             // Get a trace to aggregate from the array
-            JSONObject tempObj = tracesPacket.getJSONObject(i);
-            JSONArray tempDevices = tempObj.getJSONArray("devices");
-            JSONArray tempPgms = tempObj.getJSONArray("programs");
+            JSONObject tempObj = tracesPacket.optJSONObject(i);
+            JSONArray tempDevices = tempObj.optJSONArray("devices");
+            JSONArray tempPgms = tempObj.optJSONArray("programs");
 
             int tempDevicesSize = tempDevices.length();
             int tempPgmsSize = tempPgms.length();
@@ -145,7 +148,7 @@ public class TraceExecutor implements Runnable {
                 int x = 0;
                 while (x < tempDevicesSize) {
                     // Merge the device trace
-                    JSONObject tempDev = tempDevices.getJSONObject(x);
+                    JSONObject tempDev = tempDevices.optJSONObject(x);
                     String id = tempDev.optString("id");
 
                     if (!devicesToAgg.containsKey(id)) { // No aggregation for now
@@ -154,20 +157,25 @@ public class TraceExecutor implements Runnable {
                     } else { // Device id exist for this time stamp -->
                         // aggregation
                         JSONObject existingDev = devicesToAgg.get(id);
-                        if (tempDev.has("event")) {// replace the state by the
-                            // last known state
-                            existingDev.put("event", tempDev.get("event"));
+                        if (tempDev.has("event")) {
+                            try {
+                            // replace the state by the
+                                // last known state
+                                existingDev.put("event", tempDev.opt("event"));
+                            } catch (JSONException ex) {
+                            }
                         }
                         // Aggregates the device trace has a decoration
-                        JSONArray existingDecorations = existingDev
-                                .getJSONArray("decorations");
-                        JSONArray tempDecs = tempDev
-                                .getJSONArray("decorations");
+                        JSONArray existingDecorations = existingDev.optJSONArray("decorations");
+                        JSONArray tempDecs = tempDev.optJSONArray("decorations");
                         int decSize = tempDecs.length();
                         int x1 = 0;
                         while (x1 < decSize) {
-                            JSONObject tempDec = tempDecs.getJSONObject(x1);
-                            tempDec.put("order", existingDecorations.length());
+                            JSONObject tempDec = tempDecs.optJSONObject(x1);
+                            try {
+                                tempDec.put("order", existingDecorations.length());
+                            } catch (JSONException ex) {
+                            }
                             existingDecorations.put(tempDec);
                             x1++;
                         }
@@ -181,7 +189,7 @@ public class TraceExecutor implements Runnable {
                 int y = 0;
                 while (y < tempPgmsSize) {
                     // Merge program traces
-                    JSONObject tempPgm = tempPgms.getJSONObject(y);
+                    JSONObject tempPgm = tempPgms.optJSONObject(y);
                     // tempPgm.put("timestamp", tempObj.get("timestamp"));
                     String id = tempPgm.optString("id");
 
@@ -194,21 +202,26 @@ public class TraceExecutor implements Runnable {
                         // aggregation
 
                         JSONObject existingPgm = programsToAgg.get(id);
-                        if (tempPgm.has("event")) {// replace the state by the
-                            // last known state
-                            existingPgm.put("event", tempPgm.get("event"));
+                        if (tempPgm.has("event")) {
+                            try {
+                            // replace the state by the
+                                // last known state
+                                existingPgm.put("event", tempPgm.opt("event"));
+                            } catch (JSONException ex) {
+                            }
                         }
 
                         // Aggregates the device trace has a decoration
-                        JSONArray existingDecorations = existingPgm
-                                .getJSONArray("decorations");
-                        JSONArray tempDecs = tempPgm
-                                .getJSONArray("decorations");
+                        JSONArray existingDecorations = existingPgm.optJSONArray("decorations");
+                        JSONArray tempDecs = tempPgm.optJSONArray("decorations");
                         int decSize = tempDecs.length();
                         int y1 = 0;
                         while (y1 < decSize) {
-                            JSONObject tempDec = tempDecs.getJSONObject(y1);
-                            tempDec.put("order", existingDecorations.length());
+                            JSONObject tempDec = tempDecs.optJSONObject(y1);
+                            try {
+                                tempDec.put("order", existingDecorations.length());
+                            } catch (JSONException ex) {
+                            }
                             existingDecorations.put(tempDec);
                             y1++;
                         }
@@ -218,10 +231,12 @@ public class TraceExecutor implements Runnable {
             }
             i++;
         }
-
-        jsonTrace.put("devices", new JSONArray(devicesToAgg.values()));
-        jsonTrace.put("programs", new JSONArray(programsToAgg.values()));
-        aggregateTraces.put(jsonTrace);
+        try {
+            jsonTrace.put("devices", new JSONArray(devicesToAgg.values()));
+            jsonTrace.put("programs", new JSONArray(programsToAgg.values()));
+            aggregateTraces.put(jsonTrace);
+        } catch (JSONException ex) {
+        }
     }
 
     /**
