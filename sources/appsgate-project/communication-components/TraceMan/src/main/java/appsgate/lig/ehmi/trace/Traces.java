@@ -56,7 +56,7 @@ public class Traces {
         }
         if (type == null || type.isEmpty()) {
             // if not a device, then it is a program
-            type = "programs";
+            type = "program";
         }
         if (entitiesByType.containsKey(type)) {
             entitiesByType.get(type).add(id);
@@ -107,7 +107,7 @@ public class Traces {
         HashMap<String, GroupTuple> groupFollower = new HashMap<>();
         for (String t : getTypes()) {
             int order = 2;
-            if (t.equalsIgnoreCase("programs")) {
+            if (t.equalsIgnoreCase("program")) {
                 order = 4;
             }
             groupFollower.put(t, new GroupTuple(order, new JSONArray(getEntitiesByType(t))));
