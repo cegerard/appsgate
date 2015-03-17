@@ -1,0 +1,44 @@
+<table class="tabular decorations">
+	<tr>
+		<th colspan="2"><%- name %></th>
+	</tr>
+<% _.forEach(decorations, function(decoration) { %>
+    <tr>
+        <td class="decoration-head">
+
+        <div class="picto picto-<%- decoration.picto %>"></div>
+            <div class="datetime">
+                <span class="date"><%- timeFormat('%x')(new Date(decoration.time))%></span>
+                <span class="time"><%- timeFormat('%X')(new Date(decoration.time))%></span>
+            </div>
+        </td>
+        <td class="decoration-body">
+			<% var obj = {} ;
+			if (decoration.context) {
+				colorspan = ""
+				if (decoration.context.boolean !== undefined) {
+					if (decoration.context.boolean) {
+						decoration.description += ".on";
+					} else {
+						decoration.description += ".off";
+					}
+				}
+				obj = decoration.context;
+			}
+			obj["ns"] = options.i18n.ns;%>
+            <div class="description"><%- i18n.t(decoration.description, obj ) %>
+			<%
+				if(decoration.context !== undefined && decoration.context.rgbcolor !== undefined) { %>
+				<span class="decoColor" style="background-color: <%- decoration.context.rgbcolor %>'>XX</span>
+			<% } %>
+
+			</div>
+
+            <div class="extra">
+                <span class="source"><%- decoration.source %></span> |
+                <span class="causality"><%- decoration.causality %></span>
+            </div>
+        </td>
+    </tr>
+<% }); %>
+</table>

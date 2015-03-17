@@ -1,0 +1,448 @@
+@import 'compass';
+@import 'compass/css3/opacity';
+@import 'compass/reset';
+
+@import '../../../.tmp/gen/themes/basic/grunticon/pictograms';
+@import '../../../.tmp/gen/themes/basic/theme.config';
+
+//
+// Layout definition
+//
+
+html, body {
+    height: 100%;
+}
+
+.dashboard {
+    display: block;
+    height: 100%;
+    color: $font_color;
+
+    .rule {
+        z-index: 1000;
+        position: absolute;
+        display: block;
+        top: $dashboard_group_margin_top;
+        bottom: 0px;
+        border: none;
+        background-color: $ruler_fill_color;
+        @include opacity(0.2);
+
+        .line {
+            z-index: 1010;
+            position: absolute;
+            top: 0px;
+            bottom: 0px;
+            left: $ruler_line_left;
+            width: $ruler_line_width;
+            background-color: $ruler_line_fill_color;
+        }
+
+        .marker {
+            z-index: 1020;
+            position: absolute;
+            width: 0;
+            height: 0;
+            left: #{($ruler_line_width - $ruler_width)*2};
+            border-left: #{$ruler_width*2} solid transparent;
+            border-right: #{$ruler_width*2} solid transparent;
+            &.top { top: 0; border-top: #{$ruler_width*2} solid $ruler_line_fill_color; }
+            &.bottom { bottom: 0; border-bottom: #{$ruler_width*2} solid $ruler_line_fill_color; }
+        }
+
+        &:hover, &:active {
+            @include opacity(0.7);
+            @include border-radius($ruler_border_width);
+            left: - $ruler_border_width/2;
+            border-left: $ruler_border_width solid $ruler_border_color;
+            border-right: $ruler_border_width solid $ruler_border_color;
+            cursor: col-resize;
+        }
+    }
+
+    & > header {
+        .element {
+            background-color: $focusline_fill_color;
+        }
+    }
+
+    .dashboard-loader {
+        height: 100%;
+
+        .icon-loading {
+            background-image: url("icons/loader.gif");
+            background-repeat: no-repeat;
+            background-position: center;
+            width: 100%;
+            height: 100%;
+        }
+    }
+
+    .group-container {
+        margin-top: $dashboard_group_container_margin_top;
+        margin-bottom: $dashboard_group_container_margin_bottom;
+        padding-top: $dashboard_group_container_padding_top;
+        padding-bottom: $dashboard_group_container_padding_bottom;
+
+        .group {
+            position: relative;
+            margin-top: $dashboard_group_container_margin_top;
+            margin-bottom: $dashboard_group_container_margin_bottom;
+        }
+
+        // matches elements that are displayed in group's header.
+        header .element {
+            background-color: $dashboard_group_header_fill_color;
+            font-weight: bold;
+            text-transform: uppercase;
+
+            .title {
+                width: $dashboard_sidebar_width - $element_title_padding_left;
+            }
+        }
+
+        .element {
+            position: relative;
+            overflow: hidden;
+
+            .placeholder {
+                float: left;
+            }
+        }
+    }
+
+    .element-container {
+        .element {
+            .title {
+                padding-left: $element_title_padding_left;
+                width: $dashboard_sidebar_width - $dashboard_widget_height - $dashboard_sidebar_menu_width - 3*$element_title_padding_left;
+            }
+            .picto {
+                margin-left: $element_title_padding_left;
+                margin-right: $element_title_padding_left;
+            }
+            &:nth-child(odd) {
+                background-color: $element_odd_fill_color;
+            }
+            &:nth-child(even) {
+                background-color: $element_even_fill_color;
+            }
+        }
+        .placeholder.sidebar {
+            border-right: $element_rightborder_color thin solid;
+        }
+    }
+
+    .group-container, .element-container {
+        position: relative;
+
+        .placeholder.aside {
+            @include border-radius(5px);
+            position: absolute;
+            color: #ffffff;
+            background-color: #30404f;
+            font-size: 0.7em;
+            padding-left: $dashboard_aside_padding_left;
+            padding-right: $dashboard_aside_padding_right;
+            z-index: 500;
+        }
+
+        .placeholder.sidebar {
+            .menu {
+                float: left;
+                width: $dashboard_sidebar_menu_width;
+                button {
+                    display: block;
+                    padding: 1px;
+                    border-radius: 3px;
+                    background-color: #fff;
+                    background-position: center;
+                    border: 1px solid #ccc;
+                    cursor: pointer;
+                }
+            }
+            .title {
+                float: left;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .picto {
+                display: block;
+                float: right;
+                text-align: center;
+            }
+        }
+    }
+}
+
+//
+// Tabular
+//
+
+.tabular {
+    &.decorations {
+        tr {
+            height: 80px;
+            &:nth-child(odd) {
+                background-color: $element_odd_fill_color;
+            }
+            &:nth-child(even) {
+                background-color: $element_even_fill_color;
+            }
+        }
+        td {
+            padding-bottom: 1em;
+        }
+        .decoration-head {
+            width: 80px;
+            .picto {
+                width: 50px;
+                margin-left: 15px;
+                height: 50px;
+                line-height: 50px;
+                background-size: 50px 50px;
+            }
+            .datetime {
+                width: 80px;
+                height: 30px;
+                text-align: center;
+                .date, .time {
+                    line-height: 10px;
+                    font-size: x-small;
+                }
+            }
+        }
+        .decoration-body {
+            .description {
+                height: 50px;
+            }
+            .extra {
+                height: 30px;
+                text-align: right;
+                .source, .causality {
+                    line-height: 10px;
+                    font-size: x-small;
+                }
+            }
+        }
+    }
+}
+
+
+//
+// D3 definition
+//
+
+.axis path,
+.axis line,
+.grid line {
+    fill: none;
+    stroke-width: $axis_stroke_width;
+    stroke: $axis_stroke_color;
+    shape-rendering: auto;
+}
+
+.grid path {
+    display: none;
+}
+
+.axis.top {
+    background-image: linear-gradient(top, #fff 0%, rgba(255, 255, 255, 0) 100%);
+    background-image: -o-linear-gradient(top, #fff 0%, rgba(255, 255, 255, 0) 100%);
+    background-image: -moz-linear-gradient(top, #fff 0%, rgba(255, 255, 255, 0) 100%);
+    background-image: -webkit-linear-gradient(top, #fff 0%, rgba(255, 255, 255, 0) 100%);
+    background-image: -ms-linear-gradient(top, #fff 0%, rgba(255, 255, 255, 0) 100%);
+    top: #{$axis_tick_height+$axis_label_height};
+}
+
+.axis.bottom {
+    background-image: linear-gradient(bottom, #fff 0%, rgba(255, 255, 255, 0) 100%);
+    background-image: -o-linear-gradient(bottom, #fff 0%, rgba(255, 255, 255, 0) 100%);
+    background-image: -moz-linear-gradient(bottom, #fff 0%, rgba(255, 255, 255, 0) 100%);
+    background-image: -webkit-linear-gradient(bottom, #fff 0%, rgba(255, 255, 255, 0) 100%);
+    background-image: -ms-linear-gradient(bottom, #fff 0%, rgba(255, 255, 255, 0) 100%);
+    bottom: 0px;
+}
+
+.axis text {
+    fill: $font_color;
+    font-family: sans-serif;
+    font-size: $axis_label_height;
+}
+
+.state.area {
+    fill: $device_state_fill_color;
+    stroke-width: 0;
+
+    .focused {
+        fill: $device_state_focused_fill_color;
+    }
+}
+
+.state.border {
+    stroke: $device_state_border_color;
+    stroke-width: $device_state_border_width;
+    shape-rendering: auto;
+    fill: transparent;
+}
+
+.state.border.pending {
+    stroke-linecap: 'square';
+    stroke-dasharray: 1, 2;
+}
+
+.value.area {
+    fill: $device_value_fill_color;
+    stroke-width: 0;
+
+    .focused {
+        fill: $device_value_focused_fill_color;
+    }
+}
+
+.value.border {
+    stroke: $device_value_border_color;
+    stroke-width: $device_value_border_width;
+    fill: transparent;
+}
+
+.value.border.pending {
+    stroke-linecap: 'round';
+    stroke-dasharray: 1, 2;
+}
+
+.program {
+    fill: $program_state_deleted_color;
+    stroke-width: $program_state_border_width;
+    .deployed {
+        fill: $program_state_deployed_fill_color;
+        stroke: $program_state_deployed_border_color;
+    }
+    .deployed.focused {
+        fill: $program_state_deployed_focused_fill_color;
+    }
+    .processing {
+        fill: $program_state_processing_fill_color;
+        stroke: $program_state_processing_border_color;
+    }
+    .processing.focused {
+        fill: $program_state_processing_focused_fill_color;
+    }
+    .incomplete {
+        fill: $program_state_incomplete_fill_color;
+        stroke: $program_state_incomplete_border_color;
+    }
+    .incomplete.focused {
+        fill: $program_state_incomplete_focused_fill_color;
+    }
+    .limping {
+        fill: $program_state_limping_fill_color;
+        stroke: $program_state_limping_border_color;
+    }
+    .limping.focused {
+        fill: $program_state_limping_focused_fill_color;
+    }
+    .invalid {
+        fill: $program_state_invalid_fill_color;
+        stroke: $program_state_invalid_border_color;
+    }
+    .invalid.focused {
+        fill: $program_state_invalid_focused_color;
+    }
+}
+
+.status {
+    line {
+        stroke-width: $status_border_width;
+        stroke-linecap: round;
+        stroke-dasharray: 1, 5;
+    }
+
+    .connection {
+        stroke: $status_connection_border_color;
+    }
+    .connection.focused {
+        stroke: $status_connection_focused_border_color;
+    }
+    .problem {
+        stroke: $status_problem_border_color;
+    }
+    .problem.focused {
+        stroke: $status_problem_focused_border_color;
+    }
+    .disconnection {
+        stroke: $status_disconnection_border_color;
+    }
+    .disconnection.focused {
+        stroke: $status_disconnection_focused_border_color;
+    }
+}
+
+.focusline .area,
+.focusline rect {
+    fill: $focusline_bar_fill_color;
+    stroke-width: 0;
+}
+
+.focusline .border {
+    fill: none;
+    stroke: $focusline_bar_border_color;
+}
+
+.ruler-shadow {
+    fill: $focusline_ruler_shadow_fill_color;
+}
+
+.spikes {
+    line {
+        stroke-width: $device_state_border_width;
+        stroke: $device_state_border_color;
+    }
+
+    .focused {
+        stroke-width: $device_state_border_focused_width;
+        stroke: $device_state_border_focused_color;
+    }
+}
+
+.brush {
+    .extent {
+        fill: $focusline_selector_fill_color;
+        stroke: $focusline_selector_border_color;
+        stroke-width: $focusline_selector_border_width;
+        shape-rendering: auto;
+    }
+
+    .resize rect.handle {
+        visibility: visible !important;
+        fill: $focusline_selector_handle_fill_color;
+    }
+
+    .mask {
+        fill: $focusline_selector_mask_fill_color;
+        stroke: $focusline_selector_mask_border_color;
+        stroke-width: $focusline_selector_mask_border_width;
+        shape-rendering: auto;
+    }
+}
+
+.decoration {
+    cursor: pointer;
+    stroke-width: 1;
+    z-index: 1000;
+    stroke: rgba(255, 255, 255, 0.5);
+    @include filter(drop-shadow(-5px -5px 5px #000));
+}
+
+//
+// Konami definition
+//
+
+.konami-background {
+    background: url(icons/konami.gif) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}

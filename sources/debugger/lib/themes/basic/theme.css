@@ -1,0 +1,820 @@
+/* line 5, ../../../../../../../../../Library/Ruby/Gems/1.8/gems/compass-core-1.0.1/stylesheets/compass/reset/_utilities.scss */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  font-size: 100%;
+  vertical-align: baseline;
+}
+
+/* line 22, ../../../../../../../../../Library/Ruby/Gems/1.8/gems/compass-core-1.0.1/stylesheets/compass/reset/_utilities.scss */
+html {
+  line-height: 1;
+}
+
+/* line 24, ../../../../../../../../../Library/Ruby/Gems/1.8/gems/compass-core-1.0.1/stylesheets/compass/reset/_utilities.scss */
+ol, ul {
+  list-style: none;
+}
+
+/* line 26, ../../../../../../../../../Library/Ruby/Gems/1.8/gems/compass-core-1.0.1/stylesheets/compass/reset/_utilities.scss */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* line 28, ../../../../../../../../../Library/Ruby/Gems/1.8/gems/compass-core-1.0.1/stylesheets/compass/reset/_utilities.scss */
+caption, th, td {
+  text-align: left;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+/* line 30, ../../../../../../../../../Library/Ruby/Gems/1.8/gems/compass-core-1.0.1/stylesheets/compass/reset/_utilities.scss */
+q, blockquote {
+  quotes: none;
+}
+/* line 103, ../../../../../../../../../Library/Ruby/Gems/1.8/gems/compass-core-1.0.1/stylesheets/compass/reset/_utilities.scss */
+q:before, q:after, blockquote:before, blockquote:after {
+  content: "";
+  content: none;
+}
+
+/* line 32, ../../../../../../../../../Library/Ruby/Gems/1.8/gems/compass-core-1.0.1/stylesheets/compass/reset/_utilities.scss */
+a img {
+  border: none;
+}
+
+/* line 116, ../../../../../../../../../Library/Ruby/Gems/1.8/gems/compass-core-1.0.1/stylesheets/compass/reset/_utilities.scss */
+article, aside, details, figcaption, figure, footer, header, hgroup, main, menu, nav, section, summary {
+  display: block;
+}
+
+/* line 1, grunticon/pictograms.scss */
+.picto-colorlight_state_off {
+  background-image: url("pictograms/colorlight_state_off.png");
+  background-repeat: no-repeat;
+}
+
+/* line 3, grunticon/pictograms.scss */
+.picto-colorlight_state_on {
+  background-image: url("pictograms/colorlight_state_on.png");
+  background-repeat: no-repeat;
+}
+
+/* line 5, grunticon/pictograms.scss */
+.picto-colorlight_type {
+  background-image: url("pictograms/colorlight_type.png");
+  background-repeat: no-repeat;
+}
+
+/* line 7, grunticon/pictograms.scss */
+.picto-connection {
+  background-image: url("pictograms/connection.png");
+  background-repeat: no-repeat;
+}
+
+/* line 9, grunticon/pictograms.scss */
+.picto-contact_state_off {
+  background-image: url("pictograms/contact_state_off.png");
+  background-repeat: no-repeat;
+}
+
+/* line 11, grunticon/pictograms.scss */
+.picto-contact_state_on {
+  background-image: url("pictograms/contact_state_on.png");
+  background-repeat: no-repeat;
+}
+
+/* line 13, grunticon/pictograms.scss */
+.picto-contact_type {
+  background-image: url("pictograms/contact_type.png");
+  background-repeat: no-repeat;
+}
+
+/* line 15, grunticon/pictograms.scss */
+.picto-disconnection {
+  background-image: url("pictograms/disconnection.png");
+  background-repeat: no-repeat;
+}
+
+/* line 17, grunticon/pictograms.scss */
+.picto-domicube_state_1 {
+  background-image: url("pictograms/domicube_state_1.png");
+  background-repeat: no-repeat;
+}
+
+/* line 19, grunticon/pictograms.scss */
+.picto-domicube_state_2 {
+  background-image: url("pictograms/domicube_state_2.png");
+  background-repeat: no-repeat;
+}
+
+/* line 21, grunticon/pictograms.scss */
+.picto-domicube_state_3 {
+  background-image: url("pictograms/domicube_state_3.png");
+  background-repeat: no-repeat;
+}
+
+/* line 23, grunticon/pictograms.scss */
+.picto-domicube_state_4 {
+  background-image: url("pictograms/domicube_state_4.png");
+  background-repeat: no-repeat;
+}
+
+/* line 25, grunticon/pictograms.scss */
+.picto-domicube_state_5 {
+  background-image: url("pictograms/domicube_state_5.png");
+  background-repeat: no-repeat;
+}
+
+/* line 27, grunticon/pictograms.scss */
+.picto-domicube_state_6 {
+  background-image: url("pictograms/domicube_state_6.png");
+  background-repeat: no-repeat;
+}
+
+/* line 29, grunticon/pictograms.scss */
+.picto-domicube_state_off {
+  background-image: url("pictograms/domicube_state_off.png");
+  background-repeat: no-repeat;
+}
+
+/* line 31, grunticon/pictograms.scss */
+.picto-domicube_state_on {
+  background-image: url("pictograms/domicube_state_on.png");
+  background-repeat: no-repeat;
+}
+
+/* line 33, grunticon/pictograms.scss */
+.picto-domicube_type {
+  background-image: url("pictograms/domicube_type.png");
+  background-repeat: no-repeat;
+}
+
+/* line 35, grunticon/pictograms.scss */
+.picto-focus {
+  background-image: url("pictograms/focus.png");
+  background-repeat: no-repeat;
+}
+
+/* line 37, grunticon/pictograms.scss */
+.picto-focused {
+  background-image: url("pictograms/focused.png");
+  background-repeat: no-repeat;
+}
+
+/* line 39, grunticon/pictograms.scss */
+.picto-illumination_state_off {
+  background-image: url("pictograms/illumination_state_off.png");
+  background-repeat: no-repeat;
+}
+
+/* line 41, grunticon/pictograms.scss */
+.picto-illumination_state_on {
+  background-image: url("pictograms/illumination_state_on.png");
+  background-repeat: no-repeat;
+}
+
+/* line 43, grunticon/pictograms.scss */
+.picto-illumination_type {
+  background-image: url("pictograms/illumination_type.png");
+  background-repeat: no-repeat;
+}
+
+/* line 45, grunticon/pictograms.scss */
+.picto-keycardswitch_state_in {
+  background-image: url("pictograms/keycardswitch_state_in.png");
+  background-repeat: no-repeat;
+}
+
+/* line 47, grunticon/pictograms.scss */
+.picto-keycardswitch_state_out {
+  background-image: url("pictograms/keycardswitch_state_out.png");
+  background-repeat: no-repeat;
+}
+
+/* line 49, grunticon/pictograms.scss */
+.picto-keycardswitch_type {
+  background-image: url("pictograms/keycardswitch_type.png");
+  background-repeat: no-repeat;
+}
+
+/* line 51, grunticon/pictograms.scss */
+.picto-magnify {
+  background-image: url("pictograms/magnify.png");
+  background-repeat: no-repeat;
+}
+
+/* line 53, grunticon/pictograms.scss */
+.picto-mediaplayer_state_off {
+  background-image: url("pictograms/mediaplayer_state_off.png");
+  background-repeat: no-repeat;
+}
+
+/* line 55, grunticon/pictograms.scss */
+.picto-mediaplayer_state_on {
+  background-image: url("pictograms/mediaplayer_state_on.png");
+  background-repeat: no-repeat;
+}
+
+/* line 57, grunticon/pictograms.scss */
+.picto-mediaplayer_type {
+  background-image: url("pictograms/mediaplayer_type.png");
+  background-repeat: no-repeat;
+}
+
+/* line 59, grunticon/pictograms.scss */
+.picto-program {
+  background-image: url("pictograms/program.png");
+  background-repeat: no-repeat;
+}
+
+/* line 61, grunticon/pictograms.scss */
+.picto-programe {
+  background-image: url("pictograms/programe.png");
+  background-repeat: no-repeat;
+}
+
+/* line 63, grunticon/pictograms.scss */
+.picto-read {
+  background-image: url("pictograms/read.png");
+  background-repeat: no-repeat;
+}
+
+/* line 65, grunticon/pictograms.scss */
+.picto-single_switch_state_5 {
+  background-image: url("pictograms/single_switch_state_5.png");
+  background-repeat: no-repeat;
+}
+
+/* line 67, grunticon/pictograms.scss */
+.picto-single_switch_state_7 {
+  background-image: url("pictograms/single_switch_state_7.png");
+  background-repeat: no-repeat;
+}
+
+/* line 69, grunticon/pictograms.scss */
+.picto-smartplug_state_off {
+  background-image: url("pictograms/smartplug_state_off.png");
+  background-repeat: no-repeat;
+}
+
+/* line 71, grunticon/pictograms.scss */
+.picto-smartplug_state_on {
+  background-image: url("pictograms/smartplug_state_on.png");
+  background-repeat: no-repeat;
+}
+
+/* line 73, grunticon/pictograms.scss */
+.picto-smartplug_type {
+  background-image: url("pictograms/smartplug_type.png");
+  background-repeat: no-repeat;
+}
+
+/* line 75, grunticon/pictograms.scss */
+.picto-switch_state_1 {
+  background-image: url("pictograms/switch_state_1.png");
+  background-repeat: no-repeat;
+}
+
+/* line 77, grunticon/pictograms.scss */
+.picto-switch_state_3 {
+  background-image: url("pictograms/switch_state_3.png");
+  background-repeat: no-repeat;
+}
+
+/* line 79, grunticon/pictograms.scss */
+.picto-switch_state_5 {
+  background-image: url("pictograms/switch_state_5.png");
+  background-repeat: no-repeat;
+}
+
+/* line 81, grunticon/pictograms.scss */
+.picto-switch_state_7 {
+  background-image: url("pictograms/switch_state_7.png");
+  background-repeat: no-repeat;
+}
+
+/* line 83, grunticon/pictograms.scss */
+.picto-switch_type {
+  background-image: url("pictograms/switch_type.png");
+  background-repeat: no-repeat;
+}
+
+/* line 85, grunticon/pictograms.scss */
+.picto-temperature_state_off {
+  background-image: url("pictograms/temperature_state_off.png");
+  background-repeat: no-repeat;
+}
+
+/* line 87, grunticon/pictograms.scss */
+.picto-temperature_state_on {
+  background-image: url("pictograms/temperature_state_on.png");
+  background-repeat: no-repeat;
+}
+
+/* line 89, grunticon/pictograms.scss */
+.picto-temperature_type {
+  background-image: url("pictograms/temperature_type.png");
+  background-repeat: no-repeat;
+}
+
+/* line 91, grunticon/pictograms.scss */
+.picto-user {
+  background-image: url("pictograms/user.png");
+  background-repeat: no-repeat;
+}
+
+/* line 93, grunticon/pictograms.scss */
+.picto-write {
+  background-image: url("pictograms/write.png");
+  background-repeat: no-repeat;
+}
+
+/* line 12, ../../../../src/themes/basic/theme.scss */
+html, body {
+  height: 100%;
+}
+
+/* line 16, ../../../../src/themes/basic/theme.scss */
+.dashboard {
+  display: block;
+  height: 100%;
+  color: #4c4c4c;
+}
+/* line 21, ../../../../src/themes/basic/theme.scss */
+.dashboard .rule {
+  z-index: 1000;
+  position: absolute;
+  display: block;
+  top: 20px;
+  bottom: 0px;
+  border: none;
+  background-color: #e0e0e0;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=20);
+  opacity: 0.2;
+}
+/* line 31, ../../../../src/themes/basic/theme.scss */
+.dashboard .rule .line {
+  z-index: 1010;
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 2px;
+  width: 1px;
+  background-color: red;
+}
+/* line 41, ../../../../src/themes/basic/theme.scss */
+.dashboard .rule .marker {
+  z-index: 1020;
+  position: absolute;
+  width: 0;
+  height: 0;
+  left: -8px;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+}
+/* line 49, ../../../../src/themes/basic/theme.scss */
+.dashboard .rule .marker.top {
+  top: 0;
+  border-top: 10px solid red;
+}
+/* line 50, ../../../../src/themes/basic/theme.scss */
+.dashboard .rule .marker.bottom {
+  bottom: 0;
+  border-bottom: 10px solid red;
+}
+/* line 53, ../../../../src/themes/basic/theme.scss */
+.dashboard .rule:hover, .dashboard .rule:active {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=70);
+  opacity: 0.7;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+  left: -1px;
+  border-left: 2px solid transparent;
+  border-right: 2px solid transparent;
+  cursor: col-resize;
+}
+/* line 64, ../../../../src/themes/basic/theme.scss */
+.dashboard > header .element {
+  background-color: transparent;
+}
+/* line 69, ../../../../src/themes/basic/theme.scss */
+.dashboard .dashboard-loader {
+  height: 100%;
+}
+/* line 72, ../../../../src/themes/basic/theme.scss */
+.dashboard .dashboard-loader .icon-loading {
+  background-image: url("icons/loader.gif");
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 100%;
+  height: 100%;
+}
+/* line 81, ../../../../src/themes/basic/theme.scss */
+.dashboard .group-container {
+  margin-top: 30px;
+  margin-bottom: 10px;
+  padding-top: 10px;
+  padding-bottom: 60px;
+}
+/* line 87, ../../../../src/themes/basic/theme.scss */
+.dashboard .group-container .group {
+  position: relative;
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+/* line 94, ../../../../src/themes/basic/theme.scss */
+.dashboard .group-container header .element {
+  background-color: transparent;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+/* line 99, ../../../../src/themes/basic/theme.scss */
+.dashboard .group-container header .element .title {
+  width: 240px;
+}
+/* line 104, ../../../../src/themes/basic/theme.scss */
+.dashboard .group-container .element {
+  position: relative;
+  overflow: hidden;
+}
+/* line 108, ../../../../src/themes/basic/theme.scss */
+.dashboard .group-container .element .placeholder {
+  float: left;
+}
+/* line 116, ../../../../src/themes/basic/theme.scss */
+.dashboard .element-container .element .title {
+  padding-left: 10px;
+  width: 165px;
+}
+/* line 120, ../../../../src/themes/basic/theme.scss */
+.dashboard .element-container .element .picto {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+/* line 124, ../../../../src/themes/basic/theme.scss */
+.dashboard .element-container .element:nth-child(odd) {
+  background-color: #f6f6f6;
+}
+/* line 127, ../../../../src/themes/basic/theme.scss */
+.dashboard .element-container .element:nth-child(even) {
+  background-color: #fafafa;
+}
+/* line 131, ../../../../src/themes/basic/theme.scss */
+.dashboard .element-container .placeholder.sidebar {
+  border-right: #000000 thin solid;
+}
+/* line 136, ../../../../src/themes/basic/theme.scss */
+.dashboard .group-container, .dashboard .element-container {
+  position: relative;
+}
+/* line 139, ../../../../src/themes/basic/theme.scss */
+.dashboard .group-container .placeholder.aside, .dashboard .element-container .placeholder.aside {
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  position: absolute;
+  color: #ffffff;
+  background-color: #30404f;
+  font-size: 0.7em;
+  padding-left: 5px;
+  padding-right: 5px;
+  z-index: 500;
+}
+/* line 151, ../../../../src/themes/basic/theme.scss */
+.dashboard .group-container .placeholder.sidebar .menu, .dashboard .element-container .placeholder.sidebar .menu {
+  float: left;
+  width: 25px;
+}
+/* line 154, ../../../../src/themes/basic/theme.scss */
+.dashboard .group-container .placeholder.sidebar .menu button, .dashboard .element-container .placeholder.sidebar .menu button {
+  display: block;
+  padding: 1px;
+  border-radius: 3px;
+  background-color: #fff;
+  background-position: center;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+/* line 164, ../../../../src/themes/basic/theme.scss */
+.dashboard .group-container .placeholder.sidebar .title, .dashboard .element-container .placeholder.sidebar .title {
+  float: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* line 170, ../../../../src/themes/basic/theme.scss */
+.dashboard .group-container .placeholder.sidebar .picto, .dashboard .element-container .placeholder.sidebar .picto {
+  display: block;
+  float: right;
+  text-align: center;
+}
+
+/* line 185, ../../../../src/themes/basic/theme.scss */
+.tabular.decorations tr {
+  height: 80px;
+}
+/* line 187, ../../../../src/themes/basic/theme.scss */
+.tabular.decorations tr:nth-child(odd) {
+  background-color: #f6f6f6;
+}
+/* line 190, ../../../../src/themes/basic/theme.scss */
+.tabular.decorations tr:nth-child(even) {
+  background-color: #fafafa;
+}
+/* line 194, ../../../../src/themes/basic/theme.scss */
+.tabular.decorations td {
+  padding-bottom: 1em;
+}
+/* line 197, ../../../../src/themes/basic/theme.scss */
+.tabular.decorations .decoration-head {
+  width: 80px;
+}
+/* line 199, ../../../../src/themes/basic/theme.scss */
+.tabular.decorations .decoration-head .picto {
+  width: 50px;
+  margin-left: 15px;
+  height: 50px;
+  line-height: 50px;
+  background-size: 50px 50px;
+}
+/* line 206, ../../../../src/themes/basic/theme.scss */
+.tabular.decorations .decoration-head .datetime {
+  width: 80px;
+  height: 30px;
+  text-align: center;
+}
+/* line 210, ../../../../src/themes/basic/theme.scss */
+.tabular.decorations .decoration-head .datetime .date, .tabular.decorations .decoration-head .datetime .time {
+  line-height: 10px;
+  font-size: x-small;
+}
+/* line 217, ../../../../src/themes/basic/theme.scss */
+.tabular.decorations .decoration-body .description {
+  height: 50px;
+}
+/* line 220, ../../../../src/themes/basic/theme.scss */
+.tabular.decorations .decoration-body .extra {
+  height: 30px;
+  text-align: right;
+}
+/* line 223, ../../../../src/themes/basic/theme.scss */
+.tabular.decorations .decoration-body .extra .source, .tabular.decorations .decoration-body .extra .causality {
+  line-height: 10px;
+  font-size: x-small;
+}
+
+/* line 237, ../../../../src/themes/basic/theme.scss */
+.axis path,
+.axis line,
+.grid line {
+  fill: none;
+  stroke-width: 1px;
+  stroke: rgba(0, 0, 0, 0.1);
+  shape-rendering: auto;
+}
+
+/* line 246, ../../../../src/themes/basic/theme.scss */
+.grid path {
+  display: none;
+}
+
+/* line 250, ../../../../src/themes/basic/theme.scss */
+.axis.top {
+  background-image: linear-gradient(to bottom, #ffffff 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(top, #fff 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -moz-linear-gradient(top, #fff 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(top, #fff 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -ms-linear-gradient(top, #fff 0%, rgba(255, 255, 255, 0) 100%);
+  top: 16px;
+}
+
+/* line 259, ../../../../src/themes/basic/theme.scss */
+.axis.bottom {
+  background-image: linear-gradient(to top, #ffffff 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(bottom, #fff 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -moz-linear-gradient(bottom, #fff 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(bottom, #fff 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -ms-linear-gradient(bottom, #fff 0%, rgba(255, 255, 255, 0) 100%);
+  bottom: 0px;
+}
+
+/* line 268, ../../../../src/themes/basic/theme.scss */
+.axis text {
+  fill: #4c4c4c;
+  font-family: sans-serif;
+  font-size: 11px;
+}
+
+/* line 274, ../../../../src/themes/basic/theme.scss */
+.state.area {
+  fill: rgba(154, 207, 7, 0.2);
+  stroke-width: 0;
+}
+/* line 278, ../../../../src/themes/basic/theme.scss */
+.state.area .focused {
+  fill: rgba(154, 207, 7, 0.5);
+}
+
+/* line 283, ../../../../src/themes/basic/theme.scss */
+.state.border {
+  stroke: rgba(154, 207, 7, 0.8);
+  stroke-width: 2px;
+  shape-rendering: auto;
+  fill: transparent;
+}
+
+/* line 290, ../../../../src/themes/basic/theme.scss */
+.state.border.pending {
+  stroke-linecap: 'square';
+  stroke-dasharray: 1, 2;
+}
+
+/* line 295, ../../../../src/themes/basic/theme.scss */
+.value.area {
+  fill: rgba(41, 81, 109, 0.2);
+  stroke-width: 0;
+}
+/* line 299, ../../../../src/themes/basic/theme.scss */
+.value.area .focused {
+  fill: rgba(41, 81, 109, 0.5);
+}
+
+/* line 304, ../../../../src/themes/basic/theme.scss */
+.value.border {
+  stroke: rgba(41, 81, 109, 0.8);
+  stroke-width: 2px;
+  fill: transparent;
+}
+
+/* line 310, ../../../../src/themes/basic/theme.scss */
+.value.border.pending {
+  stroke-linecap: 'round';
+  stroke-dasharray: 1, 2;
+}
+
+/* line 315, ../../../../src/themes/basic/theme.scss */
+.program {
+  fill: rgba(255, 255, 255, 0.3);
+  stroke-width: 2px;
+}
+/* line 318, ../../../../src/themes/basic/theme.scss */
+.program .deployed {
+  fill: rgba(204, 204, 204, 0.3);
+  stroke: #26d43b;
+}
+/* line 322, ../../../../src/themes/basic/theme.scss */
+.program .deployed.focused {
+  fill: rgba(204, 204, 204, 0.6);
+}
+/* line 325, ../../../../src/themes/basic/theme.scss */
+.program .processing {
+  fill: rgba(154, 207, 7, 0.3);
+  stroke: #26d43b;
+}
+/* line 329, ../../../../src/themes/basic/theme.scss */
+.program .processing.focused {
+  fill: rgba(154, 207, 7, 0.6);
+}
+/* line 332, ../../../../src/themes/basic/theme.scss */
+.program .incomplete {
+  fill: rgba(204, 204, 204, 0.3);
+  stroke: rgba(240, 73, 68, 0.5);
+}
+/* line 336, ../../../../src/themes/basic/theme.scss */
+.program .incomplete.focused {
+  fill: rgba(204, 204, 204, 0.6);
+}
+/* line 339, ../../../../src/themes/basic/theme.scss */
+.program .limping {
+  fill: rgba(255, 153, 51, 0.3);
+  stroke: rgba(240, 73, 68, 0.5);
+}
+/* line 343, ../../../../src/themes/basic/theme.scss */
+.program .limping.focused {
+  fill: rgba(255, 153, 51, 0.6);
+}
+/* line 346, ../../../../src/themes/basic/theme.scss */
+.program .invalid {
+  fill: rgba(204, 204, 204, 0.3);
+  stroke: red;
+}
+/* line 350, ../../../../src/themes/basic/theme.scss */
+.program .invalid.focused {
+  fill: rgba(204, 204, 204, 0.6);
+}
+
+/* line 356, ../../../../src/themes/basic/theme.scss */
+.status line {
+  stroke-width: 2px;
+  stroke-linecap: round;
+  stroke-dasharray: 1, 5;
+}
+/* line 362, ../../../../src/themes/basic/theme.scss */
+.status .connection {
+  stroke: rgba(154, 207, 7, 0.8);
+}
+/* line 365, ../../../../src/themes/basic/theme.scss */
+.status .connection.focused {
+  stroke: #9acf07;
+}
+/* line 368, ../../../../src/themes/basic/theme.scss */
+.status .problem {
+  stroke: rgba(206, 96, 39, 0.8);
+}
+/* line 371, ../../../../src/themes/basic/theme.scss */
+.status .problem.focused {
+  stroke: #ce6027;
+}
+/* line 374, ../../../../src/themes/basic/theme.scss */
+.status .disconnection {
+  stroke: rgba(206, 66, 66, 0.8);
+}
+/* line 377, ../../../../src/themes/basic/theme.scss */
+.status .disconnection.focused {
+  stroke: #ce4242;
+}
+
+/* line 382, ../../../../src/themes/basic/theme.scss */
+.focusline .area,
+.focusline rect {
+  fill: rgba(105, 105, 105, 0.3);
+  stroke-width: 0;
+}
+
+/* line 388, ../../../../src/themes/basic/theme.scss */
+.focusline .border {
+  fill: none;
+  stroke: rgba(105, 0, 105, 0.5);
+}
+
+/* line 393, ../../../../src/themes/basic/theme.scss */
+.ruler-shadow {
+  fill: rgba(255, 0, 0, 0.3);
+}
+
+/* line 398, ../../../../src/themes/basic/theme.scss */
+.spikes line {
+  stroke-width: 2px;
+  stroke: rgba(154, 207, 7, 0.8);
+}
+/* line 403, ../../../../src/themes/basic/theme.scss */
+.spikes .focused {
+  stroke-width: 4px;
+  stroke: #9acf07;
+}
+
+/* line 410, ../../../../src/themes/basic/theme.scss */
+.brush .extent {
+  fill: rgba(144, 195, 191, 0.1);
+  stroke: #90c3bf;
+  stroke-width: 0px;
+  shape-rendering: auto;
+}
+/* line 417, ../../../../src/themes/basic/theme.scss */
+.brush .resize rect.handle {
+  visibility: visible !important;
+  fill: rgba(105, 105, 105, 0.5);
+}
+/* line 422, ../../../../src/themes/basic/theme.scss */
+.brush .mask {
+  fill: rgba(255, 255, 255, 0.8);
+  stroke: transparent;
+  stroke-width: 0px;
+  shape-rendering: auto;
+}
+
+/* line 430, ../../../../src/themes/basic/theme.scss */
+.decoration {
+  cursor: pointer;
+  stroke-width: 1;
+  z-index: 1000;
+  stroke: rgba(255, 255, 255, 0.5);
+  -webkit-filter: drop-shadow(-5px -5px 5px #000);
+  filter: drop-shadow(-5px -5px 5px #000);
+}
+
+/* line 442, ../../../../src/themes/basic/theme.scss */
+.konami-background {
+  background: url(icons/konami.gif) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}

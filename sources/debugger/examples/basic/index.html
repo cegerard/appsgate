@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head lang='en'>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Debugger</title>
+    <meta name='description' content='AppsGate Debugger example'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <!-- build:css(.tmp) themes/basic/theme.css -->
+    <link rel='stylesheet' href='themes/basic/theme.css'>
+    <!-- endbuild -->
+    <script type='text/javascript' src='components/requirejs/require.js'></script>
+    <script type='text/javascript'>
+        require.config({
+            baseUrl: '/',
+            map: {
+                '*': {
+                    'underscore': 'lodash',
+                    'i18n': 'i18next'
+                }
+            },
+            shim: {
+                'lodash': {
+                    exports: '_'
+                },
+                'backbone': {
+                    deps: ['jquery', 'underscore'],
+                    exports: 'Backbone'
+                },
+                'jquery': {
+                    exports: '$'
+                },
+                'tinysort': ['jquery'],
+                'appsgate.debugger': {
+                    deps: ['jquery', 'jqueryui', 'backbone', 'lodash', 'd3', 'tinysort', "i18n"]
+                }
+            },
+            i18next: {
+                lng: 'fr',
+                fallbackLng: 'en',
+                lowerCaseLng : true,
+                useCookie    : false,
+                resGetPath: 'locales/__lng__/__ns__.json'
+            },
+            paths: {
+                'appsgate.debugger': 'appsgate.debugger.dev',
+                'backbone': 'components/backbone/backbone',
+                'lodash': 'components/lodash/dist/lodash',
+                'jquery': 'components/jquery/dist/jquery',
+                'tinysort': 'components/tinysort/dist/jquery.tinysort',
+                'jqueryui': 'components/jqueryui/jquery-ui',
+                'd3': 'components/d3/d3',
+                'i18next': 'components/i18next/i18next.amd'
+            }
+        });
+
+        require(['appsgate.debugger', 'i18n'], function(Debugger, i18n) {
+            // setup i18n
+            i18n.init();
+
+            var connector = new Debugger.Connector({
+                address: 'localhost',
+                port: '3000'
+            });
+
+            // setup dashboard
+            var dashboard = window.dashboard = new Debugger.Dashboard('#canvas', {
+                d3: {
+                    // Define custom locale (based on http://www.localeplanet.com/icu/fr/)
+                    locale: {
+                        'decimal': ',',
+                        'thousands': ' ',
+                        'grouping': [3],
+                        'currency': ['€', ''],
+                        'dateTime': '%a %b %e %X %Y',
+                        'date': '%m/%d/%Y',
+                        'time': '%H:%M:%S',
+                        'periods': ['AM', 'PM'],
+                        'days': ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'],
+                        'shortDays': ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'],
+                        'months': ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
+                        'shortMonths': ['Janv.', 'Févr.', 'Mars', 'Avr.', 'Mai', 'Juin', 'Juil.', 'Aout', 'Sept.', 'Oct.', 'Nov.', 'Déc.']
+                    },
+                    // Define custom multi-time format
+                    timeFormatMulti: [
+                        ['.%L', function (d) {
+                            return d.getMilliseconds();
+                        }],
+                        [':%S', function (d) {
+                            return d.getSeconds();
+                        }],
+                        ['%H:%M', function (d) {
+                            return d.getMinutes();
+                        }],
+                        ['%Hh', function (d) {
+                            return d.getHours();
+                        }],
+                        ['%a %d', function (d) {
+                            return d.getDay() && d.getDate() != 1;
+                        }],
+                        ['%b %d', function (d) {
+                            return d.getDate() != 1;
+                        }],
+                        ['%B', function (d) {
+                            return d.getMonth();
+                        }],
+                        ['%Y', function () {
+                            return true;
+                        }]
+                    ]
+                },
+                i18n: {
+                    ns: 'translation'
+                },
+                livetrace: {
+                    delayBeforeFlush: 100000
+                }
+            });
+            dashboard.connect(connector);
+
+            // setup developer monitor
+            var monitor = window.monitor = new Debugger.Monitor();
+            monitor.connect(connector);
+
+            // listen to zoom request from dashboard
+            dashboard.on('zoom:request', function (context) {
+                dashboard.requestHistoryTrace(context);
+            });
+
+            // listen to marker click event from dashboard
+            dashboard.on('marker:click', function (decorations, textContent, htmlContent) {
+                alert(textContent);
+            });
+
+            // listen to widget focus request from dashboard
+            dashboard.on('eventline:focus:request', function(context, attributes) {
+                dashboard.requestHistoryTrace(context);
+            });
+
+            // listen to widget name click from dashboard
+            dashboard.on('eventline:name:click', function(context, attributes) {
+                if (attributes.kind == 'program') {
+                    console.log("Program with id "+attributes.id+" was clicked");
+                } else {
+                    console.log("Device of type "+attributes.type+" and with id "+attributes.id+" was clicked");
+                }
+            });
+
+            $('button').on('click', function(){
+                if( $(this).attr('id') == 'live' && !dashboard.isLiveMode()) {
+                    dashboard.requestLiveTrace();
+                } else if ($(this).attr('id') == 'history' && !dashboard.isHistoryMode()) {
+                    dashboard.requestInitialHistoryTrace();
+                }
+            });
+
+            // prompt server for initial history trace
+            dashboard.requestInitialHistoryTrace();
+        });
+    </script>
+    <style type="text/css">
+        body > .wrapper {
+            width: 960px;
+            height: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #toolbar {
+            text-align: center
+        }
+    </style>
+</head>
+<body>
+<div class="wrapper">
+    <div id="toolbar">
+        <button id="live">Live</button>
+        <button id="history">History</button>
+    </div>
+    <div id='canvas'></div>
+</div>
+</body>
+</html>
+
