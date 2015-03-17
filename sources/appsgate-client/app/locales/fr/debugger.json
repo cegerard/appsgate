@@ -107,7 +107,7 @@
     "focus_plural": "Références",
     "dependencies" : {
       "act" : "agit sur",
-      "read" : "lit des informations",
+      "reads" : "lit des informations",
       "changed" : "est modifié par",
       "readby" : "est lu par"
     },
