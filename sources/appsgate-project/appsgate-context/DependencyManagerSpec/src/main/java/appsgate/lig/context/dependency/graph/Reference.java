@@ -1,6 +1,7 @@
 package appsgate.lig.context.dependency.graph;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  *
@@ -88,6 +89,18 @@ public class Reference  {
                 return true;
         }
         return false;
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+         return (o instanceof Reference) && this.id.equals(((Reference)o).id);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 37 * hash + Objects.hashCode(this.id);
+        return hash;
     }
 
 }

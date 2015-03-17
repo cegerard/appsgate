@@ -149,7 +149,9 @@ public class Graph implements SpokObject {
         // Links to the devices
         for (DeviceReference rdevice : references.getDevicesReferences()) {
             addLink(REFERENCE_LINK, pid, rdevice.getDeviceId(), rdevice.getReferencesData());
-            ghostDevices.add(rdevice);
+            if (rdevice.getDeviceStatus()== Reference.STATUS.MISSING) {
+                ghostDevices.add(rdevice);
+            }
         }
         // Links to the programs
         for (ProgramReference rProgram : references.getProgramsReferences()) {
@@ -548,9 +550,9 @@ public class Graph implements SpokObject {
     }
 
     /**
-     * 
+     *
      * @param id
-     * @return 
+     * @return
      */
     public Dependencies getDependencies(String id) {
         if (dependencies.containsKey(id)) {
