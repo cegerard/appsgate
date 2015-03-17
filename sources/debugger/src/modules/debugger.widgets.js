@@ -331,12 +331,6 @@ _.extend(Widgets.Widget.prototype, Backbone.Events, {
             this._$name.text(this._focusedFrame.data.name);
         }
 
-        // Hide widget if it does not have any state (meaning it disappeared).
-        if (missing(this._focusedFrame, 'data.event.state')) {
-            this.$el.css('opacity', this.options.theme.element.inactive.opacity);
-        } else {
-            this.$el.css('opacity', this.options.theme.element.active.opacity);
-        }
 
         this.triggerMethod.apply(this, ['ruler:focus:update', coordinate, direction, exactTimestamp, this._focusedFrame, this._lastFocusedFrame]);
     },

@@ -54,9 +54,15 @@ _.extend(Debugger.Connector.prototype, Backbone.Events, {
             order: 'type'
         });
         params.ids =  [];
-        var pgs = programs.each();
-        for (var i = 0; i < pgs.length ; i++) {
-            params.ids.push(pgs[i].id);
+        // To get events on the programs
+        var bricks = programs.each();
+        for (var i = 0; i < bricks.length ; i++) {
+            params.ids.push(bricks[i].id);
+        }
+        // To get events on the devices
+        bricks = devices.each();
+        for (var i = 0; i < bricks.length ; i++) {
+            params.ids.push(bricks[i].id);
         }
 
         return this._exec({
