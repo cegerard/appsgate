@@ -272,3 +272,8 @@ distributions/demo-android/*
 sources/appsgate-project/communication-components/EHMIProxyImpl/src/main/resources/WEB/spok/*
 distributions/complete/philips.properties
 distributions/light/philips.properties
+sources/debugger/lib/**
+sources/debugger/lib/appsgate.debugger.dev.js
+sources/debugger/lib/appsgate.debugger.js
+sources/debugger/lib/appsgate.debugger.min.js
+sources/debugger/lib/appsgate.debugger.min.js.map
