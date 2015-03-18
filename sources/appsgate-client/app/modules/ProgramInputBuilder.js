@@ -298,7 +298,7 @@ define([
                         if(param.node.leftOperand.returnType !== 'undefined' && param.node.leftOperand.returnType == "boolean")
                             param.node.rightOperand.value="true";
                         param.node.rightOperand.unit = (param.node.leftOperand.unit) ? param.node.leftOperand.unit: "";
-                        param.node.rightOperand.value = (param.node.leftOperand.defaultValue) ? param.node.leftOperand.defaultValue: "";
+                        //param.node.rightOperand.value = (param.node.leftOperand.defaultValue) ? param.node.leftOperand.defaultValue: "";
                     }
                 }
                 if (param.node.leftOperand.target.serviceType) {
@@ -309,17 +309,17 @@ define([
                         if(param.node.leftOperand.returnType !== 'undefined' && param.node.leftOperand.returnType == "boolean")
                             param.node.rightOperand.value="true";
                         param.node.rightOperand.unit = (param.node.leftOperand.unit) ? param.node.leftOperand.unit: "";
-                        param.node.rightOperand.value = (param.node.leftOperand.defaultValue) ? param.node.leftOperand.defaultValue: "";
+                        //param.node.rightOperand.value = (param.node.leftOperand.defaultValue) ? param.node.leftOperand.defaultValue: "";
                     }
                 }
             }
 
-            var rightOp = this.buildInputFromNode(param.node.rightOperand, currentNode);
             // enabling sup/ing comparator if returnType not a scale
             param.node.comparatorEnabled = (param.node.leftOperand.returnType !== "scale" && param.node.leftOperand.returnType !== "boolean");
             if(param.node.comparator === '==' && param.node.rightOperand.type === 'boolean' && param.node.rightOperand.value === 'true') {
                 return leftOp;
             } else {
+                var rightOp = this.buildInputFromNode(param.node.rightOperand, currentNode);
                 return leftOp + this.tplComparatorNode(param) + rightOp;
             }
         },

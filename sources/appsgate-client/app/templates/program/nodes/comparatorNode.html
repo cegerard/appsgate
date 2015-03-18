@@ -1,3 +1,4 @@
+<% if (node.rightOperand.value !== 'true' || node.comparator !== '==') { %>
 <select id="comparator-<%= node.iid %>" class="comparator-select" target-id="<%= node.iid %>">
     <option <% if (node.comparator === '==') { %>selected<% } %> value="==" data-i18n="language.if-equals"></option>
     <% if (node.comparatorEnabled) {%>
@@ -6,3 +7,4 @@
     <%}%>
     <option <% if (node.comparator === '!=') { %>selected<% } %> value="!=" data-i18n="language.if-dif"></option>
 </select>
+<%}%>
