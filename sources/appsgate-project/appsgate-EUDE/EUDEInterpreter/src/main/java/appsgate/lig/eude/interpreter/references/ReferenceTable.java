@@ -9,7 +9,6 @@ import appsgate.lig.context.dependency.spec.Dependencies;
 import appsgate.lig.context.dependency.graph.DeviceReference;
 import appsgate.lig.context.dependency.graph.ProgramReference;
 import appsgate.lig.context.dependency.graph.Reference;
-import appsgate.lig.context.dependency.graph.Reference.STATUS;
 import appsgate.lig.context.dependency.graph.ReferenceDescription;
 import appsgate.lig.context.dependency.graph.SelectReference;
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
@@ -36,41 +35,21 @@ public class ReferenceTable extends Dependencies {
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(ReferenceTable.class);
 
-
-    /**
-     *
-     */
+    // Link to the interpreter
     private final EUDEInterpreter interpreter;
-
-    /**
-     *
-     */
-    private STATUS state;
-    
+    // The state of the program
+    private Reference.STATUS state;
+    // The error message to give back to the HMI
     private JSONObject err;
-
-    /**
-     *
-     * @return
-     */
-    public STATUS getStatus() {
-        return this.state;
-    }
-
-
-    /**
-     *
-     */
+    // the devices referenced by the program
     private final Set<DeviceReference> devices;
-    /**
-     *
-     */
+
+    // The program referenced by the program
     private final Set<ProgramReference> programs;
 
-    /**
-     *
-     */
-    private final Set<SelectReference> nodes;
+    // the selector contained in the program
+    private final Set<SelectReference> nodeSelector;
+
 
     /**
      *
@@ -81,9 +60,16 @@ public class ReferenceTable extends Dependencies {
         super(pid);
         devices = new HashSet<DeviceReference>();
         programs = new HashSet<ProgramReference>();
-        nodes = new HashSet<SelectReference>();
+        nodeSelector = new HashSet<SelectReference>();
         this.interpreter = interpreter;
-        this.state = STATUS.UNKNOWN;
+        this.state = Reference.STATUS.UNKNOWN;
+    }
+    
+    /**
+     * @return the status
+     */
+    public Reference.STATUS getStatus() {
+        return this.state;
     }
 
     /**
@@ -97,14 +83,14 @@ public class ReferenceTable extends Dependencies {
             LOGGER.debug("The program is self referenced (do not need to add it in the reference table.");
             return;
         }
-        
+
         ProgramReference pRef = getProgramFromId(programId);
         if (pRef != null) {
             pRef.addReferencesData(refData);
         } else {
             ArrayList<ReferenceDescription> newRefData = new ArrayList<ReferenceDescription>();
             newRefData.add(refData);
-            programs.add(new ProgramReference(programId, STATUS.UNKNOWN, name, newRefData));
+            programs.add(new ProgramReference(programId, Reference.STATUS.UNKNOWN, name, newRefData));
         }
     }
 
@@ -114,11 +100,11 @@ public class ReferenceTable extends Dependencies {
      * @param deviceName
      */
     public void addDevice(String deviceId, String deviceName) {
-        
-        devices.add(new DeviceReference(deviceId, STATUS.UNKNOWN, deviceName, null, getDeviceType(deviceId)));
+
+        devices.add(new DeviceReference(deviceId, Reference.STATUS.UNKNOWN, deviceName, null, getDeviceType(deviceId)));
     }
-    
-     /**
+
+    /**
      *
      * @param deviceId
      * @param deviceName
@@ -131,9 +117,9 @@ public class ReferenceTable extends Dependencies {
         } else {
             ArrayList<ReferenceDescription> newRefData = new ArrayList<ReferenceDescription>();
             newRefData.add(refData);
-            devices.add(new DeviceReference(deviceId, STATUS.UNKNOWN, deviceName, newRefData, getDeviceType(deviceId)));
+            devices.add(new DeviceReference(deviceId, Reference.STATUS.UNKNOWN, deviceName, newRefData, getDeviceType(deviceId)));
         }
-        
+
     }
 
     /**
@@ -142,7 +128,7 @@ public class ReferenceTable extends Dependencies {
      */
     public void addNodeSelect(NodeSelect aThis, ReferenceDescription refData) {
         boolean refDataAdded = false;
-        for (SelectReference sRef : this.nodes) {
+        for (SelectReference sRef : this.nodeSelector) {
             if (sRef.getNodeSelect() == aThis) {
                 refDataAdded = sRef.addReferencesData(refData);
             }
@@ -150,7 +136,7 @@ public class ReferenceTable extends Dependencies {
         if (!refDataAdded) {
             ArrayList<ReferenceDescription> newRefData = new ArrayList<ReferenceDescription>();
             newRefData.add(refData);
-            nodes.add(new SelectReference(aThis, newRefData));
+            nodeSelector.add(new SelectReference(aThis, newRefData));
         }
     }
 
@@ -159,7 +145,7 @@ public class ReferenceTable extends Dependencies {
      * @param deviceId
      * @param newStatus
      */
-    public void setDeviceStatus(String deviceId, STATUS newStatus) {
+    public void setDeviceStatus(String deviceId, Reference.STATUS newStatus) {
         for (DeviceReference device : this.devices) {
             if (device.getDeviceId().equals(deviceId)) {
                 device.setDeviceStatus(newStatus);
@@ -173,7 +159,7 @@ public class ReferenceTable extends Dependencies {
      * @param newStatus
      * @return true if the program referenced has changed of status
      */
-    public Boolean setProgramStatus(String programId, STATUS newStatus) { // VOID
+    public Boolean setProgramStatus(String programId, Reference.STATUS newStatus) { // VOID
         for (ProgramReference pRef : this.programs) {
             if (pRef.getProgramId().equals(programId)) {
                 return pRef.setProgramStatus(newStatus);
@@ -181,7 +167,6 @@ public class ReferenceTable extends Dependencies {
         }
         return false;
     }
-
 
     /**
      *
@@ -194,8 +179,13 @@ public class ReferenceTable extends Dependencies {
         }
         return programsId;
     }
-    
-     public ProgramReference getProgramFromId (String id) {
+
+    /**
+     * 
+     * @param id
+     * @return 
+     */
+    public ProgramReference getProgramFromId(String id) {
         for (ProgramReference pRef : this.programs) {
             if (pRef.getProgramId().equals(id)) {
                 return pRef;
@@ -203,18 +193,19 @@ public class ReferenceTable extends Dependencies {
         }
         return null;
     }
+
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     @Override
     public Set<DeviceReference> getDevicesReferences() {
         return this.devices;
     }
-    
+
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     @Override
     public Set<ProgramReference> getProgramsReferences() {
@@ -232,8 +223,13 @@ public class ReferenceTable extends Dependencies {
         }
         return devicesId;
     }
-    
-    public DeviceReference getDeviceFromId (String id) {
+
+    /**
+     * 
+     * @param id
+     * @return 
+     */
+    public DeviceReference getDeviceFromId(String id) {
         for (DeviceReference device : this.devices) {
             if (device.getDeviceId().equals(id)) {
                 return device;
@@ -241,25 +237,24 @@ public class ReferenceTable extends Dependencies {
         }
         return null;
     }
-    
+
     /**
      *
      * @return
      */
     @Override
     public Set<SelectReference> getSelectors() {
-        return nodes;
+        return nodeSelector;
     }
 
-    
     /**
      *
      * @param status
      */
-    private void setState(STATUS status) {
-        if (status == STATUS.INVALID) {
+    private void setState(Reference.STATUS status) {
+        if (status == Reference.STATUS.INVALID) {
             this.state = status;
-        } else if (status == STATUS.UNSTABLE && this.state == STATUS.OK) {
+        } else if (status == Reference.STATUS.UNSTABLE && this.state == Reference.STATUS.OK) {
             this.state = status;
         }
     }
@@ -274,14 +269,14 @@ public class ReferenceTable extends Dependencies {
             if (prog != null) {
                 if (!prog.isValid()) {
                     LOGGER.error("The program {} is not valid.", pRef.getProgramId());
-                    setProgramStatus(pRef.getProgramId(), STATUS.INVALID);
-                } else if (prog.getReferences().state != STATUS.OK) {
+                    setProgramStatus(pRef.getProgramId(), Reference.STATUS.INVALID);
+                } else if (prog.getReferences().state != Reference.STATUS.OK) {
                     LOGGER.warn("The program {} is not stable.", pRef.getProgramId());
-                    setProgramStatus(pRef.getProgramId(), STATUS.UNSTABLE);
+                    setProgramStatus(pRef.getProgramId(), Reference.STATUS.UNSTABLE);
                 }
             } else {
                 LOGGER.error("The program {} does not exist anymore.", pRef.getProgramId());
-                setProgramStatus(pRef.getProgramId(), STATUS.MISSING);
+                setProgramStatus(pRef.getProgramId(), Reference.STATUS.MISSING);
             }
         }
         // Services && devices are treated the same way
@@ -291,7 +286,7 @@ public class ReferenceTable extends Dependencies {
             try {
                 if (deviceJSON == null || !deviceJSON.has("status") || !deviceJSON.getString("status").equals("2")) {
                     LOGGER.warn("The device {} is missing.", device.getDeviceId());
-                    setDeviceStatus(device.getDeviceId(), STATUS.MISSING);
+                    setDeviceStatus(device.getDeviceId(), Reference.STATUS.MISSING);
                 }
             } catch (JSONException ex) {
             }
@@ -303,13 +298,13 @@ public class ReferenceTable extends Dependencies {
      *
      * @return
      */
-    public STATUS computeStatus() {
+    public Reference.STATUS computeStatus() {
         this.err = new JSONObject();
-        this.state = STATUS.OK;
-        if (programs.size() + devices.size() + nodes.size() == 0) {
+        this.state = Reference.STATUS.OK;
+        if (programs.size() + devices.size() + nodeSelector.size() == 0) {
             LOGGER.trace("The table is empty, so the program is empty and no empty program is considered as valid");
             this.err = ErrorMessagesFactory.getEmptyProgramMessage();
-            this.state=STATUS.INVALID;
+            this.state = Reference.STATUS.INVALID;
         }
         // Services && devices are treated the same way
         for (DeviceReference device : devices) {
@@ -317,14 +312,14 @@ public class ReferenceTable extends Dependencies {
             switch (device.getDeviceStatus()) {
                 case MISSING:
                     this.err = ErrorMessagesFactory.getMessageFromMissingDevice(device.getDeviceId());
-                    setState(STATUS.UNSTABLE);
+                    setState(Reference.STATUS.UNSTABLE);
                     break;
             }
         }
-        for (SelectReference s : nodes) {
+        for (SelectReference s : nodeSelector) {
             if (s.getNodeSelect().isEmptySelection()) {
                 LOGGER.warn("Select node {} is empty.", s.getNodeSelect());
-                setState(STATUS.UNSTABLE);
+                setState(Reference.STATUS.UNSTABLE);
                 this.err = ErrorMessagesFactory.getMessageFromEmptySelect(s.getNodeSelect());
             }
         }
@@ -332,12 +327,12 @@ public class ReferenceTable extends Dependencies {
             LOGGER.trace("computeStatus(), program " + pRef.getProgramId() + ", status :" + pRef.getProgramStatus());
             switch (pRef.getProgramStatus()) {
                 case MISSING:
-                    setState(STATUS.INVALID);
+                    setState(Reference.STATUS.INVALID);
                     this.err = ErrorMessagesFactory.getMessageFromMissingProgram(pRef.getProgramId());
                     return this.state;
                 case INVALID:
                     this.err = ErrorMessagesFactory.getMessageFromInvalidProgram(pRef.getProgramId());
-                    setState(STATUS.UNSTABLE);
+                    setState(Reference.STATUS.UNSTABLE);
                     break;
             }
         }
@@ -348,38 +343,37 @@ public class ReferenceTable extends Dependencies {
      *
      * @return
      */
-    public STATUS checkReferences() {
+    public Reference.STATUS checkReferences() {
         retrieveReferences();
         return computeStatus();
     }
 
-    
     /**
-     * 
+     *
      * @return the error message if any
      */
     public JSONObject getErrorMessage() {
         return this.err;
     }
-    
-    public static STATUS getProgramStatus(ProgramDesc.PROGRAM_STATE runningState) {
-        switch(runningState){
+
+    public static Reference.STATUS getProgramStatus(ProgramDesc.PROGRAM_STATE runningState) {
+        switch (runningState) {
             case DEPLOYED:
             case PROCESSING:
-                return STATUS.OK;
+                return Reference.STATUS.OK;
             case INCOMPLETE:
             case LIMPING:
-                return STATUS.UNSTABLE;
+                return Reference.STATUS.UNSTABLE;
             case INVALID:
-                return STATUS.INVALID;
+                return Reference.STATUS.INVALID;
             default:
-                return STATUS.UNKNOWN;
+                return Reference.STATUS.UNKNOWN;
         }
     }
 
     /**
      * @param deviceId
-     * @return 
+     * @return
      */
     private String getDeviceType(String deviceId) {
         JSONObject device = this.interpreter.getContext().getDevice(deviceId);
@@ -389,7 +383,7 @@ public class ReferenceTable extends Dependencies {
     @Override
     public Set<String> getActsOnEntities() {
         HashSet ret = new HashSet<String>();
-        for (DeviceReference d :devices) {
+        for (DeviceReference d : devices) {
             if (d.hasMethod(Reference.REFERENCE_TYPE.WRITING)) {
                 ret.add(d.getDeviceId());
             }
@@ -400,7 +394,7 @@ public class ReferenceTable extends Dependencies {
     @Override
     public Set<String> getReadedEntities() {
         HashSet ret = new HashSet<String>();
-        for (DeviceReference d :devices) {
+        for (DeviceReference d : devices) {
             if (d.hasMethod(Reference.REFERENCE_TYPE.READING)) {
                 ret.add(d.getDeviceId());
             }
@@ -410,13 +404,12 @@ public class ReferenceTable extends Dependencies {
 
     @Override
     public Set<String> getEntitiesActsOn() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public Set<String> getEntitiesRead() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
-
 
 }

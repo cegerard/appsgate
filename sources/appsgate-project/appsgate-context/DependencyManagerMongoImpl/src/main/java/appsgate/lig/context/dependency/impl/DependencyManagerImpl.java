@@ -3,8 +3,13 @@ package appsgate.lig.context.dependency.impl;
 import appsgate.lig.context.dependency.spec.Dependencies;
 import appsgate.lig.context.dependency.spec.DependencyManagerSpec;
 import appsgate.lig.context.dependency.graph.Graph;
+import appsgate.lig.context.dependency.graph.ProgramGraph;
+import appsgate.lig.ehmi.spec.EHMIProxySpec;
 import appsgate.lig.ehmi.spec.SpokObject;
 import appsgate.lig.persistence.MongoDBConfiguration;
+import java.util.ArrayList;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +19,7 @@ import org.slf4j.LoggerFactory;
  * @author jr
  */
 public class DependencyManagerImpl implements DependencyManagerSpec {
+
     /**
      * The logger
      */
@@ -28,13 +34,23 @@ public class DependencyManagerImpl implements DependencyManagerSpec {
      * The last graph that has been saved
      */
     private JSONObject jsonGraph;
+
+    /**
+     * Reference to the ApAM context proxy. Used to be notified when something
+     * happen.
+     */
+    private EHMIProxySpec ehmiProxy;
+
     /**
      * The last graph that has been saved
      */
     private Graph g;
+    
+    private final GraphManager graphManager;
 
     public DependencyManagerImpl() {
         this.jsonGraph = new JSONObject();
+        this.graphManager = new GraphManager(this);
     }
 
     /**
@@ -69,5 +85,42 @@ public class DependencyManagerImpl implements DependencyManagerSpec {
         }
         return g.getDependencies(pid);
     }
+
+    @Override
+    public void updateDeviceStatus(String srcId, String varName, String value) {
+        graphManager.updateGraph();
+    }
+    @Override
+    public void updateProgramStatus(String deviceId) {
+        graphManager.updateGraph();
+    }
+
+    @Override
+    public JSONObject buildGraph() {
+        graphManager.buildGraph();
+        return graphManager.getGraph(false);
+    }
+
+    public EHMIProxySpec getContext() {
+        return ehmiProxy;
+    }
+
+    public Iterable<String> getListProgramIds() {
+        JSONArray programs = ehmiProxy.getPrograms();
+        ArrayList<String> ret = new ArrayList<String>();
+        for (int i = 0; i < programs.length(); i++) {
+            try {
+                ret.add(programs.getJSONObject(i).getString("id"));
+            } catch (JSONException ex) {
+                LOGGER.error(ex.getMessage());
+            }
+        }
+        return ret;
+    }
+
+    public ProgramGraph getNodeProgram(String pid) {
+        return (ProgramGraph) ehmiProxy.getProgram(pid);
+    }
+
 
 }

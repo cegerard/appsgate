@@ -51,8 +51,8 @@ public class ObjectEventListener implements CoreEventsListener {
     public void notifyEvent(String srcId, String varName, String value) {
         logger.debug("Event notification received for:  {" + srcId + ", " + varName + ", " + value + "}");
         //trace the last event received
-        if(traceManager != null) {
-        	traceManager.coreEventNotify(EHMIProxy.getCurrentTimeInMillis(), srcId, varName, value);
+        if (traceManager != null) {
+            traceManager.coreEventNotify(EHMIProxy.getCurrentTimeInMillis(), srcId, varName, value);
         }
 
         this.sourceId = srcId;
@@ -81,10 +81,13 @@ public class ObjectEventListener implements CoreEventsListener {
                 }
             }
         }
+        if (EHMIProxy.getDependencyManager() != null) {
+            EHMIProxy.getDependencyManager().updateDeviceStatus(srcId, varName, value);
+        }
 
     }
 
-	public void setTraceManager(TraceManSpec traceManager) {
+    public void setTraceManager(TraceManSpec traceManager) {
         this.traceManager = traceManager;
     }
 

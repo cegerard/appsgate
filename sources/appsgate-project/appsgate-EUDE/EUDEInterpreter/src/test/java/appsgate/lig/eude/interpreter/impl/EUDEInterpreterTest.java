@@ -7,6 +7,7 @@ package appsgate.lig.eude.interpreter.impl;
 
 import appsgate.lig.chmi.spec.CHMIProxySpec;
 import appsgate.lig.chmi.spec.GenericCommand;
+import appsgate.lig.context.dependency.spec.DependencyManagerSpec;
 import appsgate.lig.context.services.DataBasePullService;
 import appsgate.lig.context.services.DataBasePushService;
 import appsgate.lig.ehmi.spec.EHMIProxyMock;
@@ -67,6 +68,7 @@ public class EUDEInterpreterTest {
     private DataBasePushService push_service;
     private CHMIProxySpec chmiProxy;
     private EUDEInterpreter instance;
+    private DependencyManagerSpec dependencyManager;
     private final JSONObject programJSON;
     private EHMIProxyMock ehmiProxy;
     private final String programId = "pgm";
@@ -80,6 +82,7 @@ public class EUDEInterpreterTest {
         this.pull_service = context.mock(DataBasePullService.class);
         this.push_service = context.mock(DataBasePushService.class);
         this.chmiProxy = context.mock(CHMIProxySpec.class);
+        this.dependencyManager = context.mock(DependencyManagerSpec.class);
         this.ehmiProxy = new EHMIProxyMock("src/test/resources/jsonLibs/toto.json");
         final JSONArray deviceList = new JSONArray();
         JSONObject clock = new JSONObject();
@@ -98,6 +101,10 @@ public class EUDEInterpreterTest {
         tested = context.states("NotYet");
         context.checking(new Expectations() {
             {
+
+                allowing(dependencyManager).updateProgramStatus(with(any(String.class)));
+                allowing(dependencyManager).buildGraph();
+                
                 allowing(pull_service).testDB();
                 will(returnValue(true));
 
@@ -105,15 +112,13 @@ public class EUDEInterpreterTest {
                 will(returnValue(true));
 
                 //contextHistory_push.pushData_change(this.getClass().getSimpleName(), "interpreter", "start", "stop", getProgramsDesc());
-
-
                 allowing(pull_service).pullLastObjectVersion(with(any(String.class)));
                 will(returnValue(null));
                 allowing(push_service).pushData_change(with(any(String.class)), with(any(String.class)), with(any(String.class)), with(any(String.class)), (ArrayList<Map.Entry<String, Object>>) with(any(Object.class)));
 
                 allowing(push_service).pushData_add(with(any(String.class)), with(any(String.class)), with(any(String.class)), (ArrayList<Map.Entry<String, Object>>) with(any(Object.class)));
                 will(returnValue(true));
-                allowing(push_service).pushData_add(with(any(String.class)), with(any(String.class)), with(any(String.class)),  with(aNull(ArrayList.class)) );
+                allowing(push_service).pushData_add(with(any(String.class)), with(any(String.class)), with(any(String.class)), with(aNull(ArrayList.class)));
                 will(returnValue(true));
                 allowing(push_service).pushData_remove(with(any(String.class)), with(any(String.class)), with(any(String.class)), (ArrayList<Map.Entry<String, Object>>) with(any(Object.class)));
                 will(returnValue(true));
@@ -140,7 +145,7 @@ public class EUDEInterpreterTest {
             }
         });
         this.instance = new EUDEInterpreter();
-        this.instance.setTestMocks(pull_service, push_service, ehmiProxy);
+        this.instance.setTestMocks(pull_service, push_service, ehmiProxy, dependencyManager);
 
     }
 
@@ -172,9 +177,9 @@ public class EUDEInterpreterTest {
     @Test
     public void testAddProgram() throws JSONException {
         System.out.println("addProgram");
-        System.out.println("Empty program : "+programJSON.toString());
+        System.out.println("Empty program : " + programJSON.toString());
         boolean result = instance.addProgram(programJSON);
-        System.out.println("result : "+result);
+        System.out.println("result : " + result);
 
         instance.getNodeProgram(programId);
         Assert.assertTrue("Program should be added", result);
@@ -288,7 +293,7 @@ public class EUDEInterpreterTest {
     @Test
     public void testNotifyChanges() {
         System.out.println("notifyChanges");
-        NotificationMsg notif = new ProgramStateNotification( "test", null, "test", null);
+        NotificationMsg notif = new ProgramStateNotification("test", null, "test", null);
         NotificationMsg result = instance.notifyChanges(notif);
         Assert.assertNotNull(result);
     }
@@ -349,7 +354,6 @@ public class EUDEInterpreterTest {
         Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/prog/testIf.json")));
         Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/prog/testFail_1.json")));
 
-        
         System.out.println("*******************testPrograms*************************");
         System.out.println(instance.getNodeProgram("testPrograms").getExpertProgramScript());
         System.out.println("********************************************************");
@@ -365,7 +369,7 @@ public class EUDEInterpreterTest {
         System.out.println("********************************************************");
         Assert.assertTrue(instance.callProgram("program-4050"));
         synchroniser.waitUntil(tested.is("Yes"), 500);
-        
+
         //Assert.assertFalse(instance.isProgramActive("testPrograms"));
         Assert.assertFalse(instance.isProgramActive("testIf"));
         //Assert.assertTrue(instance.isProgramActive("program-4050"));

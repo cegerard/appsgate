@@ -1,5 +1,6 @@
 package appsgate.lig.eude.interpreter.spec;
 
+import appsgate.lig.ehmi.spec.SpokObject;
 import java.util.HashMap;
 import org.json.JSONArray;
 
@@ -97,11 +98,11 @@ public interface EUDE_InterpreterSpec {
     public void checkReferences();
 
     /**
-     *
-     * @param buildGraph : Boolean to notify to the manager if it has to build
-     * the graph or no
-     * @return The JSONObject of the graph built
+     * 
+     * @param programid
+     * @return the node program of a given id
      */
-    public JSONObject buildGraph();
+    public SpokObject getNodeProgram(String programid);
+
 
 }

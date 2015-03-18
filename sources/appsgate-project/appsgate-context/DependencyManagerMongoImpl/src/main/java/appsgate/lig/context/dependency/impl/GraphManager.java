@@ -1,9 +1,8 @@
-package appsgate.lig.eude.interpreter.references;
+package appsgate.lig.context.dependency.impl;
 
 import appsgate.lig.context.dependency.graph.Graph;
+import appsgate.lig.context.dependency.graph.ProgramGraph;
 import appsgate.lig.ehmi.spec.EHMIProxySpec;
-import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
-import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -32,18 +31,15 @@ public class GraphManager {
     /**
      *
      */
-    private final EUDEInterpreter interpreter;
-
-    /**
-     *
-     */
     private Graph graph;
+
+    private final DependencyManagerImpl dependency;
 
     /**
      * @param interpreter
      */
-    public GraphManager(EUDEInterpreter interpreter) {
-        this.interpreter = interpreter;
+    public GraphManager(DependencyManagerImpl i) {
+        this.dependency = i;
     }
 
     /**
@@ -63,7 +59,7 @@ public class GraphManager {
      */
     public void buildGraph() {
         graph = new Graph();
-        
+
         /* BUILD NODES FROM DEVICES */
         // Retrieving devices id
         JSONArray devices = getContext().getDevices();
@@ -72,10 +68,10 @@ public class GraphManager {
         }
 
         /* BUILD NODES FROM PROGRAMS */
-        for (String pid : interpreter.getListProgramIds(null)) {
-            NodeProgram p = getProgramNode(pid);
+        for (String pid : dependency.getListProgramIds()) {
+            ProgramGraph p = getProgramNode(pid);
             if (p != null) {
-                graph.addProgram(pid, p.getProgramName(), p.getReferences(), p.getState().name());
+                graph.addProgram(pid, p.getProgramName(), p.getReferences(), p.getStateName());
             }
             // Link to the scheduler
             if (isPlanificationLink(pid)) {
@@ -129,12 +125,11 @@ public class GraphManager {
 
         return false;
     }
-   
 
     /**
      * Method to update the nodes graph with the latest values
      */
-    private void updateGraph() {
+    public void updateGraph() {
         try {
             // Place names
             for (int j = 0; j < getContext().getPlaces().length(); j++) {
@@ -162,9 +157,9 @@ public class GraphManager {
                 }
             }
             // Programs
-            for (String s : interpreter.getListProgramIds(null)) {
-                NodeProgram currentProgram = getProgramNode(s);
-                graph.setProgramState(s, currentProgram.getState().name());
+            for (String s : dependency.getListProgramIds()) {
+                ProgramGraph currentProgram = getProgramNode(s);
+                graph.setProgramState(s, currentProgram.getStateName());
 
             }
         } catch (JSONException ex) {
@@ -177,7 +172,7 @@ public class GraphManager {
      * @return the EHMI Proxy
      */
     private EHMIProxySpec getContext() {
-        return this.interpreter.getContext();
+        return this.dependency.getContext();
     }
 
     /**
@@ -185,12 +180,16 @@ public class GraphManager {
      * @param pid
      * @return the program id corresponding to the pid
      */
-    private NodeProgram getProgramNode(String pid) {
-        return interpreter.getNodeProgram(pid);
+    private ProgramGraph getProgramNode(String pid) {
+        return dependency.getNodeProgram(pid);
     }
 
     private void saveDependencyGraph() {
-        this.interpreter.saveDependencyGraph(graph);
+        dependency.addGraph(graph);
+    }
+
+    public void updateProgramStatus(String deviceId) {
+        updateGraph();
     }
 
 }

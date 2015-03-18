@@ -1,5 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import appsgate.lig.context.dependency.graph.ProgramGraph;
 import appsgate.lig.context.dependency.graph.Reference.STATUS;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
@@ -35,7 +36,7 @@ import org.slf4j.LoggerFactory;
  * @version 1.0.0
  *
  */
-final public class NodeProgram extends Node implements ProgramDesc {
+final public class NodeProgram extends Node implements ProgramDesc, ProgramGraph {
 
     // Logger
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeProgram.class);
@@ -245,6 +246,7 @@ final public class NodeProgram extends Node implements ProgramDesc {
         return applyStatus(newStatus);
     }
 
+    @Override
     public ReferenceTable getReferences() {
         return this.references;
     }
@@ -778,5 +780,10 @@ final public class NodeProgram extends Node implements ProgramDesc {
      */
     public JSONObject getNodesCounter() {
         return this.nodesCounter;
+    }
+
+    @Override
+    public String getStateName() {
+        return getState().name();
     }
 }

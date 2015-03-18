@@ -34,4 +34,11 @@ public interface DependencyManagerSpec {
      * @return 
      */
     Dependencies getProgramDependencies(String pid);
+
+    public void updateProgramStatus(String deviceId);
+
+    public JSONObject buildGraph();
+
+    public void updateDeviceStatus(String srcId, String varName, String value);
+
 }

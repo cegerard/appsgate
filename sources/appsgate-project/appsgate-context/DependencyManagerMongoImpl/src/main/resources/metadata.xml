@@ -8,6 +8,7 @@
         <callback onInit="newInst" onRemove="deleteInst" />
         <relation implementation="MongoDBConfiguration" field="myConfiguration" creation="eager"
                   resolve="exist" fail="wait" />
+        <relation field="ehmiProxy" resolve="exist"/>
 
     </implementation>
 

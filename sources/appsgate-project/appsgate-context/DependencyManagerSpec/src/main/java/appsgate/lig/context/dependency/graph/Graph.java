@@ -194,7 +194,7 @@ public class Graph implements SpokObject {
     }
 
     /**
-     * Method that adds a node to the json object
+     * Method that adds a node to the JSON object
      *
      * @param type the type of node (program, device, place)
      * @param id the id of the node (id of program or device, or plae)
@@ -217,7 +217,7 @@ public class Graph implements SpokObject {
     }
 
     /**
-     * Method thats add Device to the json object
+     * Method thats add Device to the JSON object
      *
      * @param o : JSONOject of the device to add
      */

@@ -19,7 +19,6 @@ import appsgate.lig.ehmi.spec.EHMIProxySpec;
 import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.EndEventListener;
-import appsgate.lig.eude.interpreter.references.GraphManager;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEventListener;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeEvent;
@@ -94,9 +93,6 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      */
     public ClockProxy clock;
 
-    //
-    private final GraphManager gm;
-    
     private DependencyManagerSpec dependencyManager;
 
     /**
@@ -107,7 +103,6 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
         mapPrograms = new HashMap<String, NodeProgram>();
         listCoreNodeEvent = new ArrayList<CoreEventListener>();
         root = initRootProgram();
-        gm = new GraphManager(this);
     }
 
     /**
@@ -136,7 +131,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
             contextHistory_push.pushData_change(this.getClass().getSimpleName(), "interpreter", "start", "stop", getProgramsDesc());
         }
     }
-    
+
     @Override
     public boolean addProgram(JSONObject programJSON) {
         if (!restorePrograms()) {
@@ -158,14 +153,14 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
             return false;
         }
     }
-    
+
     @Override
     public boolean removeProgram(String programId) {
         if (!restorePrograms()) {
             return false;
         }
         NodeProgram p = mapPrograms.get(programId);
-        
+
         if (p == null) {
             LOGGER.error("The program " + programId + " does not exist.");
             return false;
@@ -191,10 +186,10 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
             return true;
         }
         LOGGER.debug("Unable to warn save the state");
-        
+
         return false;
     }
-    
+
     @Override
     public boolean update(JSONObject jsonProgram) {
         if (!restorePrograms()) {
@@ -208,27 +203,27 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
             return false;
         }
         NodeProgram p = mapPrograms.get(prog_id);
-        
+
         if (p == null) {
             LOGGER.error("The program {} does not exist.", prog_id);
             return false;
         }
-        
+
         if (p.isRunning()) {
             p.removeEndEventListener(this);
             p.stop();
         }
-        
+
         p.update(jsonProgram);
         notifyUpdateProgram(p.getId(), p.getState().toString(), p.getProgramName(), p.getJSONDescription());
         //save program map state
-        
+
         return contextHistory_push.pushData_add(this.getClass().getSimpleName(), p.getId(), p.getProgramName(), getProgramsDesc());
     }
-    
+
     @Override
     public boolean callProgram(String programId) {
-        
+
         return callProgram(programId, null);
     }
 
@@ -243,10 +238,10 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
         if (!restorePrograms()) {
             return false;
         }
-        
+
         NodeProgram p = mapPrograms.get(programId);
         JSONObject calledStatus = null;
-        
+
         if (p != null) {
             p.getSymbolTable().fillWith(args);
             p.addEndEventListener(this);
@@ -254,20 +249,20 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
         }
         return (calledStatus != null);
     }
-    
+
     @Override
     public boolean stopProgram(String programId) {
         if (!restorePrograms()) {
             return false;
         }
-        
+
         NodeProgram p = mapPrograms.get(programId);
-        
+
         if (p != null) {
             p.stop();
             return true;
         }
-        
+
         return false;
     }
 
@@ -283,7 +278,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
         if (node == null) {
             node = root;
         }
-        
+
         List<String> list = new ArrayList<String>();
         list.add(node.getId());
         for (NodeProgram n : node.getSubPrograms()) {
@@ -291,34 +286,34 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
         }
         return list;
     }
-    
+
     @Override
     public HashMap<String, JSONObject> getListPrograms() {
         if (!restorePrograms()) {
             return null;
         }
-        
+
         HashMap<String, JSONObject> mapProgramJSON = new HashMap<String, JSONObject>();
         for (NodeProgram p : mapPrograms.values()) {
             p.getReferences().checkReferences();
             mapProgramJSON.put(p.getId(), p.getJSONDescription());
         }
-        
+
         return mapProgramJSON;
     }
-    
+
     @Override
     public boolean isProgramActive(String programId) {
         if (!restorePrograms()) {
             return false;
         }
-        
+
         NodeProgram p = mapPrograms.get(programId);
-        
+
         if (p != null) {
             return (p.isRunning());
         }
-        
+
         return false;
     }
 
@@ -328,11 +323,12 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * @param programId identifier of program to get
      * @return Node of the program if found, null otherwise
      */
+    @Override
     public NodeProgram getNodeProgram(String programId) {
         if (!restorePrograms()) {
             return null;
         }
-        
+
         return mapPrograms.get(programId);
     }
 
@@ -349,7 +345,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
             LOGGER.warn("No EHMI Proxy bound");
             return null;
         }
-        
+
         GenericCommand command = ehmiProxy.executeRemoteCommand(objectId, methodName, args);
         if (command == null) {
             LOGGER.error("Command not found {}, for {}", methodName, objectId);
@@ -357,7 +353,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
             command.run();
         }
         return command;
-        
+
     }
 
     /**
@@ -386,16 +382,16 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
             LOGGER.warn("No EHMI Proxy bound");
             return;
         }
-        
+
         CoreEventListener listener = new CoreEventListener(nodeEvent.getSourceId(), nodeEvent.getEventName(), nodeEvent.getEventValue());
-        
+
         for (CoreEventListener l : listCoreNodeEvent) {
             if (l.equals(listener)) {
                 LOGGER.debug("Add node event to listener list: {}", nodeEvent.getEventName());
                 l.addNodeEvent(nodeEvent);
                 return;
             }
-            
+
         }
         listener.addNodeEvent(nodeEvent);
         listCoreNodeEvent.add(listener);
@@ -403,7 +399,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
             ehmiProxy.addCoreListener(listener);
         }
         LOGGER.debug("Add node event listener list: {}", nodeEvent.getEventName());
-        
+
     }
 
     /**
@@ -412,11 +408,11 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * @param nodeEvent Node to remove
      */
     public synchronized void removeNodeListening(NodeEvent nodeEvent) {
-        
+
         CoreEventListener listener;
-        
+
         listener = new CoreEventListener(nodeEvent.getSourceId(), nodeEvent.getEventName(), nodeEvent.getEventValue());
-        
+
         for (CoreEventListener l : listCoreNodeEvent) {
             if (l.equals(listener)) {
                 LOGGER.trace("Remove node event from listener list: {}", nodeEvent.getEventName());
@@ -427,7 +423,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
                 }
                 return;
             }
-            
+
         }
     }
 
@@ -444,6 +440,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
             newProgramStatus(id, STATUS.OK);
         }
         notifyChanges(new ProgramNotification("updateProgram", id, runningState, name, source, null));
+        dependencyManager.buildGraph();
     }
 
     /**
@@ -454,6 +451,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      */
     private void notifyAddProgram(String id, String runningState, String name, JSONObject source) {
         notifyChanges(new ProgramNotification("newProgram", id, runningState, name, source, null));
+        dependencyManager.buildGraph();
     }
 
     /**
@@ -461,9 +459,9 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * @param id
      */
     private void notifyRemoveProgram(String id, String name) {
-        
         newProgramStatus(id, STATUS.MISSING);
         notifyChanges(new ProgramNotification("removeProgram", id, "", name, null, null));
+        dependencyManager.buildGraph();
     }
 
     /**
@@ -476,7 +474,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      */
     public NotificationMsg notifyChanges(NotificationMsg notif) {
         return notif;
-        
+
     }
 
     /**
@@ -507,7 +505,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
         if (!restorePrograms()) {
             return null;
         }
-        
+
         ArrayList<Entry<String, Object>> properties = new ArrayList<Entry<String, Object>>();
         for (NodeProgram subProgram : root.getSubPrograms()) {
             for (String key : getListProgramIds(subProgram)) {
@@ -516,7 +514,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
         }
         return properties;
     }
-    
+
     boolean synchro = false;
 
     /**
@@ -528,7 +526,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
             return true;
         } else if (contextHistory_pull != null && contextHistory_pull.testDB()) {
             synchro = true;
-            
+
             LOGGER.debug("Restore interpreter program list from database");
             JSONObject userbase = contextHistory_pull.pullLastObjectVersion(this.getClass().getSimpleName());
             if (userbase != null) {
@@ -552,15 +550,15 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
                     }
                     LOGGER.debug("program list successfully synchronized with database");
                     return true;
-                    
+
                 } catch (JSONException e) {
                     LOGGER.warn("JSONException: {}", e.getMessage());
                 }
             }
-            
+
         }
         return synchro;
-        
+
     }
 
     /**
@@ -578,17 +576,17 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
             StringBuilder sb = new StringBuilder();
             BufferedReader br = new BufferedReader(is);
             String read = br.readLine();
-            
+
             while (read != null) {
                 //System.out.println(read);
                 sb.append(read);
                 read = br.readLine();
-                
+
             }
-            
+
             JSONObject o = new JSONObject(sb.toString());
             return new NodeProgram(this, o, null);
-            
+
         } catch (IOException ex) {
             LOGGER.error("An error occured during reading file");
         } catch (JSONException ex) {
@@ -630,7 +628,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      */
     private NodeProgram putProgram(JSONObject programJSON) {
         NodeProgram p;
-        
+
         NodeProgram parent = getProgramParent(programJSON);
 
         // initialize a program node from the JSON
@@ -671,12 +669,12 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
                 l.notifyEvent();
                 return;
             }
-            
+
         }
         p.addStartEventListener(this);
         // Check if no end Event is listened
     }
-    
+
     @Override
     public void startEventFired(StartEvent e) {
         for (CoreEventListener l : listCoreNodeEvent) {
@@ -684,7 +682,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
                 l.notifyEvent();
                 return;
             }
-            
+
         }
     }
 
@@ -696,17 +694,18 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * @param push the push service
      * @param ehmiProxy the proxy to ehmi
      */
-    public void setTestMocks(DataBasePullService pull, DataBasePushService push, EHMIProxySpec ehmiProxy) {
+    public void setTestMocks(DataBasePullService pull, DataBasePushService push, EHMIProxySpec ehmiProxy, DependencyManagerSpec dep) {
         this.contextHistory_pull = pull;
         this.contextHistory_push = push;
         this.ehmiProxy = ehmiProxy;
+        this.dependencyManager = dep;
     }
-    
+
     @Override
     public String toString() {
         return "[EUDE Mediator]";
     }
-    
+
     @Override
     public void newDeviceStatus(String deviceId, Boolean statusOK) {
         STATUS s = STATUS.OK;
@@ -716,6 +715,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
         for (NodeProgram p : mapPrograms.values()) {
             p.setDeviceStatus(deviceId, s);
         }
+
     }
 
     /**
@@ -727,20 +727,16 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
         for (NodeProgram p : mapPrograms.values()) {
             p.setProgramStatus(deviceId, status);
         }
+        if (dependencyManager != null) {
+            dependencyManager.updateProgramStatus(deviceId);
+        }
     }
-    
+
     @Override
     public void checkReferences() {
         for (NodeProgram p : mapPrograms.values()) {
             p.getReferences().checkReferences();
         }
-    }
-    
-    @Override
-    public JSONObject buildGraph() {
-        gm.buildGraph();
-        // False because no need to update the graph, we just build it once
-        return gm.getGraph(false);
     }
 
     /**

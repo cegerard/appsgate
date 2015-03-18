@@ -8,6 +8,7 @@ package appsgate.lig.eude.interpreter.impl;
 import appsgate.lig.chmi.spec.CHMIProxySpec;
 import appsgate.lig.chmi.spec.GenericCommand;
 import appsgate.lig.context.dependency.graph.Reference.STATUS;
+import appsgate.lig.context.dependency.spec.DependencyManagerSpec;
 import appsgate.lig.context.services.DataBasePullService;
 import appsgate.lig.context.services.DataBasePushService;
 import appsgate.lig.ehmi.spec.EHMIProxyMock;
@@ -59,6 +60,7 @@ public class ReferenceTest {
     private CHMIProxySpec chmiProxy;
     private EUDEInterpreter instance;
     private EHMIProxyMock ehmiProxy;
+    private DependencyManagerSpec dependencyManager;
 
 
     @Before
@@ -67,6 +69,7 @@ public class ReferenceTest {
         this.push_service = context.mock(DataBasePushService.class);
         this.chmiProxy = context.mock(CHMIProxySpec.class);
         this.ehmiProxy = new EHMIProxyMock("src/test/resources/jsonLibs/toto.json");
+        this.dependencyManager = context.mock(DependencyManagerSpec.class);
         final JSONArray deviceList = new JSONArray();
         JSONObject clock = new JSONObject();
         clock.put("id", "1");
@@ -78,6 +81,8 @@ public class ReferenceTest {
         tested = context.states("NotYet");
         context.checking(new Expectations() {
             {
+                allowing(dependencyManager).updateProgramStatus(with(any(String.class)));
+                allowing(dependencyManager).buildGraph();
                 allowing(pull_service).testDB();
                 will(returnValue(true));
 
@@ -111,7 +116,7 @@ public class ReferenceTest {
             }
         });
         this.instance = new EUDEInterpreter();
-        this.instance.setTestMocks(pull_service, push_service, ehmiProxy);
+        this.instance.setTestMocks(pull_service, push_service, ehmiProxy, dependencyManager);
 
     }
 

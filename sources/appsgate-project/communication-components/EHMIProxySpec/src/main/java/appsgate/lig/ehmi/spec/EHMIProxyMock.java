@@ -130,6 +130,11 @@ public class EHMIProxyMock implements EHMIProxySpec {
     }
 
     @Override
+    public SpokObject getProgram(String programid) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
     public SpokObject getProgramDependencies(String programid) {
         throw new UnsupportedOperationException("Not supported yet.");
     }

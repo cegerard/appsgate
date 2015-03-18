@@ -737,4 +737,10 @@ public interface EHMIProxySpec {
      * @return 
      */
     public SpokObject getProgramDependencies(String programid);
+    /**
+     * Return a list of 
+     * @param programid
+     * @return 
+     */
+    public SpokObject getProgram(String programid);
 }
