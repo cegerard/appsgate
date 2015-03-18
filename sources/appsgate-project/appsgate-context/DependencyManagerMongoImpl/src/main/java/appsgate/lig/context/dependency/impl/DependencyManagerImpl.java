@@ -45,7 +45,7 @@ public class DependencyManagerImpl implements DependencyManagerSpec {
      * The last graph that has been saved
      */
     private Graph g;
-    
+
     private final GraphManager graphManager;
 
     public DependencyManagerImpl() {
@@ -72,9 +72,12 @@ public class DependencyManagerImpl implements DependencyManagerSpec {
 
     @Override
     public Boolean addGraph(SpokObject lastGraph) {
-        this.jsonGraph = lastGraph.getJSONDescription();
-        this.g = (Graph) lastGraph;
-        return true;
+        if (lastGraph != null) {
+            this.jsonGraph = lastGraph.getJSONDescription();
+            this.g = (Graph) lastGraph;
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -90,6 +93,7 @@ public class DependencyManagerImpl implements DependencyManagerSpec {
     public void updateDeviceStatus(String srcId, String varName, String value) {
         graphManager.updateGraph();
     }
+
     @Override
     public void updateProgramStatus(String deviceId) {
         graphManager.updateGraph();
@@ -121,6 +125,5 @@ public class DependencyManagerImpl implements DependencyManagerSpec {
     public ProgramGraph getNodeProgram(String pid) {
         return (ProgramGraph) ehmiProxy.getProgram(pid);
     }
-
 
 }
