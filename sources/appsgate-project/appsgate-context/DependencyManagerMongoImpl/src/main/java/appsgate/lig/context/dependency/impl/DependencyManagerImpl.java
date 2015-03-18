@@ -1,11 +1,11 @@
 package appsgate.lig.context.dependency.impl;
 
+import appsGate.lig.manager.client.communication.ClientCommunicationManager;
 import appsgate.lig.context.dependency.spec.Dependencies;
 import appsgate.lig.context.dependency.spec.DependencyManagerSpec;
 import appsgate.lig.context.dependency.graph.Graph;
 import appsgate.lig.context.dependency.graph.ProgramGraph;
 import appsgate.lig.ehmi.spec.EHMIProxySpec;
-import appsgate.lig.ehmi.spec.SpokObject;
 import appsgate.lig.persistence.MongoDBConfiguration;
 import java.util.ArrayList;
 import org.json.JSONArray;
@@ -46,6 +46,7 @@ public class DependencyManagerImpl implements DependencyManagerSpec {
      */
     private Graph g;
 
+    //
     private final GraphManager graphManager;
 
     public DependencyManagerImpl() {
@@ -70,15 +71,6 @@ public class DependencyManagerImpl implements DependencyManagerSpec {
         return this.jsonGraph;
     }
 
-    @Override
-    public Boolean addGraph(SpokObject lastGraph) {
-        if (lastGraph != null) {
-            this.jsonGraph = lastGraph.getJSONDescription();
-            this.g = (Graph) lastGraph;
-            return true;
-        }
-        return false;
-    }
 
     @Override
     public Dependencies getProgramDependencies(String pid) {
@@ -91,18 +83,18 @@ public class DependencyManagerImpl implements DependencyManagerSpec {
 
     @Override
     public void updateDeviceStatus(String srcId, String varName, String value) {
-        graphManager.updateGraph();
+        addGraph(graphManager.updateDeviceStatus(srcId, varName, value));
     }
 
     @Override
     public void updateProgramStatus(String deviceId) {
-        graphManager.updateGraph();
+        addGraph(graphManager.updateProgramStatus(deviceId));
     }
 
     @Override
     public JSONObject buildGraph() {
-        graphManager.buildGraph();
-        return graphManager.getGraph(false);
+        addGraph(graphManager.buildGraph());
+        return this.jsonGraph;
     }
 
     public EHMIProxySpec getContext() {
@@ -126,4 +118,33 @@ public class DependencyManagerImpl implements DependencyManagerSpec {
         return (ProgramGraph) ehmiProxy.getProgram(pid);
     }
 
+    /**
+     * add the new graph to the dependency history system (future work)
+     * @param lastGraph
+     * @return 
+     */
+    private Boolean addGraph(Graph lastGraph) {
+        if (lastGraph != null) {
+            this.jsonGraph = lastGraph.getJSONDescription();
+            this.g = lastGraph;
+            sendGraph(jsonGraph);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * send the graph to the client
+     * @param graph 
+     */
+    private void sendGraph(JSONObject graph) {
+        JSONObject msg = new JSONObject();
+        try {
+            msg.put("value", graph.toString());
+            msg.put("objectId", "EHMI");
+            msg.put("callId", "loadGraph");
+        } catch (JSONException ex) {
+        }
+        ehmiProxy.sendFromConnection(ClientCommunicationManager.DEFAULT_SERVER_NAME, msg.toString());
+    }
 }

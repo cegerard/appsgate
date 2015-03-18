@@ -51,82 +51,82 @@ define([
 			});
 
 			/**** Event binding to have dynamic update ****/
-			self.listenTo(dispatcher, "updatePlace", function (place) {
-				console.log("updatePlace");
-				dispatcher.trigger("UpdateGraph", {
-					buildGraph: false
-				});
-			});
-
-			self.listenTo(dispatcher, "newPlace", function (place) {
-				console.log("newPlace");
-				dispatcher.trigger("UpdateGraph", {
-					buildGraph: true
-				});
-			});
-
-			self.listenTo(dispatcher, "removePlace", function (place) {
-				console.log("removePlace");
-				dispatcher.trigger("UpdateGraph", {
-					buildGraph: true
-				});
-			});
-
-			self.listenTo(dispatcher, "moveDevice", function (messageData) {
-				console.log("moveDevice");
-				dispatcher.trigger("UpdateGraph", {
-					buildGraph: true
-				});
-			});
-
-			self.listenTo(dispatcher, "newDevice", function (messageData) {
-				console.log("newDevice");
-				dispatcher.trigger("UpdateGraph", {
-					buildGraph: true
-				});
-			});
-
-			self.listenTo(dispatcher, "removeDevice", function (messageData) {
-				console.log("removeDevice");
-				dispatcher.trigger("UpdateGraph", {
-					buildGraph: true
-				});
-			});
-
-			self.listenTo(dispatcher, "newProgram", function (program) {
-				console.log("newProgram");
-				dispatcher.trigger("UpdateGraph", {
-					buildGraph: true
-				});
-			});
-
-			self.listenTo(dispatcher, "removeProgram", function (program) {
-				console.log("removeProgram");
-				dispatcher.trigger("UpdateGraph", {
-					buildGraph: true
-				});
-			});
-
-			self.listenTo(dispatcher, "updateProgram", function (program) {
-				console.log("updateProgram");
-				dispatcher.trigger("UpdateGraph", {
-					buildGraph: true
-				});
-			});
-
-			self.listenTo(dispatcher, "newService", function (service) {
-				console.log("newService");
-				dispatcher.trigger("UpdateGraph", {
-					buildGraph: true
-				});
-			});
-
-			self.listenTo(dispatcher, "removeService", function (serviceId) {
-				console.log("removeService");
-				dispatcher.trigger("UpdateGraph", {
-					buildGraph: true
-				});
-			});
+			//self.listenTo(dispatcher, "updatePlace", function (place) {
+			//	console.log("updatePlace");
+			//	dispatcher.trigger("UpdateGraph", {
+			//		buildGraph: false
+			//	});
+			//});
+			//
+			//self.listenTo(dispatcher, "newPlace", function (place) {
+			//	console.log("newPlace");
+			//	dispatcher.trigger("UpdateGraph", {
+			//		buildGraph: true
+			//	});
+			//});
+			//
+			//self.listenTo(dispatcher, "removePlace", function (place) {
+			//	console.log("removePlace");
+			//	dispatcher.trigger("UpdateGraph", {
+			//		buildGraph: true
+			//	});
+			//});
+			//
+			//self.listenTo(dispatcher, "moveDevice", function (messageData) {
+			//	console.log("moveDevice");
+			//	dispatcher.trigger("UpdateGraph", {
+			//		buildGraph: true
+			//	});
+			//});
+			//
+			//self.listenTo(dispatcher, "newDevice", function (messageData) {
+			//	console.log("newDevice");
+			//	dispatcher.trigger("UpdateGraph", {
+			//		buildGraph: true
+			//	});
+			//});
+			//
+			//self.listenTo(dispatcher, "removeDevice", function (messageData) {
+			//	console.log("removeDevice");
+			//	dispatcher.trigger("UpdateGraph", {
+			//		buildGraph: true
+			//	});
+			//});
+			//
+			//self.listenTo(dispatcher, "newProgram", function (program) {
+			//	console.log("newProgram");
+			//	dispatcher.trigger("UpdateGraph", {
+			//		buildGraph: true
+			//	});
+			//});
+			//
+			//self.listenTo(dispatcher, "removeProgram", function (program) {
+			//	console.log("removeProgram");
+			//	dispatcher.trigger("UpdateGraph", {
+			//		buildGraph: true
+			//	});
+			//});
+			//
+			//self.listenTo(dispatcher, "updateProgram", function (program) {
+			//	console.log("updateProgram");
+			//	dispatcher.trigger("UpdateGraph", {
+			//		buildGraph: true
+			//	});
+			//});
+			//
+			//self.listenTo(dispatcher, "newService", function (service) {
+			//	console.log("newService");
+			//	dispatcher.trigger("UpdateGraph", {
+			//		buildGraph: true
+			//	});
+			//});
+			//
+			//self.listenTo(dispatcher, "removeService", function (serviceId) {
+			//	console.log("removeService");
+			//	dispatcher.trigger("UpdateGraph", {
+			//		buildGraph: true
+			//	});
+			//});
 
 		},
 
@@ -174,16 +174,16 @@ define([
 			});
 
 			// Bind event ID
-			_.each(this.get("currentEntities"), function (e) {
-				self.listenTo(dispatcher, e.id, function (arg) {
-					// Before trigger check is it is an event we really want to process
-					if (self.checkFireEvent(arg)) {
-						dispatcher.trigger("UpdateGraph", {
-							buildGraph: false
-						});
-					}
-				});
-			});
+			//_.each(this.get("currentEntities"), function (e) {
+			//	self.listenTo(dispatcher, e.id, function (arg) {
+			//		// Before trigger check is it is an event we really want to process
+			//		if (self.checkFireEvent(arg)) {
+			//			dispatcher.trigger("UpdateGraph", {
+			//				buildGraph: false
+			//			});
+			//		}
+			//	});
+			//});
 		},
 
 		/**

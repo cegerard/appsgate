@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.logging.Level;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,6 +40,8 @@ public class Graph implements SpokObject {
 
     // Collection to store the program ghost we will add
     private final HashSet<String> ghostPrograms;
+
+    private final HashSet<String> deviceTypes;
 
     // Map to store the program states
     private final HashMap<String, String> programState;
@@ -91,6 +94,7 @@ public class Graph implements SpokObject {
         this.placeName = new HashMap<>();
         this.deviceState = new HashMap<>();
         this.deviceName = new HashMap<>();
+        this.deviceTypes = new HashSet<>();
     }
 
     @Override
@@ -149,7 +153,7 @@ public class Graph implements SpokObject {
         // Links to the devices
         for (DeviceReference rdevice : references.getDevicesReferences()) {
             addLink(REFERENCE_LINK, pid, rdevice.getDeviceId(), rdevice.getReferencesData());
-            if (rdevice.getDeviceStatus()== Reference.STATUS.MISSING) {
+            if (rdevice.getDeviceStatus() == Reference.STATUS.MISSING) {
                 ghostDevices.add(rdevice);
             }
         }
@@ -239,6 +243,7 @@ public class Graph implements SpokObject {
                 deviceType = o.getString("type");
                 // send the deviceType to be able to recognize services
                 optArg.put("deviceType", deviceType);
+                deviceTypes.add(deviceType);
             } catch (JSONException ex) {
             }
 
@@ -559,5 +564,16 @@ public class Graph implements SpokObject {
             return dependencies.get(id);
         }
         return new Dependencies(id);
+    }
+
+    /**
+     * 
+     */
+    public void buildTypes() {
+        try {
+            returnJSONObject.put("types", deviceTypes);
+        } catch (JSONException ex) {
+        }
+
     }
 }

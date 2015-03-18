@@ -10,7 +10,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,22 +41,11 @@ public class GraphManager {
         this.dependency = i;
     }
 
-    /**
-     *
-     * @param needUpdateGraph
-     * @return the graph in JSON format
-     */
-    public JSONObject getGraph(boolean needUpdateGraph) {
-        if (needUpdateGraph) {
-            updateGraph();
-        }
-        return graph.getJSONDescription();
-    }
 
     /**
      * build the graph
      */
-    public void buildGraph() {
+    public Graph buildGraph() {
         graph = new Graph();
 
         /* BUILD NODES FROM DEVICES */
@@ -88,8 +76,8 @@ public class GraphManager {
             graph.addPlace(places.optJSONObject(i));
 
         }
-
-        saveDependencyGraph();
+        graph.buildTypes();
+        return graph;
     }
 
     /**
@@ -129,7 +117,7 @@ public class GraphManager {
     /**
      * Method to update the nodes graph with the latest values
      */
-    public void updateGraph() {
+    public Graph updateGraph() {
         try {
             // Place names
             for (int j = 0; j < getContext().getPlaces().length(); j++) {
@@ -163,9 +151,8 @@ public class GraphManager {
 
             }
         } catch (JSONException ex) {
-            java.util.logging.Logger.getLogger(GraphManager.class.getName()).log(Level.SEVERE, null, ex);
         }
-        saveDependencyGraph();
+        return graph;
     }
 
     /**
@@ -184,12 +171,26 @@ public class GraphManager {
         return dependency.getNodeProgram(pid);
     }
 
-    private void saveDependencyGraph() {
-        dependency.addGraph(graph);
+    /**
+     *
+     * @param programId
+     * @return the graph once updated
+     */
+    public Graph updateProgramStatus(String programId) {
+        updateGraph();
+        return graph;
     }
 
-    public void updateProgramStatus(String deviceId) {
+    /**
+     *
+     * @param srcId
+     * @param varName
+     * @param value
+     * @return the graph once updated
+     */
+    public Graph updateDeviceStatus(String srcId, String varName, String value) {
         updateGraph();
+        return graph;
     }
 
 }
