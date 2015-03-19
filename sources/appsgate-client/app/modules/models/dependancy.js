@@ -330,6 +330,8 @@ define([
 
 		getFilteredRelations: function () {
 			var self = this;
+			var filteredEntities = self.getFilteredEntities();
+			
 			return this.get("relations").filter(function (r) {
 
 				// Special test for the reference type. Test if one of its type of reference is to show
@@ -367,7 +369,7 @@ define([
 					}
 				}();
 
-				return _.contains(self.getFilteredEntities(), r.source) && _.contains(self.getFilteredEntities(), r.target) && (_.contains(self.get("currentRelationsFilters"), r.type) || isReferenceShown);
+				return _.contains(filteredEntities, r.source) && _.contains(filteredEntities, r.target) && (_.contains(self.get("currentRelationsFilters"), r.type) || isReferenceShown);
 			});
 		},
 
@@ -621,8 +623,9 @@ define([
 		isMultipleTargeted: function (target) {
 			var self = this;
 			var targetedOneTime = false;
-			for (var i = 0; i < self.get("currentRelations").length; i++) {
-				var relation = self.get("currentRelations")[i];
+			var currentRelations = self.getFilteredRelations();
+			for (var i = 0; i < currentRelations.length; i++) {
+				var relation = currentRelations[i];
 				// Test si le target est le bon : Program - Entity
 				if (target === relation.target && relation.source.type === "program") {
 					// Test si la source est un programme en cours d'execution : Mis en com' car changement d'avis  
