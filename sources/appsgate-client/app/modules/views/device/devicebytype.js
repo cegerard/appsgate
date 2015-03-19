@@ -124,7 +124,7 @@ define([
 
         this.$el.find("#place-name-span").html(place.getName() !== "" ?place.getName() : $.i18n.t(places-details.place-no-name));
 
-        switch (type) {
+          switch (type) {
           case "0":
             $("#device-" + device.cid + "-value").text(Math.round(device.get("value")) + "°C");
             break;
@@ -169,6 +169,7 @@ define([
               $("#device-" + device.cid + "-value").attr("class","label label-default");
             }
             $("#device-" + device.cid + "-consumption").text(device.get("consumption") + " W");
+
             break;
           case "7":
             if (device.get("state") === "true" || device.get("state") === true) {
@@ -183,6 +184,7 @@ define([
               $("#device-" + device.cid + "-color-information").attr("data-i18n", "devices.lamp.color-information.lastColor");
             }
             $("#device-" + device.cid + "-color").attr("style", "background-color:" + device.getCurrentColor());
+
             break;
             case "8":
                 if (device.get("value") === "true" || device.get("value") === true) {
@@ -245,22 +247,7 @@ define([
             $("#device-" + device.cid + "-status").attr("data-i18n", "devices.status.connected");
           }
 
-          var allOn = true;
-          var allOff = true;
-          var state = "value";
-          if (this.id == 6) {
-            state = "plugState";
-          }
-          devices.getDevicesByType(this.id).forEach(function(device) {
-            if (device.get(state) === "true" || device.get(state) === true) {
-              allOff = false;
-            } else if (device.get(state) === "false" || device.get(state) === false) {
-              allOn = false;
-            }
-          });
-
-          $(".group-on-button").prop("disabled", allOn);
-          $(".group-off-button").prop("disabled", allOff);
+          this.updateGroupOnOff(type);
 
           // translate the view
           this.$el.i18n();
@@ -278,6 +265,36 @@ define([
         this.render();
       },
       /**
+       * Enable or disable the buttons toggle all on / toggle all off
+       * depending on the type
+       * @param type
+       */
+      updateGroupOnOff: function(type) {
+        var allOn = true;
+        var allOff = true;
+        var state = "value";
+
+        switch (type) {
+          case "6": state = "plugState";
+            break;
+          case "7": state = "state";
+            break;
+        }
+
+        devices.getDevicesByType(this.id).forEach(function(device) {
+          if (device.get(state) === "true" || device.get(state) === true) {
+            allOff = false;
+          } else if (device.get(state) === "false" || device.get(state) === false) {
+            allOn = false;
+          }
+        });
+
+        $(".group-on-button").prop("disabled", allOn);
+        $(".group-off-button").prop("disabled", allOff);
+
+      },
+
+      /**
       * Render the list
       */
       render: function() {
@@ -287,22 +304,8 @@ define([
             type: this.id,
             places: places
           }));
-          var allOn = true;
-          var allOff = true;
-          var state = "value";
-          if (this.id == 6) {
-            state = "plugState";
-          }
-          devices.getDevicesByType(this.id).forEach(function(device) {
-            if (device.get(state) === "true" || device.get(state) === true) {
-              allOff = false;
-            } else if (device.get(state) === "false" || device.get(state) === false) {
-              allOn = false;
-            }
-          });
 
-          $(".group-on-button").prop("disabled", allOn);
-          $(".group-off-button").prop("disabled", allOff);
+          this.updateGroupOnOff(this.id);
 
           // translate the view
           this.$el.i18n();
