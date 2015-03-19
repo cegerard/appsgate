@@ -53,7 +53,7 @@ public class GraphManager {
             LOGGER.error("No Context found");
             return graph;
         }
-        
+
 
         /* BUILD NODES FROM DEVICES */
         // Retrieving devices id
@@ -127,28 +127,35 @@ public class GraphManager {
     public Graph updateGraph() {
         try {
             // Place names
-            for (int j = 0; j < getContext().getPlaces().length(); j++) {
-                JSONObject place = getContext().getPlaces().getJSONObject(j);
-                graph.setPlaceName(place.optString("id"), place.optString("name"));
+            JSONArray places = getContext().getPlaces();
+            if (places != null) {
+                for (int j = 0; j < places.length(); j++) {
+                    JSONObject place = places.getJSONObject(j);
+                    graph.setPlaceName(place.optString("id"), place.optString("name"));
+                }
             }
+
             // Devices
-            for (int j = 0; j < getContext().getDevices().length(); j++) {
-                JSONObject currentDevice = getContext().getDevices().getJSONObject(j);
-                switch (Integer.parseInt(currentDevice.getString("type"))) {
-                    case 3: // Contact
-                        graph.setDevice(currentDevice.optString("id"), currentDevice.getString("contact"), currentDevice.optString("name"));
-                        break;
-                    case 4: // CardSwitch
-                        graph.setDevice(currentDevice.optString("id"), currentDevice.getString("inserted"), currentDevice.optString("name"));
-                        break;
-                    case 6: // Plug
-                        graph.setDevice(currentDevice.optString("id"), currentDevice.getString("plugState"), currentDevice.optString("name"));
-                        break;
-                    case 7: // Lamp
-                        graph.setDevice(currentDevice.optString("id"), currentDevice.getString("state"), currentDevice.optString("name"));
-                        break;
-                    default:
-                        break;
+            JSONArray devices = getContext().getDevices();
+            if (devices != null) {
+                for (int j = 0; j < devices.length(); j++) {
+                    JSONObject currentDevice = devices.getJSONObject(j);
+                    switch (Integer.parseInt(currentDevice.getString("type"))) {
+                        case 3: // Contact
+                            graph.setDevice(currentDevice.optString("id"), currentDevice.get("contact").toString(), currentDevice.optString("name"));
+                            break;
+                        case 4: // CardSwitch
+                            graph.setDevice(currentDevice.optString("id"), currentDevice.get("inserted").toString(), currentDevice.optString("name"));
+                            break;
+                        case 6: // Plug
+                            graph.setDevice(currentDevice.optString("id"), currentDevice.get("plugState").toString(), currentDevice.optString("name"));
+                            break;
+                        case 7: // Lamp
+                            graph.setDevice(currentDevice.optString("id"), currentDevice.get("state").toString(), currentDevice.optString("name"));
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
             // Programs
