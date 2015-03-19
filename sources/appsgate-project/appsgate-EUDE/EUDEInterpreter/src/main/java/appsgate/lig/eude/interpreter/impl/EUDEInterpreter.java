@@ -23,7 +23,6 @@ import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEventListener;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeEvent;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
-import appsgate.lig.context.dependency.graph.Graph;
 import appsgate.lig.context.dependency.graph.Reference.STATUS;
 import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
 import appsgate.lig.eude.interpreter.spec.ProgramNotification;
@@ -739,14 +738,4 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
         }
     }
 
-    /**
-     * @param graph
-     */
-    public void saveDependencyGraph(Graph graph) {
-        if (dependencyManager != null) {
-            dependencyManager.addGraph(graph);
-        } else {
-            LOGGER.warn("Unable to save the dependency graph: dependency manager not found");
-        }
-    }
 }
