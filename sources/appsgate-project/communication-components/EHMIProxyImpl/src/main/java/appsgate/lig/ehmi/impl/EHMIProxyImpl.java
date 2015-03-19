@@ -220,11 +220,11 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
     private final long TIMEOUT = 1000 * 60;
 
-    private synchronized void synchroCoreProxy() {
+    private synchronized boolean synchroCoreProxy() {
         logger.trace("synchroCoreProxy()...");
 
         if (synchroCoreProxy && synchroContext) {
-            return;
+            return true;
         }
 
         if (coreProxy != null) {
@@ -267,13 +267,16 @@ public class EHMIProxyImpl implements EHMIProxySpec {
                 } else {
                     logger.error("Core updates listener deployement failed.");
                 }
-
+                return true;
             } catch (CoreDependencyException coreException) {
                 logger.warn("Resolution failed for core dependency, no notification subscription can be set.");
+                return false;
             }
 
         } else {
             logger.trace("... coreProxy is not (yet) there");
+            
+            return false;
         }
     }
 
@@ -316,8 +319,12 @@ public class EHMIProxyImpl implements EHMIProxySpec {
     public JSONArray getDevices() {
         waitForContext();
 
-        synchroCoreProxy();
         JSONArray devices = new JSONArray();
+        if (! synchroCoreProxy()){
+            logger.debug("No core proxy found");
+            return devices;
+        }
+            
         try {
             return addContextData(coreProxy.getDevicesDescription());
         } catch (CoreDependencyException coreException) {
