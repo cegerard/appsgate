@@ -41,16 +41,23 @@ public class GraphManager {
         this.dependency = i;
     }
 
-
     /**
      * build the graph
      */
     public Graph buildGraph() {
+        EHMIProxySpec context;
         graph = new Graph();
+        try {
+            context = getContext();
+        } catch (ExecutionException ex) {
+            LOGGER.error("No Context found");
+            return graph;
+        }
+        
 
         /* BUILD NODES FROM DEVICES */
         // Retrieving devices id
-        JSONArray devices = getContext().getDevices();
+        JSONArray devices = context.getDevices();
         for (int i = 0; i < devices.length(); i++) {
             graph.addDevice(devices.optJSONObject(i));
         }
@@ -71,7 +78,7 @@ public class GraphManager {
         /* BUILD GHOSTS NODES */
         graph.buildGhosts();
         /* BUILD PLACE NODES */
-        JSONArray places = getContext().getPlaces();
+        JSONArray places = context.getPlaces();
         for (int i = 0; i < places.length(); i++) {
             graph.addPlace(places.optJSONObject(i));
 
@@ -91,7 +98,7 @@ public class GraphManager {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Callable<Object> task = new Callable<Object>() {
             @Override
-            public Object call() {
+            public Object call() throws ExecutionException {
                 return getContext().checkProgramsScheduled();
             }
         };
@@ -129,16 +136,16 @@ public class GraphManager {
                 JSONObject currentDevice = getContext().getDevices().getJSONObject(j);
                 switch (Integer.parseInt(currentDevice.getString("type"))) {
                     case 3: // Contact
-                        graph.setDevice(currentDevice.optString("id"), currentDevice.optString(""), currentDevice.getString("contact"));
+                        graph.setDevice(currentDevice.optString("id"), currentDevice.getString("contact"), currentDevice.optString("name"));
                         break;
                     case 4: // CardSwitch
-                        graph.setDevice(currentDevice.optString("id"), currentDevice.optString(""), currentDevice.getString("inserted"));
+                        graph.setDevice(currentDevice.optString("id"), currentDevice.getString("inserted"), currentDevice.optString("name"));
                         break;
                     case 6: // Plug
-                        graph.setDevice(currentDevice.optString("id"), currentDevice.optString(""), currentDevice.getString("plugState"));
+                        graph.setDevice(currentDevice.optString("id"), currentDevice.getString("plugState"), currentDevice.optString("name"));
                         break;
                     case 7: // Lamp
-                        graph.setDevice(currentDevice.optString("id"), currentDevice.optString(""), currentDevice.getString("state"));
+                        graph.setDevice(currentDevice.optString("id"), currentDevice.getString("state"), currentDevice.optString("name"));
                         break;
                     default:
                         break;
@@ -151,14 +158,20 @@ public class GraphManager {
 
             }
         } catch (JSONException ex) {
+        } catch (ExecutionException e) {
+            LOGGER.error("Context not found");
         }
+
         return graph;
     }
 
     /**
      * @return the EHMI Proxy
      */
-    private EHMIProxySpec getContext() {
+    private EHMIProxySpec getContext() throws ExecutionException {
+        if (this.dependency.getContext() == null) {
+            throw new ExecutionException("Context not found", null);
+        }
         return this.dependency.getContext();
     }
 
