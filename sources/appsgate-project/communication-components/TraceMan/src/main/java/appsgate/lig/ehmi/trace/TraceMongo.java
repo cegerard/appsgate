@@ -200,11 +200,14 @@ public class TraceMongo implements TraceHistory {
     private JSONArray formatData(DBCursor cursor) {
         JSONArray a = new JSONArray();
         for (DBObject cur : cursor) {
-            String o = cur.get("trace").toString();
+            String o;
             try {
+                o = cur.get("trace").toString();
                 a.put(new JSONObject(o));
             } catch (JSONException ex) {
 
+            } catch(NullPointerException e){
+                // Traces database not clean
             }
         }
         return a;
