@@ -4,8 +4,10 @@ import appsgate.lig.context.dependency.graph.SelectReference;
 import appsgate.lig.context.dependency.graph.DeviceReference;
 import appsgate.lig.context.dependency.graph.ProgramReference;
 import appsgate.lig.ehmi.spec.SpokObject;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -13,7 +15,7 @@ import org.json.JSONObject;
  *
  * @author jr
  */
-public class Dependencies implements SpokObject {
+public class Dependencies implements SpokObject, Serializable {
 
     /**
      *
@@ -46,6 +48,37 @@ public class Dependencies implements SpokObject {
         this.isActed = new HashSet<>();
         this.reads = new HashSet<>();
         this.actsOn = new HashSet<>();
+    }
+
+    /**
+     *
+     * @param key
+     * @param jsonDep
+     */
+    public Dependencies(String key, JSONObject jsonDep) {
+        this.id = key;
+        this.isRead = getArrayFromJSON(jsonDep.optJSONArray("isRead"));
+        this.isActed = getArrayFromJSON(jsonDep.optJSONArray("isActed"));
+        this.reads = getArrayFromJSON(jsonDep.optJSONArray("reads"));
+        this.actsOn = getArrayFromJSON(jsonDep.optJSONArray("actsOn"));
+    }
+
+    /**
+     *
+     * @param array
+     * @return
+     */
+    private Set<String> getArrayFromJSON(JSONArray array) {
+        Set<String> ret = new HashSet<>();
+        if (array != null) {
+            for (int i = 0; i < array.length(); i++) {
+                try {
+                    ret.add(array.getString(i));
+                } catch (JSONException ex) {
+                }
+            }
+        }
+        return ret;
     }
 
     /**
@@ -120,7 +153,7 @@ public class Dependencies implements SpokObject {
      *
      * @return
      */
-    public Set<ProgramReference> getProgramsReferences(){
+    public Set<ProgramReference> getProgramsReferences() {
         return null;
     }
 
@@ -128,7 +161,7 @@ public class Dependencies implements SpokObject {
      *
      * @return
      */
-    public Set<SelectReference> getSelectors(){
+    public Set<SelectReference> getSelectors() {
         return null;
     }
 
@@ -137,6 +170,7 @@ public class Dependencies implements SpokObject {
         JSONObject o = new JSONObject();
         try {
             o.put("type", getType());
+            o.put("object", getId());
             o.put("actsOn", getActsOnEntities());
             o.put("reads", getReadedEntities());
             o.put("isRead", getEntitiesRead());

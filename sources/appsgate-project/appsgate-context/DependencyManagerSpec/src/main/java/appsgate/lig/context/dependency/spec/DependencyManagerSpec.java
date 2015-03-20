@@ -1,7 +1,6 @@
 package appsgate.lig.context.dependency.spec;
 
 import appsgate.lig.ehmi.spec.SpokObject;
-import org.json.JSONObject;
 
 /**
  *
@@ -13,24 +12,40 @@ public interface DependencyManagerSpec {
      *
      * @return the current graph of dependencies
      */
-    JSONObject getJSONGraph();
-        
-    /**
-     * TODO: Methods to add in a near future
-     * 
-     * Dependencies getDeviceDependencies(String id)
-     */
-    /**
-     * 
-     * @param pid the program id
-     * @return 
-     */
-    Dependencies getProgramDependencies(String pid);
+    public SpokObject getGraph();
 
+    /**
+     *
+     * @param pid the program id
+     * @return
+     */
+    public Dependencies getDependencies(String pid);
+
+    /**
+     *
+     */
+    public void buildGraph();
+
+    /**
+     *
+     * @param srcId
+     * @param varName
+     * @param value
+     */
+    public void updateDeviceStatus(String srcId, String varName, String value);
+
+    /**
+     *
+     * @param deviceId
+     */
     public void updateProgramStatus(String deviceId);
 
-    public JSONObject buildGraph();
-
-    public void updateDeviceStatus(String srcId, String varName, String value);
+    /**
+     *
+     * @param id the id of the entity from which we get the dependencies
+     * @param timestamp the date when to have the dependencies
+     * @return the dependencies, null if does not exists
+     */
+    public Dependencies getDependenciesAt(String id, Long timestamp);
 
 }

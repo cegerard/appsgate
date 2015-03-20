@@ -6,7 +6,7 @@
     <implementation name="DependencyManagerImpl"
                         classname="appsgate.lig.context.dependency.impl.DependencyManagerImpl" specification ="DependencyManagerSpec" singleton="true" >
         <callback onInit="newInst" onRemove="deleteInst" />
-        <relation implementation="MongoDBConfiguration" field="myConfiguration" creation="eager"
+        <relation implementation="MongoDBConfiguration" field="conf" creation="eager"
                   resolve="exist" fail="wait" />
         <relation field="ehmiProxy" resolve="exist"/>
 

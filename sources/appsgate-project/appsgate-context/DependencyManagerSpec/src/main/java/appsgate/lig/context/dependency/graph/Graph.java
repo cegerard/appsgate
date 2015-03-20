@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.logging.Level;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,7 +55,8 @@ public class Graph implements SpokObject {
 
     //
     boolean isSchedulerAdded = false;
-
+    //
+    private final String time;
     // Constants string for entity and relation JSON
     private final String REFERENCE_LINK = "reference";
     private final String LOCATED_LINK = "isLocatedIn";
@@ -76,35 +76,52 @@ public class Graph implements SpokObject {
 
     /**
      * Constructor
+     * @param timestamp
      */
-    public Graph() {
-        this.dependencies = new HashMap<>();
-        this.programs = new HashMap<>();
-        this.ghostPrograms = new HashSet<>();
-        this.devices = new HashMap<>();
-        this.selectorsSaved = new ArrayList<>();
-        this.returnJSONObject = new JSONObject();
+    public Graph(Long timestamp) {
+        this(new JSONObject(), new JSONArray(), timestamp.toString());
         try {
             returnJSONObject.put("nodes", new JSONArray());
             returnJSONObject.put("links", new JSONArray());
         } catch (JSONException ex) {
         }
+    }
+    
+    /**
+     * 
+     * @param jsonGraph
+     * @param devices 
+     * @param timestamp 
+     */
+    public Graph(JSONObject jsonGraph, JSONArray devices, String timestamp) {
+        
+        this.dependencies = new HashMap<>();
+        for (int i = 0 ; i < devices.length(); i++) {
+            JSONObject line;
+            try {
+                line = devices.getJSONObject(i);
+                String key = line.getString("object");
+                this.dependencies.put(key, new Dependencies(key, line));
+            } catch (JSONException e) {
+                
+            }
+        }
+        this.programs = new HashMap<>();
+        this.ghostPrograms = new HashSet<>();
+        this.devices = new HashMap<>();
+        this.selectorsSaved = new ArrayList<>();
+        this.returnJSONObject = jsonGraph;
         this.ghostDevices = new HashSet<>();
         this.programState = new HashMap<>();
         this.placeName = new HashMap<>();
         this.deviceState = new HashMap<>();
         this.deviceName = new HashMap<>();
         this.deviceTypes = new HashSet<>();
+        this.time = timestamp;
     }
 
     @Override
     public JSONObject getJSONDescription() {
-        try {
-            this.updateJSON();
-        } catch (JSONException ex) {
-
-        }
-
         return returnJSONObject;
     }
 
@@ -575,5 +592,17 @@ public class Graph implements SpokObject {
         } catch (JSONException ex) {
         }
 
+    }
+
+    /**
+     * 
+     * @return 
+     */
+    public JSONArray getJSONDependencies() {
+        JSONArray array = new JSONArray();
+        for (String k : this.dependencies.keySet()) {
+            array.put(this.dependencies.get(k).getJSONDescription());
+        }
+        return array;
     }
 }

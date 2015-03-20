@@ -6,7 +6,14 @@ import appsgate.lig.context.dependency.spec.DependencyManagerSpec;
 import appsgate.lig.context.dependency.graph.Graph;
 import appsgate.lig.context.dependency.graph.ProgramGraph;
 import appsgate.lig.ehmi.spec.EHMIProxySpec;
+import appsgate.lig.ehmi.spec.SpokObject;
 import appsgate.lig.persistence.MongoDBConfiguration;
+import com.mongodb.BasicDBObject;
+import com.mongodb.BasicDBObjectBuilder;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
+import com.mongodb.MongoException;
 import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,12 +35,8 @@ public class DependencyManagerImpl implements DependencyManagerSpec {
     /**
      * The collection containing the links (wires) created, and deleted
      */
-    private MongoDBConfiguration myConfiguration;
+    private MongoDBConfiguration conf;
 
-    /**
-     * The last graph that has been saved
-     */
-    private JSONObject jsonGraph;
 
     /**
      * Reference to the ApAM context proxy. Used to be notified when something
@@ -44,13 +47,12 @@ public class DependencyManagerImpl implements DependencyManagerSpec {
     /**
      * The last graph that has been saved
      */
-    private Graph g;
+    private Graph graph;
 
     //
     private final GraphManager graphManager;
 
     public DependencyManagerImpl() {
-        this.jsonGraph = new JSONObject();
         this.graphManager = new GraphManager(this);
     }
 
@@ -58,6 +60,8 @@ public class DependencyManagerImpl implements DependencyManagerSpec {
      * Called by APAM when an instance of this implementation is created
      */
     public void newInst() {
+        Graph g;
+        g = getDependencyAtTime(ehmiProxy.getCurrentTimeInMillis());
     }
 
     /**
@@ -67,18 +71,17 @@ public class DependencyManagerImpl implements DependencyManagerSpec {
     }
 
     @Override
-    public JSONObject getJSONGraph() {
-        return this.jsonGraph;
+    public SpokObject getGraph() {
+        return this.graph;
     }
 
-
     @Override
-    public Dependencies getProgramDependencies(String pid) {
-        if (g == null) {
+    public Dependencies getDependencies(String pid) {
+        if (graph == null) {
             LOGGER.error("Dependency graph has not been build yet");
             return null;
         }
-        return g.getDependencies(pid);
+        return graph.getDependencies(pid);
     }
 
     @Override
@@ -92,9 +95,8 @@ public class DependencyManagerImpl implements DependencyManagerSpec {
     }
 
     @Override
-    public JSONObject buildGraph() {
+    public void buildGraph() {
         addGraph(graphManager.buildGraph());
-        return this.jsonGraph;
     }
 
     public EHMIProxySpec getContext() {
@@ -120,14 +122,15 @@ public class DependencyManagerImpl implements DependencyManagerSpec {
 
     /**
      * add the new graph to the dependency history system (future work)
+     *
      * @param lastGraph
-     * @return 
+     * @return
      */
     private Boolean addGraph(Graph lastGraph) {
         if (lastGraph != null) {
-            this.jsonGraph = lastGraph.getJSONDescription();
-            this.g = lastGraph;
-            sendGraph(jsonGraph);
+            this.graph = lastGraph;
+            sendGraph(lastGraph.getJSONDescription());
+            add(ehmiProxy.getCurrentTimeInMillis(), lastGraph);
             return true;
         }
         return false;
@@ -135,7 +138,8 @@ public class DependencyManagerImpl implements DependencyManagerSpec {
 
     /**
      * send the graph to the client
-     * @param graph 
+     *
+     * @param graph
      */
     private void sendGraph(JSONObject graph) {
         JSONObject msg = new JSONObject();
@@ -147,4 +151,94 @@ public class DependencyManagerImpl implements DependencyManagerSpec {
         }
         ehmiProxy.sendFromConnection(ClientCommunicationManager.DEFAULT_SERVER_NAME, msg.toString());
     }
+
+    /**
+     * The db name
+     */
+    private static final String DBNAME = "TraceHistory";
+    /**
+     * The collection containing symbol table
+     */
+    private static final String DEP = "dependencies";
+
+    /**
+     *
+     * @param timestamp
+     * @param o
+     * @return
+     */
+    private boolean add(Long timestamp, Graph graph) {
+        if (isValidConf()) {
+            try {
+                DBCollection context = conf.getDB(DBNAME).getCollection(DEP);
+
+                BasicDBObject newVal = new BasicDBObject("time", timestamp)
+                        .append("graph", graph.getJSONDescription().toString())
+                        .append("dependencies", graph.getJSONDependencies().toString());
+
+                context.insert(newVal);
+                return true;
+
+            } catch (MongoException e) {
+                LOGGER.error("A Database Excepion has been raised: " + e);
+            }
+        }
+        return false;
+    }
+
+    /**
+     *
+     * @param timestamp
+     * @return
+     */
+    public Graph getDependencyAtTime(Long timestamp) {
+        if (isValidConf()) {
+            DBCollection collection = conf.getDB(DBNAME).getCollection(DEP);
+            DBCursor cursor = collection
+                    .find(BasicDBObjectBuilder.start().add("time", BasicDBObjectBuilder.start("$lte", timestamp).get()).get())
+                    .sort(new BasicDBObject("time", -1)).limit(1);
+            try {
+                if (!cursor.hasNext()) {
+                    LOGGER.warn("No logs for before the start of window");
+                }
+            } catch (Exception e) {
+                LOGGER.error("Unable to parse cursor" + e.getMessage());
+            }
+            DBObject obj = cursor.next();
+            JSONArray dependencies;
+                JSONObject graph;
+            try {
+                dependencies = new JSONArray(obj.get("dependencies").toString());
+                graph = new JSONObject( obj.get("graph").toString());
+            } catch (JSONException ex) {
+                return null;
+            }
+                return new Graph(graph, dependencies, timestamp.toString());
+
+        }
+        return null;
+    }
+
+    /**
+     * Method to check the database connection
+     *
+     * @return true if the configuration is OK
+     */
+    private boolean isValidConf() {
+        if (conf == null) {
+            LOGGER.error("Unable to init DBManager, no MongoDB configuration");
+            return false;
+        }
+        if (!conf.isValid()) {
+            LOGGER.error("Unable to init DBManager, configuration not valid");
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public Dependencies getDependenciesAt(String id, Long timestamp) {
+        return getDependencyAtTime(timestamp).getDependencies(id);
+    }
+
 }

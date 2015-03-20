@@ -1003,9 +1003,9 @@ public class EHMIProxyImpl implements EHMIProxySpec {
     @Override
     public JSONObject getGraph(Boolean buildGraph) {
         if (buildGraph) {
-            return dependency.buildGraph();
+            dependency.buildGraph();
         }
-        return dependency.getJSONGraph();
+        return dependency.getGraph().getJSONDescription();
     }
 
     @Override
@@ -1506,7 +1506,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
     @Override
     public SpokObject getProgramDependencies(String programid) {
-        return dependency.getProgramDependencies(programid);
+        return dependency.getDependencies(programid);
     }
 
     @Override

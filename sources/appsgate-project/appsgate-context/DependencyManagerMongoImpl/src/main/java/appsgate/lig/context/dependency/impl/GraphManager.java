@@ -39,6 +39,7 @@ public class GraphManager {
      */
     public GraphManager(DependencyManagerImpl i) {
         this.dependency = i;
+        this.graph = buildGraph();
     }
 
     /**
@@ -46,13 +47,13 @@ public class GraphManager {
      */
     public Graph buildGraph() {
         EHMIProxySpec context;
-        graph = new Graph();
         try {
             context = getContext();
         } catch (ExecutionException ex) {
             LOGGER.error("No Context found");
-            return graph;
+            return new Graph(0L);
         }
+        graph = new Graph(context.getCurrentTimeInMillis());
 
 
         /* BUILD NODES FROM DEVICES */
