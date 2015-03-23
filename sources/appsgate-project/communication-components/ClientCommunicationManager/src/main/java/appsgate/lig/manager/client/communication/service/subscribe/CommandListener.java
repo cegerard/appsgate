@@ -1,4 +1,4 @@
-package appsGate.lig.manager.client.communication.service.subscribe;
+package appsgate.lig.manager.client.communication.service.subscribe;
 
 import org.json.JSONObject;
 

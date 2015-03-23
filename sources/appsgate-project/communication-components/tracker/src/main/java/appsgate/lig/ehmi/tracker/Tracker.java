@@ -5,7 +5,7 @@
  */
 package appsgate.lig.ehmi.tracker;
 
-import appsGate.lig.manager.client.communication.service.send.SendWebsocketsService;
+import appsgate.lig.manager.client.communication.service.send.SendWebsocketsService;
 import appsgate.lig.clock.sensor.spec.CoreClockSpec;
 import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;

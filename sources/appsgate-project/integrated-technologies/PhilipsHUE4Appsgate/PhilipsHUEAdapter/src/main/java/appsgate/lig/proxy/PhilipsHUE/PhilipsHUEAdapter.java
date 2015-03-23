@@ -1,8 +1,8 @@
 package appsgate.lig.proxy.PhilipsHUE;
 
 
-import appsGate.lig.manager.client.communication.service.send.SendWebsocketsService;
-import appsGate.lig.manager.client.communication.service.subscribe.ListenerService;
+import appsgate.lig.manager.client.communication.service.send.SendWebsocketsService;
+import appsgate.lig.manager.client.communication.service.subscribe.ListenerService;
 import appsgate.lig.proxy.PhilipsHUE.configuration.listeners.PhilipsHUEBridgeCommandListener;
 import appsgate.lig.proxy.PhilipsHUE.dao.LightWrapper;
 import appsgate.lig.proxy.PhilipsHUE.importer.PhilipsHueFactoryExecutor;

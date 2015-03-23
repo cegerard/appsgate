@@ -1,4 +1,4 @@
-package appsGate.lig.manager.client.communication;
+package appsgate.lig.manager.client.communication;
 
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
@@ -14,7 +14,7 @@ import org.json.JSONTokener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import appsGate.lig.manager.client.communication.service.subscribe.CommandListener;
+import appsgate.lig.manager.client.communication.service.subscribe.CommandListener;
 
 /*****************************************/
 /**    Web socket server management    **/

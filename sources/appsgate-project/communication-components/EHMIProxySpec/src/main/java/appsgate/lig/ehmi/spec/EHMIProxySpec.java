@@ -6,7 +6,7 @@ import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import appsGate.lig.manager.client.communication.service.subscribe.CommandListener;
+import appsgate.lig.manager.client.communication.service.subscribe.CommandListener;
 import appsgate.lig.ehmi.spec.listeners.CoreListener;
 
 /**

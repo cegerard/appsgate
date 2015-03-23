@@ -1,6 +1,6 @@
 package appsgate.lig.enocean.ubikit.adapter;
 
-import appsGate.lig.manager.client.communication.service.send.SendWebsocketsService;
+import appsgate.lig.manager.client.communication.service.send.SendWebsocketsService;
 import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Implementation;
 import fr.imag.adele.apam.Instance;

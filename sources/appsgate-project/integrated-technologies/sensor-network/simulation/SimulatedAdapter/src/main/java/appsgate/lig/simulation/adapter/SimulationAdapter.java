@@ -13,8 +13,8 @@ import fr.imag.adele.apam.Implementation;
 import fr.imag.adele.apam.Instance;
 import fr.imag.adele.apam.impl.ComponentBrokerImpl;
 
-import appsGate.lig.manager.client.communication.service.send.SendWebsocketsService;
-import appsGate.lig.manager.client.communication.service.subscribe.ListenerService;
+import appsgate.lig.manager.client.communication.service.send.SendWebsocketsService;
+import appsgate.lig.manager.client.communication.service.subscribe.ListenerService;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.simulation.adapter.spec.SimulatedObjectManagementService;
 

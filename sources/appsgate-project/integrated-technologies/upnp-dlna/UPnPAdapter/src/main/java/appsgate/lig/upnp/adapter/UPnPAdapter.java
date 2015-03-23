@@ -19,8 +19,8 @@ import org.osgi.service.upnp.UPnPService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import appsGate.lig.manager.client.communication.service.send.SendWebsocketsService;
-import appsGate.lig.manager.client.communication.service.subscribe.ListenerService;
+import appsgate.lig.manager.client.communication.service.send.SendWebsocketsService;
+import appsgate.lig.manager.client.communication.service.subscribe.ListenerService;
 import fr.imag.adele.apam.ApamResolver;
 import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Implementation;

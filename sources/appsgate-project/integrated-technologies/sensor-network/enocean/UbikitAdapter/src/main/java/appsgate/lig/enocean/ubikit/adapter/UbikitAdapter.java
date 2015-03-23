@@ -32,8 +32,8 @@ import org.ubikit.event.impl.EventGateImpl;
 import org.ubikit.pem.event.*;
 import org.ubikit.service.RootPhysicalEnvironmentModelService;
 
-import appsGate.lig.manager.client.communication.service.send.SendWebsocketsService;
-import appsGate.lig.manager.client.communication.service.subscribe.ListenerService;
+import appsgate.lig.manager.client.communication.service.send.SendWebsocketsService;
+import appsgate.lig.manager.client.communication.service.subscribe.ListenerService;
 import appsgate.lig.enocean.ubikit.adapter.listeners.EnOceanCommandListener;
 import appsgate.lig.enocean.ubikit.adapter.spec.EnOceanPairingService;
 import appsgate.lig.enocean.ubikit.adapter.spec.UbikitAdapterService;

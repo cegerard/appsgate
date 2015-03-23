@@ -3,8 +3,8 @@ package appsgate.lig.mobile.device.adapter.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import appsGate.lig.manager.client.communication.service.send.SendWebsocketsService;
-import appsGate.lig.manager.client.communication.service.subscribe.ListenerService;
+import appsgate.lig.manager.client.communication.service.send.SendWebsocketsService;
+import appsgate.lig.manager.client.communication.service.subscribe.ListenerService;
 import appsgate.lig.mobile.device.adapter.spec.MobileDeviceAdapterServices;
 
 public class MobileDeviceAdapter implements MobileDeviceAdapterServices {

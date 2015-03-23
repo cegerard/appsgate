@@ -12,8 +12,9 @@
 				
 		<relation push="gotNotification" multiple="true" resolve="exist" />
 		
-		<relation specification="CommunicationManagerSpec" resolve="exist"
-			fail="exception" exception="appsgate.lig.chmi.exceptions.ExternalComDependencyException">
+		<relation specification="CommunicationManagerSpec" resolve="exist" creation="eager"
+		    added="clientComBound" fail="wait"
+			exception="appsgate.lig.chmi.exceptions.ExternalComDependencyException">
 			<interface field="addListenerService" />
 			<interface field="sendToClientService" />
 		</relation>

@@ -20,8 +20,8 @@ import org.osgi.service.http.NamespaceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import appsGate.lig.manager.client.communication.service.send.SendWebsocketsService;
-import appsGate.lig.manager.client.communication.service.subscribe.ListenerService;
+import appsgate.lig.manager.client.communication.service.send.SendWebsocketsService;
+import appsgate.lig.manager.client.communication.service.subscribe.ListenerService;
 import appsgate.lig.chmi.exceptions.ExternalComDependencyException;
 import appsgate.lig.chmi.impl.listeners.CHMICommandListener;
 import appsgate.lig.chmi.impl.listeners.TimeObserver;
@@ -106,6 +106,12 @@ public class CHMIProxyImpl implements CHMIProxySpec {
 			}
 		}
         
+
+        
+        logger.debug("The CHMI proxy component has been initialized");
+    }
+    
+    private void clientComBound() {
         try{
         	if (addListenerService.addCommandListener(commandListener, "CHMI")) {
         		logger.info("CHMI command listener deployed.");
@@ -115,8 +121,6 @@ public class CHMIProxyImpl implements CHMIProxySpec {
         }catch(ExternalComDependencyException comException) {
     		logger.debug("Resolution failed for listener service dependency, the CHMICommandListener will not be registered.");
     	}
-        
-        logger.debug("The CHMI proxy component has been initialized");
     }
 
     /**

@@ -1,6 +1,6 @@
 package appsgate.lig.context.dependency.impl;
 
-import appsGate.lig.manager.client.communication.ClientCommunicationManager;
+import appsgate.lig.manager.client.communication.ClientCommunicationManager;
 import appsgate.lig.context.dependency.spec.Dependencies;
 import appsgate.lig.context.dependency.spec.DependencyManagerSpec;
 import appsgate.lig.context.dependency.graph.Graph;

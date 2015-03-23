@@ -5,11 +5,11 @@
 
 
 	<specification name="CommunicationManagerSpec"
-		interfaces="appsGate.lig.manager.client.communication.service.subscribe.ListenerService,
-        appsGate.lig.manager.client.communication.service.send.SendWebsocketsService" />
+		interfaces="appsgate.lig.manager.client.communication.service.subscribe.ListenerService,
+        appsgate.lig.manager.client.communication.service.send.SendWebsocketsService" />
 
 	<implementation name="CommunicationManager"
-		classname="appsGate.lig.manager.client.communication.ClientCommunicationManager"
+		classname="appsgate.lig.manager.client.communication.ClientCommunicationManager"
 		specification="CommunicationManagerSpec">
 		<callback onInit="newInst" onRemove="deleteInst" />
 	</implementation>

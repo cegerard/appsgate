@@ -1,4 +1,4 @@
-package appsGate.lig.manager.client.communication.service.send;
+package appsgate.lig.manager.client.communication.service.send;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
