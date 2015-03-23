@@ -45,7 +45,7 @@ public class GraphManager {
     /**
      * build the graph
      */
-    public Graph buildGraph() {
+    public final Graph buildGraph() {
         EHMIProxySpec context;
         try {
             context = getContext();
@@ -143,15 +143,24 @@ public class GraphManager {
                     JSONObject currentDevice = devices.getJSONObject(j);
                     
                     String deviceType = currentDevice.getString("type");
-                    if(deviceType.equals("3")) { // Contact
-                        graph.setDevice(currentDevice.optString("id"), currentDevice.get("contact").toString(), currentDevice.optString("name"));
-	                } else if(deviceType.equals("4")) { // CardSwitch
-                        graph.setDevice(currentDevice.optString("id"), currentDevice.get("inserted").toString(), currentDevice.optString("name"));
-	                } else if(deviceType.equals("6")) { // Plug
-                        graph.setDevice(currentDevice.optString("id"), currentDevice.get("plugState").toString(), currentDevice.optString("name"));
-	                } else if(deviceType.equals("7")) { // Lamp
-                        graph.setDevice(currentDevice.optString("id"), currentDevice.get("state").toString(), currentDevice.optString("name"));
-	                }
+                    switch (deviceType) {
+                        case "3":
+                            // Contact
+                            graph.setDevice(currentDevice.optString("id"), currentDevice.get("contact").toString(), currentDevice.optString("name"));
+                            break;
+                        case "4":
+                            // CardSwitch
+                            graph.setDevice(currentDevice.optString("id"), currentDevice.get("inserted").toString(), currentDevice.optString("name"));
+                            break;
+                        case "6":
+                            // Plug
+                            graph.setDevice(currentDevice.optString("id"), currentDevice.get("plugState").toString(), currentDevice.optString("name"));
+                            break;
+                        case "7":
+                            // Lamp
+                            graph.setDevice(currentDevice.optString("id"), currentDevice.get("state").toString(), currentDevice.optString("name"));
+                            break;
+                    }
                  
                 }
             }
