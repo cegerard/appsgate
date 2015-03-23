@@ -265,14 +265,23 @@ public class Graph implements SpokObject {
             }
 
             try {
-                if(deviceType.equals("3")) { // Contact
+                switch (deviceType) {
+                    case "3":
+                        // Contact
                         optArg.put("deviceState", o.getString("contact"));
-                } else if(deviceType.equals("4")) { // CardSwitch
+                        break;
+                    case "4":
+                        // CardSwitch
                         optArg.put("deviceState", o.getString("inserted"));
-                } else if(deviceType.equals("6")) { // Plug
+                        break;
+                    case "6":
+                        // Plug
                         optArg.put("deviceState", o.getString("plugState"));
-                } else if(deviceType.equals("7")) { // Lamp
+                        break;
+                    case "7":
+                        // Lamp
                         optArg.put("deviceState", String.valueOf(o.getBoolean("state")));
+                        break;
                 }
 
             } catch (JSONException ex) {
