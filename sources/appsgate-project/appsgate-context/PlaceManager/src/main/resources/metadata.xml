@@ -4,13 +4,12 @@
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
 	<implementation name="PlaceManagerImpl"
-		classname="appsgate.lig.manager.place.impl.PlaceManagerImpl" specification ="PlaceManagerSpec" singleton="true" push="notifyChanged" >
+		classname="appsgate.lig.manager.place.impl.PlaceManagerImpl" specification ="PlaceManagerSpec" singleton="true" push="notifyChanged, notifyCoreMsg" >
 		<callback onInit="newInst" onRemove="deleteInst" />
         <relation specification="ContextHistorySpec" fail="wait" resolve="exist">
             <interface field="contextHistory_pull"/>
             <interface field="contextHistory_push"/>
         </relation>
-
 	</implementation>
 
 </apam>

@@ -16,6 +16,9 @@ import org.slf4j.LoggerFactory;
 
 import appsgate.lig.context.services.DataBasePullService;
 import appsgate.lig.context.services.DataBasePushService;
+import appsgate.lig.core.object.messages.CoreNotificationMsg;
+import appsgate.lig.core.object.spec.CoreObjectBehavior;
+import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 import appsgate.lig.manager.place.messages.MoveObjectNotification;
 import appsgate.lig.manager.place.messages.PlaceManagerNotification;
@@ -33,7 +36,7 @@ import appsgate.lig.manager.place.spec.SymbolicPlace;
  * @see PlaceManagerSpec
  * 
  */
-public class PlaceManagerImpl implements PlaceManagerSpec {
+public class PlaceManagerImpl extends CoreObjectBehavior implements PlaceManagerSpec, CoreObjectSpec {
 
 	/**
 	 * class logger member
@@ -61,6 +64,8 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	public void newInst() {
         logger.info("Place manager starting...");
         placeObjectsMap = null;
+		className= this.getClass().getName();
+		objectName=className+"-"+this.hashCode();        
     }
 
     private synchronized boolean restorePlacesFromDb() {
@@ -472,7 +477,15 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	 */
 	public NotificationMsg notifyChanged (NotificationMsg notif) {
 		//logger.debug("Place Notify: "+ notif);
+		notifyCoreMsg(notif);
 		return notif;
+	}
+	
+	public appsgate.lig.core.object.messages.NotificationMsg notifyCoreMsg(NotificationMsg notif) {
+		return new CoreNotificationMsg(notif.getVarName(),
+				null, 
+				notif.getNewValue(),
+				this.getAbstractObjectId());
 	}
 
 	@Override
@@ -842,6 +855,45 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	public void initiateMock(DataBasePullService pull, DataBasePushService push) {
 		this.contextHistory_pull = pull;
 		this.contextHistory_push = push;
+	}
+
+	String className;
+	String objectName;
+	
+	@Override
+	public String getAbstractObjectId() {
+		return objectName;
+	}
+
+	@Override
+	public String getUserType() {
+		return className;
+	}
+
+	@Override
+	public int getObjectStatus() {
+		if(restorePlacesFromDb()) {
+			return 2;
+		} else {
+			return 0;
+		}
+	}
+
+	@Override
+	public JSONObject getDescription() throws JSONException {
+        JSONObject descr = new JSONObject();
+
+        // mandatory appsgate properties
+        descr.put("id", getAbstractObjectId());
+        descr.put("type", getUserType());
+        descr.put("status", getObjectStatus());
+
+        return descr;
+	}
+
+	@Override
+	public CORE_TYPE getCoreType() {
+		return CORE_TYPE.EXTENDED;
 	}
 
 }
