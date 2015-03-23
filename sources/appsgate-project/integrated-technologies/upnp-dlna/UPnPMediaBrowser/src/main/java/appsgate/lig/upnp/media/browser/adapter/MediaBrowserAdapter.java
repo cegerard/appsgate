@@ -52,8 +52,9 @@ public class MediaBrowserAdapter extends CoreObjectBehavior implements MediaBrow
     private String appsgateServiceName;
     private Set<Instance> proxies;
 
-    private AVTransport aVTransport;
-    private ConnectionManager connectionManager;
+    // Unused services
+//    private AVTransport aVTransport;
+//    private ConnectionManager connectionManager;
     private ContentDirectory contentDirectory;
 
 

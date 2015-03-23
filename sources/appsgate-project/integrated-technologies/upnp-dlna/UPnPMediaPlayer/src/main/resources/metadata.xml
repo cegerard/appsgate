@@ -20,7 +20,7 @@
 			</constraints>
 		</relation>
 		<relation implementation="ConnectionManagerProxyImpl"
-			resolve="exist" fail="wait" field="connectionManager">
+			resolve="exist" >
 			<message push="onUPnPEvent" />
 			<constraints>
 				<instance filter="(UPnP.device.UDN=$.$UPnP\.device\.UDN)" />

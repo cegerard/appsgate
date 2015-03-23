@@ -59,7 +59,7 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 	private final static Logger logger = LoggerFactory.getLogger(MediaPlayerAdapter.class);
 
 	private AVTransport aVTransport;
-	private ConnectionManager connectionManager;
+//	private ConnectionManager connectionManager;
 	private RenderingControl renderingControl;
 
 	/**
