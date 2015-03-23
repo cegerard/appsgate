@@ -141,22 +141,18 @@ public class GraphManager {
             if (devices != null) {
                 for (int j = 0; j < devices.length(); j++) {
                     JSONObject currentDevice = devices.getJSONObject(j);
-                    switch (Integer.parseInt(currentDevice.getString("type"))) {
-                        case 3: // Contact
-                            graph.setDevice(currentDevice.optString("id"), currentDevice.get("contact").toString(), currentDevice.optString("name"));
-                            break;
-                        case 4: // CardSwitch
-                            graph.setDevice(currentDevice.optString("id"), currentDevice.get("inserted").toString(), currentDevice.optString("name"));
-                            break;
-                        case 6: // Plug
-                            graph.setDevice(currentDevice.optString("id"), currentDevice.get("plugState").toString(), currentDevice.optString("name"));
-                            break;
-                        case 7: // Lamp
-                            graph.setDevice(currentDevice.optString("id"), currentDevice.get("state").toString(), currentDevice.optString("name"));
-                            break;
-                        default:
-                            break;
-                    }
+                    
+                    String deviceType = currentDevice.getString("type");
+                    if(deviceType.equals("3")) { // Contact
+                        graph.setDevice(currentDevice.optString("id"), currentDevice.get("contact").toString(), currentDevice.optString("name"));
+	                } else if(deviceType.equals("4")) { // CardSwitch
+                        graph.setDevice(currentDevice.optString("id"), currentDevice.get("inserted").toString(), currentDevice.optString("name"));
+	                } else if(deviceType.equals("6")) { // Plug
+                        graph.setDevice(currentDevice.optString("id"), currentDevice.get("plugState").toString(), currentDevice.optString("name"));
+	                } else if(deviceType.equals("7")) { // Lamp
+                        graph.setDevice(currentDevice.optString("id"), currentDevice.get("state").toString(), currentDevice.optString("name"));
+	                }
+                 
                 }
             }
             // Programs
