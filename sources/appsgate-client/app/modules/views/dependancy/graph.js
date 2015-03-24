@@ -35,7 +35,7 @@ define([
 				self.update(self.model);
 				force.start();
 			});
-			
+
 			this.model.on("change:currentEntitiesFilters", function () {
 				force.stop();
 				self.update(self.model);
@@ -146,9 +146,9 @@ define([
 			});
 
 
-//			this.createFilters(this.model);
-//			this.updateCheckAllEntities();
-//			this.updateCheckAllRelations();
+			//			this.createFilters(this.model);
+			//			this.updateCheckAllEntities();
+			//			this.updateCheckAllRelations();
 			// update model, if we have an entity disable by default (ie selector)
 			this.model.updateEntitiesShown();
 
@@ -233,9 +233,9 @@ define([
 		update: function (model) {
 			var self = this;
 
-//			force.nodes(model.get("currentEntities"));
+			//			force.nodes(model.get("currentEntities"));
 			force.nodes(model.getFilteredEntities());
-//			force.links(model.get("currentRelations"));
+			//			force.links(model.get("currentRelations"));
 			force.links(model.getFilteredRelations());
 
 			/******* NODES (=Entities) *******/
@@ -246,9 +246,9 @@ define([
 			});
 
 			// Text node modified - TODO : check 
-//			var nModified = svg.select("#groupNode").selectAll(".nodeGroup").select("text").data(model.get("currentEntities"), function (d) {
-//				return d.id;
-//			});
+			//			var nModified = svg.select("#groupNode").selectAll(".nodeGroup").select("text").data(model.get("currentEntities"), function (d) {
+			//				return d.id;
+			//			});
 			var nModified = svg.select("#groupNode").selectAll(".nodeGroup").select("text").data(model.getFilteredEntities(), function (d) {
 				return d.id;
 			});
@@ -611,18 +611,10 @@ define([
 					return "translate(5,10)";
 				})
 				.classed("circle-device-state-true", function (d) {
-					if (d.deviceType && d.deviceType === "3") {
-						return (d.deviceState === false || d.deviceState === "false");
-					} else {
-						return (d.deviceState === true || d.deviceState === "true");
-					}
+					return d.deviceState === "true";
 				})
 				.classed("circle-device-state-false", function (d) {
-					if (d.deviceType && d.deviceType === "3") {
-						return (d.deviceState === true || d.deviceState === "true");
-					} else {
-						return (d.deviceState === false || d.deviceState === "false");
-					}
+					return d.deviceState === "false";
 				});
 
 			nodeEntity.selectAll("text")
@@ -746,15 +738,15 @@ define([
 				});
 
 
-//			filterNodes.select("input")
-//				.property("checked", function (d) {
-//					return _.contains(self.model.get("currentEntitiesTypes"), d);
-//				});
-//
-//			filterLinks.select("input")
-//				.property("checked", function (d) {
-//					return _.contains(self.model.get("currentRelationsTypes"), d);
-//				});
+			//			filterNodes.select("input")
+			//				.property("checked", function (d) {
+			//					return _.contains(self.model.get("currentEntitiesTypes"), d);
+			//				});
+			//
+			//			filterLinks.select("input")
+			//				.property("checked", function (d) {
+			//					return _.contains(self.model.get("currentRelationsTypes"), d);
+			//				});
 
 		},
 
@@ -998,7 +990,7 @@ define([
 		onMouseDownNode = true;
 
 		// "ZoomIn" details 
-		if (d3.event.shiftKey) {
+		if (d3.event.shiftKey && !d.isGhost) {
 			switch (d.type) {
 			case "place":
 				appRouter.navigate("#places/" + d.id, {

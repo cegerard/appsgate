@@ -100,7 +100,7 @@ define([
             // Check the length of the name
             if ($("#add-program-modal input:text").val().length > App.MAX_NAME_LENGTH) {
                 $("#add-program-modal .text-danger")
-                        .text($.i18n.t("modal-add-program.name-empty"))
+                        .text($.i18n.t("modal.name-too-long"))
                         .removeClass("hide");
                 $("#add-program-modal .valid-button").addClass("disabled");
                 $("#add-program-modal .valid-button").addClass("valid-disabled");

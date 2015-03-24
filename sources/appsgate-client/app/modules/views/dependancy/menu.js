@@ -256,11 +256,11 @@ define([
 				})
 
 			// Ajout des div et checkbox pour tous les deviceType possibles connus dans le modèle
-			panelDeviceType.selectAll("div")
+			panelDeviceType.selectAll("div-deviceType")
 				.data(model.get("subFilterDevice")["deviceType"])
 				.enter()
 				.append("div")
-				.attr("class", "col-md-12")
+				.attr("class", "col-md-12 div-deviceType")
 				.append("label")
 				.each(function (d) {
 					// create checkbox for each data
@@ -293,14 +293,14 @@ define([
 				.append("label")
 				.append("a")
 				.attr("data-toggle", "collapse")
-				.attr("data-target", "#collapse2")
+				.attr("data-target", "#collapse-deviceState")
 				.text(function () {
 					return $.i18n.t("dependancy.filters-label.entity.device-state.title");
 				});
 
 			d3.select("#div-filter-device")
 				.append("div")
-				.attr("id", "collapse2")
+				.attr("id", "collapse-deviceState")
 				.attr("class", "panel-collapse collapse in col-md-11 col-md-offset-1")
 				.append("div")
 				.attr("class", "row")
@@ -346,14 +346,14 @@ define([
 				.append("label")
 				.append("a")
 				.attr("data-toggle", "collapse")
-				.attr("data-target", "#collapse3")
+				.attr("data-target", "#collapse-programState")
 				.text(function () {
 					return $.i18n.t("dependancy.filters-label.entity.program-state.title");
 				});
 
 			d3.select("#div-filter-program")
 				.append("div")
-				.attr("id", "collapse3")
+				.attr("id", "collapse-programState")
 				.attr("class", "panel-collapse collapse in col-md-11 col-md-offset-1")
 				.append("div")
 				.attr("class", "row")

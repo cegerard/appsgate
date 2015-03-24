@@ -50,6 +50,12 @@
             <artifactId>MongoDBConfigurationImpl</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>ClientCommunicationManager</artifactId>
+            <version>1.0.0</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
 
     <!-- Build Description -->

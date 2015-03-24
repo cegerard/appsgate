@@ -65,6 +65,8 @@ public abstract class NodeTest {
                 allowing(mediator).notifyChanges(with(any(ProgramCommandNotification.class)));
                 allowing(mediator).notifyChanges(with(any(ProgramLineNotification.class)));
                 allowing(mediator).notifyChanges(with(any(ProgramStateNotification.class)));
+                allowing(mediator).getTime();
+                will(returnValue(0L));
             }
         });
     }
