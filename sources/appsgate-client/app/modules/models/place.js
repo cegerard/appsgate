@@ -311,11 +311,10 @@ define([
          * @param args Array containing the argument taken by the method. Each entry of the array has to be { type : "", value "" }
          */
         remoteCall: function(method, args) {
-            communicator.sendMessage({
-                method: method,
-                args: args,
-                TARGET: "EHMI"
-            });
+            var placeManager = extendedServicesCollection.getPlaceManager();
+            if (placeManager !== undefined) {
+                placeManager.remoteControl(method, args, "placeManagerCall");
+            }
         },
         /**
          * Override its synchronization method to send a notification on the network
