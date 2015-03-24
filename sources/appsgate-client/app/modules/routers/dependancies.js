@@ -96,7 +96,7 @@ define([
 			// Send the request to the server to get the graph and build it (args @true)
 			communicator.sendMessage({
 				method: "getGraph",
-				args: [{type:"Boolean", value: true}],
+				args: [{type:"Boolean", value: false}],
 				callId: "loadGraph",
 				TARGET: "EHMI"
 			});

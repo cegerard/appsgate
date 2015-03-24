@@ -173,6 +173,8 @@ define([
 				currentRelations: relations
 			});
 
+			self.addDeviceTypeFilterLoaded(jsonData.types);
+
 			// Bind event ID
 			//_.each(this.get("currentEntities"), function (e) {
 			//	self.listenTo(dispatcher, e.id, function (arg) {
@@ -331,7 +333,7 @@ define([
 		getFilteredRelations: function () {
 			var self = this;
 			var filteredEntities = self.getFilteredEntities();
-			
+
 			return this.get("relations").filter(function (r) {
 
 				// Special test for the reference type. Test if one of its type of reference is to show
@@ -386,7 +388,7 @@ define([
 
 			filterEntitiesType = ["time", "place", "service", "device", "program", "selector"];
 
-			subFilterDevice["deviceType"] = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "32", "36", "124", "210"];
+			//			subFilterDevice["deviceType"] = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "32", "36", "124", "210"];
 			subFilterDevice["deviceState"] = ["true", "false", "isGhostDevice", "isMultipleTargeted"];
 
 			subFilterProgram["state"] = ["PROCESSING", "LIMPING", "DEPLOYED", "INCOMPLETE", "INVALID", "isGhostProgram"];
@@ -423,6 +425,18 @@ define([
 				filterRelations: ["isPlanified", "isLocatedIn", "READING", "WRITING", "denotes"],
 				currentRelationsFilters: ["isPlanified", "isLocatedIn", "READING", "WRITING", "denotes"]
 			});
+		},
+
+		/**
+		 * Function to add the device type to the current entities filters. Because we get the available type after the load of data, we can make it in the init function
+		 * @param JSONTypes : Device Types from the JSON loaded
+		 **/
+		addDeviceTypeFilterLoaded: function (JSONTypes) {
+			this.get("subFilterDevice")["deviceType"] = _.filter(JSONTypes, function (type) {
+				// Don't add : 1001 = ubikitAdapter, 102/103/104 = services, 21 = clock
+				return type !== "1001" && type !== "102" && type !== "103" && type !== "104" && type !== "21";
+			});
+			Array.prototype.push.apply(this.get("currentEntitiesFilters"), this.get("subFilterDevice")["deviceType"]);
 		},
 
 		checkAllDeviceType: function () {
