@@ -140,59 +140,25 @@ public interface EHMIProxySpec {
     /**
      * ************************
      */
-    /**
-     * Call AppsGate to get all existing place definition.
-     *
-     * @return a JSON array that describe each place.
-     */
+
+    
     public JSONArray getPlaces();
-
+    
+	/**
+	 * Get the place identifier of a core object
+	 * @param objId the core object identifier 
+	 * @return the identifier of the place where the core object is placed.
+	 */
+	public String getCoreObjectPlaceId(String objId);    
+    
     /**
-     * Add a new place and move object in it.
+     * Remove a property from a specified place
      *
-     * @param place the new place description and the list of object to move in
+     * @param placeId the place from where to remove the property
+     * @param key the key of the property that have to be removed
+     * @return true if the property is removed, false otherwise
      */
-    public void newPlace(JSONObject place);
-
-    /**
-     * Update a place on the smart place
-     *
-     * @param place the new place description
-     */
-    public void updatePlace(JSONObject place);
-
-    /**
-     * Remove a place from the smart place
-     *
-     * @param id the place identifier
-     */
-    public void removePlace(String id);
-
-    /**
-     * Move a device in a specified place
-     *
-     * @param objId the object to move
-     * @param srcPlaceId the previous place of this object
-     * @param destPlaceId the destination of this object
-     */
-    public void moveDevice(String objId, String srcPlaceId, String destPlaceId);
-
-    /**
-     * Move a service in a specified place
-     *
-     * @param serviceId the service to move
-     * @param srcPlaceId the previous place of this object
-     * @param destPlaceId the destination of this object
-     */
-    public void moveService(String serviceId, String srcPlaceId, String destPlaceId);
-
-    /**
-     * Get the place identifier of a core object
-     *
-     * @param objId the core object identifier
-     * @return the identifier of the place where the core object is placed.
-     */
-    public String getCoreObjectPlaceId(String objId);
+    public boolean removeProperty(String placeId, String key);    
 
     /**
      * Return the devices of a list of type presents in the places
@@ -204,84 +170,15 @@ public interface EHMIProxySpec {
      * @return a list of objects contained in these spaces
      */
     public ArrayList<String> getDevicesInSpaces(ArrayList<String> typeList, ArrayList<String> spaces);
-
+    
     /**
-     * Call AppsGate to get all the places that match a specific name
+     * Move a device in a specified place
      *
-     * @param name the name to match
-     * @return the places with the name <name> as a JSONArray
+     * @param objId the object to move
+     * @param srcPlaceId the previous place of this object
+     * @param destPlaceId the destination of this object
      */
-    public JSONArray getPlacesByName(String name);
-
-    /**
-     * Get places that have been tagged with all tags give in parameter.
-     *
-     * @param tags the tags list that places have to match
-     * @return places as a JSONArray
-     */
-    public JSONArray gePlacesWithTags(JSONArray tags);
-
-    /**
-     * Get places that contains the properties keys in parameters
-     *
-     * @param keys all properties that places have to be set
-     * @return places list as a JSONArray
-     */
-    public JSONArray getPlacesWithProperties(JSONArray keys);
-
-    /**
-     * Get places that contains the properties keys in parameters and with the
-     * corresponding values
-     *
-     * @param properties all properties that places have to be set with the
-     * corresponding value
-     * @return places list as a JSONArray
-     */
-    public JSONArray getPlacesWithPropertiesValue(JSONArray properties);
-
-    /**
-     * Get the root places description
-     *
-     * @return all root places as a JSONArray
-     */
-    public JSONArray getRootPlaces();
-
-    /**
-     * Add a tag to the tag of list of the specified place
-     *
-     * @param placeId the place where to add the tag
-     * @param tag the tag to add
-     * @return true if the tag has been added, false otherwise
-     */
-    public boolean addTag(String placeId, String tag);
-
-    /**
-     * Remove a tag from a place
-     *
-     * @param placeId the place from where to remove the tag
-     * @param tag the tag to remove
-     * @return true if the tag has been removed, false otherwise
-     */
-    public boolean removeTag(String placeId, String tag);
-
-    /**
-     * Add a property to a specified place
-     *
-     * @param placeId the place where to add the property
-     * @param key the key of the property to add
-     * @param value the value of the property to add
-     * @return true f the property has been added, false otherwise
-     */
-    public boolean addProperty(String placeId, String key, String value);
-
-    /**
-     * Remove a property from a specified place
-     *
-     * @param placeId the place from where to remove the property
-     * @param key the key of the property that have to be removed
-     * @return true if the property is removed, false otherwise
-     */
-    public boolean removeProperty(String placeId, String key);
+    public void moveDevice(String objId, String srcPlaceId, String destPlaceId);    
 
     /**
      * ************************

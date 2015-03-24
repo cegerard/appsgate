@@ -177,6 +177,52 @@ public class PlaceManagerImpl extends CoreObjectBehavior implements PlaceManager
 	public void deleteInst() {
 		logger.info("Removing place manager...");
 	}
+	
+	
+	
+    @Override
+    public void updatePlace(JSONObject place) {
+        if(!restorePlacesFromDb()) {
+            return;
+        }
+        
+        // for now we could just rename a place
+        try {
+            renamePlace(place.getString("id"),
+                    place.getString("name"));
+        } catch (JSONException e) {
+            logger.warn("JSON exception: {}, missing id or name", place);
+        }
+    }
+	
+    @Override
+    public void newPlace(JSONObject place) {
+        if(!restorePlacesFromDb()) {
+            return;
+        }
+
+        try {
+
+            String placeParent = null;
+            if (place.has("parent")) {
+                placeParent = place.getString("parent");
+            }
+            String placeId = addPlace(place.getString("name"),
+                    placeParent);
+            JSONArray devices = place.getJSONArray("devices");
+            int size = devices.length();
+            int i = 0;
+            while (i < size) {
+                String objId = (String) devices.get(i);
+                moveObject(objId,
+                        getCoreObjectPlaceId(objId), placeId);
+                i++;
+            }
+        } catch (JSONException e) {
+            logger.warn("JSON exception: {}, missing devices or name", place);
+        }
+    }	
+	
 
 	@Override
 	public synchronized String addPlace(String name, String parent) {
@@ -205,6 +251,110 @@ public class PlaceManagerImpl extends CoreObjectBehavior implements PlaceManager
 		return null;
 	}
 
+    @Override
+    public JSONArray getPlacesByName(String name) {
+        JSONArray placeByName = new JSONArray();
+
+        if(!restorePlacesFromDb()) {
+            return placeByName;
+        }
+        
+        ArrayList<SymbolicPlace> placesList = getPlacesWithName(name);
+        for (SymbolicPlace place : placesList) {
+            placeByName.put(place.getDescription());
+        }
+        return placeByName;
+    }
+
+    @Override
+    public JSONArray gePlacesWithTags(JSONArray tags) {
+        JSONArray placeByTag = new JSONArray();
+
+        if(!restorePlacesFromDb()) {
+            return placeByTag;
+        }
+        int tagNb = tags.length();
+        ArrayList<String> tagsList = new ArrayList<String>();
+        for (int i = 0; i < tagNb; i++) {
+            try {
+                tagsList.add(tags.getString(i));
+            } catch (JSONException e) {
+                logger.error(e.getMessage());
+            }
+        }
+
+        ArrayList<SymbolicPlace> placesList = getPlacesWithTags(tagsList);
+        for (SymbolicPlace place : placesList) {
+            placeByTag.put(place.getDescription());
+        }
+        return placeByTag;
+    }
+
+    @Override
+    public JSONArray getPlacesWithProperties(JSONArray keys) {
+        JSONArray placeByProp = new JSONArray();
+
+        if(!restorePlacesFromDb()) {
+            return placeByProp;
+        }
+        
+        int keysNb = keys.length();
+        ArrayList<String> keysList = new ArrayList<String>();
+        for (int i = 0; i < keysNb; i++) {
+            try {
+                keysList.add(keys.getString(i));
+            } catch (JSONException e) {
+                logger.error(e.getMessage());
+            }
+        }
+
+        ArrayList<SymbolicPlace> placesList = getPlacesWithProperties(keysList);
+        for (SymbolicPlace place : placesList) {
+            placeByProp.put(place.getDescription());
+        }
+        return placeByProp;
+    }
+
+    @Override
+    public JSONArray getPlacesWithPropertiesValue(JSONArray properties) {
+        JSONArray placeByPropValue = new JSONArray();
+
+        if(!restorePlacesFromDb()) {
+            return placeByPropValue;
+        }
+
+        int propertiesNb = properties.length();
+        HashMap<String, String> propertiesList = new HashMap<String, String>();
+        for (int i = 0; i < propertiesNb; i++) {
+            try {
+                JSONObject prop = properties.getJSONObject(i);
+                propertiesList.put(prop.getString("key"),
+                        prop.getString("value"));
+            } catch (JSONException e) {
+                logger.error(e.getMessage());
+            }
+        }
+
+        ArrayList<SymbolicPlace> placesList = getPlacesWithPropertiesValue(propertiesList);
+        for (SymbolicPlace place : placesList) {
+            placeByPropValue.put(place.getDescription());
+        }
+        return placeByPropValue;
+    }
+
+    @Override
+    public JSONArray getJSONRootPlaces() {
+        JSONArray rootPlaces = new JSONArray();
+        if(!restorePlacesFromDb()) {
+            return rootPlaces;
+        }
+        
+        for (SymbolicPlace place : getRootPlaces()) {
+            rootPlaces.put(place.getDescription());
+        }
+        return rootPlaces;
+    }
+	
 	@Override
 	public synchronized boolean removePlace(String placeId) {
 

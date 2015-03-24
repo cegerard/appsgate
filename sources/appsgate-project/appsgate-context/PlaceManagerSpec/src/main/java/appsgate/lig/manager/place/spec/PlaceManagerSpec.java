@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  * Specification of services offer by a place manager.
@@ -22,6 +23,7 @@ public interface PlaceManagerSpec {
 	 * @return the id of the new place null otherwise.
 	 */
 	public String addPlace(String name, String parent);
+    
 	
 	/**
 	 * Remove a place from the numeric representation of the smart space.
@@ -138,6 +140,12 @@ public interface PlaceManagerSpec {
 	public ArrayList<SymbolicPlace> getRootPlaces();
 	
 	/**
+	 * Get the root places of the (multiple) hierarchy
+	 * @return the root place reference
+	 */
+	public JSONArray getJSONRootPlaces();	
+	
+	/**
 	 * Get the symbolic place object from its identifier
 	 * @param placeId the place identifier
 	 * @return the SymbolicPlace instance
@@ -204,4 +212,46 @@ public interface PlaceManagerSpec {
 	 * @return the identifier of the place where the core object is placed.
 	 */
 	public String getCoreObjectPlaceId(String objId);
+	
+	
+    public void newPlace(JSONObject place);
+    
+    public void updatePlace(JSONObject place);	
+    
+    /**
+     * Call AppsGate to get all the places that match a specific name
+     *
+     * @param name the name to match
+     * @return the places with the name <name> as a JSONArray
+     */
+    public JSONArray getPlacesByName(String name);
+
+    /**
+     * Get places that have been tagged with all tags give in parameter.
+     *
+     * @param tags the tags list that places have to match
+     * @return places as a JSONArray
+     */
+    public JSONArray gePlacesWithTags(JSONArray tags);
+
+    /**
+     * Get places that contains the properties keys in parameters
+     *
+     * @param keys all properties that places have to be set
+     * @return places list as a JSONArray
+     */
+    public JSONArray getPlacesWithProperties(JSONArray keys);
+
+    /**
+     * Get places that contains the properties keys in parameters and with the
+     * corresponding values
+     *
+     * @param properties all properties that places have to be set with the
+     * corresponding value
+     * @return places list as a JSONArray
+     */
+    public JSONArray getPlacesWithPropertiesValue(JSONArray properties);
+
+    
+    
 }

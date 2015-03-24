@@ -9,6 +9,7 @@ import appsgate.lig.chmi.spec.listeners.CoreUpdatesListener;
 import appsgate.lig.ehmi.impl.EHMIProxyImpl;
 import appsgate.lig.ehmi.spec.GrammarDescription;
 import appsgate.lig.ehmi.spec.trace.TraceManSpec;
+import appsgate.lig.manager.place.spec.PlaceManagerSpec;
 
 /**
  *

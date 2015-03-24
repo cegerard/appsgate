@@ -279,70 +279,13 @@ public class EHMIProxyMock implements EHMIProxySpec {
     }
 
     @Override
-    public void newPlace(JSONObject place) {
+    public String getCoreObjectPlaceId(String objId) {
+    	return null;
     }
-
-    @Override
-    public void updatePlace(JSONObject place) {
-    }
-
-    @Override
-    public void removePlace(String id) {
-    }
-
+    
     @Override
     public void moveDevice(String objId, String srcPlaceId, String destPlaceId) {
-    }
-
-    @Override
-    public void moveService(String serviceId, String srcPlaceId,
-            String destPlaceId) {
-    }
-
-    @Override
-    public String getCoreObjectPlaceId(String objId) {
-        return null;
-    }
-
-    @Override
-    public JSONArray getPlacesByName(String name) {
-        return null;
-    }
-
-    @Override
-    public JSONArray gePlacesWithTags(JSONArray tags) {
-        return null;
-    }
-
-    @Override
-    public JSONArray getPlacesWithProperties(JSONArray keys) {
-        return null;
-    }
-
-    @Override
-    public JSONArray getPlacesWithPropertiesValue(JSONArray properties) {
-        return null;
-    }
-
-    @Override
-    public JSONArray getRootPlaces() {
-        return null;
-    }
-
-    @Override
-    public boolean addTag(String placeId, String tag) {
-        return false;
-    }
-
-    @Override
-    public boolean removeTag(String placeId, String tag) {
-        return false;
-    }
-
-    @Override
-    public boolean addProperty(String placeId, String key, String value) {
-        return false;
-    }
+    }    
 
     @Override
     public boolean removeProperty(String placeId, String key) {

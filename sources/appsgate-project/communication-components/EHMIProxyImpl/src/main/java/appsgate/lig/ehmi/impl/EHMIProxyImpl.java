@@ -505,59 +505,6 @@ public class EHMIProxyImpl implements EHMIProxySpec {
     }
 
     @Override
-    public void newPlace(JSONObject place) {
-        if (placeManager == null) {
-            logger.error("no context data available");
-            return;
-        }
-
-        try {
-
-            String placeParent = null;
-            if (place.has("parent")) {
-                placeParent = place.getString("parent");
-            }
-            String placeId = placeManager.addPlace(place.getString("name"),
-                    placeParent);
-            JSONArray devices = place.getJSONArray("devices");
-            int size = devices.length();
-            int i = 0;
-            while (i < size) {
-                String objId = (String) devices.get(i);
-                placeManager.moveObject(objId,
-                        placeManager.getCoreObjectPlaceId(objId), placeId);
-                i++;
-            }
-        } catch (JSONException e) {
-            logger.warn("JSON exception: {}, missing devices or name", place);
-        }
-    }
-
-    @Override
-    public void removePlace(String id) {
-        if (placeManager == null) {
-            logger.error("no context data available");
-            return;
-        }
-        placeManager.removePlace(id);
-    }
-
-    @Override
-    public void updatePlace(JSONObject place) {
-        if (placeManager == null) {
-            logger.error("no context data available");
-            return;
-        }
-        // for now we could just rename a place
-        try {
-            placeManager.renamePlace(place.getString("id"),
-                    place.getString("name"));
-        } catch (JSONException e) {
-            logger.warn("JSON exception: {}, missing id or name", place);
-        }
-    }
-
-    @Override
     public void moveDevice(String objId, String srcPlaceId, String destPlaceId) {
         if (placeManager == null) {
             logger.error("no context data available");
@@ -569,16 +516,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
         placeManager.moveObject(objId, srcPlaceId, destPlaceId);
     }
-
-    @Override
-    public void moveService(String serviceId, String srcPlaceId,
-            String destPlaceId) {
-        if (placeManager == null) {
-            logger.error("no context data available");
-            return;
-        }
-        placeManager.moveService(serviceId, srcPlaceId, destPlaceId);
-    }
+    
 
     @Override
     public String getCoreObjectPlaceId(String objId) {
@@ -821,138 +759,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
         return getAllLocationsObservers();
     }
 
-    @Override
-    public JSONArray getPlacesByName(String name) {
-        if (placeManager == null) {
-            logger.error("no context data available");
-            return null;
-        }
-        JSONArray placeByName = new JSONArray();
-        ArrayList<SymbolicPlace> placesList = placeManager
-                .getPlacesWithName(name);
-        for (SymbolicPlace place : placesList) {
-            placeByName.put(place.getDescription());
-        }
-        return placeByName;
-    }
 
-    @Override
-    public JSONArray gePlacesWithTags(JSONArray tags) {
-        if (placeManager == null) {
-            logger.error("no context data available");
-            return null;
-        }
-        int tagNb = tags.length();
-        ArrayList<String> tagsList = new ArrayList<String>();
-        for (int i = 0; i < tagNb; i++) {
-            try {
-                tagsList.add(tags.getString(i));
-            } catch (JSONException e) {
-                logger.error(e.getMessage());
-            }
-        }
-
-        JSONArray placeByTag = new JSONArray();
-        ArrayList<SymbolicPlace> placesList = placeManager
-                .getPlacesWithTags(tagsList);
-        for (SymbolicPlace place : placesList) {
-            placeByTag.put(place.getDescription());
-        }
-        return placeByTag;
-    }
-
-    @Override
-    public JSONArray getPlacesWithProperties(JSONArray keys) {
-        if (placeManager == null) {
-            logger.error("no context data available");
-            return null;
-        }
-        int keysNb = keys.length();
-        ArrayList<String> keysList = new ArrayList<String>();
-        for (int i = 0; i < keysNb; i++) {
-            try {
-                keysList.add(keys.getString(i));
-            } catch (JSONException e) {
-                logger.error(e.getMessage());
-            }
-        }
-
-        JSONArray placeByProp = new JSONArray();
-        ArrayList<SymbolicPlace> placesList = placeManager
-                .getPlacesWithProperties(keysList);
-        for (SymbolicPlace place : placesList) {
-            placeByProp.put(place.getDescription());
-        }
-        return placeByProp;
-    }
-
-    @Override
-    public JSONArray getPlacesWithPropertiesValue(JSONArray properties) {
-        if (placeManager == null) {
-            logger.error("no context data available");
-            return null;
-        }
-
-        int propertiesNb = properties.length();
-        HashMap<String, String> propertiesList = new HashMap<String, String>();
-        for (int i = 0; i < propertiesNb; i++) {
-            try {
-                JSONObject prop = properties.getJSONObject(i);
-                propertiesList.put(prop.getString("key"),
-                        prop.getString("value"));
-            } catch (JSONException e) {
-                logger.error(e.getMessage());
-            }
-        }
-
-        JSONArray placeByPropValue = new JSONArray();
-        ArrayList<SymbolicPlace> placesList = placeManager
-                .getPlacesWithPropertiesValue(propertiesList);
-        for (SymbolicPlace place : placesList) {
-            placeByPropValue.put(place.getDescription());
-        }
-        return placeByPropValue;
-    }
-
-    @Override
-    public JSONArray getRootPlaces() {
-        if (placeManager == null) {
-            logger.error("no context data available");
-            return null;
-        }
-        JSONArray rootPlaces = new JSONArray();
-        for (SymbolicPlace place : placeManager.getRootPlaces()) {
-            rootPlaces.put(place.getDescription());
-        }
-        return rootPlaces;
-    }
-
-    @Override
-    public boolean addTag(String placeId, String tag) {
-        if (placeManager == null) {
-            logger.error("no context data available");
-            return false;
-        }
-        return placeManager.addTag(placeId, tag);
-    }
-
-    @Override
-    public boolean removeTag(String placeId, String tag) {
-        if (placeManager == null) {
-            logger.error("no context data available");
-            return false;
-        }
-        return placeManager.removeTag(placeId, tag);
-    }
-
-    @Override
-    public boolean addProperty(String placeId, String key, String value) {
-        if (placeManager == null) {
-            logger.error("no context data available");
-            return false;
-        }
-        return placeManager.addProperty(placeId, key, value);
-    }
 
     @Override
     public boolean removeProperty(String placeId, String key) {
