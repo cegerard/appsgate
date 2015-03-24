@@ -8,6 +8,11 @@
         <relation field="ehmiProxy" resolve="exist"/>
         <relation field="dependencyManager" resolve="exist"/>
         <relation field="propHistoryManager" resolve="exist"/>
+        
+        <relation specification="CoreClockSpec" resolve="exist">
+            <interface field="systemClockCoreObject"/>
+        </relation>
+        
         <relation specification="ContextHistorySpec" resolve="exist" >
             <interface field="contextHistory_pull"/>
             <interface field="contextHistory_push"/>

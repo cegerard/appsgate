@@ -699,6 +699,8 @@ final public class NodeProgram extends Node implements ProgramDesc, ProgramGraph
      * @param s the new status
      */
     public void setProgramStatus(String id, STATUS s) {
+    	LOGGER.trace("setProgramStatus(String id : {}, STATUS s : {})", id, s);
+
         // No need to update the status and the reference table if this is the same program
         if (!id.equalsIgnoreCase(this.id)) {
             if (references.setProgramStatus(id, s)) {

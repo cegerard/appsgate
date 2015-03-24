@@ -24,6 +24,7 @@ import appsgate.lig.eude.interpreter.langage.components.StartEventListener;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeEvent;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
 import appsgate.lig.context.dependency.graph.Reference.STATUS;
+import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
 import appsgate.lig.eude.interpreter.spec.ProgramNotification;
 import appsgate.lig.manager.propertyhistory.services.PropertyHistoryManager;
@@ -433,6 +434,10 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * @param source
      */
     private void notifyUpdateProgram(String id, String runningState, String name, JSONObject source) {
+        LOGGER.trace("notifyUpdateProgram(String id : {}, String runningState : {},"
+        		+ " String name : {}, JSONObject source :{})",
+        		id, runningState, name, source);
+
         if (runningState.equalsIgnoreCase("INVALID")) {
             newProgramStatus(id, STATUS.INVALID);
         } else {
@@ -449,6 +454,10 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * @param source
      */
     private void notifyAddProgram(String id, String runningState, String name, JSONObject source) {
+        LOGGER.trace("notifyAddProgram(String id : {}, String runningState : {},"
+        		+ " String name : {}, JSONObject source :{})",
+        		id, runningState, name, source);
+        
         notifyChanges(new ProgramNotification("newProgram", id, runningState, name, source, null));
         dependencyManager.buildGraph();
     }
@@ -458,6 +467,8 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * @param id
      */
     private void notifyRemoveProgram(String id, String name) {
+        LOGGER.trace("notifyRemoveProgram(String id : {}, String name : {})",
+        		id, name);
         newProgramStatus(id, STATUS.MISSING);
         notifyChanges(new ProgramNotification("removeProgram", id, "", name, null, null));
         dependencyManager.buildGraph();
@@ -472,25 +483,25 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * posted.
      */
     public NotificationMsg notifyChanges(NotificationMsg notif) {
+        LOGGER.trace("notifyChanges(NotificationMsg notif : {})",
+        		notif.JSONize());
         return notif;
 
     }
 
+    private CoreObjectSpec systemClockCoreObject;
+
+    
     /**
      * @return the clock proxy
      */
     public ClockProxy getClock() {
-        if (clock == null && ehmiProxy != null) {
-            JSONArray devices = ehmiProxy.getDevices();
-            for (int i = 0; i < devices.length(); i++) {
-                try {
-                    if (devices.getJSONObject(i).optInt("type") == 21) {
-                        clock = new ClockProxy(devices.getJSONObject(i));
-                    }
-                } catch (JSONException ex) {
-                    LOGGER.warn("A Json Exception occured during parsing device list");
-                    clock = null;
-                }
+        if (clock == null && systemClockCoreObject != null) {
+            try {
+                clock = new ClockProxy(systemClockCoreObject.getDescription());
+            } catch (JSONException ex) {
+                LOGGER.warn("A Json Exception occured during parsing device list");
+                clock = null;
             }
         }
         return clock;
@@ -723,6 +734,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * @param status
      */
     public void newProgramStatus(String deviceId, STATUS status) {
+    	LOGGER.trace("newProgramStatus(String deviceId : {}, STATUS status : {})", deviceId, status);
         for (NodeProgram p : mapPrograms.values()) {
             p.setProgramStatus(deviceId, status);
         }
