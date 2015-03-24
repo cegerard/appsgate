@@ -68,4 +68,12 @@ public interface UbikitAdapterService {
 	 */
 	public void sendActuatorUpdateEvent(String targetID);
 	
+	/**
+	 * Set the pairing mode to Ubikit layer
+	 * @param pair true to set the pairing mode, false to shutdown the pairing mode.
+	 */
+	public void setPairingMode (boolean pair);
+
+	public boolean unpairDevice (String uid);	
+	
 }

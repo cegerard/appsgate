@@ -35,7 +35,6 @@ import org.ubikit.service.RootPhysicalEnvironmentModelService;
 import appsgate.lig.manager.client.communication.service.send.SendWebsocketsService;
 import appsgate.lig.manager.client.communication.service.subscribe.ListenerService;
 import appsgate.lig.enocean.ubikit.adapter.listeners.EnOceanCommandListener;
-import appsgate.lig.enocean.ubikit.adapter.spec.EnOceanPairingService;
 import appsgate.lig.enocean.ubikit.adapter.spec.UbikitAdapterService;
 import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Implementation;
@@ -61,13 +60,12 @@ import fr.immotronic.ubikit.pems.enocean.event.in.TurnOnActuatorEvent;
  * @provide EnOceanService to get all the actually paired sensors and manage the
  *          sensor configuration.
  * 
- * @see EnOceanPairingService
  * @see UbikitAdapterService
  * 
  */
 
 public class UbikitAdapter extends CoreObjectBehavior implements
-		UbikitAdapterService, EnOceanPairingService, CoreObjectSpec {
+		UbikitAdapterService, CoreObjectSpec {
 
 	/**
 	 * Event management members
@@ -117,6 +115,11 @@ public class UbikitAdapter extends CoreObjectBehavior implements
 	 */
 	// @Validate
 	public void newInst() {
+    
+    	serviceId = this.getClass().getName()+"-"+this.hashCode();
+    	userType = UbikitAdapterService.class.getSimpleName();
+    	status = 2;
+		
         eventGate = new EventGateImpl();
         logger.debug("EventGate instanciated.");
         executorService = Executors.newScheduledThreadPool(5); // only one
@@ -647,9 +650,10 @@ public class UbikitAdapter extends CoreObjectBehavior implements
 	@Override
 	public JSONObject getDescription() throws JSONException {
 		JSONObject descr = new JSONObject();
-		descr.put("id", serviceId);
-		descr.put("type", userType);
-		descr.put("status", status);
+		descr.put("id", getAbstractObjectId());
+		descr.put("type", getUserType());
+		descr.put("coreType", getCoreType());
+		descr.put("status", getObjectStatus());
 		descr.put("pairingMode", "unknown");
 
 		return descr;

@@ -20,13 +20,6 @@
 		<ipojo:requires field="httpService"  />
 		<ipojo:requires field="enoceanBridge"/>		
 		
-        <!-- device kernel meta data -->
-        <definition name="serviceId" type="string"
-                    field="serviceId" default="UbikitAdapterImpl"/>
-        <definition name="userType" type="string" default="1001"
-                    field="userType" />
-        <definition name="status" type="int" default="2" field="status"/>
-
 	</implementation>
 
 	
