@@ -438,8 +438,7 @@ define([
         var counterSet = $.map(this.model.get("nodesCounter"), function(value,index){return [[index, value]];});
         if(counterSet.length > 0){
           counterSet.forEach(function(nodeCounter) {
-            var t = $(input).find("#progress-counter-" + nodeCounter[0]);
-            $(input).find("#progress-counter-" + nodeCounter[0]).text(nodeCounter[1]);
+            $(input).find("#progress-counter-" + nodeCounter[0]).text(getTimestamps(nodeCounter[1]));
           });
         }
 
@@ -512,3 +511,6 @@ define([
     });
     return ProgramReaderView;
   });
+function getTimestamps(array) {
+  return array.length;
+}

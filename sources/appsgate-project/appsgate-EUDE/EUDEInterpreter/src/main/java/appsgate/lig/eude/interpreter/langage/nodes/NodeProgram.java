@@ -10,6 +10,7 @@ import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.ErrorMessagesFactory;
+import appsgate.lig.eude.interpreter.langage.components.NodeCounter;
 import appsgate.lig.eude.interpreter.references.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
@@ -21,6 +22,7 @@ import appsgate.lig.eude.interpreter.spec.ProgramStateNotification;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.logging.Level;
 import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,7 +96,7 @@ final public class NodeProgram extends Node implements ProgramDesc, ProgramGraph
     /**
      * Object counting the number of times node were executed
      */
-    private JSONObject nodesCounter;
+    private NodeCounter nodesCounter;
 
     /**
      * The current running state of this program - DEPLOYED - INVALID -
@@ -116,9 +118,10 @@ final public class NodeProgram extends Node implements ProgramDesc, ProgramGraph
      * the table containing all the references
      */
     private ReferenceTable references = null;
-    
+
     /**
-     * Boolean to know if the program is syntaxically correct or not, used to avoid the update of the program state
+     * Boolean to know if the program is syntaxically correct or not, used to
+     * avoid the update of the program state
      */
     private boolean isSyntaxicallyCorrect = true;
 
@@ -135,7 +138,7 @@ final public class NodeProgram extends Node implements ProgramDesc, ProgramGraph
         subPrograms = new HashMap<String, NodeProgram>();
         references = new ReferenceTable(i, this.id);
         activeNodes = new JSONObject();
-        nodesCounter = new JSONObject();
+        nodesCounter = new NodeCounter();
     }
 
     /**
@@ -170,7 +173,10 @@ final public class NodeProgram extends Node implements ProgramDesc, ProgramGraph
     }
 
     @Override
-    public EUDEInterpreter getMediator() {
+    public EUDEInterpreter getMediator() throws SpokExecutionException {
+        if (this.mediator == null) {
+            throw new SpokExecutionException("Mediator not found");
+        }
         return this.mediator;
     }
 
@@ -215,7 +221,7 @@ final public class NodeProgram extends Node implements ProgramDesc, ProgramGraph
             LOGGER.error("Unable to parse a specific node: {}", ex.getMessage());
             this.isSyntaxicallyCorrect = false;
             errorMessage = ErrorMessagesFactory.getMessageFromSpokNodeException(ex);
-        
+
         } catch (SpokTypeException ex) {
             LOGGER.error("Problem of type: {}", ex.getMessage());
             this.isSyntaxicallyCorrect = false;
@@ -260,7 +266,7 @@ final public class NodeProgram extends Node implements ProgramDesc, ProgramGraph
     public JSONObject call() {
         JSONObject ret = new JSONObject();
         activeNodes = new JSONObject();
-        nodesCounter = new JSONObject();
+        nodesCounter.reinit();
         if (canRun()) {
             setProcessing("0");
             fireStartEvent(new StartEvent(this));
@@ -492,10 +498,15 @@ final public class NodeProgram extends Node implements ProgramDesc, ProgramGraph
      * @param runningState
      */
     private void setState(PROGRAM_STATE runningState, String iid) {
+
         if (runningState != this.state) {
-            this.state = runningState;
-            getMediator().newProgramStatus(this.getId(), ReferenceTable.getProgramStatus(runningState));
-            getMediator().notifyChanges(new ProgramStateNotification(id, this.state.toString(), name, iid));
+            try {
+                this.state = runningState;
+                getMediator().newProgramStatus(this.getId(), ReferenceTable.getProgramStatus(runningState));
+                getMediator().notifyChanges(new ProgramStateNotification(id, this.state.toString(), name, iid));
+            } catch (SpokExecutionException ex) {
+                LOGGER.warn("Problem while updating state of the node: {}", ex.getMessage());
+            }
         }
     }
 
@@ -520,7 +531,7 @@ final public class NodeProgram extends Node implements ProgramDesc, ProgramGraph
             o.put("actions", getJSONActions());
 
             o.put("activeNodes", activeNodes);
-            o.put("nodesCounter", nodesCounter);
+            o.put("nodesCounter", nodesCounter.getJSONDescription());
 
             o.put("definitions", getSymbolTableDescription());
 
@@ -565,7 +576,13 @@ final public class NodeProgram extends Node implements ProgramDesc, ProgramGraph
 
     @Override
     protected Node copy(Node parent) {
-        NodeProgram ret = new NodeProgram(getMediator(), parent);
+        NodeProgram ret;
+        try {
+            ret = new NodeProgram(getMediator(), parent);
+        } catch (SpokExecutionException ex) {
+            LOGGER.error("Unable to make a copy: {}", ex.getMessage());
+            return null;
+        }
         ret.id = id;
         ret.state = state;
         ret.name = name;
@@ -684,7 +701,7 @@ final public class NodeProgram extends Node implements ProgramDesc, ProgramGraph
     public void setProgramStatus(String id, STATUS s) {
         // No need to update the status and the reference table if this is the same program
         if (!id.equalsIgnoreCase(this.id)) {
-            if (references.setProgramStatus(id, s)){
+            if (references.setProgramStatus(id, s)) {
                 changeStatus();
             }
         }
@@ -754,14 +771,7 @@ final public class NodeProgram extends Node implements ProgramDesc, ProgramGraph
         if (nodeId == null) {
             return;
         }
-        try {
-            int counter = this.nodesCounter.has(nodeId) ? Integer.parseInt((String) this.nodesCounter.get(nodeId)) + 1 : 1;
-            this.nodesCounter.put(nodeId, String.valueOf(counter));
-        } catch (JSONException e) {
-            throw new SpokExecutionException("Unable to increment the node counter for: " + nodeId);
-        } catch (NumberFormatException e) {
-            throw new SpokExecutionException("Unable to increment the node counter for: " + nodeId);
-        }
+        nodesCounter.incrementNodeCounter(nodeId, this.getMediator().getTime());
     }
 
     /**
@@ -779,7 +789,7 @@ final public class NodeProgram extends Node implements ProgramDesc, ProgramGraph
      * @return
      */
     public JSONObject getNodesCounter() {
-        return this.nodesCounter;
+        return this.nodesCounter.getJSONDescription();
     }
 
     @Override

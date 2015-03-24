@@ -76,7 +76,7 @@ public class NodeStateDeviceTest extends NodeTest {
         Assert.assertEquals("/test/.isOfState(isOn)", expertProgramScript);
     }
     @Test
-    public void testCompositeState()  throws JSONException{
+    public void testCompositeState()  throws Exception{
         
         ruleJSON.put("name", "testState");
         programNode.getMediator().notifyChanges(new ProgramLineNotification(null, null, null));
