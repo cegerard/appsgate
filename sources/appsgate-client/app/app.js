@@ -59,24 +59,59 @@ define(function(require, exports, module) {
     
             // start the debugger if it is not
             communicator.sendMessage({"method":"startDebugger", "args":[], "TARGET":"EHMI"});
-      
             // wait for the data before launching the user interface
             var placesReady = false;
             var devicesReady = false;
             var servicesReady = false;
             var programsReady = false;
-            var dependanciesReady = false;
-            var adaptersReady = false;
 
-      
-            // places
+            var devicesCollectionWaiting = false;
+            var servicesCollectionWaiting = false;
+            var adaptersCollectionWaiting = false;
+            var extendedServicesCollectionWaiting = false;
+
+            dispatcher.on("devicesCollectionWaiting", function() {
+                console.log("devicesCollectionWaiting");
+                devicesCollectionWaiting = true;
+                listDevices();
+            });
+            dispatcher.on("servicesCollectionWaiting", function() {
+                console.log("servicesCollectionWaiting");
+                servicesCollectionWaiting = true;
+                listDevices();
+            });
+            dispatcher.on("adaptersCollectionWaiting", function() {
+                console.log("adaptersCollectionWaiting");
+                adaptersCollectionWaiting = true;
+                listDevices();
+            });
+            dispatcher.on("extendedServicesCollectionWaiting", function() {
+                console.log("extendedServicesCollectionWaiting");
+                extendedServicesCollectionWaiting = true;
+                listDevices();
+            });
+            function listDevices () {
+                if (devicesCollectionWaiting && servicesCollectionWaiting && adaptersCollectionWaiting && extendedServicesCollectionWaiting) {
+                    // send the request to fetch the devices
+                    communicator.sendMessage({
+                        method: "getDevices",
+                        args: [],
+                        callId: "listDevices",
+                        TARGET: "EHMI"
+                    });
+                }
+            };
+
+
+                // places
             dispatcher.on("placesReady", function() {
+                console.log("places ready");
               placesReady = true;
               // Initialize the collection of devices
               require(['collections/devices'], function(Devices) {
                 window.devices = new Devices();
               });
-      
+
               // Initialize the collection of devices
               require(['collections/services'], function(Services) {
                 window.services = new Services();
@@ -85,38 +120,37 @@ define(function(require, exports, module) {
 
             // devices
             dispatcher.on("devicesReady", function() {
+                console.log("devices ready");
               devicesReady = true;
-              if (placesReady && devicesReady && servicesReady && programsReady && adaptersReady) {
+              if (placesReady && devicesReady && servicesReady && programsReady) {
                 dispatcher.trigger("dataReady");
               }
             });
 
             // services
             dispatcher.on("servicesReady", function() {
+                console.log("services ready");
+
               servicesReady = true;
-              if (placesReady && devicesReady && servicesReady && programsReady && adaptersReady) {
+              if (placesReady && devicesReady && servicesReady && programsReady) {
                 dispatcher.trigger("dataReady");
               }
             });
         
             // programs
             dispatcher.on("programsReady", function() {
-              programsReady = true;
-              if (placesReady && devicesReady && servicesReady && programsReady && adaptersReady) {
+                console.log("programs ready");
+
+                programsReady = true;
+              if (placesReady && devicesReady && servicesReady && programsReady) {
                 dispatcher.trigger("dataReady");
               }
             });
 
-            // adapters
-            dispatcher.on("adaptersReady", function() {
-                adaptersReady = true;
-                if (placesReady && devicesReady && servicesReady && programsReady && adaptersReady) {
-                    dispatcher.trigger("dataReady");
-                }
-            });
-
             // all data have been received, launch the user interface
             dispatcher.on("dataReady", function() {
+                console.log("data ready");
+
                 appRouter.initialized = true;
                 $("#lost-connection-modal").modal("hide");
                 $("#settings-modal").modal("hide");
@@ -156,6 +190,11 @@ define(function(require, exports, module) {
             // Initialize the collection adapters
             require(['collections/adapters'], function(Adapters) {
                 window.adapters = new Adapters();
+            });
+
+            // Initialize the collection of extended services
+            require(['collections/extendedServicesCollection'], function(ExtendedServicesCollection) {
+                window.extendedServicesCollection = new ExtendedServicesCollection();
             });
 
         });

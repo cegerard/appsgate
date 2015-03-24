@@ -64,13 +64,9 @@ define([
               self.removeDevice(deviceModel);
             });
 
-            // send the request to fetch the devices
-            communicator.sendMessage({
-                method: "getDevices",
-                args: [],
-                callId: "listDevices",
-                TARGET: "EHMI"
-            });
+            dispatcher.trigger("devicesCollectionWaiting");
+
+
         },
         /**
          * Check the type of device sent by the server, cast it and add it to the collection

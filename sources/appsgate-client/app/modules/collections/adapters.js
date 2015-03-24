@@ -27,9 +27,9 @@ define([
 
             // listen to the event when the list of devices is received
             dispatcher.on("listDevices", function(devices) {
-                _.each(devices, function(adapter) {
-                    if (adapter) {
-                        self.addAdapter(adapter);
+                _.each(devices, function(device) {
+                    if (device && device.coreType === 'ADAPTER') {
+                        self.addAdapter(device);
                     }
                 });
                 dispatcher.trigger("adaptersReady");
@@ -38,7 +38,10 @@ define([
 
 
             // listen to the backend notifying when a device appears and add it
-            dispatcher.on("newAdapter", function(adapter) {
+            dispatcher.on("newAdapter", function(device) {
+                if (device && device.coreType === 'ADAPTER') {
+                    self.addAdapter(device);
+                }
                 self.addAdapter(adapter);
             });
 
@@ -47,6 +50,9 @@ define([
               self.removeAdapter(adapterModel);
             });
 
+            dispatcher.trigger("adaptersCollectionWaiting");
+
+
         },
 
 
@@ -54,7 +60,8 @@ define([
             var self = this;
             var adapter = null;
             switch (brick.type) {
-                case "1001":
+                case "UbikitAdapterService":
+                    console.log("found an EnOcean(Ubikit) Adapter")
                     adapter = new EnoceanAdapter(brick);
                     break;
 

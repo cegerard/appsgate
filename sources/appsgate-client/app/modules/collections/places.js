@@ -63,6 +63,12 @@ define([
             dispatcher.on("moveDevice", function(messageData) {
                 self.moveDevice(messageData.srcLocationId, messageData.destLocationId, messageData.deviceId, false);
             });
+
+            // listen to the event when a place has been updated
+            dispatcher.on("updatePlace", function(place) {
+                places.get(place.id).set("name", place.name);
+            });
+
             // send the request to fetch the places
             communicator.sendMessage({
                 method: "getPlaces",
@@ -129,6 +135,7 @@ define([
             devices.get(deviceId).set({"placeId": destPlaceId});
             // if the device has been moved by the user, send a notification to the backend
             if (movedByUser) {
+
                 var messageJSON = {
                     method: "moveDevice",
                     args: [

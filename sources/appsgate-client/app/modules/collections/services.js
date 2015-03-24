@@ -44,7 +44,7 @@ define([
                 self.remove(service);
 
             });
-
+            dispatcher.trigger("servicesCollectionWaiting");
         },
         /**
          * Check the type of device sent by the server, cast it and add it to the collection
@@ -65,7 +65,7 @@ define([
                     service = new TTS(brick);
                     break;
                 default:
-                    console.log("unknown type", brick.type, brick);
+                    console.log("unknown type of SERVICE ", brick.type, brick);
                     break;
             }
             if (service != null) {
