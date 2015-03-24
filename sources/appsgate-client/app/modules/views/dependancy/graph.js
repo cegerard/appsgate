@@ -990,7 +990,7 @@ define([
 		onMouseDownNode = true;
 
 		// "ZoomIn" details 
-		if (d3.event.shiftKey) {
+		if (d3.event.shiftKey && !d.isGhost) {
 			switch (d.type) {
 			case "place":
 				appRouter.navigate("#places/" + d.id, {
