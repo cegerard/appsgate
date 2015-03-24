@@ -64,8 +64,8 @@ public class PlaceManagerImpl extends CoreObjectBehavior implements PlaceManager
 	public void newInst() {
         logger.info("Place manager starting...");
         placeObjectsMap = null;
-		className= this.getClass().getName();
-		objectName=className+"-"+this.hashCode();        
+		className= PlaceManagerSpec.class.getSimpleName();
+		objectName=this.getClass().getName()+"-"+this.hashCode();        
     }
 
     private synchronized boolean restorePlacesFromDb() {
@@ -886,6 +886,7 @@ public class PlaceManagerImpl extends CoreObjectBehavior implements PlaceManager
         // mandatory appsgate properties
         descr.put("id", getAbstractObjectId());
         descr.put("type", getUserType());
+        descr.put("coreType", getCoreType());
         descr.put("status", getObjectStatus());
 
         return descr;
