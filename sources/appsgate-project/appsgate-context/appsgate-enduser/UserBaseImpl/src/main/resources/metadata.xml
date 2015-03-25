@@ -3,7 +3,8 @@
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
-	<implementation name="UserBaseImpl" classname="appsgate.lig.context.userbase.impl.UserBaseImpl" specification="UserBaseSpec" singleton="true">
+	<implementation name="UserBaseImpl" classname="appsgate.lig.context.userbase.impl.UserBaseImpl" specification="UserBaseSpec" singleton="true"
+	    push="stateChanged">
 		<callback onInit="newInst" onRemove="deleteInst" />
         <relation specification="ContextHistorySpec" fail="wait" resolve="exist">
             <interface field="contextHistory_pull"/>

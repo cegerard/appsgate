@@ -56,6 +56,15 @@ public interface UserBaseSpec {
 	 * @return the user details as JSONObject
 	 */
 	public JSONObject getUserDetails(String id);
+	
+    /**
+     * Get all information on a specify user
+     *
+     * @param id the identifier of the user
+     * @return user information as a JSONObject
+     */
+    public JSONObject getUserFullDetails(String id);	
+	
 
 	/**
 	 * Check if the id is already use or not

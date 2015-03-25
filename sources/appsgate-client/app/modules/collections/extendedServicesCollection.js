@@ -52,7 +52,11 @@ define([
                     self.add(new ExtendedService(brick));
                     dispatcher.trigger("PlaceManagerReady");
                     break;
-
+                case "UserBaseSpec":
+                    console.log("found a User Manager");
+                    self.add(new ExtendedService(brick));
+                    dispatcher.trigger("UserManagerReady");
+                    break;
                 default:
                     console.log("unknown type of EXTENDED SERVICE : ", brick.type, brick);
                     break;
@@ -84,6 +88,9 @@ define([
 
         getPlaceManager: function() {
             return extendedServicesCollection.findWhere({type: "PlaceManagerSpec"});
+        },
+        getUserManager: function() {
+            return extendedServicesCollection.findWhere({type: "UserBaseSpec"});
         }
 
     });

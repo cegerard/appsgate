@@ -293,61 +293,6 @@ public class EHMIProxyMock implements EHMIProxySpec {
     }
 
     @Override
-    public JSONArray getUsers() {
-        return null;
-    }
-
-    @Override
-    public boolean createUser(String id, String password, String lastName,
-            String firstName, String role) {
-
-        return false;
-    }
-
-    @Override
-    public boolean deleteUser(String id, String password) {
-        return false;
-    }
-
-    @Override
-    public JSONObject getUserDetails(String id) {
-        return null;
-    }
-
-    @Override
-    public JSONObject getUserFullDetails(String id) {
-
-        return null;
-    }
-
-    @Override
-    public boolean checkIfIdIsFree(String id) {
-        return false;
-    }
-
-    @Override
-    public boolean synchronizeAccount(String id, String password,
-            JSONObject accountDetails) {
-        return false;
-    }
-
-    @Override
-    public boolean desynchronizedAccount(String id, String password,
-            JSONObject accountDetails) {
-        return false;
-    }
-
-    @Override
-    public boolean associateDevice(String id, String password, String deviceId) {
-        return false;
-    }
-
-    @Override
-    public boolean separateDevice(String id, String password, String deviceId) {
-        return false;
-    }
-
-    @Override
     public JSONArray addLocationObserver(String location) {
         return null;
 

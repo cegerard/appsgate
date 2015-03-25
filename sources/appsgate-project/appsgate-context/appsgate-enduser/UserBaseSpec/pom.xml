@@ -29,6 +29,11 @@
 			<artifactId>apam-core</artifactId>
 			<version>${apam.current.version}</version>
 		</dependency>
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>CoreObjectSpec</artifactId>
+            <version>${project.version}</version>
+        </dependency>		
 	</dependencies>
 	
 	<!-- Build Description -->
@@ -51,7 +56,6 @@
 			<plugin>
 				<groupId>fr.imag.adele.apam</groupId>
 				<artifactId>apam-maven-plugin</artifactId>
-				<version>${apam.current.version}</version>
 				<executions>
 					<execution>
 						<goals>

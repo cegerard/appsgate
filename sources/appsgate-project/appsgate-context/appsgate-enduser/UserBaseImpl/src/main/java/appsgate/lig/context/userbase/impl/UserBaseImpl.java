@@ -16,6 +16,10 @@ import appsgate.lig.context.services.DataBasePullService;
 import appsgate.lig.context.services.DataBasePushService;
 import appsgate.lig.context.user.impl.AppsgateEndUser;
 import appsgate.lig.context.userbase.spec.UserBaseSpec;
+import appsgate.lig.core.object.messages.CoreNotificationMsg;
+import appsgate.lig.core.object.messages.NotificationMsg;
+import appsgate.lig.core.object.spec.CoreObjectBehavior;
+import appsgate.lig.core.object.spec.CoreObjectSpec;
 
 /**
  * The users base implementation is an ApAM component to save Appsgate users.
@@ -27,7 +31,7 @@ import appsgate.lig.context.userbase.spec.UserBaseSpec;
  * @see UserBaseSpec
  *
  */
-public class UserBaseImpl implements UserBaseSpec {
+public class UserBaseImpl extends CoreObjectBehavior implements UserBaseSpec, CoreObjectSpec {
 	
 	/**
 	 * Static class member uses to log what happened in each instances
@@ -54,7 +58,8 @@ public class UserBaseImpl implements UserBaseSpec {
 	 */
 	public void newInst() {
 		logger.debug("User base starting");
-		
+		className= UserBaseSpec.class.getSimpleName();
+		objectName=this.getClass().getName()+"-"+this.hashCode();
 	}
 
 	/**
@@ -319,5 +324,68 @@ public class UserBaseImpl implements UserBaseSpec {
         }
         return false;
     }
+    
+    @Override
+    public JSONObject getUserFullDetails(String id) {
+        if(!restoreUsersFromDb()) {
+            return null;
+        }
+        JSONObject obj = new JSONObject();
+
+        try {
+            obj.put("user", getUserDetails(id));
+            obj.put("devices", getAssociatedDevices(id));
+            obj.put("accounts", getAccountsDetails(id));
+        } catch (JSONException e) {
+            // Exception never happens, exception on put
+        }
+
+        return obj;
+    }
+    
+	String className;
+	String objectName;    
+
+	@Override
+	public String getAbstractObjectId() {
+		return objectName;
+	}
+
+	@Override
+	public String getUserType() {
+		return className;
+	}
+
+	@Override
+	public int getObjectStatus() {
+		if(restoreUsersFromDb()) {
+			return 2;
+		} else {
+			return 0;
+		}
+	}
+
+	@Override
+	public JSONObject getDescription() throws JSONException {
+        JSONObject descr = new JSONObject();
+
+        // mandatory appsgate properties
+        descr.put("id", getAbstractObjectId());
+        descr.put("type", getUserType());
+        descr.put("coreType", getCoreType());
+        descr.put("status", getObjectStatus());
+
+        return descr;
+	}
+
+	@Override
+	public CORE_TYPE getCoreType() {
+		return CORE_TYPE.EXTENDED;
+	}   
+	
+	private NotificationMsg stateChanged(String varName, String oldValue, String newValue) {
+		return new CoreNotificationMsg(varName, oldValue, newValue, this.getAbstractObjectId());
+	}
+
 
 }
