@@ -468,31 +468,23 @@ html, body {
   margin-left: 10px;
   margin-right: 10px;
 }
-/* line 123, ../../../../src/themes/basic/theme.scss */
-.dashboard .element-container .element .picto .decoColor {
-  border: thin solid #EEEEEE;
-  color: transparent;
-  position: relative;
-  bottom: 12px;
-  left: 35px;
-}
-/* line 131, ../../../../src/themes/basic/theme.scss */
+/* line 124, ../../../../src/themes/basic/theme.scss */
 .dashboard .element-container .element:nth-child(odd) {
   background-color: #f6f6f6;
 }
-/* line 134, ../../../../src/themes/basic/theme.scss */
+/* line 127, ../../../../src/themes/basic/theme.scss */
 .dashboard .element-container .element:nth-child(even) {
   background-color: #fafafa;
 }
-/* line 138, ../../../../src/themes/basic/theme.scss */
+/* line 131, ../../../../src/themes/basic/theme.scss */
 .dashboard .element-container .placeholder.sidebar {
   border-right: #000000 thin solid;
 }
-/* line 143, ../../../../src/themes/basic/theme.scss */
+/* line 136, ../../../../src/themes/basic/theme.scss */
 .dashboard .group-container, .dashboard .element-container {
   position: relative;
 }
-/* line 146, ../../../../src/themes/basic/theme.scss */
+/* line 139, ../../../../src/themes/basic/theme.scss */
 .dashboard .group-container .placeholder.aside, .dashboard .element-container .placeholder.aside {
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
@@ -505,12 +497,12 @@ html, body {
   padding-right: 5px;
   z-index: 500;
 }
-/* line 158, ../../../../src/themes/basic/theme.scss */
+/* line 151, ../../../../src/themes/basic/theme.scss */
 .dashboard .group-container .placeholder.sidebar .menu, .dashboard .element-container .placeholder.sidebar .menu {
   float: left;
   width: 25px;
 }
-/* line 161, ../../../../src/themes/basic/theme.scss */
+/* line 154, ../../../../src/themes/basic/theme.scss */
 .dashboard .group-container .placeholder.sidebar .menu button, .dashboard .element-container .placeholder.sidebar .menu button {
   display: block;
   padding: 1px;
@@ -520,47 +512,55 @@ html, body {
   border: 1px solid #ccc;
   cursor: pointer;
 }
-/* line 171, ../../../../src/themes/basic/theme.scss */
+/* line 164, ../../../../src/themes/basic/theme.scss */
 .dashboard .group-container .placeholder.sidebar .title, .dashboard .element-container .placeholder.sidebar .title {
   float: left;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-/* line 177, ../../../../src/themes/basic/theme.scss */
+/* line 170, ../../../../src/themes/basic/theme.scss */
 .dashboard .group-container .placeholder.sidebar .picto, .dashboard .element-container .placeholder.sidebar .picto {
   display: block;
   float: right;
   text-align: center;
 }
 
-/* line 192, ../../../../src/themes/basic/theme.scss */
+/* line 185, ../../../../src/themes/basic/theme.scss */
 .tabular.decorations tr {
   height: 80px;
 }
-/* line 194, ../../../../src/themes/basic/theme.scss */
+/* line 187, ../../../../src/themes/basic/theme.scss */
 .tabular.decorations tr:nth-child(odd) {
   background-color: #f6f6f6;
 }
-/* line 197, ../../../../src/themes/basic/theme.scss */
+/* line 190, ../../../../src/themes/basic/theme.scss */
 .tabular.decorations tr:nth-child(even) {
   background-color: #fafafa;
 }
-/* line 201, ../../../../src/themes/basic/theme.scss */
+/* line 194, ../../../../src/themes/basic/theme.scss */
 .tabular.decorations td {
   padding-bottom: 1em;
 }
-/* line 204, ../../../../src/themes/basic/theme.scss */
+/* line 197, ../../../../src/themes/basic/theme.scss */
 .tabular.decorations .decoration-head {
   width: 80px;
 }
-/* line 206, ../../../../src/themes/basic/theme.scss */
+/* line 199, ../../../../src/themes/basic/theme.scss */
 .tabular.decorations .decoration-head .picto {
   width: 50px;
   margin-left: 15px;
   height: 50px;
   line-height: 50px;
   background-size: 50px 50px;
+}
+/* line 205, ../../../../src/themes/basic/theme.scss */
+.tabular.decorations .decoration-head .picto .decoColor {
+  border: thin solid #EEEEEE;
+  color: transparent;
+  position: relative;
+  bottom: 12px;
+  left: 35px;
 }
 /* line 213, ../../../../src/themes/basic/theme.scss */
 .tabular.decorations .decoration-head .datetime {
