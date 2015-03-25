@@ -78,15 +78,16 @@ public class EHMIProxyImpl implements EHMIProxySpec {
      */
     private DevicePropertiesTableSpec devicePropertiesTable;
 
-    /**
+	/**
      * The space manager ApAM component to handle the object space
      */
     private PlaceManagerSpec placeManager;
-
-    /**
-     * The user manager ApAM component to handle the user base
+    
+	/**
+     * The space manager ApAM component to handle the user space
      */
     private UserBaseSpec userManager;
+
     /**
      * The user manager ApAM component to handle the user base
      */
@@ -248,7 +249,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
                                     "id");
 
                             if (!"21".equals(type)) {
-                                addGrammar(id, type, new GrammarDescription(coreProxy.getDeviceBehaviorFromType(type)));
+                                devicePropertiesTable.addGrammarForDevice(id, type, new GrammarDescription(coreProxy.getDeviceBehaviorFromType(type)));
                             }
                         }
                     } catch (JSONException e) {
@@ -428,56 +429,6 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
     }
 
-    @Override
-    public void setUserObjectName(String objectId, String user, String name) {
-        if (devicePropertiesTable == null) {
-            logger.error("no context data available");
-            return;
-        }
-        devicePropertiesTable.addName(objectId, user, name);
-
-    }
-
-    @Override
-    public String getUserObjectName(String objectId, String user) {
-        if (devicePropertiesTable == null) {
-            logger.error("no context data available");
-            return null;
-        }
-        return devicePropertiesTable.getName(objectId, user);
-    }
-
-    @Override
-    public void deleteUserObjectName(String objectId, String user) {
-        if (devicePropertiesTable == null) {
-            logger.error("no context data available");
-            return;
-        }
-        devicePropertiesTable.deleteName(objectId, user);
-    }
-
-    @Override
-    public boolean addGrammar(String deviceId, String deviceType,
-            GrammarDescription grammarDescription) {
-        logger.trace("addGrammar(String deviceId : {}, String deviceType : {},"
-                + "GrammarDescription grammarDescription : {})",
-                deviceId, deviceType, grammarDescription);
-        if (devicePropertiesTable == null) {
-            logger.error("no context data available");
-            return false;
-        }
-        return devicePropertiesTable.addGrammarForDevice(deviceId, deviceType,
-                grammarDescription);
-    }
-
-    @Override
-    public boolean removeGrammar(String deviceType) {
-        if (devicePropertiesTable == null) {
-            logger.error("no context data available");
-            return false;
-        }
-        return devicePropertiesTable.removeGrammarForDeviceType(deviceType);
-    }
 
     @Override
     public GrammarDescription getGrammarFromType(String deviceType) {
@@ -489,7 +440,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
         if (desc == null) {
             logger.warn("getGrammarFromType({}): the devicePropertyTable did not contain", deviceType);
             desc = new GrammarDescription(coreProxy.getDeviceBehaviorFromType(deviceType));
-            addGrammar(null, deviceType, new GrammarDescription(coreProxy.getDeviceBehaviorFromType(deviceType)));
+            devicePropertiesTable.addGrammarForDevice(null, deviceType, new GrammarDescription(coreProxy.getDeviceBehaviorFromType(deviceType)));
         } else {
         }
         return desc;
@@ -753,7 +704,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
         logger.trace("addContextData(JSONObject object : {}, String objectId : {})", object, objectId);
         try {
             object.put("placeId", getCoreObjectPlaceId(objectId));
-            object.put("name", getUserObjectName(objectId, ""));
+            object.put("name", devicePropertiesTable.getName(objectId, ""));
         } catch (JSONException e) {
             logger.error(e.getMessage());
         }
@@ -1218,4 +1169,12 @@ public class EHMIProxyImpl implements EHMIProxySpec {
     public SpokObject getProgram(String programid) {
         return interpreter.getNodeProgram(programid);
     }
+    
+    public DevicePropertiesTableSpec getDevicePropertiesTable() {
+		return devicePropertiesTable;
+	}
+
+	public PlaceManagerSpec getPlaceManager() {
+		return placeManager;
+	}
 }

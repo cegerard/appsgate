@@ -246,29 +246,6 @@ public class EHMIProxyMock implements EHMIProxySpec {
     }
 
     @Override
-    public void setUserObjectName(String objectId, String user, String name) {
-    }
-
-    @Override
-    public String getUserObjectName(String objectId, String user) {
-        return null;
-    }
-
-    @Override
-    public void deleteUserObjectName(String objectId, String user) {
-    }
-
-    @Override
-    public boolean addGrammar(String deviceId, String deviceType, GrammarDescription grammarDescription) {
-        return false;
-    }
-
-    @Override
-    public boolean removeGrammar(String deviceType) {
-        return false;
-    }
-
-    @Override
     public GrammarDescription getGrammarFromType(String deviceType) {
         return null;
     }

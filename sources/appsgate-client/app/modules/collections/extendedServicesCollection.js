@@ -57,6 +57,11 @@ define([
                     self.add(new ExtendedService(brick));
                     dispatcher.trigger("UserManagerReady");
                     break;
+                case "DevicePropertiesTableSpec":
+                    console.log("found a Device Properties Manager");
+                    self.add(new ExtendedService(brick));
+                    dispatcher.trigger("DevicePropertiesManagerReady");
+                    break;
                 default:
                     console.log("unknown type of EXTENDED SERVICE : ", brick.type, brick);
                     break;
@@ -88,6 +93,9 @@ define([
 
         getPlaceManager: function() {
             return extendedServicesCollection.findWhere({type: "PlaceManagerSpec"});
+        },
+        getDevicePropertiesManager: function() {
+            return extendedServicesCollection.findWhere({type: "DevicePropertiesTableSpec"});
         },
         getUserManager: function() {
             return extendedServicesCollection.findWhere({type: "UserBaseSpec"});

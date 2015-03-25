@@ -3,7 +3,8 @@
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
-	<implementation name="DevicePropertiesTableImpl" classname="appsgate.lig.context.device.properties.table.impl.DevicePropertiesTableImpl" specification="DevicePropertiesTableSpec" push="notifyChanges" singleton="true">
+	<implementation name="DevicePropertiesTableImpl" classname="appsgate.lig.context.device.properties.table.impl.DevicePropertiesTableImpl" specification="DevicePropertiesTableSpec"
+	    push="notifyChanges,notifyCoreChanges" singleton="true">
 		<callback onInit="newInst" onRemove="deleteInst" />
         <relation specification="ContextHistorySpec" fail="wait" resolve="exist">
             <interface field="contextHistory_pull"/>

@@ -17,6 +17,9 @@ import appsgate.lig.context.device.properties.table.messages.PropertiesTableNoti
 import appsgate.lig.context.device.properties.table.spec.DevicePropertiesTableSpec;
 import appsgate.lig.context.services.DataBasePullService;
 import appsgate.lig.context.services.DataBasePushService;
+import appsgate.lig.core.object.messages.CoreNotificationMsg;
+import appsgate.lig.core.object.spec.CoreObjectBehavior;
+import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.ehmi.spec.GrammarDescription;
 import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 
@@ -31,7 +34,7 @@ import appsgate.lig.ehmi.spec.messages.NotificationMsg;
  * @see DevicePropertiesTableSpec
  *
  */
-public class DevicePropertiesTableImpl implements DevicePropertiesTableSpec {
+public class DevicePropertiesTableImpl extends CoreObjectBehavior implements DevicePropertiesTableSpec, CoreObjectSpec {
 
     /**
      * Static class member uses to log what happened in each instances
@@ -170,6 +173,8 @@ public class DevicePropertiesTableImpl implements DevicePropertiesTableSpec {
      */
     public void newInst() {
         logger.debug("The device properties table has been instanciated");
+		className= DevicePropertiesTableSpec.class.getSimpleName();
+		objectName=this.getClass().getName()+"-"+this.hashCode();    
 
     }
 
@@ -225,8 +230,14 @@ public class DevicePropertiesTableImpl implements DevicePropertiesTableSpec {
      * posted.
      */
     public NotificationMsg notifyChanges(String objectId, String userId, String propertyName, String propertyValue) {
+    	notifyCoreChanges(propertyName, null, propertyValue);
         return new PropertiesTableNotificationMsg(objectId, userId, propertyName, propertyValue);
     }
+    
+    public appsgate.lig.core.object.messages.NotificationMsg notifyCoreChanges(String varName, String oldValue, String newValue) {
+        return new CoreNotificationMsg(varName, oldValue, newValue, objectName);
+        
+    }    
 
     @Override
     public GrammarDescription getGrammarFromDevice(String deviceId) {
@@ -254,5 +265,45 @@ public class DevicePropertiesTableImpl implements DevicePropertiesTableSpec {
     public String getType(String deviceId) {
         return devicesTypeMap.get(deviceId);
     }
+    
+	String className;
+	String objectName;
+	
+	@Override
+	public String getAbstractObjectId() {
+		return objectName;
+	}
+
+	@Override
+	public String getUserType() {
+		return className;
+	}
+
+	@Override
+	public int getObjectStatus() {
+		if(restoreFromDB()) {
+			return 2;
+		} else {
+			return 0;
+		}
+	}
+
+	@Override
+	public JSONObject getDescription() throws JSONException {
+        JSONObject descr = new JSONObject();
+
+        // mandatory appsgate properties
+        descr.put("id", getAbstractObjectId());
+        descr.put("type", getUserType());
+        descr.put("coreType", getCoreType());
+        descr.put("status", getObjectStatus());
+
+        return descr;
+	}
+
+	@Override
+	public CORE_TYPE getCoreType() {
+		return CORE_TYPE.EXTENDED;
+	}
 
 }

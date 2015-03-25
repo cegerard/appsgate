@@ -70,51 +70,7 @@ public interface EHMIProxySpec {
     /**
      * ************************
      */
-    /**
-     * Call AppsGate to add a user object name
-     *
-     * @param objectId the object
-     * @param user the user that name this object
-     * @param name the new name of this object
-     */
-    public void setUserObjectName(String objectId, String user, String name);
-
-    /**
-     * Get the name of an object for a specific user
-     *
-     * @param objectId the object
-     * @param user the user who ask
-     * @return the name of the object named by user
-     */
-    public String getUserObjectName(String objectId, String user);
-
-    /**
-     * Delete an name for an object set by a user
-     *
-     * @param objectId the object
-     * @param user the user who give the name to this object
-     */
-    public void deleteUserObjectName(String objectId, String user);
-
-    /**
-     * Add grammar in the context properties manager for a new device type
-     *
-     * @param deviceId the id if the device
-     * @param deviceType the type of device
-     * @param grammarDescription the grammar associated to the device type
-     * @return true if the grammar is really new, false if the grammar has been
-     * replaced
-     */
-    public boolean addGrammar(String deviceId, String deviceType, GrammarDescription grammarDescription);
-
-    /**
-     * Remove grammar associated to a device type
-     *
-     * @param deviceType the device type from which to remove the grammar
-     * @return true if the grammar has been removed, false otherwise
-     */
-    public boolean removeGrammar(String deviceType);
-
+ 
     /**
      * Get the grammar associated to a device type
      *

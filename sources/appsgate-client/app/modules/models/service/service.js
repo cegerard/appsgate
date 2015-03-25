@@ -36,24 +36,20 @@ define([
      * Send the name of the device to the server
      */
     sendName: function() {
-      // build the message
-      var messageJSON = {
-        method: "setUserObjectName",
-        args: [{
-          type: "String",
-          value: this.get("id")
-        }, {
-          type: "String",
-          value: ""
-        }, {
-          type: "String",
-          value: this.get("name")
-        }],
-        TARGET: "EHMI"
-      };
-
-      // send the message
-      communicator.sendMessage(messageJSON);
+      var devicePropertiesManager = extendedServicesCollection.getDevicePropertiesManager();
+      if (devicePropertiesManager !== undefined) {
+        devicePropertiesManager.remoteControl( "addName", [{
+              type: "String",
+              value: this.get("id")
+            }, {
+              type: "String",
+              value: ""
+            }, {
+              type: "String",
+              value: this.get("name")
+            }],
+            "devicePropertiesManagerCall");
+      }
     },
 
     /**
