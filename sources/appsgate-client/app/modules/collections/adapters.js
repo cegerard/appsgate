@@ -1,9 +1,10 @@
 define([
     "app",
     "models/adapter/adapter",
-    "models/adapter/enocean"
+    "models/adapter/enocean",
+    "models/adapter/weather"
 
-], function(App, Adapter, EnoceanAdapter) {
+], function(App, Adapter, EnoceanAdapter, WeatherAdapter) {
 
     var Adapters = {};
 
@@ -64,7 +65,10 @@ define([
                     console.log("found an EnOcean(Ubikit) Adapter")
                     adapter = new EnoceanAdapter(brick);
                     break;
-
+                case "WeatherAdapterSpec":
+                    console.log("found a Weather Adapter")
+                    adapter = new WeatherAdapter(brick);
+                    break;
                 default:
                     console.log("unknown type of ADAPTER : ", brick.type, brick);
                     break;
@@ -110,9 +114,11 @@ define([
         },
 
         getEnoceanAdapter: function() {
-            return adapters.findWhere({type: 1001});
+            return adapters.findWhere({type: "1001"});
+        },
+        getWeatherAdapter: function() {
+            return adapters.findWhere({type: "WeatherAdapterSpec"});
         }
-
     });
 
     return Adapters;

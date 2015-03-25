@@ -222,27 +222,10 @@ define([
         case "create":
         case "update":
           // create an id to the place
-          communicator.sendMessage({
-            method: "addLocationObserver",
-            //method: "addLocationObserverFromWOEID",
-            args: [{
-              type: "String",
-              value: model.attributes.location
-            }],
-            TARGET: "EHMI",
-            id: "addLocationObserver"
-          });
+          adapters.getWeatherAdapter().addLocationObserver(model.attributes.location);
           break;
         case "delete":
-          communicator.sendMessage({
-            method: "removeLocationObserver",
-            args: [{
-              type: "String",
-              value: model.attributes.location
-            }],
-            TARGET: "EHMI",
-            id: "removeLocationObserver"
-          });
+          adapters.getWeatherAdapter().removeLocationObserver(model.attributes.location);
           break;
         default:
           break;

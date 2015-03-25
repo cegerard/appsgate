@@ -269,27 +269,6 @@ public class EHMIProxyMock implements EHMIProxySpec {
         return false;
     }
 
-    @Override
-    public JSONArray addLocationObserver(String location) {
-        return null;
-
-    }
-
-    @Override
-    public JSONArray removeLocationObserver(String location) {
-        return null;
-
-    }
-
-    @Override
-    public JSONArray getActiveLocationsObservers() {
-        return null;
-    }
-
-    @Override
-    public JSONArray getAllLocationsObservers() {
-        return null;
-    }
 
     @Override
     public boolean addProgram(JSONObject jsonProgram) {
@@ -393,25 +372,6 @@ public class EHMIProxyMock implements EHMIProxySpec {
     public void scheduleProgram(String eventName, String programId,
             boolean startOnBegin, boolean stopOnEnd) {
         // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public JSONObject checkLocation(String location) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public JSONArray checkLocationsStartingWith(String firstLetters) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public JSONArray addLocationObserverFromWOEID(String woeid) {
-        // TODO Auto-generated method stub
-        return null;
 
     }
 

@@ -133,13 +133,7 @@ define([
         validWeatherName: function(e) {
             var loc = $("#add-weather-modal input[name='inputValue']").val();
             if (loc != undefined && loc.length > 2) {
-                //code
-                communicator.sendMessage({
-                    "method":"checkLocationsStartingWith",
-                    "args":[{"type":"String","value":loc}],
-                    "callId":"checkLocation",
-                    "TARGET":"EHMI"
-                    });
+                adapters.getWeatherAdapter().checkLocationsStartingWith(loc);
             } else {
                 $( "#WOEID" ).val( "" );
                 $("#add-weather-modal .valid-button").addClass("disabled");
@@ -154,12 +148,7 @@ define([
                 var loc = $("#add-weather-modal input[name='name']").val();
 //                var weather = new Weather({location	: loc, id	: 'WeatherObserver-'+Math.round(Math.random() * 10000).toString(), name : loc, type :"103"});
 
-                communicator.sendMessage({
-                    "method":"addLocationObserver",
-                    "args":[{"type":"String","value":loc}],
-                    "callId":"addLocation",
-                    "TARGET":"EHMI"
-                });
+                adapters.getWeatherAdapter().addLocationObserver(loc);
 
                 // tell the router that there is no modal any more
                 appRouter.isModalShown = false;

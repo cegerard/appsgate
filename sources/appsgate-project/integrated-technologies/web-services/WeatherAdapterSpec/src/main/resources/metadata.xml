@@ -4,7 +4,8 @@
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
 	<specification name="WeatherAdapterSpec"
-		interfaces="appsgate.lig.weather.spec.WeatherAdapterSpec">
+		interfaces="appsgate.lig.weather.spec.WeatherAdapterSpec, appsgate.lig.core.object.spec.CoreObjectSpec"
+        messages="appsgate.lig.core.object.messages.NotificationMsg">
 
 		<!-- Service specific meta data -->
 		<definition name="auto-refresh" type="int"/>

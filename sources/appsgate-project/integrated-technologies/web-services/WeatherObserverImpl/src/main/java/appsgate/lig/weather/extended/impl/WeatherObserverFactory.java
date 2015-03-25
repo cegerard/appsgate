@@ -2,6 +2,8 @@ package appsgate.lig.weather.extended.impl;
 
 import appsgate.lig.context.services.DataBasePullService;
 import appsgate.lig.context.services.DataBasePushService;
+import appsgate.lig.core.object.spec.CoreObjectBehavior;
+import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.weather.exception.WeatherForecastException;
 import appsgate.lig.weather.extended.spec.ExtendedWeatherObserver;
 import appsgate.lig.weather.spec.WeatherAdapterSpec;
@@ -25,12 +27,14 @@ import java.util.concurrent.ConcurrentSkipListSet;
 /**
  * Created by thibaud on 02/07/2014.
  */
-public class WeatherObserverFactory implements WeatherAdapterSpec {
+public class WeatherObserverFactory extends CoreObjectBehavior implements WeatherAdapterSpec, CoreObjectSpec {
 	private static Logger logger = LoggerFactory
 			.getLogger(WeatherObserverFactory.class);
 	BundleContext context;
 
 	public WeatherObserverFactory(BundleContext context) {
+		className= WeatherAdapterSpec.class.getSimpleName();
+		objectName=this.getClass().getName()+"-"+this.hashCode();   
 		this.context = context;
 	}
 
@@ -410,5 +414,45 @@ public class WeatherObserverFactory implements WeatherAdapterSpec {
 
 		}
 	}
+	
+	String className;
+	String objectName;
+	
+	@Override
+	public String getAbstractObjectId() {
+		return objectName;
+	}
+
+	@Override
+	public String getUserType() {
+		return className;
+	}
+
+	@Override
+	public int getObjectStatus() {
+		if(restoreFromDB()) {
+			return 2;
+		} else {
+			return 0;
+		}
+	}
+
+	@Override
+	public JSONObject getDescription() throws JSONException {
+        JSONObject descr = new JSONObject();
+
+        // mandatory appsgate properties
+        descr.put("id", getAbstractObjectId());
+        descr.put("type", getUserType());
+        descr.put("coreType", getCoreType());
+        descr.put("status", getObjectStatus());
+
+        return descr;
+	}
+
+	@Override
+	public CORE_TYPE getCoreType() {
+		return CORE_TYPE.ADAPTER;
+	}	
 
 }
