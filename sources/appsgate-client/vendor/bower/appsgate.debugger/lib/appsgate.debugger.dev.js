@@ -367,7 +367,7 @@
     
 
     // Inline include of templates files.
-    var DECORATIONS_TO_HTML_TPL = '<table class="tabular decorations">\n\t<tr>\n\t\t<th colspan="2"><%- name %></th>\n\t</tr>\n<% _.forEach(decorations, function(decoration) { %>\n    <tr>\n        <td class="decoration-head">\n\n        <div class="picto picto-<%- decoration.picto %>"></div>\n            <div class="datetime">\n                <span class="date"><%- timeFormat(\'%x\')(new Date(decoration.time))%></span>\n                <span class="time"><%- timeFormat(\'%X\')(new Date(decoration.time))%></span>\n            </div>\n        </td>\n        <td class="decoration-body">\n\t\t\t<% var obj = {} ;\n\t\t\tif (decoration.context) {\n\t\t\t\tcolorspan = ""\n\t\t\t\tif (decoration.context.boolean !== undefined) {\n\t\t\t\t\tif (decoration.context.boolean) {\n\t\t\t\t\t\tdecoration.description += ".on";\n\t\t\t\t\t} else {\n\t\t\t\t\t\tdecoration.description += ".off";\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\tobj = decoration.context;\n\t\t\t}\n\t\t\tobj["ns"] = options.i18n.ns;%>\n            <div class="description"><%- i18n.t(decoration.description, obj ) %>\n\t\t\t<%\n\t\t\t\tif(decoration.context !== undefined && decoration.context.rgbcolor !== undefined) { %>\n\t\t\t\t<span class="decoColor" style="background-color: <%- decoration.context.rgbcolor %>\'>XX</span>\n\t\t\t<% } %>\n\n\t\t\t</div>\n\n            <div class="extra">\n                <span class="source"><%- decoration.source %></span> |\n                <span class="causality"><%- decoration.causality %></span>\n            </div>\n        </td>\n    </tr>\n<% }); %>\n</table>\n';
+    var DECORATIONS_TO_HTML_TPL = '<table class="tabular decorations">\n\t<tr>\n\t\t<th colspan="2"><%- name %></th>\n\t</tr>\n<% _.forEach(decorations, function(decoration) { %>\n    <tr>\n        <td class="decoration-head">\n\n        <div class="picto picto-<%- decoration.picto %>">\n\t\t\t<%\n\t\t\t\tif(decoration.context !== undefined && decoration.context.rgbcolor !== undefined) { %>\n\t\t\t\t<span class="decoColor" style="background-color: <%- decoration.context.rgbcolor %>">X</span>\n\t\t\t<% } %>\n\n\t\t</div>\n            <div class="datetime">\n                <span class="date"><%- timeFormat(\'%x\')(new Date(decoration.time))%></span>\n                <span class="time"><%- timeFormat(\'%X\')(new Date(decoration.time))%></span>\n            </div>\n        </td>\n        <td class="decoration-body">\n\t\t\t<% var obj = {} ;\n\t\t\tif (decoration.context) {\n\t\t\t\tcolorspan = ""\n\t\t\t\tif (decoration.context.boolean !== undefined) {\n\t\t\t\t\tif (decoration.context.boolean) {\n\t\t\t\t\t\tdecoration.description += ".on";\n\t\t\t\t\t} else {\n\t\t\t\t\t\tdecoration.description += ".off";\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\tobj = decoration.context;\n\t\t\t}\n\t\t\tobj["ns"] = options.i18n.ns;%>\n            <div class="description"><%- i18n.t(decoration.description, obj ) %></div>\n            <div class="extra">\n                <span class="source"><%- decoration.source %></span> |\n                <span class="causality"><%- decoration.causality %></span>\n            </div>\n        </td>\n    </tr>\n<% }); %>\n</table>\n';
 
     // Inline include of templates files.
     var DECORATIONS_TO_TXT_TPL = '<% _.forEach(decorations, function(decoration) { %>\n<%- timeFormat(\'%x\')(new Date(decoration.time))%> <%- timeFormat(\'%X\')(new Date(decoration.time)) %> | <%- i18n.t(decoration.description, decoration.context, { ns: options.i18n.ns }) %> <<%- decoration.source %>, <%- decoration.causality %>>\n<% }); %>';
@@ -789,9 +789,15 @@
                 order: 'type'
             });
             params.ids =  [];
-            var pgs = programs.each();
-            for (var i = 0; i < pgs.length ; i++) {
-                params.ids.push(pgs[i].id);
+            // To get events on the programs
+            var bricks = programs.each();
+            for (var i = 0; i < bricks.length ; i++) {
+                params.ids.push(bricks[i].id);
+            }
+            // To get events on the devices
+            bricks = devices.each();
+            for (var i = 0; i < bricks.length ; i++) {
+                params.ids.push(bricks[i].id);
             }
     
             return this._exec({

@@ -25,7 +25,7 @@
           "on" : "lamp is on",
           "off" : "lamp is off"
         },
-		"colorChanged" : "color changed to __text__"
+		"colorChanged" : "color changed"
 	  },
       "blink30" : "Blink",
       "setRed" : "set color to red",
