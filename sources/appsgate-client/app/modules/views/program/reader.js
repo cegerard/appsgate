@@ -1,8 +1,9 @@
 define([
   "app",
   "modules/mediator",
-  "text!templates/program/reader/reader.html"
-  ], function(App, Mediator, programEditorTemplate) {
+  "text!templates/program/reader/reader.html",
+  "text!templates/program/reader/timestamps.html"
+  ], function(App, Mediator, programEditorTemplate, timestampsTemplate) {
 
     var ProgramReaderView = {};
     /**
@@ -10,6 +11,7 @@ define([
     */
     ProgramReaderView = Backbone.View.extend({
       tplEditor: _.template(programEditorTemplate),
+      tplTimestamps: _.template(timestampsTemplate),
       events: {
         "shown.bs.modal #schedule-program-modal": "initializeModal",
         "shown.bs.modal #test-program-modal": "initializeProgramTestModal",
@@ -27,7 +29,8 @@ define([
         "click button.cancel-delete-program-button": "onCancelDeleteProgram",
         "click button.open-calendar-button":"openCalendar",
 	  	"click button.btn-target-dependencies": "onShowDependencies",
-	  	"click button.btn-target-timelines": "onShowTimelines"
+	  	"click button.btn-target-timelines": "onShowTimelines",
+        "click .progress-indicator-group" : "showTimestamps"
       },
       /**
       * @constructor
@@ -439,6 +442,7 @@ define([
         if(counterSet.length > 0){
           counterSet.forEach(function(nodeCounter) {
             $(input).find("#progress-counter-" + nodeCounter[0]).text(getTimestamps(nodeCounter[1]));
+            $(input).find("#progress-" + nodeCounter[0]).attr("ts", nodeCounter[1]);
           });
         }
 
@@ -467,6 +471,13 @@ define([
         });
 
         return input;
+      },
+      showTimestamps : function(e) {
+        self = this;
+        var ts = $(e.currentTarget).attr("ts");
+        $("#bubbleModal").find(".modal-body").html(this.tplTimestamps({times : ts.split(",")}));
+        $("#bubbleModal").modal("show");
+
       },
       /**
       * Render the editor view

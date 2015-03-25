@@ -6,7 +6,13 @@
     <tr>
         <td class="decoration-head">
 
-        <div class="picto picto-<%- decoration.picto %>"></div>
+        <div class="picto picto-<%- decoration.picto %>">
+			<%
+				if(decoration.context !== undefined && decoration.context.rgbcolor !== undefined) { %>
+				<span class="decoColor" style="background-color: <%- decoration.context.rgbcolor %>">X</span>
+			<% } %>
+
+		</div>
             <div class="datetime">
                 <span class="date"><%- timeFormat('%x')(new Date(decoration.time))%></span>
                 <span class="time"><%- timeFormat('%X')(new Date(decoration.time))%></span>
@@ -26,14 +32,7 @@
 				obj = decoration.context;
 			}
 			obj["ns"] = options.i18n.ns;%>
-            <div class="description"><%- i18n.t(decoration.description, obj ) %>
-			<%
-				if(decoration.context !== undefined && decoration.context.rgbcolor !== undefined) { %>
-				<span class="decoColor" style="background-color: <%- decoration.context.rgbcolor %>'>XX</span>
-			<% } %>
-
-			</div>
-
+            <div class="description"><%- i18n.t(decoration.description, obj ) %></div>
             <div class="extra">
                 <span class="source"><%- decoration.source %></span> |
                 <span class="causality"><%- decoration.causality %></span>

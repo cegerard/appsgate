@@ -202,6 +202,13 @@ html, body {
                 height: 50px;
                 line-height: 50px;
                 background-size: 50px 50px;
+                .decoColor {
+                    border: thin solid #EEEEEE;
+                    color: transparent;
+                    position: relative;
+                    bottom:12px;
+                    left:35px;
+                }
             }
             .datetime {
                 width: 80px;

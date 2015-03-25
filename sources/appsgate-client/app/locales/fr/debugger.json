@@ -25,7 +25,7 @@
           "on" : "la lampe est allumée",
           "off" : "la lampe est éteinte"
         },
-		"colorChanged" : "la couleur a changé pour __spancolor__"
+		"colorChanged" : "la couleur a changé"
 	  },
       "blink30" : "Faire clignoter",
       "setRed" : "allumer en rouge",
