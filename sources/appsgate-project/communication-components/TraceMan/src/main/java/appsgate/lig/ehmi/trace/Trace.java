@@ -499,7 +499,7 @@ public class Trace {
             desc = gram.getTraceMessageFromCommand(notif.getDescription());
         }
         JSONObject jsonDecoration = Trace.getJSONDecoration(Trace.DECORATION_TYPE.state, notif.getType(), "Program", timeStamp, notif.getSourceId(), null, desc, context);
-        JSONObject d = Trace.getJSONDevice(notif.getTargetId(), null, jsonDecoration, gram, t);
+        JSONObject d = Trace.getJSONDevice(notif.getDeviceId(), null, jsonDecoration, gram, t);
         try {
             pJson.put("decorations", new JSONArray().put(
                     Trace.getJSONDecoration(Trace.DECORATION_TYPE.state, notif.getType(), "Program", timeStamp, null, notif.getTargetId(), desc, context)));
