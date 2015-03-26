@@ -1038,7 +1038,7 @@
         "weather-for-1": "tomorrow",
         "weather-for-2": "after tomorrow"
       },
-      "weblink": "See weather forecast",
+      "weblink": "Watch weather",
       "warning-weather-delete": "Do you really want to delete this meteo place ?"
     },
     "tts": {

@@ -101,15 +101,13 @@
     "domicube_plural": "$t(translation:devices.domicube.name.plural)",
     "program": "Programme",
     "program_plural": "Programmes",
-    "others": "Autre",
-    "others_plural": "Autres",
-    "focus": "Référence",
-    "focus_plural": "Références",
+    "others": "Les autres, hors focus",
+    "focus": "Focus est sur",
     "dependencies" : {
       "act" : "agit sur",
       "reads" : "lit des informations",
-      "changed" : "est modifié par",
-      "readby" : "est lu par"
+      "changed" : "état du focus modifié par",
+      "readby" : "état du focus modifié par"
     },
     "dependencie": "Dépendance",
     "dependencie_plural": "Dépendances",
