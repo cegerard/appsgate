@@ -23,7 +23,7 @@ import appsgate.lig.manager.client.communication.service.send.SendWebsocketsServ
  * @version 1.0.0
  *
  */
-public class GenericCommand implements Runnable {
+public class GenericCommand implements AsynchronousCommandRunner {
 
 	/**
 	 * Static class member uses to log what happened in each instances
@@ -39,13 +39,18 @@ public class GenericCommand implements Runnable {
 	private String callId;
 	private int clientId;
 	private SendWebsocketsService sendToClientService;
+	AsynchronousCommandResponseListener listener;
 	
 	private Object returnObject;
 
 	@SuppressWarnings("rawtypes")
 	public GenericCommand(ArrayList<Object> args, ArrayList<Class> paramType,
 			Object obj, String objId, String methodName, String callId, int clientId,
-			SendWebsocketsService sendToClientService) {
+			SendWebsocketsService sendToClientService, AsynchronousCommandResponseListener listener) {
+		logger.trace("new GenericCommand(ArrayList<Object> args : {}, ArrayList<Class> paramType : {},"
+				+ " Object obj: {}, String objId : {}, String methodName : {}, String callId : {}, int clientId : {},"
+				+ " SendWebsocketsService sendToClientService : {}, AsynchronousCommandResponseListener listener : {}) ",
+				args, paramType, obj,objId, methodName, callId, clientId, sendToClientService, listener);
 
 		this.args = args;
 		this.paramType = paramType;
@@ -55,23 +60,22 @@ public class GenericCommand implements Runnable {
 		this.callId = callId;
 		this.clientId = clientId;
 		this.sendToClientService = sendToClientService;
+		this.listener = listener;
 		
 		this.returnObject = null;
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public GenericCommand(ArrayList<Object> args, ArrayList<Class> paramType,
+			Object obj, String objId, String methodName, String callId, int clientId,
+			SendWebsocketsService sendToClientService) {
+		this(args, paramType, obj, objId, methodName, callId, clientId, sendToClientService, null);
 	}
 
 	@SuppressWarnings("rawtypes")
 	public GenericCommand(ArrayList<Object> args, ArrayList<Class> paramType,
 			Object obj, String methodName) {
-		
-		this.args = args;
-		this.paramType = paramType;
-		this.obj = obj;
-		this.methodName = methodName;
-		this.callId = null;
-		this.clientId = -1;
-		this.sendToClientService = null;
-		
-		this.returnObject = null;
+		this(args, paramType, obj, null, methodName, null, -1, null, null);
 	}
 
 	/**
@@ -89,39 +93,50 @@ public class GenericCommand implements Runnable {
 	 * @throws Exception
 	 */
 	@SuppressWarnings("rawtypes")
-	public Object abstractInvoke(Object obj, Object[] args, ArrayList<Class> paramTypes, String methodName)
+	@Override
+	public Object abstractInvoke()
 			throws Exception {
+		logger.trace("abstractInvoke()");
+
 		
-		Class[] tabTypes = new Class[paramTypes.size()];
+		Class[] tabTypes = new Class[paramType.size()];
 		int i = 0;
-		Iterator<Class> itc = paramTypes.iterator();
+		Iterator<Class> itc = paramType.iterator();
 		
 		while(itc.hasNext()) {
 			tabTypes[i] = itc.next(); 
 			i++;
 		}
-                if (obj == null) {
-                    logger.error("Null object");
-                    return null;
-                }
-                if (obj.getClass() == null) {
-                    logger.error("Unable to find the class of this object {}", obj);
-                    return null;
-                }
+        if (obj == null) {
+            logger.error("Null object");
+            return null;
+        }
+        if (obj.getClass() == null) {
+            logger.error("Unable to find the class of this object {}", obj);
+            return null;
+        }
 		Method m = obj.getClass().getMethod(methodName, tabTypes);
-		return m.invoke(obj, args);
+		logger.trace("abstractInvoke(), real method found : "+m);
+
+		return m.invoke(obj, args.toArray());
 	}
 
 	@Override
 	public void run() {
+		logger.trace("run()");
 		try {
-			Object ret = abstractInvoke(obj, args.toArray(), paramType, methodName);
+			Object ret = abstractInvoke();
+			logger.trace("Invocation successfull");
 			
 			if (ret != null) {
-				logger.debug("remote call (CHMI Command), " + methodName + " returns "
+				logger.trace("remote call (Generic Command), " + methodName + " returns "
 						+ ret.toString() + " / return type: "
 						+ ret.getClass().getName());
 				returnObject = ret;
+				
+				if(listener != null) {
+					listener.notifyResponse(objId, returnObject.toString(),callId);
+				}
 				
 				if(sendToClientService != null) {
 					JSONObject msg = new JSONObject();
@@ -130,11 +145,13 @@ public class GenericCommand implements Runnable {
 					msg.put("callId", callId);
 					sendToClientService.send(clientId, msg.toString());
 				}
+			} else {
+				logger.debug("remote call (Generic Command), for method  " + methodName + " returns null");				
 			}
 			
 		} catch (Exception e) {
                     logger.error("The method {} is not found for {}", methodName, this.objId);
-                    logger.debug(e.getMessage());
+                    logger.error(e.getMessage());
 		}
 	}
 	
@@ -142,6 +159,7 @@ public class GenericCommand implements Runnable {
 	 * Get the return object of the last call
 	 * @return the return type of the last call
 	 */
+	@Override
 	public Object getReturn() {
 		return returnObject;
 	}
