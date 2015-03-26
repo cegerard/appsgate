@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import appsgate.lig.manager.client.communication.service.send.SendWebsocketsService;
 import appsgate.lig.manager.client.communication.service.subscribe.CommandListener;
 import appsgate.lig.manager.client.communication.service.subscribe.ListenerService;
+import appsgate.lig.chmi.spec.AsynchronousCommandResponseListener;
 import appsgate.lig.chmi.spec.CHMIProxySpec;
 import appsgate.lig.chmi.spec.listeners.CoreEventsListener;
 import appsgate.lig.chmi.spec.listeners.CoreUpdatesListener;
@@ -58,7 +59,7 @@ import java.util.*;
  * @version 1.0.0
  *
  */
-public class EHMIProxyImpl implements EHMIProxySpec {
+public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponseListener {
 
     /**
      *
@@ -206,10 +207,16 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
         try {
             if (addListenerService.addCommandListener(commandListener, "EHMI")) {
-                logger.info("EHMI command listener deployed.");
+                logger.info("EHMI command listener deployed for EHMI commands");
             } else {
                 logger.error("EHMI command listener subscription failed.");
             }
+            if (addListenerService.addCommandListener(commandListener, "CHMI")) {
+                logger.info("EHMI command listener deployed, also for CHMI Commands");
+            } else {
+                logger.error("EHMI command listener subscription failed.");
+            }
+            
         } catch (ExternalComDependencyException comException) {
             logger.debug("Resolution failed for listener service dependency, the EHMICommandListener will not be registered");
         }
@@ -744,7 +751,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
     public Runnable executeCommand(int clientId, String method,
             ArrayList<Object> arguments, ArrayList<Class> types, String callId) {
         return new EHMICommand(this, method, arguments, types, callId,
-                clientId, sendToClientService);
+                clientId, this);
     }
 
     /**
@@ -768,7 +775,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
             traceManager.commandHasBeenPassed(objIdentifier, method, "user", arguments, getCurrentTimeInMillis());
         }
         return coreProxy.executeCommand(clientId, objIdentifier, method,
-                arguments, types, callId);
+                arguments, types, callId, this);
     }
 
     /**
@@ -1101,5 +1108,29 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
 	public PlaceManagerSpec getPlaceManager() {
 		return placeManager;
+	}
+
+	/**
+	 * listener for asynchronous command response
+	 * this one helps to eliminate the ClientCommunicationManager from the GenericCommands
+	 * and allows EHMI to intercept responses
+	 */
+	@Override
+	public void notifyResponse(String objectId, String value, String callId, int clientId) {
+		// This first version only does what was excpected from Generic Commands and EHMI Commands,
+		// sends the response to the websocket 
+		if(sendToClientService != null) {
+			try {
+				JSONObject msg = new JSONObject();
+				msg.put("value", value);
+				msg.put("objectId", objectId);
+				msg.put("callId", callId);
+				sendToClientService.send(clientId, msg.toString());
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+
+		}
+		
 	}
 }

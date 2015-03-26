@@ -82,7 +82,7 @@ public class CHMICommandListener implements CommandListener {
 						logger.debug("method without return");
 					}
 					
-					executorService.execute(chmiProxy.executeCommand(clientId, id, method, arguments, types, callId));
+					executorService.execute(chmiProxy.executeCommand(clientId, id, method, arguments, types, callId,null));
 				} catch (IllegalArgumentException e) {
 					logger.debug("Inappropriate argument: " + e.getMessage());
 				} 
@@ -106,7 +106,7 @@ public class CHMICommandListener implements CommandListener {
 					} else {
 						logger.debug("method without return");
 					}
-					executorService.execute(chmiProxy.executeCommand(clientId, "proxy", method, arguments, types, callId));
+					executorService.execute(chmiProxy.executeCommand(clientId, "proxy", method, arguments, types, callId, null));
 				} catch (IllegalArgumentException e) {
 					logger.debug("Inappropriate argument: " + e.getMessage());
 				} 

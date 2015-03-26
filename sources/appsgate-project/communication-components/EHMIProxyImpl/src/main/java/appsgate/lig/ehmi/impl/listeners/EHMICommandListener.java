@@ -57,8 +57,7 @@ public class EHMICommandListener implements CommandListener {
 	 */
 	@Override
 	public void onReceivedCommand(JSONObject obj) {
-		logger.debug("Client send : " + obj.toString());
-		logger.debug("Application domain level message (EHMI)");
+		logger.trace("onReceivedCommand(JSONObject obj : {})", obj.toString());
 		try {
 			int clientId = obj.getInt("clientId");
 			String method = obj.getString("method");
@@ -78,8 +77,17 @@ public class EHMICommandListener implements CommandListener {
 				}
 				
 				if(!obj.has("objectId")){
-					executorService.execute(ehmiProxy.executeCommand(clientId, method, arguments, types, callId));
+					logger.trace("onReceivedCommand(), obj does not have object Id");
+
+					if("EHMI".equals(obj.optString("TARGET")) ) {
+						logger.trace("onReceivedCommand(), TARGET is EHMI ");
+						executorService.execute(ehmiProxy.executeCommand(clientId, method, arguments, types, callId));
+					} else if("CHMI".equals(obj.optString("TARGET")) ) {
+						logger.trace("onReceivedCommand(), TARGET is CHMI ");
+						executorService.execute(ehmiProxy.executeRemoteCommand("proxy", method, arguments, types, clientId, callId));
+					} 
 				}else{
+					logger.trace("onReceivedCommand(), obj have objectId : "+obj.getString("objectId"));
 					executorService.execute(ehmiProxy.executeRemoteCommand(obj.getString("objectId"), method, arguments, types, clientId, callId));
 				}
 			} catch (IllegalArgumentException e) {

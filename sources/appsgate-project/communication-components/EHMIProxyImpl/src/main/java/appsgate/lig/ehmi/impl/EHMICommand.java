@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import appsgate.lig.chmi.spec.AsynchronousCommandResponseListener;
 import appsgate.lig.chmi.spec.AsynchronousCommandRunner;
 import appsgate.lig.chmi.spec.GenericCommand;
-import appsgate.lig.manager.client.communication.service.send.SendWebsocketsService;
 
 /**
  * 
@@ -34,12 +34,12 @@ public class EHMICommand extends GenericCommand implements AsynchronousCommandRu
 
 	@SuppressWarnings("rawtypes")
 	public EHMICommand(Object serviceObject, String methodName, ArrayList<Object> args, ArrayList<Class> paramType,
-                       String callId, int clientId, SendWebsocketsService sendToClientService) {
-		super(args, paramType, serviceObject, null, methodName, callId, clientId, sendToClientService, null);
+                       String callId, int clientId, AsynchronousCommandResponseListener listener) {
+		super(args, paramType, serviceObject, null, methodName, callId, clientId, listener);
 		logger.trace("new EHMICommand(Object serviceObject : {},"
 				+ " String methodName : {}, ArrayList<Object> args : {}, ArrayList<Class> paramType : {}, String callId : {},"
-				+ " int clientId : {}, SendWebsocketsService sendToClientService : {})",
-				serviceObject, methodName, args, paramType, callId, clientId, sendToClientService);
+				+ " int clientId : {}, AsynchronousCommandResponseListener listener : {})",
+				serviceObject, methodName, args, paramType, callId, clientId, listener);
 	}
 
 }

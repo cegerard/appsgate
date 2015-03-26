@@ -150,7 +150,7 @@ public class WebSockeServer extends WebSocketServer {
 					if(cmdListener!=null){
 						cmdListener.onReceivedCommand(cmd);
 					}else {
-						logger.debug("skipping command listener invocation duo to null listener");
+						logger.debug("skipping command listener invocation due to null listener");
 					}
 
 					logger.debug("Finished invoking listener {} for command {}.",cmdListener,cmd.toString());

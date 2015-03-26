@@ -25,6 +25,7 @@ import appsgate.lig.manager.client.communication.service.subscribe.ListenerServi
 import appsgate.lig.chmi.exceptions.ExternalComDependencyException;
 import appsgate.lig.chmi.impl.listeners.CHMICommandListener;
 import appsgate.lig.chmi.impl.listeners.TimeObserver;
+import appsgate.lig.chmi.spec.AsynchronousCommandResponseListener;
 import appsgate.lig.chmi.spec.CHMIProxySpec;
 import appsgate.lig.chmi.spec.GenericCommand;
 import appsgate.lig.chmi.spec.listeners.CoreEventsListener;
@@ -113,11 +114,12 @@ public class CHMIProxyImpl implements CHMIProxySpec {
     
     private void clientComBound() {
         try{
-        	if (addListenerService.addCommandListener(commandListener, "CHMI")) {
-        		logger.info("CHMI command listener deployed.");
-        	} else {
-        		logger.error("CHMI command listener subscription failed.");
-        	}
+        	//This one is removed  EHMI registers instead to CHMI Target (CHMI should not know client commmunication manager)
+//        	if (addListenerService.addCommandListener(commandListener, "CHMI")) {
+//        		logger.info("CHMI command listener deployed.");
+//        	} else {
+//        		logger.error("CHMI command listener subscription failed.");
+//        	}
         }catch(ExternalComDependencyException comException) {
     		logger.debug("Resolution failed for listener service dependency, the CHMICommandListener will not be registered.");
     	}
@@ -229,7 +231,8 @@ public class CHMIProxyImpl implements CHMIProxySpec {
 
     @SuppressWarnings("rawtypes")
     @Override
-    public GenericCommand executeCommand(int clientId, String objectId, String methodName, ArrayList<Object> args, ArrayList<Class> paramType, String callId) {
+    public GenericCommand executeCommand(int clientId, String objectId, String methodName, ArrayList<Object> args, ArrayList<Class> paramType, String callId,
+    		AsynchronousCommandResponseListener listener) {
     	Object obj;
     	if("proxy".equals(objectId)) {
     		logger.trace("executeCommand(...), ObjectId: proxy, direct call to CHMI");
@@ -237,7 +240,7 @@ public class CHMIProxyImpl implements CHMIProxySpec {
     	} else {
     		obj = getCoreDevice(objectId);
     	}
-        return new GenericCommand(args, paramType, obj, objectId, methodName, callId, clientId, sendToClientService);
+        return new GenericCommand(args, paramType, obj, objectId, methodName, callId, clientId, listener);
     }
 
     @SuppressWarnings("rawtypes")

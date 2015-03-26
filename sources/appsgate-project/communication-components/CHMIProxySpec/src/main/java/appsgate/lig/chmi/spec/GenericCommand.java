@@ -4,11 +4,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import appsgate.lig.manager.client.communication.service.send.SendWebsocketsService;
 
 /**
  * 
@@ -38,7 +35,6 @@ public class GenericCommand implements AsynchronousCommandRunner {
 	private String methodName;
 	private String callId;
 	private int clientId;
-	private SendWebsocketsService sendToClientService;
 	AsynchronousCommandResponseListener listener;
 	
 	private Object returnObject;
@@ -46,11 +42,11 @@ public class GenericCommand implements AsynchronousCommandRunner {
 	@SuppressWarnings("rawtypes")
 	public GenericCommand(ArrayList<Object> args, ArrayList<Class> paramType,
 			Object obj, String objId, String methodName, String callId, int clientId,
-			SendWebsocketsService sendToClientService, AsynchronousCommandResponseListener listener) {
+			AsynchronousCommandResponseListener listener) {
 		logger.trace("new GenericCommand(ArrayList<Object> args : {}, ArrayList<Class> paramType : {},"
 				+ " Object obj: {}, String objId : {}, String methodName : {}, String callId : {}, int clientId : {},"
-				+ " SendWebsocketsService sendToClientService : {}, AsynchronousCommandResponseListener listener : {}) ",
-				args, paramType, obj,objId, methodName, callId, clientId, sendToClientService, listener);
+				+ " AsynchronousCommandResponseListener listener : {}) ",
+				args, paramType, obj,objId, methodName, callId, clientId, listener);
 
 		this.args = args;
 		this.paramType = paramType;
@@ -59,7 +55,6 @@ public class GenericCommand implements AsynchronousCommandRunner {
 		this.methodName = methodName;
 		this.callId = callId;
 		this.clientId = clientId;
-		this.sendToClientService = sendToClientService;
 		this.listener = listener;
 		
 		this.returnObject = null;
@@ -67,15 +62,14 @@ public class GenericCommand implements AsynchronousCommandRunner {
 	
 	@SuppressWarnings("rawtypes")
 	public GenericCommand(ArrayList<Object> args, ArrayList<Class> paramType,
-			Object obj, String objId, String methodName, String callId, int clientId,
-			SendWebsocketsService sendToClientService) {
-		this(args, paramType, obj, objId, methodName, callId, clientId, sendToClientService, null);
+			Object obj, String objId, String methodName, String callId, int clientId) {
+		this(args, paramType, obj, objId, methodName, callId, clientId, null);
 	}
 
 	@SuppressWarnings("rawtypes")
 	public GenericCommand(ArrayList<Object> args, ArrayList<Class> paramType,
 			Object obj, String methodName) {
-		this(args, paramType, obj, null, methodName, null, -1, null, null);
+		this(args, paramType, obj, null, methodName, null, -1, null);
 	}
 
 	/**
@@ -135,15 +129,7 @@ public class GenericCommand implements AsynchronousCommandRunner {
 				returnObject = ret;
 				
 				if(listener != null) {
-					listener.notifyResponse(objId, returnObject.toString(),callId);
-				}
-				
-				if(sendToClientService != null) {
-					JSONObject msg = new JSONObject();
-					msg.put("value", returnObject.toString());
-					msg.put("objectId", objId);
-					msg.put("callId", callId);
-					sendToClientService.send(clientId, msg.toString());
+					listener.notifyResponse(objId, returnObject.toString(),callId, clientId);
 				}
 			} else {
 				logger.debug("remote call (Generic Command), for method  " + methodName + " returns null");				

@@ -72,7 +72,7 @@ public interface CHMIProxySpec {
      * @return a Runnable object that can be execute everywhere.
      */
 	 @SuppressWarnings("rawtypes")
-	public GenericCommand executeCommand(int clientId, String objectId, String methodName, ArrayList<Object> args, ArrayList<Class> paramType, String callId);
+	public GenericCommand executeCommand(int clientId, String objectId, String methodName, ArrayList<Object> args, ArrayList<Class> paramType, String callId, AsynchronousCommandResponseListener listener);
 	
 	/**
 	 * Execute command from outside to a specific device
