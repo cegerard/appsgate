@@ -20,10 +20,7 @@ import org.osgi.service.http.NamespaceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import appsgate.lig.manager.client.communication.service.send.SendWebsocketsService;
-import appsgate.lig.manager.client.communication.service.subscribe.ListenerService;
 import appsgate.lig.chmi.exceptions.ExternalComDependencyException;
-import appsgate.lig.chmi.impl.listeners.CHMICommandListener;
 import appsgate.lig.chmi.impl.listeners.TimeObserver;
 import appsgate.lig.chmi.spec.AsynchronousCommandResponseListener;
 import appsgate.lig.chmi.spec.CHMIProxySpec;
@@ -52,17 +49,10 @@ public class CHMIProxyImpl implements CHMIProxySpec {
      */
     private final static Logger logger = LoggerFactory.getLogger(CHMIProxyImpl.class);
 
-    private CHMICommandListener commandListener;
-
     /**
      * Undefined sensors list, resolved by ApAM
      */
     Set<CoreObjectSpec> abstractDevice;
-
-    /**
-     * Service to communicate with clients
-     */
-    private SendWebsocketsService sendToClientService;
     
     /**
      * Array list for updates listener
@@ -85,7 +75,6 @@ public class CHMIProxyImpl implements CHMIProxySpec {
      */
     public void newInst() {
 
-        commandListener = new CHMICommandListener(this);
         updatesListenerList = new ArrayList<CoreUpdatesListener>();
         eventsListenerList = new ArrayList<CoreEventsListener>();
         
@@ -238,8 +227,6 @@ public class CHMIProxyImpl implements CHMIProxySpec {
         ArrayList<Object> arguments = new ArrayList<Object>();
         @SuppressWarnings("rawtypes")
         ArrayList<Class> argumentsType = new ArrayList<Class>();
-
-        commandListener.loadArguments(args, arguments, argumentsType);
 
         return executeCommand(objectId, methodName, arguments, argumentsType);
     }
