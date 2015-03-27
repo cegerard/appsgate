@@ -146,7 +146,8 @@ define([
             $("#add-weather-modal").on("hidden.bs.modal", function() {
                 // instantiate a model for the new location observer
                 var loc = $("#add-weather-modal input[name='name']").val();
-//                var weather = new Weather({location	: loc, id	: 'WeatherObserver-'+Math.round(Math.random() * 10000).toString(), name : loc, type :"103"});
+//                var weather = new Weather({location	: loc,
+// id	: 'WeatherObserver-'+Math.round(Math.random() * 10000).toString(), name : loc, type :"103"});
 
                 adapters.getWeatherAdapter().addLocationObserver(loc);
 
