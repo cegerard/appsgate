@@ -60,11 +60,6 @@ public class CHMIProxyImpl implements CHMIProxySpec {
     Set<CoreObjectSpec> abstractDevice;
 
     /**
-     * Service to be notified when clients send commands
-     */
-    private ListenerService addListenerService;
-
-    /**
      * Service to communicate with clients
      */
     private SendWebsocketsService sendToClientService;
@@ -112,25 +107,11 @@ public class CHMIProxyImpl implements CHMIProxySpec {
         logger.debug("The CHMI proxy component has been initialized");
     }
     
-    private void clientComBound() {
-        try{
-        	//This one is removed  EHMI registers instead to CHMI Target (CHMI should not know client commmunication manager)
-//        	if (addListenerService.addCommandListener(commandListener, "CHMI")) {
-//        		logger.info("CHMI command listener deployed.");
-//        	} else {
-//        		logger.error("CHMI command listener subscription failed.");
-//        	}
-        }catch(ExternalComDependencyException comException) {
-    		logger.debug("Resolution failed for listener service dependency, the CHMICommandListener will not be registered.");
-    	}
-    }
-
     /**
      * Called by APAM when an instance of this implementation is removed
      */
     public void deleteInst() {
     	httpService.unregister("/chmi");
-    	addListenerService.removeCommandListener("CHMI");
         logger.debug("The CHMI proxy component has been stopped");
     }
 
@@ -155,11 +136,7 @@ public class CHMIProxyImpl implements CHMIProxySpec {
             	newMsg = "newSimulatedService";
             }
             
-            try{
-                notifyAllUpdatesListeners(newMsg, newObj.getAbstractObjectId(), newObj.getUserType(), newObj.getDescription(), newObj.getBehaviorDescription());
-        	}catch(ExternalComDependencyException comException) {
-        		logger.debug("Resolution failled for send to client service dependency, no message will be sent.");
-        	}
+            notifyAllUpdatesListeners(newMsg, newObj.getAbstractObjectId(), newObj.getUserType(), newObj.getDescription(), newObj.getBehaviorDescription());
             
         } catch (Exception ex) {
             logger.error("If getCoreType method error trace appeare below it is because the service or the device doesn't implement all methode in"
@@ -274,14 +251,8 @@ public class CHMIProxyImpl implements CHMIProxySpec {
      * @param notif the notification message from ApAM
      */
     public void gotNotification(NotificationMsg notif) {
-    	JSONObject not = notif.JSONize();
-        logger.debug("Notification message received, " + not);
-        notifyAllEventsListeners(notif.getSource(), notif.getVarName(), not.getString("value"));
-        try{
-        	sendToClientService.send(not.toString());
-    	}catch(ExternalComDependencyException comException) {
-    		logger.debug("Resolution failled for send to client service dependency, no message will be sent.");
-    	}
+        logger.debug("Notification message received, " + notif.JSONize());
+        notifyAllEventsListeners(notif);
     }
 
     /**
@@ -495,9 +466,9 @@ public class CHMIProxyImpl implements CHMIProxySpec {
 	 * @param varName the name of the variable that changed
 	 * @param value the new value of the variable
 	 */
-	private void notifyAllEventsListeners(String srcId, String varName, String value) {
+	private void notifyAllEventsListeners(NotificationMsg msg) {
 		for(CoreEventsListener listener : eventsListenerList) {
-			listener.notifyEvent(srcId, varName, value);
+			listener.notifyEvent(msg);
 		}
 	}
 	

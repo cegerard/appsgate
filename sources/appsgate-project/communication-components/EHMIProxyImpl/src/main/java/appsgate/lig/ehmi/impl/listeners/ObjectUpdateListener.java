@@ -103,12 +103,8 @@ public class ObjectUpdateListener implements CoreUpdatesListener {
     		} catch (JSONException e) {
     			e.printStackTrace();
     		}
-    		
-        	
-
             traceManager.coreUpdateNotify(EHMIProxy.getCurrentTimeInMillis(), objectId, coreType, userType, name, description, "remove");
             EHMIProxy.newDeviceStatus(objectId, Boolean.FALSE);
-
         }
 
     }

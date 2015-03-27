@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import appsgate.lig.chmi.spec.listeners.CoreEventsListener;
+import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.ehmi.impl.EHMIProxyImpl;
 import appsgate.lig.ehmi.impl.Entry;
 import appsgate.lig.ehmi.spec.listeners.CoreListener;
@@ -19,9 +20,6 @@ public class ObjectEventListener implements CoreEventsListener {
      */
     private final static Logger logger = LoggerFactory.getLogger(ObjectEventListener.class);
 
-    private String sourceId = "";
-    private String varName = "";
-    private String value = "";
 
     private EHMIProxyImpl EHMIProxy;
     private TraceManSpec traceManager;
@@ -31,33 +29,21 @@ public class ObjectEventListener implements CoreEventsListener {
         EHMIProxy = eHMIProxy;
     }
 
-    @Override
-    public String getSourceId() {
-        return sourceId;
-    }
-
-    @Override
-    public String varName() {
-        return varName;
-    }
-
-    @Override
-    public String getValue() {
-        return value;
-    }
-
     @SuppressWarnings("unchecked")
     @Override
-    public void notifyEvent(String srcId, String varName, String value) {
-        logger.debug("Event notification received for:  {" + srcId + ", " + varName + ", " + value + "}");
+    public void notifyEvent(NotificationMsg notification) {
+        logger.debug("notifyEvent(NotificationMsg notification : {})", notification.JSONize());
+        String srcId = notification.getSource();
+        String varName = notification.getVarName();
+        String value = notification.getNewValue();
+        logger.debug("notifyEvent(...), srcId: {}, varName: {}, value: {}", srcId, varName, value);
+
+        
         //trace the last event received
         if (traceManager != null) {
             traceManager.coreEventNotify(EHMIProxy.getCurrentTimeInMillis(), srcId, varName, value);
         }
-
-        this.sourceId = srcId;
-        this.varName = varName;
-        this.value = value;
+        EHMIProxy.sendToClients(notification.JSONize());
 
         Entry eventKey = new Entry(srcId, varName, value);
 
@@ -82,9 +68,10 @@ public class ObjectEventListener implements CoreEventsListener {
             }
         }
         if (EHMIProxy.getDependencyManager() != null) {
-            EHMIProxy.getDependencyManager().updateDeviceStatus(srcId, varName, value);
+            EHMIProxy.getDependencyManager().updateDeviceStatus(srcId,
+            		varName, 
+            		value);
         }
-
     }
 
     public void setTraceManager(TraceManSpec traceManager) {

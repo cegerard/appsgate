@@ -11,13 +11,6 @@
 		<relation field="abstractDevice" added="addAbstractObject" removed="removedAbstractObject" resolve="exist"/>
 				
 		<relation push="gotNotification" multiple="true" resolve="exist" />
-		
-		<relation specification="CommunicationManagerSpec" resolve="exist" creation="eager"
-		    added="clientComBound" fail="wait"
-			exception="appsgate.lig.chmi.exceptions.ExternalComDependencyException">
-			<interface field="addListenerService" />
-			<interface field="sendToClientService" />
-		</relation>
 
 		<ipojo:requires field="httpService"  />
 
