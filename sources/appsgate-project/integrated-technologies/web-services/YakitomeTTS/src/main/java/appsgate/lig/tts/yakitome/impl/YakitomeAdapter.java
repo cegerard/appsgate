@@ -76,7 +76,7 @@ public class YakitomeAdapter extends Thread implements TTSAdapter{
 	 * if not, it destroy previously created apam instance
 	 * if yes, check that if exiting a running instance that holds the same configuration
 	 */
-	public void checkAndUpdateTTSInstance() {
+	public synchronized void  checkAndUpdateTTSInstance() {
 		logger.trace("checkAndUpdateTTSInstance()");
 		if(apiClient!= null
 				&&apiClient.getConfigurationHashkey() != null
@@ -108,13 +108,10 @@ public class YakitomeAdapter extends Thread implements TTSAdapter{
 					logger.warn("checkAndUpdateTTSInstance(),"
 							+ "dbConfig is not (yet ?) there, can't ApAM instance");						
 				}
-
-				
 			}			
 		} else {
 			logger.trace("checkAndUpdateTTSInstance(), Yakitome is not (no more ?) available");
 			destroyTTSInstance();
-
 		}
 	}
 	
