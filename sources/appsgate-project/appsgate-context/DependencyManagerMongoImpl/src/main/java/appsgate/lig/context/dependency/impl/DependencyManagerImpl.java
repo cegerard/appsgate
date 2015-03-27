@@ -37,7 +37,6 @@ public class DependencyManagerImpl implements DependencyManagerSpec {
      */
     private MongoDBConfiguration conf;
 
-
     /**
      * Reference to the ApAM context proxy. Used to be notified when something
      * happen.
@@ -86,12 +85,16 @@ public class DependencyManagerImpl implements DependencyManagerSpec {
 
     @Override
     public void updateDeviceStatus(String srcId, String varName, String value) {
-        addGraph(graphManager.updateDeviceStatus(srcId, varName, value));
+        if (graphManager.updateDeviceStatus(srcId, varName, value)) {
+            addGraph(graphManager.getGraph());
+        }
     }
 
     @Override
-    public void updateProgramStatus(String deviceId) {
-        addGraph(graphManager.updateProgramStatus(deviceId));
+    public void updateProgramStatus(String deviceId, String status) {
+        if (graphManager.updateProgramStatus(deviceId, status)) {
+            addGraph(graphManager.getGraph());
+        }
     }
 
     @Override
@@ -105,7 +108,7 @@ public class DependencyManagerImpl implements DependencyManagerSpec {
 
     public Iterable<String> getListProgramIds() {
         JSONArray programs = ehmiProxy.getPrograms();
-        ArrayList<String> ret = new ArrayList<String>();
+        ArrayList<String> ret = new ArrayList<>();
         for (int i = 0; i < programs.length(); i++) {
             try {
                 ret.add(programs.getJSONObject(i).getString("id"));
@@ -206,14 +209,14 @@ public class DependencyManagerImpl implements DependencyManagerSpec {
             }
             DBObject obj = cursor.next();
             JSONArray dependencies;
-                JSONObject graph;
+            JSONObject jsonGraph;
             try {
                 dependencies = new JSONArray(obj.get("dependencies").toString());
-                graph = new JSONObject( obj.get("graph").toString());
+                jsonGraph = new JSONObject(obj.get("graph").toString());
             } catch (JSONException ex) {
                 return null;
             }
-                return new Graph(graph, dependencies, timestamp.toString());
+            return new Graph(jsonGraph, dependencies, timestamp.toString());
 
         }
         return null;

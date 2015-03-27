@@ -102,7 +102,7 @@ public class EUDEInterpreterTest {
         context.checking(new Expectations() {
             {
 
-                allowing(dependencyManager).updateProgramStatus(with(any(String.class)));
+                allowing(dependencyManager).updateProgramStatus(with(any(String.class)), with(any(String.class)));
                 allowing(dependencyManager).buildGraph();
                 
                 allowing(pull_service).testDB();
@@ -133,7 +133,7 @@ public class EUDEInterpreterTest {
 
                 allowing(gc).run();
                 allowing(gc).getReturn();
-                will(returnValue(new Long(2)));
+                will(returnValue((long) 2));
 
                 allowing(chmiProxy).executeCommand(with("clock"), with("getCurrentTimeInMillis"), with(any(JSONArray.class)));
 

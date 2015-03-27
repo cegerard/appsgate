@@ -93,7 +93,7 @@ public class TechnicalTest {
         tested = context.states("NotYet");
         context.checking(new Expectations() {
             {
-                allowing(dependencyManager).updateProgramStatus(with(any(String.class)));
+                allowing(dependencyManager).updateProgramStatus(with(any(String.class)), with(any(String.class)));
                 allowing(dependencyManager).buildGraph();
                 allowing(pull_service).testDB();
                 will(returnValue(true));
@@ -152,6 +152,5 @@ public class TechnicalTest {
         System.out.println("Test 1");
         Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/techniques/t01.json")));
     }
-
 
 }

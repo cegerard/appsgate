@@ -3,13 +3,7 @@ package appsgate.lig.context.dependency.impl;
 import appsgate.lig.context.dependency.graph.Graph;
 import appsgate.lig.context.dependency.graph.ProgramGraph;
 import appsgate.lig.ehmi.spec.EHMIProxySpec;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -94,38 +88,18 @@ public class GraphManager {
      * @param pid : id of the program we want to build planification links
      */
     private boolean isPlanificationLink(String pid) {
-
-        // Planification of the checkPrograms to avoid stucking if no scheduling service
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        Callable<Object> task = new Callable<Object>() {
-            @Override
-            public Object call() throws ExecutionException {
-                return getContext().checkProgramsScheduled();
-            }
-        };
-        Future<Object> future = executor.submit(task);
         try {
-            JSONArray programsScheduled = (JSONArray) future.get(2, TimeUnit.SECONDS);
-            // Links program - scheduler
-            return (programsScheduled != null && programsScheduled.toString().contains(pid));
-        } catch (TimeoutException ex) {
-            LOGGER.error("Time Out trying to reach scheduling service, aborting)");
-            // handle the timeout
-        } catch (InterruptedException e) {
-            // handle the interrupts
-        } catch (ExecutionException e) {
-            // handle other exceptions
-        } finally {
-            future.cancel(true); // may or may not desire this
+            return getContext().checkProgramIdScheduled(pid);
+        } catch (ExecutionException ex) {
+            LOGGER.error("No context found");
+            return false;
         }
-
-        return false;
     }
 
     /**
      * Method to update the nodes graph with the latest values
      */
-    public Graph updateGraph() {
+    private Graph updateGraph() {
         try {
             // Place names
             JSONArray places = getContext().getPlaces();
@@ -141,7 +115,7 @@ public class GraphManager {
             if (devices != null) {
                 for (int j = 0; j < devices.length(); j++) {
                     JSONObject currentDevice = devices.getJSONObject(j);
-                    
+
                     String deviceType = currentDevice.getString("type");
                     switch (deviceType) {
                         case "3":
@@ -161,7 +135,7 @@ public class GraphManager {
                             graph.setDevice(currentDevice.optString("id"), currentDevice.get("state").toString(), currentDevice.optString("name"));
                             break;
                     }
-                 
+
                 }
             }
             // Programs
@@ -202,9 +176,8 @@ public class GraphManager {
      * @param programId
      * @return the graph once updated
      */
-    public Graph updateProgramStatus(String programId) {
-        updateGraph();
-        return graph;
+    public Boolean updateProgramStatus(String programId, String status) {
+        return graph.setProgramState(programId, status);
     }
 
     /**
@@ -212,10 +185,27 @@ public class GraphManager {
      * @param srcId
      * @param varName
      * @param value
-     * @return the graph once updated
+     * @return true if the graph has been updated
      */
-    public Graph updateDeviceStatus(String srcId, String varName, String value) {
-        updateGraph();
+    public Boolean updateDeviceStatus(String srcId, String varName, String value) {
+        LOGGER.debug("update device status {}, {} =  {}", srcId, varName, value);
+        switch (varName) {
+            case "contact":
+            case "inserted":
+            case "plugState":
+            case "state":
+                return graph.setDeviceState(srcId, value);
+            case "name":
+                return graph.setDeviceName(srcId, value);
+        }
+        return false;
+    }
+
+    /**
+     * 
+     * @return graph
+     */
+    public Graph getGraph() {
         return graph;
     }
 

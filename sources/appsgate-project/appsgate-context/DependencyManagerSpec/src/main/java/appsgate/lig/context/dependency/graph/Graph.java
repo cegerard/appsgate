@@ -76,6 +76,7 @@ public class Graph implements SpokObject {
 
     /**
      * Constructor
+     *
      * @param timestamp
      */
     public Graph(Long timestamp) {
@@ -86,24 +87,24 @@ public class Graph implements SpokObject {
         } catch (JSONException ex) {
         }
     }
-    
+
     /**
-     * 
+     *
      * @param jsonGraph
-     * @param devices 
-     * @param timestamp 
+     * @param devices
+     * @param timestamp
      */
     public Graph(JSONObject jsonGraph, JSONArray devices, String timestamp) {
-        
+
         this.dependencies = new HashMap<>();
-        for (int i = 0 ; i < devices.length(); i++) {
+        for (int i = 0; i < devices.length(); i++) {
             JSONObject line;
             try {
                 line = devices.getJSONObject(i);
                 String key = line.getString("object");
                 this.dependencies.put(key, new Dependencies(key, line));
             } catch (JSONException e) {
-                
+
             }
         }
         this.programs = new HashMap<>();
@@ -513,18 +514,28 @@ public class Graph implements SpokObject {
      *
      * @param pid
      * @param state
+     * @return 
      */
-    public void setProgramState(String pid, String state) {
+    public Boolean setProgramState(String pid, String state) {
+        if (programState.containsKey(pid) && programState.get(pid).equalsIgnoreCase(state)) {
+            return false;
+        }
         programState.put(pid, state);
+        return true;
     }
 
     /**
      *
      * @param id
      * @param name
+     * @return 
      */
-    public void setPlaceName(String id, String name) {
+    public Boolean setPlaceName(String id, String name) {
+        if (placeName.containsKey(id) && placeName.get(id).equalsIgnoreCase(name)) {
+            return false;
+        }
         placeName.put(id, name);
+        return true;
     }
 
     /**
@@ -536,6 +547,34 @@ public class Graph implements SpokObject {
     public void setDevice(String did, String state, String name) {
         deviceState.put(did, state);
         deviceName.put(did, name);
+    }
+
+    /**
+     *
+     * @param id
+     * @param newName
+     * @return
+     */
+    public Boolean setDeviceName(String id, String newName) {
+        if (deviceName.containsKey(id) && deviceName.get(id).equalsIgnoreCase(newName)) {
+            return false;
+        }
+        deviceName.put(id, newName);
+        return true;
+    }
+
+    /**
+     *
+     * @param id
+     * @param state
+     * @return
+     */
+    public Boolean setDeviceState(String id, String state) {
+        if (deviceState.containsKey(id) && deviceState.get(id).equalsIgnoreCase(state)) {
+            return false;
+        }
+        deviceState.put(id, state);
+        return true;
     }
 
     /**
@@ -586,7 +625,7 @@ public class Graph implements SpokObject {
     }
 
     /**
-     * 
+     *
      */
     public void buildTypes() {
         try {
@@ -597,8 +636,8 @@ public class Graph implements SpokObject {
     }
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public JSONArray getJSONDependencies() {
         JSONArray array = new JSONArray();

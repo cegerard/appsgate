@@ -37,8 +37,9 @@ public interface DependencyManagerSpec {
     /**
      *
      * @param deviceId
+     * @param status
      */
-    public void updateProgramStatus(String deviceId);
+    public void updateProgramStatus(String deviceId, String status);
 
     /**
      *

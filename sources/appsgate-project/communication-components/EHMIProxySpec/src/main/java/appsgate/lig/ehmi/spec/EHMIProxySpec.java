@@ -179,7 +179,7 @@ public interface EHMIProxySpec {
      * Check if a particular program Id is scheduled in the future (on start or
      * on ending)
      *
-     * @param progamId the program-id (not the program name)
+     * @param programId the program-id (not the program name)
      * @return true if the program is scheduled in the future (we do not check
      * if the program-id really exist as we parse Google Calendar events)
      */

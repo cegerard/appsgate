@@ -81,7 +81,7 @@ public class ReferenceTest {
         tested = context.states("NotYet");
         context.checking(new Expectations() {
             {
-                allowing(dependencyManager).updateProgramStatus(with(any(String.class)));
+                allowing(dependencyManager).updateProgramStatus(with(any(String.class)), with(any(String.class)));
                 allowing(dependencyManager).buildGraph();
                 allowing(pull_service).testDB();
                 will(returnValue(true));

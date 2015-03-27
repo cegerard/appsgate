@@ -739,7 +739,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
             p.setProgramStatus(deviceId, status);
         }
         if (dependencyManager != null) {
-            dependencyManager.updateProgramStatus(deviceId);
+            dependencyManager.updateProgramStatus(deviceId, status.name());
         }
     }
 
