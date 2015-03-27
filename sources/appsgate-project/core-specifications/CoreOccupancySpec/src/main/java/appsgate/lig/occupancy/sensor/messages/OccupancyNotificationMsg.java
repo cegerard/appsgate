@@ -14,11 +14,6 @@ import appsgate.lig.core.object.spec.CoreObjectSpec;
 public class OccupancyNotificationMsg extends CoreNotificationMsg {
 
     /**
-     * The new occupancy value
-     */
-    private final boolean newOccupancy;
-
-    /**
      * Constructor or this ApAM message.
      *
      * @param source the source instance of this notification
@@ -28,21 +23,6 @@ public class OccupancyNotificationMsg extends CoreNotificationMsg {
      */
     public OccupancyNotificationMsg(String source, boolean newOccupancy, String varName, String value) {
         super(varName, value, source);
-        this.newOccupancy = newOccupancy;
     }
 
-    /**
-     * Method that returns the value corresponding to this notification
-     *
-     * @return the new occupancy as a boolean
-     */
-    public boolean getNotificationValue() {
-        return newOccupancy;
-    }
-
-
-    @Override
-    public String getNewValue() {
-        return String.valueOf(newOccupancy);
-    }
 }

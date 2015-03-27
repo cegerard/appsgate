@@ -11,13 +11,7 @@ import appsgate.lig.core.object.spec.CoreObjectSpec;
  *
  */
 public class OnOffActuatorNotificationMsg extends CoreNotificationMsg {
-
-    /**
-     * The current virtual state
-     */
-    private final boolean isOn;
-
-
+	
     /**
      * Constructor for this ApAM message.
      *
@@ -28,20 +22,6 @@ public class OnOffActuatorNotificationMsg extends CoreNotificationMsg {
      */
     public OnOffActuatorNotificationMsg(String isOn, String varName, String value, String source) {
         super(varName, value, source);
-        this.isOn = Boolean.valueOf(isOn);
     }
 
-    /**
-     * Method that returns the value corresponding to this notification
-     *
-     * @return the new temperature as a float
-     */
-    public boolean getNotificationValue() {
-        return isOn;
-    }
-
-    @Override
-    public String getNewValue() {
-        return String.valueOf(isOn);
-    }
 }

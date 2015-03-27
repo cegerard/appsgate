@@ -13,12 +13,6 @@ import appsgate.lig.core.object.spec.CoreObjectSpec;
 public class IlluminationNotificationMsg extends CoreNotificationMsg {
 
     /**
-     * The new illumination value
-     */
-    private final int newIllumination;
-
-
-    /**
      * Constructor for this ApAM message
      *
      * @param newIllumination the new illumination value
@@ -28,21 +22,7 @@ public class IlluminationNotificationMsg extends CoreNotificationMsg {
      */
     public IlluminationNotificationMsg(int newIllumination, String varName, String value, String source) {
         super(varName, value, source);
-        this.newIllumination = newIllumination;
     }
 
-    /**
-     * Method that returns the value corresponding to this notification
-     *
-     * @return the new illumination as an integer
-     */
-    public int getNotificationValue() {
-        return newIllumination;
-    }
-
-    @Override
-    public String getNewValue() {
-        return String.valueOf(newIllumination);
-    }
 
 }

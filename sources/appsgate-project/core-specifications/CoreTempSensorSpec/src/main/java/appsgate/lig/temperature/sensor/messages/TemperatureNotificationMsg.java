@@ -14,13 +14,6 @@ import appsgate.lig.core.object.spec.CoreObjectSpec;
  */
 public class TemperatureNotificationMsg extends CoreNotificationMsg {
 
-
-    /**
-     * The new temperature value
-     */
-    private final float newTemperature;
-
-
     /**
      * Constructor for this ApAM message.
      *
@@ -31,21 +24,7 @@ public class TemperatureNotificationMsg extends CoreNotificationMsg {
      */
     public TemperatureNotificationMsg(float newTemperature, String varName, String value, String source) {
         super(varName, value, source);
-        this.newTemperature = newTemperature;
     }
 
-    /**
-     * Method that returns the value corresponding to this notification
-     *
-     * @return the new temperature as a float
-     */
-    public float getNotificationValue() {
-        return newTemperature;
-    }
-
-    @Override
-    public String getNewValue() {
-        return String.valueOf(newTemperature);
-    }
 
 }
