@@ -47,7 +47,8 @@ define([
 
         onItemsChangedModel: function() {
             console.log("onItemsChanged");
-            this.renderTTS(this.model.getTTSItems());
+//            this.renderTTS(this.model.getTTSItems());
+            this.render();
 
         },
         onSpeedChangedModel: function() {
@@ -190,10 +191,16 @@ define([
         },
         showInProgress:function() {
             $(".tts-progress").html(this.tplTTSProgress({}));
+            $(".btn-tts-add").addClass("disabled");
+            $(".btn-tts-cancel").addClass("disabled");
             $(".tts-progress").i18n();
         },
         hideInProgress:function() {
             $(".tts-progress").empty();
+            $(".btn-tts-add").removeClass("disabled");
+            $(".btn-tts-cancel").removeClass("disabled");
+            $("#add-tts-modal").modal('hide');
+            this.render();
         },
         showAudio:function(url) {
             $(".tts-audio").html(this.tplTTSAudio({
@@ -216,7 +223,7 @@ define([
             this.$el.html(this.tplTTS({
                 service: this.model,
                 sensorImg: ["app/img/tts.png"],
-                sensorType: $.i18n.t("services.tts.name.singular"),
+                sensorType: $.i18n.t("services.tts.name.singular")
             }));
 
             if(this.model.translationOngoing.length>0) {

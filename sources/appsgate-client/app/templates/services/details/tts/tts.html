@@ -40,11 +40,10 @@
 							</select>
 
 							<span data-i18n="services.tts.control.from"/>
-							<%var gender = "Male"%>
 
 							<select class="form-control select-voice">
 							</select>
-							<!--(<span class=select-gender" data-i18n="services.tts.lang.<%= gender %>"/>)-->
+
 							<span data-i18n="services.tts.control.slow"/>
 							<input type="range" class="select-speed" min="1" max="10" style="width:auto;display:inline;">
 							<span data-i18n="services.tts.control.fast"/>
@@ -53,7 +52,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button class="btn btn-default cancel-button" data-dismiss="modal" data-i18n="form.cancel-button"></button>
+				<button class="btn btn-default cancel-button btn-tts-cancel" data-dismiss="modal" data-i18n="form.cancel-button"></button>
 				<button class="btn btn-primary valid-button btn-tts-add" data-i18n="form.valid-button"></button>
 			</div>
 		</div>
