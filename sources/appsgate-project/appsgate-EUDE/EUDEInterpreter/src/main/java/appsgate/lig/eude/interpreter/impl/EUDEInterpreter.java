@@ -24,6 +24,8 @@ import appsgate.lig.eude.interpreter.langage.components.StartEventListener;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeEvent;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
 import appsgate.lig.context.dependency.graph.Reference.STATUS;
+import appsgate.lig.core.object.messages.CoreNotificationMsg;
+import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
 import appsgate.lig.eude.interpreter.spec.ProgramNotification;
@@ -45,7 +47,8 @@ import java.util.List;
  * @version 1.0.0
  *
  */
-public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener, EndEventListener {
+public class EUDEInterpreter extends CoreObjectBehavior
+implements EUDE_InterpreterSpec, StartEventListener, EndEventListener, CoreObjectSpec {
 
     /**
      * Static class member uses to log what happened in each instances
@@ -109,7 +112,10 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * Called by APAM when an instance of this implementation is created
      */
     public void newInst() {
-        LOGGER.debug("A new instance of Mediator is created");
+        LOGGER.debug("A new instance of Interpreter is created");
+		className= EUDE_InterpreterSpec.class.getSimpleName();
+		objectName=this.getClass().getName()+"-"+this.hashCode();              
+        
 //        restorePrograms();
         LOGGER.debug("The interpreter component is initialized");
     }
@@ -485,9 +491,16 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
     public NotificationMsg notifyChanges(NotificationMsg notif) {
         LOGGER.trace("notifyChanges(NotificationMsg notif : {})",
         		notif.JSONize());
+        
+        this.notifyCoreMsg(notif);
         return notif;
-
     }
+    
+	public appsgate.lig.core.object.messages.NotificationMsg notifyCoreMsg(NotificationMsg notif) {
+		CoreNotificationMsg notifCore = new CoreNotificationMsg(notif.getClass().getSimpleName(), notif.JSONize().toString(), getAbstractObjectId() );
+		return notifCore;
+	}
+
 
     private CoreObjectSpec systemClockCoreObject;
 
@@ -749,5 +762,45 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
             p.getReferences().checkReferences();
         }
     }
+    
+	String className;
+	String objectName;
+	
+	@Override
+	public String getAbstractObjectId() {
+		return objectName;
+	}
+
+	@Override
+	public String getUserType() {
+		return className;
+	}
+
+	@Override
+	public int getObjectStatus() {
+		if(restorePrograms()) {
+			return 2;
+		} else {
+			return 0;
+		}
+	}
+
+	@Override
+	public JSONObject getDescription() throws JSONException {
+        JSONObject descr = new JSONObject();
+
+        // mandatory appsgate properties
+        descr.put("id", getAbstractObjectId());
+        descr.put("type", getUserType());
+        descr.put("coreType", getCoreType());
+        descr.put("status", getObjectStatus());
+
+        return descr;
+	}
+
+	@Override
+	public CORE_TYPE getCoreType() {
+		return CORE_TYPE.EXTENDED;
+	}    
 
 }

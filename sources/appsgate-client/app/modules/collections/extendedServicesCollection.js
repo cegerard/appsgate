@@ -62,6 +62,11 @@ define([
                     self.add(new ExtendedService(brick));
                     dispatcher.trigger("DevicePropertiesManagerReady");
                     break;
+                case "EUDE_InterpreterSpec":
+                    console.log("found an EUDE Interpreter ");
+                    self.add(new ExtendedService(brick));
+                    dispatcher.trigger("EUDEInterpreterReady");
+                    break;
                 default:
                     console.log("unknown type of EXTENDED SERVICE : ", brick.type, brick);
                     break;

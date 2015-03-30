@@ -137,7 +137,7 @@ public class GenericCommand implements AsynchronousCommandRunner {
 			
 		} catch (Exception e) {
                     logger.error("The method {} is not found for {}", methodName, this.objId);
-                    logger.error(e.getMessage());
+                    logger.error("run(), ", e);
 		}
 	}
 	

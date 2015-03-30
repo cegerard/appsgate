@@ -293,6 +293,7 @@ final public class NodeProgram extends Node implements ProgramDesc, ProgramGraph
 
     @Override
     public void stop() {
+    	LOGGER.trace("stop()");
         if (!isValid()) {
             LOGGER.warn("Trying to stop {}, but this program is invalid", this);
             return;
@@ -303,7 +304,7 @@ final public class NodeProgram extends Node implements ProgramDesc, ProgramGraph
             return;
         }
         if (!isStopping()) {
-            LOGGER.debug("Stoping program {}", this);
+            LOGGER.debug("Stopping program {}", this);
             setStopping(true);
             body.stop();
             body.removeEndEventListener(this);
@@ -323,6 +324,8 @@ final public class NodeProgram extends Node implements ProgramDesc, ProgramGraph
      * Set the current running state to deployed
      */
     final public void setStopped() {
+    	LOGGER.trace("setStopped(), current state : "+state);
+
         switch (state) {
             case INVALID:
                 LOGGER.warn("Trying to stop {}, while being invalid", this);

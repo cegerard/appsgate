@@ -848,9 +848,9 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
         Set<Entry> keys = eventsListeners.keySet();
         Iterator<Entry> keysIt = keys.iterator();
 
-        while (keysIt.hasNext()) {
+        while (keysIt.hasNext()&& eventKey.getObjectId() != null) {
             Entry key = keysIt.next();
-            if (key.equals(eventKey)) {
+            if (key.getObjectId()!= null && key.equals(eventKey)) {
                 ArrayList<CoreListener> coreListenerList = eventsListeners
                         .get(key);
                 coreListenerList.remove(coreListener);

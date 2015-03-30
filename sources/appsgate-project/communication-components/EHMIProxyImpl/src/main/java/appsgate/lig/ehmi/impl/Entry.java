@@ -14,8 +14,14 @@ import appsgate.lig.ehmi.spec.listeners.CoreListener;
  * @version 1.0.0
  */
 public class Entry {
-	
-    private final static Logger logger = LoggerFactory.getLogger(Entry.class);
+
+	@Override
+	public String toString() {
+		return "Entry [objectId=" + objectId + ", varName=" + varName
+				+ ", value=" + value + ", entryType=" + entryType + "]";
+	}
+
+	private final static Logger logger = LoggerFactory.getLogger(Entry.class);
 
 
 	/**
@@ -82,13 +88,24 @@ public class Entry {
 	 * @param value
 	 */
 	private void initWith(String objectId, String varName, String value) {
-		this.objectId = objectId;
-		this.varName = varName;
-		this.value = value;
-		if (value.contentEquals("")) {
+		if (objectId == null) {
+			this.objectId = "";
+		} else {
+			this.objectId = objectId;
+		}
+		
+		if (varName == null) {
+			this.varName = "";
+		} else {
+			this.varName = varName;
+		}		
+
+		if (value == null ||value.contentEquals("")) {
 			entryType = "eventName";
+			this.value = "";
 		} else {
 			entryType = "eventValue";
+			this.value = (value==null?"":value);
 		}
 	}
 

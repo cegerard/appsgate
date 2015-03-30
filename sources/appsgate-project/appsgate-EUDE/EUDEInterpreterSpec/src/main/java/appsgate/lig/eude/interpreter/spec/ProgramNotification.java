@@ -124,16 +124,19 @@ public class ProgramNotification implements NotificationMsg {
         JSONObject notif = new JSONObject();
         JSONObject content = new JSONObject();
         try {
-
+        	        	
             content.put("id", programId);
             content.put("runningState", runningState);
             content.put("source", source);
-
+       
             if (changes.isEmpty()) {
                 notif.put("", content);
             } else {
                 notif.put(changes, content);
             }
+            notif.put("objectId", source);
+            notif.put("varName", "runningState");
+            notif.put("value", getRunningState());
 
         } catch (JSONException ex) {
             //  No exception will be thrown since changes is not empty
