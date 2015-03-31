@@ -1,5 +1,9 @@
 package appsgate.lig.chmi.spec;
 
+import java.util.ArrayList;
+
+import org.json.JSONArray;
+
 public interface AsynchronousCommandRunner extends Runnable {
 	
 	/**
@@ -31,5 +35,5 @@ public interface AsynchronousCommandRunner extends Runnable {
 	 * @return the return type of the last call
 	 */
 	public Object getReturn();
-
+	
 }
