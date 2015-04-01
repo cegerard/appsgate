@@ -43,15 +43,25 @@ define([
         case "notify":
           $(btn).append("<span data-i18n='devices.tv.keyboard.notify'></span>");
           v.methodName = "notify";
+
           v.args = [{
             "type": "int",
             "value": "0"
           }, {
             "type": "String",
-            "value": "spok-sender"
+            "value": "spok"
           }, {
             "type": "String",
-            "value": "..."
+            "value": "test message"
+          }, {
+            "type": "boolean",
+            "value": "false"
+          }, {
+            "type": "int",
+            "value": "5"
+          }, {
+            "type": "String",
+            "value": ""
           }];
           v.phrase = "devices.tv.language.notify";
           $(btn).attr("json", JSON.stringify(v));
@@ -149,10 +159,19 @@ define([
         "value": "0"
       }, {
         "type": "String",
-        "value": "spok-sender"
+        "value": "spok"
       }, {
         "type": "String",
         "value": "test message"
+      }, {
+        "type": "boolean",
+        "value": "false"
+      }, {
+        "type": "int",
+        "value": "5"
+      }, {
+        "type": "String",
+        "value": ""
       }]);
     }
   });

@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -102,7 +103,7 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 	public final static String OSD = "osd";
 	public final static String OSD_SERVICE = "/"+OSD+"?";	
 
-	public final static String JSON = "osd";
+	public final static String JSON = "json";
 	public final static String JSON_SERVICE = "/"+JSON;		
 	
 	/**
@@ -118,10 +119,11 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 	public final static String SCREEN_PARAM_NAME = "&"+SCREEN_PARAM+"=";
 	public final static String SENDER_PARAM = "sender";
 	public final static String SENDER_PARAM_NAME = "&"+SENDER_PARAM+"=";
-	public final static String MESSAGE_PARAM = "message";
+	public final static String MESSAGE_PARAM = "msg";
 	public final static String MESSAGE_PARAM_NAME = "&"+MESSAGE_PARAM+"=";
 	public final static String KEYCODE_PARAM = "keycode";
 	public final static String KEYCODE_PARAM_NAME = "&"+KEYCODE_PARAM+"=";
+	public final static String METHOD_PARAM = "method";
 	
 	public final static String ACK_PARAM="ack";
 	public final static String DURATION_PARAM="duration";
@@ -137,9 +139,10 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 	public final static String COMMAND_PAUSE = "pause";
 	public final static String COMMAND_RESIZE = "resize";
 	public final static String COMMAND_NOTIFY = "notify";
-	
+
 	public final static String COMMAND_ISALIVE = "isAlive";
 	
+	public final static String METHOD_NOTIFY = "notify";
 	
 	public final static String COMMA_SEPARATOR = ",";
 	
@@ -171,7 +174,7 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 		JSONObject payload = new JSONObject();
 		JSONObject command = new JSONObject();
 		
-		command.put(COMMAND_PARAM, COMMAND_NOTIFY);
+		command.put(METHOD_PARAM, METHOD_NOTIFY);
 		command.put(SENDER_PARAM, sender);
 		command.put(MESSAGE_PARAM, message);
 		command.put(ACK_PARAM, ack);
@@ -179,6 +182,9 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 		command.put(ICON_PARAM, icon);
 		payload.put(OSD_PARAM, command);
 		
+		Map<String,String> requestProperties = new HashMap<String,String>();
+		requestProperties.put("Content-Type","application/json");
+		logger.trace("notify(...), payload : "+payload.toString());
 		/*
 		 * Deprecated , TODO transform this in json to send on http post request
 		Map<String,String> urlParameters = new LinkedHashMap<String, String>();
@@ -187,7 +193,7 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 		urlParameters.put(MESSAGE_PARAM_NAME, message);
 		urlParameters.put(ID_PARAM_NAME, String.valueOf(id));
 		*/
-		sendHttpPost(serviceUrl+JSON_SERVICE, null, null, payload.toString().getBytes());
+		sendHttpPost(serviceUrl+JSON_SERVICE, requestProperties, null, payload.toString().getBytes());
 	}
 
 	@Override
