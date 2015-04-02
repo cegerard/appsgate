@@ -521,6 +521,7 @@ public class Graph implements SpokObject {
             return false;
         }
         programState.put(pid, state);
+        updateJSON();
         return true;
     }
 
@@ -535,6 +536,7 @@ public class Graph implements SpokObject {
             return false;
         }
         placeName.put(id, name);
+        updateJSON();
         return true;
     }
 
@@ -560,6 +562,7 @@ public class Graph implements SpokObject {
             return false;
         }
         deviceName.put(id, newName);
+        updateJSON();
         return true;
     }
 
@@ -574,6 +577,7 @@ public class Graph implements SpokObject {
             return false;
         }
         deviceState.put(id, state);
+        updateJSON();
         return true;
     }
 
@@ -581,34 +585,36 @@ public class Graph implements SpokObject {
      *
      * @throws JSONException
      */
-    private void updateJSON() throws JSONException {
+    private void updateJSON()  {
 
-        for (int i = 0; i < this.returnJSONObject.getJSONArray("nodes").length(); i++) {
-            JSONObject node = this.returnJSONObject.getJSONArray("nodes").getJSONObject(i);
-            if (!node.has("isGhost")) {
-                String id = node.getString("id");
-
-                // "isGhost" not presented in JSON, so catch JSONException
-                if (node.get("type") == DEVICE_ENTITY) {
-                    if (deviceName.containsKey(id)) {
-                        node.put("name", deviceName.get(id));
-                    }
-                    if (deviceState.containsKey(id)) {
-                        node.put("deviceState", deviceState.get(id));
-                    }
-                } else if (node.get("type") == PROGRAM_ENTITY) {
-                    if (programState.containsKey(id)) {
-                        // Update state
-                        node.put("state", programState.get(id));
-                    }
-                } else if (node.get("type") == PLACE_ENTITY) {
-                    if (placeName.containsKey(id)) {
-                        // Update Name
-                        node.put("name", placeName.get(id));
-
+        try {
+            for (int i = 0; i < this.returnJSONObject.getJSONArray("nodes").length(); i++) {
+                JSONObject node = this.returnJSONObject.getJSONArray("nodes").getJSONObject(i);
+                if (!node.has("isGhost")) {
+                    String id = node.getString("id");
+                    
+                    if (node.get("type") == DEVICE_ENTITY) {
+                        if (deviceName.containsKey(id)) {
+                            node.put("name", deviceName.get(id));
+                        }
+                        if (deviceState.containsKey(id)) {
+                            node.put("deviceState", deviceState.get(id));
+                        }
+                    } else if (node.get("type") == PROGRAM_ENTITY) {
+                        if (programState.containsKey(id)) {
+                            // Update state
+                            node.put("state", programState.get(id));
+                        }
+                    } else if (node.get("type") == PLACE_ENTITY) {
+                        if (placeName.containsKey(id)) {
+                            // Update Name
+                            node.put("name", placeName.get(id));
+                            
+                        }
                     }
                 }
             }
+        } catch (JSONException ex) {
         }
     }
 

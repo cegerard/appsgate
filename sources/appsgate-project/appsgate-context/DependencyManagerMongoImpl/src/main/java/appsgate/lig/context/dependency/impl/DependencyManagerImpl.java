@@ -183,7 +183,7 @@ public class DependencyManagerImpl implements DependencyManagerSpec {
                 return true;
 
             } catch (MongoException e) {
-                LOGGER.error("A Database Excepion has been raised: " + e);
+                LOGGER.error("A Database Exception has been raised: " + e);
             }
         }
         return false;
@@ -203,9 +203,11 @@ public class DependencyManagerImpl implements DependencyManagerSpec {
             try {
                 if (!cursor.hasNext()) {
                     LOGGER.warn("No logs for before the start of window");
+                    return null;
                 }
             } catch (Exception e) {
                 LOGGER.error("Unable to parse cursor" + e.getMessage());
+                return null;
             }
             DBObject obj = cursor.next();
             JSONArray dependencies;
@@ -217,7 +219,6 @@ public class DependencyManagerImpl implements DependencyManagerSpec {
                 return null;
             }
             return new Graph(jsonGraph, dependencies, timestamp.toString());
-
         }
         return null;
     }

@@ -433,8 +433,9 @@ define([
 		 **/
 		addDeviceTypeFilterLoaded: function (JSONTypes) {
 			this.get("subFilterDevice")["deviceType"] = _.filter(JSONTypes, function (type) {
-				// Don't add : 1001 = ubikitAdapter, 102/103/104 = services, 21 = clock
-				return type !== "1001" && type !== "102" && type !== "103" && type !== "104" && type !== "21";
+				// Don't add : 102/103/104 = services, 21 = clock
+                var filteredType = ["102", "103", "104", "21", "UbikitAdapterService", "PlaceManagerSpec", "EUDE_InterpreterSpec", "WeatherAdapterSpec", "DevicePropertiesTableSpec", "UserBaseSpec"];
+                return filteredType.indexOf(type) < 0;
 			});
 			Array.prototype.push.apply(this.get("currentEntitiesFilters"), this.get("subFilterDevice")["deviceType"]);
 		},
@@ -628,6 +629,13 @@ define([
 				if (arrayUpdated.indexOf(type) !== -1)
 					arrayUpdated.splice(arrayUpdated.indexOf(type), 1);
 			}
+		},
+		
+		getEntityName: function(index) {
+			if (this.get("entities")[0]) {
+				return this.get("entities")[0].name;
+			}
+			return "";
 		},
 
 		/**

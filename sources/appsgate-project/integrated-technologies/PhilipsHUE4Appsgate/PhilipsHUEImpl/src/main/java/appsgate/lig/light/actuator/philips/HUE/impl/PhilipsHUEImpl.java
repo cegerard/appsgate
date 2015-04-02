@@ -239,7 +239,7 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
     public boolean on(Integer transitionTime) {
         if (PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "on", true, transitionTime)) {
             on = String.valueOf(true);
-            notifyChanges("state", null, "on");
+            notifyChanges("state", null, "true");
 
             return true;
         }
