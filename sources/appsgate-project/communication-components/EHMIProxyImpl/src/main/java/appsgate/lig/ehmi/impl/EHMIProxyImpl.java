@@ -809,7 +809,7 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(Long.valueOf(coreListener.getValue()));
             // register the alarm
-            int alarmId = systemClock.registerAlarm(calendar, new TimeObserver("EHMI listener for clock event"));
+            int alarmId = systemClock.registerPeriodicAlarm(calendar, 24*60*60*1000 ,new TimeObserver("EHMI listener for clock event"));
             // change the event entry with the alarmId value
             //eventKey.setValue(String.valueOf(alarmId));
             eventKey = new TimeEntry(eventKey, alarmId);
