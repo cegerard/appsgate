@@ -328,7 +328,7 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
         waitForContext();
 
         JSONArray devices = new JSONArray();
-        if (! synchroCoreProxy()){
+        if (!synchroCoreProxy()){
             logger.debug("No core proxy found");
             return devices;
         }

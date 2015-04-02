@@ -778,7 +778,7 @@ implements EUDE_InterpreterSpec, StartEventListener, EndEventListener, CoreObjec
 
 	@Override
 	public int getObjectStatus() {
-		if(restorePrograms()) {
+		if(synchro) {
 			return 2;
 		} else {
 			return 0;
