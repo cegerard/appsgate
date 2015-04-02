@@ -145,6 +145,13 @@ define([
 				});
 			}
         });
+        
+        $("#prevEvent").on("click", function(e){
+          dashboard.prevEvent();
+          });
+        $("#nextEvent").on("click", function(e){
+          dashboard.nextEvent();
+          });
 
         // listen to zoom request from dashboard
         dashboard.on('zoom:request', function (context) {
@@ -186,6 +193,7 @@ define([
             }
         });
 
+        
         // activate history mode
         self.$('#datetimepicker-toolbar').show();
         this.$('#debugger-action-history').addClass('active');

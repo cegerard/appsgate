@@ -259,7 +259,7 @@ Debugger.SmartBuffer = (function () {
                 });
             }
         },
-
+        
         // Return a frame inside a timestamp `range`, if multiple frames match then the one
         // closest to the boundary on the `direction` side will be returned.
         // If no match found then `null` is returned.

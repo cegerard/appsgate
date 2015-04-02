@@ -334,6 +334,7 @@ _.extend(Widgets.Widget.prototype, Backbone.Events, {
 
         this.triggerMethod.apply(this, ['ruler:focus:update', coordinate, direction, exactTimestamp, this._focusedFrame, this._lastFocusedFrame]);
     },
+    
 
     // Handle `ruler:focus:update` event.
     onRulerFocusUpdate: function() { /* default implementation: do nothing */ },
@@ -345,6 +346,22 @@ _.extend(Widgets.Widget.prototype, Backbone.Events, {
         // Workout timestamp interval.
         var minTimestamp = this.timescale.invert(parseInt(position-delta)).getTime();
         var maxTimestamp = this.timescale.invert(parseInt(position+delta)).getTime();
+
+        var focusedFrame = this.buffer.inside(
+            [direction == 'left' ? minTimestamp : exactTimestamp, direction == 'right' ? maxTimestamp : exactTimestamp],
+            direction
+        );
+
+        return focusedFrame;
+    },
+    
+    // Internal method to find next or previous frame
+    _findNextFrame : function(coordinate, direction) {
+        // Workout timestamp interval.
+        var minTimestamp = this.timescale.domain()[0].getTime();
+        var maxTimestamp = this.timescale.domain()[1].getTime();
+        var exactTimestamp = this.timescale.invert(this.timescale.range()[1]*coordinate).getTime();
+
 
         var focusedFrame = this.buffer.inside(
             [direction == 'left' ? minTimestamp : exactTimestamp, direction == 'right' ? maxTimestamp : exactTimestamp],
