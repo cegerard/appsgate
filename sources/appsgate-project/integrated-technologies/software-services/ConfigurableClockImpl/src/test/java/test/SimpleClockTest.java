@@ -97,13 +97,13 @@ public class SimpleClockTest implements AlarmEventObserver {
 		testTimeEqual(systemTime, clockTime);
 
 		System.out
-				.println("Wait for 4 secs, 2 should have been elapsed in virtual");
+				.println("Wait for 2 secs, 1 should have been elapsed in virtual");
 		try {
-			Thread.sleep(4321);
+			Thread.sleep(2100);
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}
-		systemTime += 4321 / 2;
+		systemTime += 2100 / 2;
 		clockTime = clock.getCurrentTimeInMillis();
 		testTimeEqual(systemTime, clockTime);
 
@@ -236,7 +236,7 @@ public class SimpleClockTest implements AlarmEventObserver {
 	public void testMultipleAlarm() {
 		System.out.println("registering an alarm in 4 secs");
 		Calendar cal = Calendar.getInstance();
-		cal.setTimeInMillis(System.currentTimeMillis() + 4321);
+		cal.setTimeInMillis(System.currentTimeMillis() + 4000);
 		clock.registerAlarm(cal, this);
 		try {
 			Thread.sleep(500);
@@ -254,7 +254,7 @@ public class SimpleClockTest implements AlarmEventObserver {
 		Integer alarmID = clock.registerAlarm(cal, this);
 
 		try {
-			Thread.sleep(4321 + errorTolerance );
+			Thread.sleep(4000 + errorTolerance );
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}
@@ -508,7 +508,7 @@ public class SimpleClockTest implements AlarmEventObserver {
 		}
 
 		try {
-			Thread.sleep(4321);
+			Thread.sleep(1000);
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}
@@ -534,10 +534,17 @@ public class SimpleClockTest implements AlarmEventObserver {
 	public void testGoAlongUntilWithPeriodics() {
 		System.out
 				.println("testGoAlongUntil(), adding periodic events for each hour, and jump into 4,5 hours)");
-		int alarmId = clock.registerPeriodicAlarm(null, 1000 * 60 * 60, this);
+		
+		//ensure that we register the event in the past  
+		Calendar cal = Calendar.getInstance();
+		long time = cal.getTimeInMillis();
+		time--;
+		cal.setTimeInMillis(time);
+		
+		int alarmId = clock.registerPeriodicAlarm(cal, 1000 * 60 * 60, this);
 
 		try {
-			Thread.sleep(4321);
+			Thread.sleep(1000);
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}

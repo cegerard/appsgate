@@ -4,15 +4,18 @@ import java.util.TimerTask;
 
 class AlarmFiringTask extends TimerTask {
 	
-	public AlarmFiringTask(ConfigurableClockImpl clock) {
+	long timeStamp;
+	
+	public AlarmFiringTask(ConfigurableClockImpl clock, long timeStamp) {
 		super();
 		this.clock = clock;
+		this.timeStamp = timeStamp;
 	}
 
 	ConfigurableClockImpl clock;
 	
 	@Override
 	public void run() {
-		clock.fireAlarms();
+		clock.fireAlarms(timeStamp);
 	}
 }
