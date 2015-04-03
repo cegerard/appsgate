@@ -254,9 +254,12 @@ public class TraceMan implements TraceManSpec {
 
     @Override
     public synchronized void coreEventNotify(long timeStamp, String srcId, String varName, String value) {
+    	LOGGER.debug("coreEventNotify(long timeStamp : {}, String srcId :{}, String varName : {}, String value : {})"
+    			, timeStamp, srcId, varName, value);
 
         GrammarDescription desc = getGrammar(srcId);
-        if (desc != null && applyFilters(desc, srcId, varName, value) && desc.generateTrace()) {
+        if (srcId != null && varName != null && value != null
+        		&& desc != null && applyFilters(desc, srcId, varName, value) && desc.generateTrace()) {
             //Create the event description device entry
             JSONObject event = new JSONObject();
             JSONObject JDecoration;
@@ -315,6 +318,11 @@ public class TraceMan implements TraceManSpec {
     @Override
     public synchronized void coreUpdateNotify(long timeStamp, String srcId, String coreType,
             String userType, String name, JSONObject description, String eventType) {
+    	LOGGER.debug("coreUpdateNotify(long timeStamp : {}, String srcId :{}, String coreType,"
+    			+ " String userType, String name, JSONObject description, String eventType)"
+    			, timeStamp, srcId, coreType, userType, name, description, eventType);
+
+        try {
 
         if (coreType.equalsIgnoreCase("newService")) {
             return;
@@ -325,7 +333,6 @@ public class TraceMan implements TraceManSpec {
 
         JSONObject event = new JSONObject();
         JSONObject cause = new JSONObject();
-        try {
             switch (eventType) {
                 case "new":
                     event.put("type", "appear");
@@ -341,14 +348,15 @@ public class TraceMan implements TraceManSpec {
                             Trace.addJSONPair(new JSONObject(), "name", name));
                     break;
             }
-
-        } catch (JSONException e) {
-
+            JSONObject jsonDevice = Trace.getJSONDevice(srcId, event, cause, getGrammar(srcId), this);
+            JSONObject coreNotif = Trace.getCoreNotif(jsonDevice, null);
+            //Trace the notification JSON object in the trace file
+            trace(coreNotif, timeStamp);
+            
+        } catch (Exception e) {
+        	LOGGER.error("coreUpdateNotify(...), Exception occured : ", e);
         }
-        JSONObject jsonDevice = Trace.getJSONDevice(srcId, event, cause, getGrammar(srcId), this);
-        JSONObject coreNotif = Trace.getCoreNotif(jsonDevice, null);
-        //Trace the notification JSON object in the trace file
-        trace(coreNotif, timeStamp);
+
 
     }
 
