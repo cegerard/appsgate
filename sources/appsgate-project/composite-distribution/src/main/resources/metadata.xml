@@ -41,7 +41,7 @@
             
             <start implementation="LocalAudioPlayer" name="LocalAudioPlayerInst"></start>
             
-            <start implementation="FairyLightsImpl" name="FairyLightsInst"></start>
+            <!--  start implementation="FairyLightsImpl" name="FairyLightsInst"></start -->
             
             
         </contentMngt>

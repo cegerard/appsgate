@@ -10,24 +10,24 @@
 		
 		<relation field="coreProxy" resolve="exist" creation="eager" added="synchroCoreProxy"/>
 
-		<relation specification="CoreClockSpec" resolve="exist">
+		<relation specification="CoreClockSpec" resolve="exist" fail="wait">
 		    <interface field="systemClock"/>
             <interface field="systemClockCoreObject"/>
 		</relation>
 		
-		<relation field="devicePropertiesTable" resolve="exist"/>
-		<relation field="placeManager" resolve="exist" />
-		<relation field="userManager" resolve="exist"/>
-		<relation field="interpreter"  resolve="exist"/>
-		<relation field="dependency"  resolve="exist"/>
+		<relation field="devicePropertiesTable" resolve="exist" fail="wait"/>
+		<relation field="placeManager" resolve="exist" fail="wait" />
+		<relation field="userManager" resolve="exist" fail="wait"/>
+		<relation field="interpreter"  resolve="exist" fail="wait"/>
+		<relation field="dependency"  resolve="exist" fail="wait"/>
 		<relation field="traceManager" resolve="exist" creation="eager" added="traceManBound"/>
         <relation field="weatherAdapter" resolve="exist" fail="wait" />
-        <relation field="schedulerService" resolve="exist" />
+        <relation field="schedulerService" resolve="exist"  fail="wait"/>
         
 
 
         <relation specification="CommunicationManagerSpec" resolve="exist"
-			fail="exception" >
+			fail="wait" >
 			<interface field="addListenerService" />
 			<interface field="sendToClientService" />
 		</relation>
