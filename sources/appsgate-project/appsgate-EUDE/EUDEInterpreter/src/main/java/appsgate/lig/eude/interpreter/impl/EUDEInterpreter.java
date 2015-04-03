@@ -28,6 +28,7 @@ import appsgate.lig.core.object.messages.CoreNotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
+import appsgate.lig.eude.interpreter.spec.ProgramDesc;
 import appsgate.lig.eude.interpreter.spec.ProgramNotification;
 import appsgate.lig.manager.propertyhistory.services.PropertyHistoryManager;
 
@@ -48,7 +49,7 @@ import java.util.List;
  *
  */
 public class EUDEInterpreter extends CoreObjectBehavior
-implements EUDE_InterpreterSpec, StartEventListener, EndEventListener, CoreObjectSpec {
+        implements EUDE_InterpreterSpec, StartEventListener, EndEventListener, CoreObjectSpec {
 
     /**
      * Static class member uses to log what happened in each instances
@@ -113,9 +114,9 @@ implements EUDE_InterpreterSpec, StartEventListener, EndEventListener, CoreObjec
      */
     public void newInst() {
         LOGGER.debug("A new instance of Interpreter is created");
-		className= EUDE_InterpreterSpec.class.getSimpleName();
-		objectName=this.getClass().getName()+"-"+this.hashCode();              
-        
+        className = EUDE_InterpreterSpec.class.getSimpleName();
+        objectName = this.getClass().getName() + "-" + this.hashCode();
+
 //        restorePrograms();
         LOGGER.debug("The interpreter component is initialized");
     }
@@ -441,13 +442,13 @@ implements EUDE_InterpreterSpec, StartEventListener, EndEventListener, CoreObjec
      */
     private void notifyUpdateProgram(String id, String runningState, String name, JSONObject source) {
         LOGGER.trace("notifyUpdateProgram(String id : {}, String runningState : {},"
-        		+ " String name : {}, JSONObject source :{})",
-        		id, runningState, name, source);
+                + " String name : {}, JSONObject source :{})",
+                id, runningState, name, source);
 
         if (runningState.equalsIgnoreCase("INVALID")) {
-            newProgramStatus(id, STATUS.INVALID);
+            newProgramStatus(id, STATUS.INVALID, null);
         } else {
-            newProgramStatus(id, STATUS.OK);
+            newProgramStatus(id, STATUS.OK, null);
         }
         notifyChanges(new ProgramNotification("updateProgram", id, runningState, name, source, null));
         dependencyManager.buildGraph();
@@ -461,9 +462,9 @@ implements EUDE_InterpreterSpec, StartEventListener, EndEventListener, CoreObjec
      */
     private void notifyAddProgram(String id, String runningState, String name, JSONObject source) {
         LOGGER.trace("notifyAddProgram(String id : {}, String runningState : {},"
-        		+ " String name : {}, JSONObject source :{})",
-        		id, runningState, name, source);
-        
+                + " String name : {}, JSONObject source :{})",
+                id, runningState, name, source);
+
         notifyChanges(new ProgramNotification("newProgram", id, runningState, name, source, null));
         dependencyManager.buildGraph();
     }
@@ -474,8 +475,8 @@ implements EUDE_InterpreterSpec, StartEventListener, EndEventListener, CoreObjec
      */
     private void notifyRemoveProgram(String id, String name) {
         LOGGER.trace("notifyRemoveProgram(String id : {}, String name : {})",
-        		id, name);
-        newProgramStatus(id, STATUS.MISSING);
+                id, name);
+        newProgramStatus(id, STATUS.MISSING, null);
         notifyChanges(new ProgramNotification("removeProgram", id, "", name, null, null));
         dependencyManager.buildGraph();
     }
@@ -490,21 +491,19 @@ implements EUDE_InterpreterSpec, StartEventListener, EndEventListener, CoreObjec
      */
     public NotificationMsg notifyChanges(NotificationMsg notif) {
         LOGGER.trace("notifyChanges(NotificationMsg notif : {})",
-        		notif.JSONize());
-        
+                notif.JSONize());
+
         this.notifyCoreMsg(notif);
         return notif;
     }
-    
-	public appsgate.lig.core.object.messages.NotificationMsg notifyCoreMsg(NotificationMsg notif) {
-		CoreNotificationMsg notifCore = new CoreNotificationMsg(notif.getClass().getSimpleName(), notif.JSONize().toString(), getAbstractObjectId() );
-		return notifCore;
-	}
 
+    public appsgate.lig.core.object.messages.NotificationMsg notifyCoreMsg(NotificationMsg notif) {
+        CoreNotificationMsg notifCore = new CoreNotificationMsg(notif.getClass().getSimpleName(), notif.JSONize().toString(), getAbstractObjectId());
+        return notifCore;
+    }
 
     private CoreObjectSpec systemClockCoreObject;
 
-    
     /**
      * @return the clock proxy
      */
@@ -746,13 +745,13 @@ implements EUDE_InterpreterSpec, StartEventListener, EndEventListener, CoreObjec
      * @param deviceId
      * @param status
      */
-    public void newProgramStatus(String deviceId, STATUS status) {
-    	LOGGER.trace("newProgramStatus(String deviceId : {}, STATUS status : {})", deviceId, status);
+    public void newProgramStatus(String deviceId, STATUS status, ProgramDesc.PROGRAM_STATE state) {
+        LOGGER.trace("newProgramStatus(String deviceId : {}, STATUS status : {})", deviceId, state);
         for (NodeProgram p : mapPrograms.values()) {
             p.setProgramStatus(deviceId, status);
         }
-        if (dependencyManager != null) {
-            dependencyManager.updateProgramStatus(deviceId, status.name());
+        if (dependencyManager != null && state != null) {
+            dependencyManager.updateProgramStatus(deviceId, state.name());
         }
     }
 
@@ -762,31 +761,31 @@ implements EUDE_InterpreterSpec, StartEventListener, EndEventListener, CoreObjec
             p.getReferences().checkReferences();
         }
     }
-    
-	String className;
-	String objectName;
-	
-	@Override
-	public String getAbstractObjectId() {
-		return objectName;
-	}
 
-	@Override
-	public String getUserType() {
-		return className;
-	}
+    String className;
+    String objectName;
 
-	@Override
-	public int getObjectStatus() {
-		if(synchro) {
-			return 2;
-		} else {
-			return 0;
-		}
-	}
+    @Override
+    public String getAbstractObjectId() {
+        return objectName;
+    }
 
-	@Override
-	public JSONObject getDescription() throws JSONException {
+    @Override
+    public String getUserType() {
+        return className;
+    }
+
+    @Override
+    public int getObjectStatus() {
+        if (synchro) {
+            return 2;
+        } else {
+            return 0;
+        }
+    }
+
+    @Override
+    public JSONObject getDescription() throws JSONException {
         JSONObject descr = new JSONObject();
 
         // mandatory appsgate properties
@@ -796,11 +795,11 @@ implements EUDE_InterpreterSpec, StartEventListener, EndEventListener, CoreObjec
         descr.put("status", getObjectStatus());
 
         return descr;
-	}
+    }
 
-	@Override
-	public CORE_TYPE getCoreType() {
-		return CORE_TYPE.EXTENDED;
-	}    
+    @Override
+    public CORE_TYPE getCoreType() {
+        return CORE_TYPE.EXTENDED;
+    }
 
 }

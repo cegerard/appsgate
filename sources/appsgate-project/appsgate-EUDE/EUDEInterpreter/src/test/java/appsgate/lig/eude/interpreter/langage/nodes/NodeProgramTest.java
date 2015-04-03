@@ -36,7 +36,7 @@ public class NodeProgramTest extends NodeTest {
             {
                 allowing(mediator).notifyChanges(with(any(ProgramStateNotification.class)));
                 allowing(mediator).notifyChanges(with(any(ProgramLineNotification.class)));
-                allowing(mediator).newProgramStatus(with(any(String.class)), with(any(Reference.STATUS.class)));
+                allowing(mediator).newProgramStatus(with(any(String.class)), with(any(Reference.STATUS.class)), with(any(NodeProgram.PROGRAM_STATE.class)));
             }
         });
         ruleJSON = new JSONObject();
