@@ -40,6 +40,7 @@ public class GraphManager {
      * build the graph
      */
     public final Graph buildGraph() {
+        LOGGER.debug("Building Graph *******************");
         EHMIProxySpec context;
         try {
             context = getContext();

@@ -22,7 +22,6 @@ import appsgate.lig.eude.interpreter.spec.ProgramStateNotification;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.logging.Level;
 import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -293,7 +292,7 @@ final public class NodeProgram extends Node implements ProgramDesc, ProgramGraph
 
     @Override
     public void stop() {
-    	LOGGER.trace("stop()");
+        LOGGER.trace("stop()");
         if (!isValid()) {
             LOGGER.warn("Trying to stop {}, but this program is invalid", this);
             return;
@@ -324,7 +323,7 @@ final public class NodeProgram extends Node implements ProgramDesc, ProgramGraph
      * Set the current running state to deployed
      */
     final public void setStopped() {
-    	LOGGER.trace("setStopped(), current state : "+state);
+        LOGGER.trace("setStopped(), current state : " + state);
 
         switch (state) {
             case INVALID:
@@ -505,7 +504,7 @@ final public class NodeProgram extends Node implements ProgramDesc, ProgramGraph
         if (runningState != this.state) {
             try {
                 this.state = runningState;
-                getMediator().newProgramStatus(this.getId(), ReferenceTable.getProgramStatus(runningState));
+                getMediator().newProgramStatus(this.getId(), ReferenceTable.getProgramStatus(runningState), runningState);
                 getMediator().notifyChanges(new ProgramStateNotification(id, this.state.toString(), name, iid));
             } catch (SpokExecutionException ex) {
                 LOGGER.warn("Problem while updating state of the node: {}", ex.getMessage());
@@ -702,7 +701,7 @@ final public class NodeProgram extends Node implements ProgramDesc, ProgramGraph
      * @param s the new status
      */
     public void setProgramStatus(String id, STATUS s) {
-    	LOGGER.trace("setProgramStatus(String id : {}, STATUS s : {})", id, s);
+        LOGGER.trace("setProgramStatus(String id : {}, STATUS s : {})", id, s);
 
         // No need to update the status and the reference table if this is the same program
         if (!id.equalsIgnoreCase(this.id)) {

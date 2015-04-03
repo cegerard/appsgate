@@ -37,7 +37,7 @@ public class NodeStateProgramTest extends NodeTest {
 
         context.checking(new Expectations() {
             {
-                allowing(mediator).newProgramStatus(with(any(String.class)), with(any(Reference.STATUS.class)));
+                allowing(mediator).newProgramStatus(with(any(String.class)), with(any(Reference.STATUS.class)), with(any(NodeProgram.PROGRAM_STATE.class)));
                 allowing(mediator).getContext();
                 will(returnValue(c));
                 allowing(mediator).addNodeListening(with(any(NodeEvent.class)));
