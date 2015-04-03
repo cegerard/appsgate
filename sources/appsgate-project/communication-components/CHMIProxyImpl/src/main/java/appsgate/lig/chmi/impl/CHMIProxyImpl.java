@@ -257,6 +257,7 @@ public class CHMIProxyImpl implements CHMIProxySpec {
             JSONArray jsonDeviceList = new JSONArray();
 
             for (CoreObjectSpec adev : abstractDevice) {
+            	logger.debug("getDevicesDescription(), getting description for object id : "+adev.getAbstractObjectId());
             	JSONObject obj = getObjectDescription(adev);
                 jsonDeviceList.put(obj);
             }
