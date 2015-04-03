@@ -360,13 +360,18 @@ _.extend(Widgets.Widget.prototype, Backbone.Events, {
         // Workout timestamp interval.
         var minTimestamp = this.timescale.domain()[0].getTime();
         var maxTimestamp = this.timescale.domain()[1].getTime();
-        var exactTimestamp = this.timescale.invert(this.timescale.range()[1]*coordinate).getTime();
-
+        var exactTimestamp1 = this.timescale.invert(this.timescale.range()[1]*coordinate).getTime();
+        var exactTimestamp2 = this.timescale.invert(this.timescale.range()[1]*(coordinate-0.01)).getTime();
+        
+        var pairing = this.buffer.options.pairing ;
+        this.buffer.options.pairing = false;
 
         var focusedFrame = this.buffer.inside(
-            [direction == 'left' ? minTimestamp : exactTimestamp, direction == 'right' ? maxTimestamp : exactTimestamp],
-            direction
+            [direction == 'prev' ? minTimestamp : exactTimestamp1, direction == 'prev' ? exactTimestamp2 : maxTimestamp],
+            direction == 'prev' ? "right" : "left"
         );
+
+        this.buffer.options.pairing = pairing;
 
         return focusedFrame;
     },

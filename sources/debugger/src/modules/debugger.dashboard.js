@@ -311,10 +311,10 @@ _.extend(Debugger.Dashboard.prototype, Backbone.Events, {
     },
     
     prevEvent:function() {
-        this._goToEvent( this._getFocusedProgram()._findNextFrame(this._getRulerCoordinate(), "left"));
+        this._goToEvent( this._getFocusedProgram()._findNextFrame(this._getRulerCoordinate(), "prev"));
     },
     nextEvent:function() {
-        this._goToEvent(this._getFocusedProgram()._findNextFrame(this._getRulerCoordinate(), "right"));
+        this._goToEvent(this._getFocusedProgram()._findNextFrame(this._getRulerCoordinate(), "next"));
     },
 
     _goToEvent:function(frame) {
@@ -325,7 +325,7 @@ _.extend(Debugger.Dashboard.prototype, Backbone.Events, {
             var time = this._getFocusedProgram().timescale(frame.timestamp);
             this._$ruler.css("left", time);
             this._notifyWidgetsOnRulerFocusChanged(this._$ruler.position());
-            this._onWidgetMarkerClick(frame);
+            this._onWidgetMarkerClick(frame.data);
         }
             
     },
