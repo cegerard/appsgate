@@ -637,7 +637,7 @@
                     });
                 }
             },
-    
+            
             // Return a frame inside a timestamp `range`, if multiple frames match then the one
             // closest to the boundary on the `direction` side will be returned.
             // If no match found then `null` is returned.
@@ -1169,6 +1169,7 @@
     
                 // If `packet` contains a request then we must reinitialize some stuff in the dashboard.
                 if (packet.request) {
+                    console.log(packet.request);
                     // If a global eventline is sent then we must reset the dashboard.
                     if (packet.eventline) {
                         // Reset the dashboard whenever a new eventline is sent.
@@ -1370,9 +1371,33 @@
                 delete this._state[keys[key]];
             }
         },
+        
+        prevEvent:function() {
+            this._goToEvent( this._getFocusedProgram()._findNextFrame(this._getRulerCoordinate(), "prev"));
+        },
+        nextEvent:function() {
+            this._goToEvent(this._getFocusedProgram()._findNextFrame(this._getRulerCoordinate(), "next"));
+        },
     
+        _goToEvent:function(frame) {
+            if (frame === undefined) {
+                console.log("No  event")
+            } else {
+                //console.log(frame);
+                var time = this._getFocusedProgram().timescale(frame.timestamp);
+                this._$ruler.css("left", time);
+                this._notifyWidgetsOnRulerFocusChanged(this._$ruler.position());
+                this._onWidgetMarkerClick(frame.data);
+            }
+                
+        },
+        
         _getState: function(attr) {
             return this._state[attr];
+        },
+        
+        _getFocusedProgram : function() {
+            return this._programs["program-7919"];
         },
     
         // Get zoom context
@@ -1436,6 +1461,7 @@
             this._toggleLoading(true);
         },
     
+        
         // Initialize D3
         _init_d3: function () {
             // Define main timescale.
@@ -1612,6 +1638,14 @@
             _.invoke(this._devices, 'rulerFocusChanged', coordinate, direction || 'left');
             _.invoke(this._programs, 'rulerFocusChanged', coordinate, direction || 'left');
             _.invoke(_.pluck(this._groups, 'timeline'), 'rulerFocusChanged', coordinate, direction || 'left');
+        },
+        
+        // Return the ruler coordinate
+        _getRulerCoordinate : function () {
+            var position = this._$ruler.position();
+            var offset = this.options.theme.ruler.width / 2;
+            return Math.max(Math.min((position.left + offset) / ( this._$ruler.parent().width() - this.options.theme.dashboard.sidebar.width), 1), 0);
+          
         },
     
         // Update focusline.
@@ -2403,6 +2437,7 @@
     
             this.triggerMethod.apply(this, ['ruler:focus:update', coordinate, direction, exactTimestamp, this._focusedFrame, this._lastFocusedFrame]);
         },
+        
     
         // Handle `ruler:focus:update` event.
         onRulerFocusUpdate: function() { /* default implementation: do nothing */ },
@@ -2419,6 +2454,27 @@
                 [direction == 'left' ? minTimestamp : exactTimestamp, direction == 'right' ? maxTimestamp : exactTimestamp],
                 direction
             );
+    
+            return focusedFrame;
+        },
+        
+        // Internal method to find next or previous frame
+        _findNextFrame : function(coordinate, direction) {
+            // Workout timestamp interval.
+            var minTimestamp = this.timescale.domain()[0].getTime();
+            var maxTimestamp = this.timescale.domain()[1].getTime();
+            var exactTimestamp1 = this.timescale.invert(this.timescale.range()[1]*coordinate).getTime();
+            var exactTimestamp2 = this.timescale.invert(this.timescale.range()[1]*(coordinate-0.01)).getTime();
+            
+            var pairing = this.buffer.options.pairing ;
+            this.buffer.options.pairing = false;
+    
+            var focusedFrame = this.buffer.inside(
+                [direction == 'prev' ? minTimestamp : exactTimestamp1, direction == 'prev' ? exactTimestamp2 : maxTimestamp],
+                direction == 'prev' ? "right" : "left"
+            );
+    
+            this.buffer.options.pairing = pairing;
     
             return focusedFrame;
         },

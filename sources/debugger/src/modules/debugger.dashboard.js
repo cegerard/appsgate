@@ -107,6 +107,7 @@ _.extend(Debugger.Dashboard.prototype, Backbone.Events, {
 
             // If `packet` contains a request then we must reinitialize some stuff in the dashboard.
             if (packet.request) {
+                console.log(packet.request);
                 // If a global eventline is sent then we must reset the dashboard.
                 if (packet.eventline) {
                     // Reset the dashboard whenever a new eventline is sent.
@@ -308,9 +309,33 @@ _.extend(Debugger.Dashboard.prototype, Backbone.Events, {
             delete this._state[keys[key]];
         }
     },
+    
+    prevEvent:function() {
+        this._goToEvent( this._getFocusedProgram()._findNextFrame(this._getRulerCoordinate(), "prev"));
+    },
+    nextEvent:function() {
+        this._goToEvent(this._getFocusedProgram()._findNextFrame(this._getRulerCoordinate(), "next"));
+    },
 
+    _goToEvent:function(frame) {
+        if (frame === undefined) {
+            console.log("No  event")
+        } else {
+            //console.log(frame);
+            var time = this._getFocusedProgram().timescale(frame.timestamp);
+            this._$ruler.css("left", time);
+            this._notifyWidgetsOnRulerFocusChanged(this._$ruler.position());
+            this._onWidgetMarkerClick(frame.data);
+        }
+            
+    },
+    
     _getState: function(attr) {
         return this._state[attr];
+    },
+    
+    _getFocusedProgram : function() {
+        return this._programs["program-7919"];
     },
 
     // Get zoom context
@@ -374,6 +399,7 @@ _.extend(Debugger.Dashboard.prototype, Backbone.Events, {
         this._toggleLoading(true);
     },
 
+    
     // Initialize D3
     _init_d3: function () {
         // Define main timescale.
@@ -550,6 +576,14 @@ _.extend(Debugger.Dashboard.prototype, Backbone.Events, {
         _.invoke(this._devices, 'rulerFocusChanged', coordinate, direction || 'left');
         _.invoke(this._programs, 'rulerFocusChanged', coordinate, direction || 'left');
         _.invoke(_.pluck(this._groups, 'timeline'), 'rulerFocusChanged', coordinate, direction || 'left');
+    },
+    
+    // Return the ruler coordinate
+    _getRulerCoordinate : function () {
+        var position = this._$ruler.position();
+        var offset = this.options.theme.ruler.width / 2;
+        return Math.max(Math.min((position.left + offset) / ( this._$ruler.parent().width() - this.options.theme.dashboard.sidebar.width), 1), 0);
+      
     },
 
     // Update focusline.
