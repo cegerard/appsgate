@@ -41,7 +41,7 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 	/*
 	 * Object information
 	 */
-	private String serviceId;
+	private String objectId;
 	private String userType;
 	private String status;
 	
@@ -50,12 +50,12 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 
 	public PaceTVImpl() {
 		serviceUrl = PROTOCOL+DEFAULT_HOSTNAME+PORT_SEPARATOR+DEFAULT_HTTPPORT+VIDEO_SERVICE;
-		serviceId = IMPL_NAME+"-"+String.valueOf(DEFAULT_HOSTNAME.hashCode());
+		objectId = IMPL_NAME+"-"+String.valueOf(DEFAULT_HOSTNAME.hashCode());
 	}
 	
 	@Override
 	public String getAbstractObjectId() {
-		return serviceId;
+		return objectId;
 	}
 
 	@Override
@@ -72,7 +72,7 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 	public JSONObject getDescription() throws JSONException {
 		JSONObject descr = new JSONObject();
 
-		descr.put("id", serviceId);
+		descr.put("id", objectId);
 		descr.put("type", userType); // 124 for TV
 		descr.put("status", status);
 
@@ -170,11 +170,6 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 				+", int duration : "+duration
 				+", String icon : "+icon
 				+")");
-		if(!checkConfiguration(hostname, port, path)) {
-			logger.warn("TV not available, shutting down the service");
-			factory.removeTVInstance(serviceId);
-			return;
-		}
 		
 		JSONObject payload = new JSONObject();
 		JSONObject command = new JSONObject();
@@ -198,77 +193,81 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 		urlParameters.put(MESSAGE_PARAM_NAME, message);
 		urlParameters.put(ID_PARAM_NAME, String.valueOf(id));
 		*/
-		sendHttpPost(serviceUrl+JSON_SERVICE, requestProperties, null, payload.toString().getBytes());
+		String result = sendHttpPost(serviceUrl+JSON_SERVICE, requestProperties, null, payload.toString().getBytes());
+		if(result == null) {
+			logger.warn("TV not available, shutting down the service");
+			factory.removeTVInstance(objectId);
+		}
 	}
 
 	@Override
 	public void channelUp(int id) {
 		logger.trace("channelUp(int id : "+id+")");
-		if(!checkConfiguration(hostname, port, path)) {
-			logger.warn("TV not available, shutting down the service");
-			factory.removeTVInstance(serviceId);
-			return;
-		}
+
 		Map<String,String> urlParameters = new LinkedHashMap<String, String>();
 		urlParameters.put(COMMAND_PARAM_NAME, COMMAND_CHANNELUP);
 		urlParameters.put(ID_PARAM_NAME, String.valueOf(id));
-		sendHttpGet(serviceUrl+VIDEO_SERVICE, null, urlParameters);
+		String result = sendHttpGet(serviceUrl+VIDEO_SERVICE, null, urlParameters);
+		if(result == null) {
+			logger.warn("TV not available, shutting down the service");
+			factory.removeTVInstance(objectId);
+		}
 	}
 
 	@Override
 	public void channelDown(int id) {
 		logger.trace("channelDown(int id : "+id+")");
-		if(!checkConfiguration(hostname, port, path)) {
-			logger.warn("TV not available, shutting down the service");
-			factory.removeTVInstance(serviceId);
-			return;
-		}
+
 		Map<String,String> urlParameters = new LinkedHashMap<String, String>();
 		urlParameters.put(COMMAND_PARAM_NAME, COMMAND_CHANNELDOWN);
 		urlParameters.put(ID_PARAM_NAME, String.valueOf(id));
-		sendHttpGet(serviceUrl+VIDEO_SERVICE, null, urlParameters);
+		String result = sendHttpGet(serviceUrl+VIDEO_SERVICE, null, urlParameters);
+		if(result == null) {
+			logger.warn("TV not available, shutting down the service");
+			factory.removeTVInstance(objectId);
+		}
 	}
 
 	@Override
 	public void resume(int id) {
 		logger.trace("resume(int id : "+id+")");
-		if(!checkConfiguration(hostname, port, path)) {
-			logger.warn("TV not available, shutting down the service");
-			factory.removeTVInstance(serviceId);
-			return;
-		}
+
 		Map<String,String> urlParameters = new LinkedHashMap<String, String>();
 		urlParameters.put(COMMAND_PARAM_NAME, COMMAND_RESUME);
 		urlParameters.put(ID_PARAM_NAME, String.valueOf(id));
-		sendHttpGet(serviceUrl+VIDEO_SERVICE, null, urlParameters);
+		String result = sendHttpGet(serviceUrl+VIDEO_SERVICE, null, urlParameters);
+		if(result == null) {
+			logger.warn("TV not available, shutting down the service");
+			factory.removeTVInstance(objectId);
+		}
 	}
 
 	@Override
 	public void stop(int id) {
 		logger.trace("stop(int id : "+id+")");
-		if(!checkConfiguration(hostname, port, path)) {
-			logger.warn("TV not available, shutting down the service");
-			factory.removeTVInstance(serviceId);
-			return;
-		}
+
 		Map<String,String> urlParameters = new LinkedHashMap<String, String>();
 		urlParameters.put(COMMAND_PARAM_NAME, COMMAND_STOP);
 		urlParameters.put(ID_PARAM_NAME, String.valueOf(id));
-		sendHttpGet(serviceUrl+VIDEO_SERVICE, null, urlParameters);
+		String result = sendHttpGet(serviceUrl+VIDEO_SERVICE, null, urlParameters);
+		if(result == null) {
+			logger.warn("TV not available, shutting down the service");
+			factory.removeTVInstance(objectId);
+		}
 	}
 
 	@Override
 	public void pause(int id) {
 		logger.trace("pause(int id : "+id+")");
-		if(!checkConfiguration(hostname, port, path)) {
-			logger.warn("TV not available, shutting down the service");
-			factory.removeTVInstance(serviceId);
-			return;
-		}
+
 		Map<String,String> urlParameters = new LinkedHashMap<String, String>();
 		urlParameters.put(COMMAND_PARAM_NAME, COMMAND_PAUSE);
 		urlParameters.put(ID_PARAM_NAME, String.valueOf(id));
-		sendHttpGet(serviceUrl+VIDEO_SERVICE, null, urlParameters);
+		String result = sendHttpGet(serviceUrl+VIDEO_SERVICE, null, urlParameters);
+		if(result == null) {
+			logger.warn("TV not available, shutting down the service");
+			factory.removeTVInstance(objectId);
+		}
 	}
 
 	@Override
@@ -279,11 +278,7 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 				+", int width : "+width
 				+", int height : "+height
 				+")");
-		if(!checkConfiguration(hostname, port, path)) {
-			logger.warn("TV not available, shutting down the service");
-			factory.removeTVInstance(serviceId);
-			return;
-		}
+
 		Map<String,String> urlParameters = new LinkedHashMap<String, String>();
 		urlParameters.put(COMMAND_PARAM_NAME, COMMAND_RESIZE);
 		urlParameters.put(SCREEN_PARAM_NAME,
@@ -293,7 +288,11 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 				+String.valueOf(height)				
 				);
 		urlParameters.put(ID_PARAM_NAME, String.valueOf(id));
-		sendHttpGet(serviceUrl+VIDEO_SERVICE, null, urlParameters);		
+		String result = sendHttpGet(serviceUrl+VIDEO_SERVICE, null, urlParameters);
+		if(result == null) {
+			logger.warn("TV not available, shutting down the service");
+			factory.removeTVInstance(objectId);
+		}
 	}
 
 	@Override
@@ -307,7 +306,6 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 		if(path!=null) {
 			serviceUrl+=path;
 		}
-		serviceId = IMPL_NAME+"-"+String.valueOf(hostname.hashCode());
 	}
 	
 	
@@ -462,11 +460,6 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 	public void sendRCCommand(String keycode) {
 		
 		logger.trace("sendRCCommand(String keycode : "+keycode+")");
-		if(!checkConfiguration(hostname, port, path)) {
-			logger.warn("TV not available, shutting down the service");
-			factory.removeTVInstance(serviceId);
-			return;
-		}
 		
 		try {
 			KeyCode code = KeyCode.valueOf(keycode);
@@ -482,7 +475,11 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 		Map<String,String> urlParameters = new LinkedHashMap<String, String>();
 		urlParameters.put(COMMAND_PARAM_NAME, COMMAND_RC);
 		urlParameters.put(KEYCODE_PARAM_NAME, keycode);
-		sendHttpGet(serviceUrl+SYSTEM_SERVICE, null, urlParameters);	
+		String result = sendHttpGet(serviceUrl+SYSTEM_SERVICE, null, urlParameters);
+		if(result == null) {
+			logger.warn("TV not available, shutting down the service");
+			factory.removeTVInstance(objectId);
+		}
 	}
 	
 	/**

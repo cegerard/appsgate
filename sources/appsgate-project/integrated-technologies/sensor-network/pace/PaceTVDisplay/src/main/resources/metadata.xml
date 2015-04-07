@@ -8,8 +8,7 @@
                     push="fireNotificationMessage">
 
         <!-- device kernel meta data -->
-        <definition name="serviceId" type="string"
-                    field="serviceId" default=""/>
+        <definition name="objectId" type="string" field="objectId" />
 
         <!-- device client meta data -->
         <definition name="userType" type="string" default="124"

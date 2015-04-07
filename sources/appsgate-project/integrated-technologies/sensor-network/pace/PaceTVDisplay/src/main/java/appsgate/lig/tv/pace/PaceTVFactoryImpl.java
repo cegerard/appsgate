@@ -30,13 +30,18 @@ public class PaceTVFactoryImpl extends TimerTask implements TVFactory{
 	public final static String TV_HOSTNAME = "pace.tv.hostname";
 	public final static String TV_PORT = "pace.tv.port";
 	public final static String TV_PATH = "pace.tv.servicepath";
+	public final static String TV_PERIOD = "pace.tv.period";
 
 	public final static String DEFAULT_HOSTNAME = "localhost";
 	public final static int DEFAULT_HTTPPORT = 80;
+
+	// if no period provided the service polls every 10 minutes
+	public final static long DEFAULT_PERIOD = 10 * 60 * 1000; 
 	
 	String hostname;
 	String path;
 	int port;
+	long period;
 	
 	String currentServiceId = null;
 	
@@ -52,8 +57,18 @@ public class PaceTVFactoryImpl extends TimerTask implements TVFactory{
 	public void start(Instance mySelf) {
 		logger.trace("start()");
 		this.mySelf = mySelf;
-		
-		
+
+		String sPeriod = context.getProperty(TV_PERIOD);
+		if(sPeriod == null) {
+			logger.info("No polling period specified, using default value : "+DEFAULT_PERIOD);
+			period = DEFAULT_PERIOD;
+		} else try{
+			period = Long.parseLong(sPeriod);
+		} catch(NumberFormatException exc) {
+			logger.info("Period is not a valid number, using default value : "+DEFAULT_PERIOD);
+			period=DEFAULT_PERIOD;
+		}
+
 		hostname = context.getProperty(TV_HOSTNAME);
 		if(hostname == null) {
 			logger.info("No hostname specified, using default value : "+DEFAULT_HOSTNAME);
@@ -83,7 +98,7 @@ public class PaceTVFactoryImpl extends TimerTask implements TVFactory{
 		createTVInstance(hostname, port, path);		
 
 		Timer timer = new Timer();
-		timer.schedule(this, 10 * 60 * 1000, 10 * 60 * 1000); // Try to recreate the service each  10 minutes
+		timer.schedule(this,period, period); // Try to recreate the service each  polling period
 	}
 
 	@Override
@@ -91,29 +106,33 @@ public class PaceTVFactoryImpl extends TimerTask implements TVFactory{
 		logger.trace("createTVInstance(String hostname : "+hostname
 				+", int port ="+port
 				+", String path ="+path
-				+")");
+				+"), check and try to recreates the instance");
 		Instance inst = null;
 		
 		if(!PaceTVImpl.checkConfiguration(hostname, port, path)) {
 			logger.trace("createTVInstance(...), TV not available");
-			if(currentServiceId != null) {
-				logger.trace("createTVInstance(...), removing apam service with service id : "+currentServiceId);
-				removeTVInstance(currentServiceId);
-			}
+			logger.trace("createTVInstance(...), removing apam service with service id : "+currentServiceId
+					+ ", if null removing all instances of TV service");
+			removeTVInstance(currentServiceId);
 			return null;
 		}
 		
 		if(currentServiceId != null) {
-			logger.trace("createTVInstance(...), already an instance, with service Id"
-					+currentServiceId+" must be removed prior to creating a new one");
+			logger.trace("createTVInstance(...), TV instance is working and already an instance, with service Id "
+					+currentServiceId+", keeping the service alive");
 			return null;
 		}
 
 		try {
+			logger.trace("createTVInstance(...), no TV instance referenced, creating a new one");
+			
 			Implementation tvImpl = CST.apamResolver.findImplByName(null,
 					PaceTVImpl.IMPL_NAME);
 
 			Map<String, String> configuration = new Hashtable<String, String>();
+			
+			String objectId = PaceTVImpl.IMPL_NAME+"-"+String.valueOf(hostname.hashCode());
+			configuration.put("objectId", objectId);
 
 			inst = tvImpl.createInstance(mySelf.getComposite(),
 					configuration);
@@ -124,7 +143,6 @@ public class PaceTVFactoryImpl extends TimerTask implements TVFactory{
 			currentServiceId = service.getAbstractObjectId();
 			logger.trace("createTVInstance(...), Instance should be created successfully,"
 					+ " with service Id : "+currentServiceId);
-			
 
 			return currentServiceId;
 
@@ -134,6 +152,7 @@ public class PaceTVFactoryImpl extends TimerTask implements TVFactory{
 				((ComponentBrokerImpl) CST.componentBroker).disappearedComponent(inst);
 				logger.trace("createTVInstance(...), removed corresponding instance");
 			}
+			currentServiceId = null;
 			return null;
 		}
 	}
@@ -153,17 +172,15 @@ public class PaceTVFactoryImpl extends TimerTask implements TVFactory{
 							+ " destroying all instances including this one with id "+service.getAbstractObjectId());
 					((ComponentBrokerImpl) CST.componentBroker)
 					.disappearedComponent(inst);	
+					currentServiceId = null;
 				} else if (serviceId.equals(service.getAbstractObjectId())) {
 					logger.trace("destroyTVInstance(...), found serviceId "+service.getAbstractObjectId()
 							+", removing it");
 					((ComponentBrokerImpl) CST.componentBroker)
 					.disappearedComponent(inst);
+					currentServiceId = null;
 				}
 			}	
-		}
-		if(currentServiceId != null
-				&& currentServiceId.equals(serviceId)) {
-			currentServiceId = serviceId;
 		}
 	}
 
