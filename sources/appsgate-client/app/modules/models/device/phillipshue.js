@@ -41,7 +41,7 @@ define([
      *return the list of available actions
      */
     getActions: function() {
-      return ["switchOn", "switchOff", "blink","setBrightness"];
+      return ["switchOn", "switchOff", "blink","setBrightness", "increaseBrightness", "decreaseBrightness"];
     },
     /**
      * return the keyboard code for a given action
@@ -53,7 +53,7 @@ define([
       switch (act) {
         case "switchOn":
           $(btn).append("<span>" + $.i18n.t('devices.lamp.keyboard.turnOn', {
-            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.lamp.keyboard.lamp') + "</span>",
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.lamp.keyboard.lamp') + "</span>"
           }));
           v.methodName = "setWhite";
           v.phrase = "devices.lamp.language.turnOn";
@@ -61,7 +61,7 @@ define([
           break;
         case "switchOff":
           $(btn).append("<span>" + $.i18n.t('devices.lamp.keyboard.turnOff', {
-            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.lamp.keyboard.lamp') + "</span>",
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.lamp.keyboard.lamp') + "</span>"
           }));
           v.methodName = "off";
           v.phrase = "devices.lamp.language.turnOff";
@@ -69,7 +69,7 @@ define([
           break;
         case "blink":
           $(btn).append("<span>" + $.i18n.t('devices.lamp.keyboard.blink', {
-            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.lamp.keyboard.lamp') + "</span>",
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.lamp.keyboard.lamp') + "</span>"
           }));
           v.methodName = "blink";
           v.type="action2";
@@ -85,7 +85,7 @@ define([
           break;
         case "setBrightness":
           $(btn).append("<span>" + $.i18n.t('devices.lamp.keyboard.brightness', {
-            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.lamp.keyboard.lamp') + "</span>",
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.lamp.keyboard.lamp') + "</span>"
           }));
           v.methodName = "setBrightness";
           v.type="action1";
@@ -96,8 +96,32 @@ define([
           v.phrase = "devices.lamp.language.brightness";
           $(btn).attr("json", JSON.stringify(v));
           break;
-
-
+        case "increaseBrightness":
+          $(btn).append("<span>" + $.i18n.t('devices.lamp.keyboard.increaseBrightness', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.lamp.keyboard.lamp') + "</span>"
+          }));
+          v.methodName = "increaseBrightness";
+          v.type="action1";
+          v.args = [{
+            "type": "int",
+            "value": "20"
+          }];
+          v.phrase = "devices.lamp.language.increaseBrightness";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        case "decreaseBrightness":
+          $(btn).append("<span>" + $.i18n.t('devices.lamp.keyboard.decreaseBrightness', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.lamp.keyboard.lamp') + "</span>"
+          }));
+          v.methodName = "decreaseBrightness";
+          v.type="action1";
+          v.args = [{
+            "type": "int",
+            "value": "20"
+          }];
+          v.phrase = "devices.lamp.language.decreaseBrightness";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
 
         default:
           console.error("unexpected action found for PhilipsHue: " + act);

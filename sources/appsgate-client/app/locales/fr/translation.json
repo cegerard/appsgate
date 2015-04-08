@@ -353,6 +353,8 @@
       "keyboard": {
         "blink": "Faire clignoter l'__myVar__",
         "brightness": "Changer l'intensité de __myVar__",
+        "increaseBrightness": "Augmenter l'intensité de __myVar__",
+        "decreaseBrightness": "Diminuer l'intensité de __myVar__",
         "isOff": "l'__myVar__ est éteinte",
         "isOff-keep": "l'__myVar__ éteinte",
         "isOn": "l'__myVar__ est allumée",
@@ -366,6 +368,8 @@
       "language": {
         "blink": "Faire clignoter __myVar__",
         "brightness": "Changer l'intensité de __myVar__",
+        "increaseBrightness": "Augmenter l'intensité de __myVar__",
+        "decreaseBrightness": "Diminuer l'intensité de __myVar__",
         "isOff": "__myVar__ est éteinte",
         "isOff-keep": "__myVar__ éteinte",
         "isOn": "__myVar__ est allumée",
@@ -1076,6 +1080,12 @@
       "name": {
         "plural": "Drivers EnOcean",
         "singular": "Driver EnOcean"
+      }
+    },
+    "weather": {
+      "name": {
+        "plural": "Services météo",
+        "singular": "Service météo"
       }
     }
   }

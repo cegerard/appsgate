@@ -353,6 +353,8 @@
       "keyboard": {
         "blink": "Blink a __myVar__",
         "brightness": "Change brightness of __myVar__",
+        "increaseBrightness": "Increase brightness of __myVar__",
+        "decreaseBrightness": "Decrease brightness of __myVar__",
         "isOff": "a __myVar__ is off",
         "isOff-keep": "a __myVar__ off",
         "isOn": "a __myVar__ is on",
@@ -366,6 +368,8 @@
       "language": {
         "blink": "Blink __myVar__",
         "brightness": "Change brightness of __myVar__",
+        "increaseBrightness": "Increase brightness of __myVar__",
+        "decreaseBrightness": "Decrease brightness of __myVar__",
         "isOff": "__myVar__ is off",
         "isOff-keep": "__myVar__ off",
         "isOn": "__myVar__ is on",
@@ -1068,6 +1072,20 @@
         "French": "French",
         "German": "German",
         "Spanish": "Spanish"
+      }
+    }
+  },
+  "adapters": {
+    "enocean": {
+      "name": {
+        "plural": "EnOcean Drivers",
+        "singular": "EnOcean Driver"
+      }
+    },
+    "weather": {
+      "name": {
+        "plural": "Weather Services",
+        "singular": "Weather Service"
       }
     }
   }
