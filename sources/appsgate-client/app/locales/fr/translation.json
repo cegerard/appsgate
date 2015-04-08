@@ -417,6 +417,8 @@
         "STOPPED": "Arrêté : "
       },
       "language": {
+        "increaseVolume": "Augmenter le volume de ",
+        "decreaseVolume": "Diminuer le volume de ",
         "volume-event": "le volume du lecteur change sur __myVar__",
         "play-event": "on lance/reprend la lecture sur le lecteur __myVar__",
         "stop-event": "on stoppe la lecture sur le lecteur __myVar__",
@@ -429,6 +431,8 @@
         "stop-media-action": "Stopper"
       },
       "keyboard": {
+        "increaseVolume": "Augmenter le volume de __myVar__",
+        "decreaseVolume": "Diminuer le volume de __myVar__",
         "volume-event": "le volume du __myVar__ change sur __myVar2__",
         "play-event": "on lance/reprend la lecture sur le __myVar__",
         "stop-event": "on stoppe la lecture sur le __myVar__",

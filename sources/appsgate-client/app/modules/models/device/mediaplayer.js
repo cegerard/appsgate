@@ -94,7 +94,7 @@ define([
      *return the list of available actions
      */
     getActions: function() {
-      return ["play", "pause", "resume", "stop", "setVolume", "audioNotification"];
+      return ["play", "pause", "resume", "stop", "setVolume", "audioNotification","increaseVolume","decreaseVolume"];
     },
     /**
      * return the keyboard code for a given action
@@ -133,7 +133,7 @@ define([
           break;
         case "stop":
           $(btn).append("<span>" + $.i18n.t('devices.mediaplayer.keyboard.stop-action', {
-            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.mediaplayer.keyboard.player') + "</span>",
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.mediaplayer.keyboard.player') + "</span>"
           }));
           v.methodName = "stop";
           v.phrase = "devices.mediaplayer.language.stop-media-action";
@@ -154,6 +154,32 @@ define([
 
           $(btn).attr("json", JSON.stringify(v));
           break;
+        case "increaseVolume":
+          $(btn).append("<span>" + $.i18n.t('devices.mediaplayer.keyboard.increaseVolume', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.mediaplayer.keyboard.player') + "</span>"
+          }));
+          v.methodName = "increaseVolume";
+          v.args = [{
+            "type": "int",
+            "value": "5"
+          }];
+          v.phrase = "devices.mediaplayer.language.increaseVolume";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        case "decreaseVolume":
+          $(btn).append("<span>" + $.i18n.t('devices.mediaplayer.keyboard.decreaseVolume', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.mediaplayer.keyboard.player') + "</span>"
+          }));
+          v.methodName = "decreaseVolume";
+          v.args = [{
+            "type": "int",
+            "value": "5"
+          }];
+          v.phrase = "devices.mediaplayer.language.decreaseVolume";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+
+
         case "audioNotification":
           $(btn).append("<span>" + $.i18n.t('devices.mediaplayer.keyboard.audioNotification-action', {
             myVar: "<span class='highlight-placeholder'>message</span>",
@@ -161,10 +187,11 @@ define([
           }));
           v.methodName = "audioNotification";
           v.phrase = "devices.mediaplayer.language.audioNotification-action";
-          v.args = [{
-            "type": "String",
-            "value": "message"
-          }];
+          v.args = [
+            {"type": "String", "value": "message"},
+            {"type": "String", "value": "Juliette"},
+            {"type": "int", "value": 5}
+          ];
           $(btn).attr("json", JSON.stringify(v));
           break;
         default:

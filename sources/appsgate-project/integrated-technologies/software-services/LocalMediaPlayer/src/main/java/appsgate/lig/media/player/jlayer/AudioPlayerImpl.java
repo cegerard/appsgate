@@ -206,6 +206,17 @@ public class AudioPlayerImpl extends CoreObjectBehavior implements MediaPlayer, 
 	@SuppressWarnings("unused")
 	private NotificationMsg stateChanged(String varName, String oldValue, String newValue) {
 		return new CoreNotificationMsg(varName, oldValue, newValue, this.getAbstractObjectId());
-	}	
+	}
+	
+	@Override
+	public int increaseVolume(int step) {;
+		return getVolume();
+	}
+
+	@Override
+	public int decreaseVolume(int step) {
+		return getVolume();
+	}
+	
 
 }

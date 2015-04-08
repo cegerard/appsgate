@@ -387,5 +387,21 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 		}
 	}
 
+	@Override
+	public int increaseVolume(int step) {
+		int vol = getVolume();
+		vol+=step;
+		setVolume(vol);
+		return getVolume();
+	}
+
+	@Override
+	public int decreaseVolume(int step) {
+		int vol = getVolume();
+		vol-=step;
+		setVolume(vol);
+		return getVolume();
+	}
+
 
 }
