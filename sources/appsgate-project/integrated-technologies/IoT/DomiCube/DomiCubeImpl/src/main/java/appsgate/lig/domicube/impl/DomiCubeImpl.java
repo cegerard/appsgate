@@ -91,7 +91,7 @@ public class DomiCubeImpl extends CoreObjectBehavior implements CoreObjectSpec, 
 	/**
 	 * Minimal time interval between two moves of the cube to determine rotation east/west
 	 */
-	private static long delay = 500;
+	private static long delay = 200;
 	
 	private long lastMove = 0;
 
