@@ -22,11 +22,6 @@
 		<definition name="batteryLevel" type="string" field="batteryLevel" method="batteryChanged"/>
 		<definition name="dimValue"     type="string" field="dimValue" method="dimValueChanged" />
         <definition name="dimDirection"     type="string" field="dimDirection" method="dimDirectionChanged" />
-
-        <definition name="dimDirectionDetectableRate"   type="int" field="dimDirectionDetectableRate" default="1"></definition>
-
-
-
 		
 	</implementation>
 

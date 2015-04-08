@@ -89,6 +89,13 @@ public class DomiCubeImpl extends CoreObjectBehavior implements CoreObjectSpec, 
 	private static final Logger logger = LoggerFactory.getLogger(DomiCubeImpl.class);
 	
 	/**
+	 * Minimal time interval between two moves of the cube to determine rotation east/west
+	 */
+	private static long delay = 500;
+	
+	private long lastMove = 0;
+
+	/**
 	 * Called by APAM when an instance of this implementation is created
 	 */
 	public void newInst() {
@@ -175,7 +182,7 @@ public class DomiCubeImpl extends CoreObjectBehavior implements CoreObjectSpec, 
 		logger.info("The DomiCube, "+ deviceId+" face changed to "+newFace);
 		notifyChanges("newFace", newFace);
         notifyChanges("activeFace", newFace);
-
+        lastMove = System.currentTimeMillis();
 	}
 	
 	/**
@@ -200,17 +207,22 @@ public class DomiCubeImpl extends CoreObjectBehavior implements CoreObjectSpec, 
 
 		notifyChanges("newDimValue", newDim);
 
-        try {
-            Float value=Float.parseFloat(newDim);
-            if(value<(-1*dimDirectionDetectableRate)){
-                notifyChanges("newDirection", "west");
-            }else if(value>(dimDirectionDetectableRate)) {
-                notifyChanges("newDirection", "east");
-            }
-
-        }catch(NumberFormatException e){
-            logger.warn("Value returned as dim value is not a number. Value given {}",dimValue);
-        }
+		long currentTime = System.currentTimeMillis();
+		
+		if(currentTime - lastMove > delay) {
+			lastMove = currentTime;
+			try {
+				Float value=Float.parseFloat(newDim);
+				if(value<-0.1){
+					notifyChanges("newDirection", "west");
+	            }else if(value>0.1) {
+	                notifyChanges("newDirection", "east");
+	            }
+	
+	        }catch(NumberFormatException e){
+	            logger.warn("Value returned as dim value is not a number. Value given {}",dimValue);
+	        }
+		}
 
 	}
 
@@ -258,14 +270,5 @@ public class DomiCubeImpl extends CoreObjectBehavior implements CoreObjectSpec, 
 	public float getDimValue() {
 		return Float.valueOf(dimValue);
 	}
-	
-//	/**
-//	 * Set the current face of this DomiCube
-//	 * @param currentFace the new face
-//	 */
-//	public void setCurrentFace(String currentFace) {
-//		this.activeFace = currentFace;
-//		faceChanged(currentFace);
-//	}
 
 }
