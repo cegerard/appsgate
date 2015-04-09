@@ -240,7 +240,7 @@ public class TraceMan implements TraceManSpec {
         //if the equipment has been instantiated from ApAM spec before
         GrammarDescription grammar = getGrammar(objectID);
         if (grammar != null && grammar.generateTrace()) {
-            JSONObject jsonDecoration = Trace.getJSONDecoration(Trace.DECORATION_TYPE.access, "write", caller, timeStamp, null, objectID,
+            JSONObject jsonDecoration = Trace.getJSONDecoration(Trace.DECORATION_TYPE.access, "write", caller, timeStamp, null, objectID, null, this.getDeviceName(objectID),
                     grammar.getTraceMessageFromCommand(command), grammar.getContextFromParams(command, args));
             JSONObject deviceJson = Trace.getJSONDevice(objectID, null, jsonDecoration, grammar, this);
             //Create the notification JSON object
@@ -254,12 +254,11 @@ public class TraceMan implements TraceManSpec {
 
     @Override
     public synchronized void coreEventNotify(long timeStamp, String srcId, String varName, String value) {
-    	LOGGER.debug("coreEventNotify(long timeStamp : {}, String srcId :{}, String varName : {}, String value : {})"
-    			, timeStamp, srcId, varName, value);
+        LOGGER.debug("coreEventNotify(long timeStamp : {}, String srcId :{}, String varName : {}, String value : {})", timeStamp, srcId, varName, value);
 
         GrammarDescription desc = getGrammar(srcId);
         if (srcId != null && varName != null && value != null
-        		&& desc != null && applyFilters(desc, srcId, varName, value) && desc.generateTrace()) {
+                && desc != null && applyFilters(desc, srcId, varName, value) && desc.generateTrace()) {
             //Create the event description device entry
             JSONObject event = new JSONObject();
             JSONObject JDecoration;
@@ -270,16 +269,16 @@ public class TraceMan implements TraceManSpec {
                         event.put("type", "connection");
                         event.put("picto", Trace.getConnectionPicto());
                         JDecoration = Trace.getJSONDecoration(
-                                Trace.DECORATION_TYPE.state, "connection", "technical", timeStamp, srcId, null, "decorations.connection", null);
+                            Trace.DECORATION_TYPE.state, "connection", "technical", timeStamp, srcId, null, getDeviceName(srcId), null, "decorations.connection", null);
                     } else if (value.equalsIgnoreCase("0")) {
                         event.put("type", "disconnection");
                         event.put("picto", Trace.getDisconnectionPicto());
                         JDecoration = Trace.getJSONDecoration(
-                                Trace.DECORATION_TYPE.state, "disconnection", "technical", timeStamp, srcId, null, "decorations.disconnection", null);
+                                Trace.DECORATION_TYPE.state, "disconnection", "technical", timeStamp, srcId, null, getDeviceName(srcId), null,  "decorations.disconnection", null);
                     } else {
                         event.put("type", "update");
                         JDecoration = Trace.getJSONDecoration(
-                                Trace.getDecorationType(desc.getType(), varName), "error", "technical", timeStamp, srcId, null, "decorations.error", null);
+                                Trace.getDecorationType(desc.getType(), varName), "error", "technical", timeStamp, srcId, null, getDeviceName(srcId), null,  "decorations.error", null);
                     }
                 } else {
                     event.put("type", "update");
@@ -287,7 +286,7 @@ public class TraceMan implements TraceManSpec {
                     JSONObject context = Trace.addString(new JSONObject(), value);
                     Trace.addJSONPair(context, "var", varName);
                     JDecoration = Trace.getJSONDecoration(
-                            Trace.getDecorationType(desc.getType(), varName), "update", "technical", timeStamp, srcId, null, msg, context);
+                            Trace.getDecorationType(desc.getType(), varName), "update", "technical", timeStamp, srcId, null, getDeviceName(srcId), null,  msg, context);
                 }
 
                 JSONObject jsonState = Trace.getDeviceState(srcId, varName, value, this);
@@ -318,33 +317,32 @@ public class TraceMan implements TraceManSpec {
     @Override
     public synchronized void coreUpdateNotify(long timeStamp, String srcId, String coreType,
             String userType, String name, JSONObject description, String eventType) {
-    	LOGGER.debug("coreUpdateNotify(long timeStamp : {}, String srcId :{}, String coreType,"
-    			+ " String userType, String name, JSONObject description, String eventType)"
-    			, timeStamp, srcId, coreType, userType, name, description, eventType);
+        LOGGER.debug("coreUpdateNotify(long timeStamp : {}, String srcId :{}, String coreType,"
+                + " String userType, String name, JSONObject description, String eventType)", timeStamp, srcId, coreType, userType, name, description, eventType);
 
         try {
 
-        if (coreType.equalsIgnoreCase("newService")) {
-            return;
-        }
-        if (filterType(userType)) {
-            return;
-        }
+            if (coreType.equalsIgnoreCase("newService")) {
+                return;
+            }
+            if (filterType(userType)) {
+                return;
+            }
 
-        JSONObject event = new JSONObject();
-        JSONObject cause = new JSONObject();
+            JSONObject event = new JSONObject();
+            JSONObject cause = new JSONObject();
             switch (eventType) {
                 case "new":
                     event.put("type", "appear");
                     cause = Trace.getJSONDecoration(
-                            Trace.DECORATION_TYPE.state, "appear", "technical", timeStamp, srcId, null, "decorations.appear",
+                            Trace.DECORATION_TYPE.state, "appear", "technical", timeStamp, srcId, null, getDeviceName(srcId), null,  "decorations.appear",
                             Trace.addJSONPair(new JSONObject(), "name", name));
                     event.put("state", Trace.getDeviceState(srcId, "", "", this));
                     break;
                 case "remove":
                     event.put("type", "disappear");
                     cause = Trace.getJSONDecoration(
-                            Trace.DECORATION_TYPE.state, "disappear", "technical", timeStamp, srcId, null, "decorations.remove",
+                            Trace.DECORATION_TYPE.state, "disappear", "technical", timeStamp, srcId, getDeviceName(srcId), null,  null, "decorations.remove",
                             Trace.addJSONPair(new JSONObject(), "name", name));
                     break;
             }
@@ -352,11 +350,10 @@ public class TraceMan implements TraceManSpec {
             JSONObject coreNotif = Trace.getCoreNotif(jsonDevice, null);
             //Trace the notification JSON object in the trace file
             trace(coreNotif, timeStamp);
-            
-        } catch (Exception e) {
-        	LOGGER.error("coreUpdateNotify(...), Exception occured : ", e);
-        }
 
+        } catch (Exception e) {
+            LOGGER.error("coreUpdateNotify(...), Exception occured : ", e);
+        }
 
     }
 

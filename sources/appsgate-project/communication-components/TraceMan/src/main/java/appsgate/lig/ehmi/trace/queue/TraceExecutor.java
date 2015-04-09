@@ -1,8 +1,6 @@
 package appsgate.lig.ehmi.trace.queue;
 
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -214,6 +212,9 @@ public class TraceExecutor implements Runnable {
                         // Aggregates the device trace has a decoration
                         JSONArray existingDecorations = existingPgm.optJSONArray("decorations");
                         JSONArray tempDecs = tempPgm.optJSONArray("decorations");
+                        if (tempDecs == null) {
+                            tempDecs  = new JSONArray();
+                        }
                         int decSize = tempDecs.length();
                         int y1 = 0;
                         while (y1 < decSize) {

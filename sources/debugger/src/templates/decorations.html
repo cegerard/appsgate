@@ -31,11 +31,16 @@
 				}
 				obj = decoration.context;
 			}
-			obj["ns"] = options.i18n.ns;%>
+			obj["ns"] = options.i18n.ns;
+			obj["program"] = decoration.programName;
+			obj["device"] = decoration.deviceName;%>
             <div class="description"><%- i18n.t(decoration.description, obj ) %></div>
             <div class="extra">
-                <span class="source"><%- decoration.source %></span> |
+				<% if (decoration.causality == "Program") { %>
+                <span class="source"><%- decoration.programName %></span>
+				<% } else { %>
                 <span class="causality"><%- decoration.causality %></span>
+				<% } %>
             </div>
         </td>
     </tr>

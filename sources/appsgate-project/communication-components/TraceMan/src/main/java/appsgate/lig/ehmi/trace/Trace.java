@@ -30,14 +30,18 @@ public class Trace {
      * @param cause type of causality (i.e. technical, environmental, user,
      * program)
      * @param timeStamp the time when this happened
-     * @param source source identifier
-     * @param target target identifier
+     * @param program program identifier
+     * @param device device identifier
+     * @param programName
+     * @param deviceName
      * @param description description key for internationalization
      * @param context parameters values
      * @return the complete decoration as JSON object
      */
-    public static JSONObject getJSONDecoration(DECORATION_TYPE decorationType, String actionType, String cause,
-            long timeStamp, String source, String target, String description, JSONObject context) {
+    public static JSONObject getJSONDecoration(
+            DECORATION_TYPE decorationType, String actionType, String cause,
+            long timeStamp, String program, String device, String programName, String deviceName,
+            String description, JSONObject context) {
         JSONObject causality = new JSONObject();
         try {
             causality.put("order", 0);
@@ -45,8 +49,10 @@ public class Trace {
             causality.put("picto", getPictoFromType(actionType, cause));
             causality.put("time", timeStamp);
             causality.put("causality", cause);
-            causality.put("source", source);
-            causality.put("target", target);
+            causality.put("program", program);
+            causality.put("device", device);
+            causality.put("programName", programName);
+            causality.put("deviceName", deviceName);
             causality.put("description", description);
             causality.put("context", context);
 
@@ -449,19 +455,23 @@ public class Trace {
                 event.put("state", s);
                 if (change != null) {
                     JSONObject pName = Trace.addJSONPair(new JSONObject(), "name", name);
-                    if (change.contentEquals("newProgram")) {
-                        event.put("type", "appear");
-                        cause = Trace.getJSONDecoration(
-                                Trace.DECORATION_TYPE.state, "newProgram", "user", timeStamp, name, null, "decorations.program.added", pName);
-                    } else if (change.contentEquals("removeProgram")) {
-                        event.put("type", "disappear");
-                        cause = Trace.getJSONDecoration(
-                                Trace.DECORATION_TYPE.state, "removeProgram", "user", timeStamp, name, null, "decorations.program.deleted", pName);
-
-                    } else { //change == "updateProgram"
-                        event.put("type", "update");
-                        cause = Trace.getJSONDecoration(
-                                Trace.DECORATION_TYPE.state, "updateProgram", "user", timeStamp, name, null, "decorations.program.update." + state.toLowerCase(), pName);
+                    switch (change) {
+                        case "newProgram":
+                            event.put("type", "appear");
+                            cause = Trace.getJSONDecoration(
+                                    Trace.DECORATION_TYPE.state, "newProgram", "user", timeStamp, id, null, name, null, "decorations.program.added", pName);
+                            break;
+                        case "removeProgram":
+                            event.put("type", "disappear");
+                            cause = Trace.getJSONDecoration(
+                                    Trace.DECORATION_TYPE.state, "removeProgram", "user", timeStamp, id, null, name, null, "decorations.program.deleted", pName);
+                            break;
+                        default:
+                            //change == "updateProgram"
+                            event.put("type", "update");
+                            cause = Trace.getJSONDecoration(
+                                    Trace.DECORATION_TYPE.state, "updateProgram", "user", timeStamp, id, null, name, null, "decorations.program.update." + state.toLowerCase(), pName);
+                            break;
                     }
                 }
 
@@ -498,11 +508,11 @@ public class Trace {
             }
             desc = gram.getTraceMessageFromCommand(notif.getDescription());
         }
-        JSONObject jsonDecoration = Trace.getJSONDecoration(Trace.DECORATION_TYPE.state, notif.getType(), "Program", timeStamp, notif.getSourceId(), null, desc, context);
+        JSONObject jsonDecoration = Trace.getJSONDecoration(Trace.DECORATION_TYPE.state, notif.getType(), "Program", timeStamp, notif.getProgramId(), notif.getDeviceId(),
+                notif.getProgramName(), t.getDeviceName(notif.getDeviceId()), desc, context);
         JSONObject d = Trace.getJSONDevice(notif.getDeviceId(), null, jsonDecoration, gram, t);
         try {
-            pJson.put("decorations", new JSONArray().put(
-                    Trace.getJSONDecoration(Trace.DECORATION_TYPE.state, notif.getType(), "Program", timeStamp, null, notif.getTargetId(), desc, context)));
+            pJson.put("decorations", new JSONArray().put(jsonDecoration));
         } catch (JSONException ex) {
         }
         return Trace.getCoreNotif(d, pJson);

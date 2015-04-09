@@ -9,6 +9,7 @@ import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.*;
 import appsgate.lig.context.dependency.graph.ReferenceDescription;
 import appsgate.lig.eude.interpreter.spec.ProgramCommandNotification;
+import appsgate.lig.eude.interpreter.spec.ProgramDeviceStateNotification;
 import appsgate.lig.eude.interpreter.spec.ProgramTraceNotification;
 import java.util.List;
 import org.json.JSONArray;
@@ -136,11 +137,13 @@ public class NodeAction extends Node implements ICanBeEvaluated {
         LOGGER.debug("Device action {} on {}", methodName, target);
 
         command = getMediator().executeCommand(target, methodName, args);
+        ProgramTraceNotification notif;
         if (returnType.isEmpty()) {
-            ProgramTraceNotification notif;
             notif = new ProgramCommandNotification(this.getProgramNode(), this.getIID(), target, methodName, args);
-            this.getMediator().notifyChanges(notif);
+        } else {
+            notif = new ProgramDeviceStateNotification(this.getProgramNode(), this.getIID(), target, methodName, command.getReturn().toString());
         }
+        this.getMediator().notifyChanges(notif);
     }
 
     /**
