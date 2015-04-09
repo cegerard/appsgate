@@ -147,6 +147,7 @@
     </composite>
 
     <composite name="AppsGateDomiCubeServices" singleton="true">
+        <relation targetKind="implementation" implementation="DomiCubeAdapterImpl" creation="eager"/>
     </composite>
     
     <composite name="YakitomeServices" singleton="true"

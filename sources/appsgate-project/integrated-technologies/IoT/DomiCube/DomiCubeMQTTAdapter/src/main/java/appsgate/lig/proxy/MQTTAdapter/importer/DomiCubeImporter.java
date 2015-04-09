@@ -65,8 +65,8 @@ public class DomiCubeImporter extends AbstractImporterComponent {
             public void run() {
                 try {
 
-                    Implementation apamImpl = CST.componentBroker.getImpl(DOMICUBE_APAM_ADAPTOR_INSTANCE);
-                    Implementation apamDomicubeImpl = CST.componentBroker.getImpl(DOMICUBE_APAM_INSTANCE);
+                    Implementation apamImpl = CST.apamResolver.findImplByName(null, DOMICUBE_APAM_ADAPTOR_INSTANCE);
+                    Implementation apamDomicubeImpl = CST.apamResolver.findImplByName(null,DOMICUBE_APAM_INSTANCE);
 
                     DomiCubeWrapper dto=DomiCubeWrapper.create(importDeclaration);
 
