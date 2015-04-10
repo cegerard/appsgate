@@ -41,7 +41,7 @@ public interface TraceManSpec {
             String userType, String name, JSONObject description, String eventType);
 
     /**
-     *
+     * TODO: consider delete of this function, the other one directly uses the json array of arguments
      *
      * @param objectID
      * @param command
@@ -50,6 +50,15 @@ public interface TraceManSpec {
      * @param timeStamp
      */
     public void commandHasBeenPassed(String objectID, String command, String caller, ArrayList<Object> params, long timeStamp);
+
+    /**
+    * @param objectID
+    * @param command
+    * @param caller
+    * @param jsonArgs
+    * @param timeStamp
+    */
+    public void commandHasBeenPassed(String objectID, String command, String caller, JSONArray jsonArgs, long timeStamp);
 
     /**
      *

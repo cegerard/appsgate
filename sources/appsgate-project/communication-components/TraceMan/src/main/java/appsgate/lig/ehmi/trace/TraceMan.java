@@ -1,6 +1,7 @@
 package appsgate.lig.ehmi.trace;
 
 import appsgate.lig.context.dependency.spec.Dependencies;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -235,6 +236,24 @@ public class TraceMan implements TraceManSpec {
         }
     }
 
+    @Override
+    public void commandHasBeenPassed(String objectID, String command, String caller, JSONArray jsonArgs, long timeStamp) {
+        //if the equipment has been instantiated from ApAM spec before
+        GrammarDescription grammar = getGrammar(objectID);
+        if (grammar != null && grammar.generateTrace()) {
+            JSONObject jsonDecoration = Trace.getJSONDecoration(Trace.DECORATION_TYPE.access, "write", caller, timeStamp, null, objectID,
+                    grammar.getTraceMessageFromCommand(command), grammar.getContextFromParams(command, jsonArgs));
+            JSONObject deviceJson = Trace.getJSONDevice(objectID, null, jsonDecoration, grammar, this);
+            //Create the notification JSON object
+            JSONObject coreNotif = Trace.getCoreNotif(deviceJson, null);
+            //Trace the notification JSON object in the trace file
+            trace(coreNotif, timeStamp);
+        } else {
+            LOGGER.debug("This command [{}] to {} from [{}] does not generate a trace", command, objectID, caller);
+        }    	
+    }
+
+    
     @Override
     public synchronized void commandHasBeenPassed(String objectID, String command, String caller, ArrayList<Object> args, long timeStamp) {
         //if the equipment has been instantiated from ApAM spec before

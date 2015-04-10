@@ -5,6 +5,7 @@
  */
 package appsgate.lig.eude.interpreter.impl;
 
+import appsgate.lig.chmi.spec.AsynchronousCommandResponseListener;
 import appsgate.lig.chmi.spec.CHMIProxySpec;
 import appsgate.lig.chmi.spec.GenericCommand;
 import appsgate.lig.context.dependency.graph.Reference.STATUS;
@@ -14,14 +15,18 @@ import appsgate.lig.context.services.DataBasePushService;
 import appsgate.lig.ehmi.spec.EHMIProxyMock;
 import appsgate.lig.eude.interpreter.references.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
+
 import org.jmock.Expectations;
+
 import static org.jmock.Expectations.any;
 import static org.jmock.Expectations.returnValue;
+
 import org.jmock.Mockery;
 import org.jmock.States;
 import org.jmock.lib.concurrent.Synchroniser;
@@ -96,20 +101,21 @@ public class ReferenceTest {
                 will(returnValue(true));
                 allowing(push_service).pushData_remove(with(any(String.class)), with(any(String.class)), with(any(String.class)), (ArrayList<Map.Entry<String, Object>>) with(any(Object.class)));
                 will(returnValue(true));
-                allowing(chmiProxy).executeCommand(with("test"), with("testState"), with(any(JSONArray.class)));
+                
+                allowing(chmiProxy).executeCommand(with(any(Integer.class)), with("test"), with("testState"), with(any(JSONArray.class)),with(any(String.class)),with(any(AsynchronousCommandResponseListener.class)));
                 will(returnValue(gc));
-                allowing(chmiProxy).executeCommand(with("test"), with(any(String.class)), with(any(JSONArray.class)));
+                allowing(chmiProxy).executeCommand(with(any(Integer.class)),with("test"), with(any(String.class)), with(any(JSONArray.class)),with(any(String.class)),with(any(AsynchronousCommandResponseListener.class)));
                 then(tested.is("Yes"));
-                allowing(chmiProxy).executeCommand(with("flag1"), with(any(String.class)), with(any(JSONArray.class)));
+                allowing(chmiProxy).executeCommand(with(any(Integer.class)),with("flag1"), with(any(String.class)), with(any(JSONArray.class)),with(any(String.class)),with(any(AsynchronousCommandResponseListener.class)));
                 then(tested.is("flag1"));
-                allowing(chmiProxy).executeCommand(with("flag2"), with(any(String.class)), with(any(JSONArray.class)));
+                allowing(chmiProxy).executeCommand(with(any(Integer.class)),with("flag2"), with(any(String.class)), with(any(JSONArray.class)),with(any(String.class)),with(any(AsynchronousCommandResponseListener.class)));
                 then(tested.is("flag2"));
 
                 allowing(gc).run();
                 allowing(gc).getReturn();
                 will(returnValue("2"));
 
-                allowing(chmiProxy).executeCommand(with(any(String.class)), with(any(String.class)), with(any(JSONArray.class)));
+                allowing(chmiProxy).executeCommand(with(any(Integer.class)),with(any(String.class)), with(any(String.class)), with(any(JSONArray.class)),with(any(String.class)),with(any(AsynchronousCommandResponseListener.class)));
                 allowing(chmiProxy).getDevicesDescription();
                 will(returnValue(deviceList));
 

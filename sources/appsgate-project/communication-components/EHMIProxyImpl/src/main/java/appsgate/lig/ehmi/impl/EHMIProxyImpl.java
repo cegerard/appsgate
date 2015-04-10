@@ -45,6 +45,7 @@ import appsgate.lig.ehmi.spec.trace.TraceManSpec;
 import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
 
 import java.net.*;
+import java.sql.ClientInfoStatus;
 import java.util.*;
 
 /**
@@ -737,24 +738,6 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
     }
 
     /**
-     * Get a command description, resolve the local target reference and return
-     * a runnable command object
-     *
-     * @param clientId client identifier
-     * @param method method name to call on objectId
-     * @param arguments arguments list form method methodName
-     * @param types arguments types list
-     * @param callId the remote call identifier
-     * @return runnable object that can be execute and manage.
-     */
-    @SuppressWarnings("rawtypes")
-    public Runnable executeCommand(int clientId, String method,
-            ArrayList<Object> arguments, ArrayList<Class> types, String callId) {
-        return new EHMICommand(this, method, arguments, types, callId,
-                clientId, this);
-    }
-
-    /**
      * Get a runnable object that can execute command from a remote device
      * manager asynchronously with a return response
      *
@@ -769,13 +752,13 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
      */
     @SuppressWarnings("rawtypes")
     public appsgate.lig.chmi.spec.GenericCommand executeRemoteCommand(
-            String objIdentifier, String method, ArrayList<Object> arguments,
-            ArrayList<Class> types, int clientId, String callId) {
+            String objIdentifier, String method, JSONArray jsonArgs, int clientId, String callId) {
         if (traceManager != null) {
-            traceManager.commandHasBeenPassed(objIdentifier, method, "user", arguments, getCurrentTimeInMillis());
+
+            traceManager.commandHasBeenPassed(objIdentifier, method, "user", jsonArgs, getCurrentTimeInMillis());
         }
-        return coreProxy.executeCommand(clientId, objIdentifier, method,
-                arguments, types, callId, this);
+        
+        return coreProxy.executeCommand(clientId, objIdentifier, method, jsonArgs, callId, this);
     }
 
     /**
@@ -791,7 +774,7 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
     public appsgate.lig.chmi.spec.GenericCommand executeRemoteCommand(
             String objIdentifier, String method, JSONArray args) {
         // traceManager.commandHasBeenPassed(objIdentifier, method, "PROGRAM");
-        return coreProxy.executeCommand(objIdentifier, method, args);
+        return coreProxy.executeCommand(-1, objIdentifier, method, args, null, null);
     }
 
     @Override

@@ -49,39 +49,18 @@ public interface CHMIProxySpec {
 	public boolean CoreEventsUnsubscribe(CoreEventsListener coreEventsListener);
 	
 	/**
-	 * Execute a command from the outside to a specific device
-	 * @param objectId the target object
-	 * @param methodName the method to call
-	 * @param args argument of the method
-	 * @param paramType type of those arguments
-	 * @return a Runnable object that can be execute everywhere.
-	 */
-	@SuppressWarnings("rawtypes")
-	public GenericCommand executeCommand(String objectId, String methodName, ArrayList<Object> args, ArrayList<Class> paramType);
-
-    /**
-     * Get a command description, resolve the target reference and make the
-     * call.
-     *
+	 * Execute command from outside to a specific device
+	 * 
      * @param clientId client identifier
      * @param objectId abstract object identifier
      * @param methodName method to call on objectId
-     * @param args arguments list form method methodName
-     * @param paramType argument type list
+	 * @param jsonArgs arguments and their type as an JSONArray
      * @param callId the remote call identifier
      * @return a Runnable object that can be execute everywhere.
-     */
-	 @SuppressWarnings("rawtypes")
-	public GenericCommand executeCommand(int clientId, String objectId, String methodName, ArrayList<Object> args, ArrayList<Class> paramType, String callId, AsynchronousCommandResponseListener listener);
-	
-	/**
-	 * Execute command from outside to a specific device
-	 * @param objectId the targeted object
-	 * @param methodName the method to call
-	 * @param args arguments and their type as an JSONArray
-	 * @return a Runnable object that can be execute everywhere.
 	 */
-	public GenericCommand executeCommand(String objectId, String methodName, JSONArray args);
+    public GenericCommand executeCommand(int clientId, String objectId, String methodName, JSONArray jsonArgs, String callId,
+    		AsynchronousCommandResponseListener listener);	
+	
 	 
 	/**
 	 * Get all the devices description as JSONArray
