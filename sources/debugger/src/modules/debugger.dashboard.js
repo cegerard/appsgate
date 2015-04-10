@@ -107,7 +107,6 @@ _.extend(Debugger.Dashboard.prototype, Backbone.Events, {
 
             // If `packet` contains a request then we must reinitialize some stuff in the dashboard.
             if (packet.request) {
-                console.log(packet.request);
                 // If a global eventline is sent then we must reset the dashboard.
                 if (packet.eventline) {
                     // Reset the dashboard whenever a new eventline is sent.
@@ -127,6 +126,9 @@ _.extend(Debugger.Dashboard.prototype, Backbone.Events, {
                 } else {
                     // Otherwise clean the dashboard. This will not affect the focusline.
                     this._clean();
+                }
+                if (packet.request.args.focus) {
+                    this._setFocusedThing(packet.request.args.focus);   
                 }
             }
 
@@ -293,6 +295,7 @@ _.extend(Debugger.Dashboard.prototype, Backbone.Events, {
         for (attr in attrs) {
             this._state[attr] = attrs[attr];
         }
+        return this;
     },
 
     _delState: function(key) {
@@ -308,13 +311,20 @@ _.extend(Debugger.Dashboard.prototype, Backbone.Events, {
         for (key in keys) {
             delete this._state[keys[key]];
         }
+        return this;
     },
     
     prevEvent:function() {
-        this._goToEvent( this._getFocusedProgram()._findNextFrame(this._getRulerCoordinate(), "prev"));
+        var f = this._getFocusedThing();
+        if (f != null) {
+            this._goToEvent( f._findNextFrame(this._getRulerCoordinate(), "prev"));
+        }
     },
     nextEvent:function() {
-        this._goToEvent(this._getFocusedProgram()._findNextFrame(this._getRulerCoordinate(), "next"));
+        var f = this._getFocusedThing();
+        if (f != null) {
+            this._goToEvent(f._findNextFrame(this._getRulerCoordinate(), "next"));
+        }
     },
 
     _goToEvent:function(frame) {
@@ -322,10 +332,10 @@ _.extend(Debugger.Dashboard.prototype, Backbone.Events, {
             console.log("No  event")
         } else {
             //console.log(frame);
-            var time = this._getFocusedProgram().timescale(frame.timestamp);
+            var time = this._getFocusedThing().timescale(frame.timestamp);
             this._$ruler.css("left", time);
             this._notifyWidgetsOnRulerFocusChanged(this._$ruler.position());
-            this._onWidgetMarkerClick(frame.data);
+            //this._onWidgetMarkerClick(frame.data);
         }
             
     },
@@ -333,9 +343,17 @@ _.extend(Debugger.Dashboard.prototype, Backbone.Events, {
     _getState: function(attr) {
         return this._state[attr];
     },
+        
+    _setFocusedThing : function(id) {
+      if (this._programs[id]) {
+        this.focusedThing = this._programs[id];
+      } else {
+        this.focusedThing = this._devices[id];
+      }
+    },
     
-    _getFocusedProgram : function() {
-        return this._programs["program-7919"];
+    _getFocusedThing : function() {
+        return this.focusedThing;
     },
 
     // Get zoom context
@@ -701,7 +719,7 @@ _.extend(Debugger.Dashboard.prototype, Backbone.Events, {
             case 'program':
                 return _.has(this._programs, id);
             default:
-                false;
+                return false;
         }
     },
 

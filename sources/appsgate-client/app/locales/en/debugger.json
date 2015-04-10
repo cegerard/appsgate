@@ -28,6 +28,7 @@
 		"colorChanged" : "color changed"
 	  },
       "blink30" : "Blink",
+      "setBrightness" : "Set brightness of [__device__] to __brightness__",
       "setRed" : "set color to red",
       "setBlue" : "set color to blue",
       "setGreen" : "set color to green",
@@ -47,14 +48,14 @@
       "getTemperature" : "State read by __source__ : temperature measure by __target__ is __valeur__ °C"
     },
 	"SmartPlug" : {
-		"on" : "Switch plug on",
-		"off" : "Switch plug off",
-        "activePower": "State read by “__source__” : consumption indicated by __target__ indicates __conso__ W",
+		"on" : "Switch plug [__device__] on",
+		"off" : "Switch plug [__device__] off",
+        "activePower": "State read by “__program__” : consumption indicated by __device__ indicates __conso__ W",
         "change" : {
           "consumption" : "consumption indicates __text__ W",
           "plugState" : {
-            "on" : "La prise est allumée",
-            "off" : "la prise est fermée"
+            "on" : "Switch [__device__] is on",
+            "off" : "Switch [__device__] is off"
           }
         }
 	},
@@ -71,7 +72,8 @@
     "Switch" : {
       "change" : {
         "switchNumber" : "Someone pressed button __text__"
-      }
+      },
+      "switchNumber" : "Clic on button [__device__] capted by [__program__]"
     },
     "Contact" : {
       "change" : {

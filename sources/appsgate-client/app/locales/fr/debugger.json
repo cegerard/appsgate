@@ -28,6 +28,7 @@
 		"colorChanged" : "la couleur a changé"
 	  },
       "blink30" : "Faire clignoter",
+      "setBrightness" : "Mettre la luminosité de [__device__] à __brightness__",
       "setRed" : "allumer en rouge",
       "setBlue" : "allumer en bleu",
       "setGreen" : "allumer en vert",
@@ -47,14 +48,14 @@
       "getTemperature" : "Etat lu par __source__ : la temperature mesurée par __target__ est __valeur__ °C"
     },
 	"SmartPlug" : {
-		"on" : "Allumer la prise",
-		"off" : "Eteindre la prise",
-        "activePower": "Etat lu par “__pgName__” : la consommation mesurée indique __conso__ W",
+		"on" : "Allumer la prise [__device__]",
+		"off" : "Eteindre la prise [__device__]",
+        "activePower": "Etat lu par “__program__” : la consommation de [__device__] mesurée indique __value__ W",
         "change" : {
           "consumption" : "La consommation est de __text__ W",
           "plugState" : {
-            "on" : "La prise est allumée",
-            "off" : "la prise est fermée"
+            "on" : "La prise [__device__] est allumée",
+            "off" : "la prise [__device__] est fermée"
           }
         }
 	},
@@ -71,7 +72,8 @@
     "Switch" : {
       "change" : {
         "switchNumber" : "Quelqu'un a appuyé sur le bouton __text__"
-      }
+      },
+      "switchNumber" : "Le clic sur le bouton [__device__] a été capté par le programme [__program__]"
     },
     "Contact" : {
       "change" : {

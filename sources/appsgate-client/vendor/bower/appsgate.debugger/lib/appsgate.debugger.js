@@ -367,7 +367,7 @@
     
 
     // Inline include of templates files.
-    var DECORATIONS_TO_HTML_TPL = '<table class="tabular decorations">\n\t<tr>\n\t\t<th colspan="2"><%- name %></th>\n\t</tr>\n<% _.forEach(decorations, function(decoration) { %>\n    <tr>\n        <td class="decoration-head">\n\n        <div class="picto picto-<%- decoration.picto %>">\n\t\t\t<%\n\t\t\t\tif(decoration.context !== undefined && decoration.context.rgbcolor !== undefined) { %>\n\t\t\t\t<span class="decoColor" style="background-color: <%- decoration.context.rgbcolor %>">X</span>\n\t\t\t<% } %>\n\n\t\t</div>\n            <div class="datetime">\n                <span class="date"><%- timeFormat(\'%x\')(new Date(decoration.time))%></span>\n                <span class="time"><%- timeFormat(\'%X\')(new Date(decoration.time))%></span>\n            </div>\n        </td>\n        <td class="decoration-body">\n\t\t\t<% var obj = {} ;\n\t\t\tif (decoration.context) {\n\t\t\t\tcolorspan = ""\n\t\t\t\tif (decoration.context.boolean !== undefined) {\n\t\t\t\t\tif (decoration.context.boolean) {\n\t\t\t\t\t\tdecoration.description += ".on";\n\t\t\t\t\t} else {\n\t\t\t\t\t\tdecoration.description += ".off";\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\tobj = decoration.context;\n\t\t\t}\n\t\t\tobj["ns"] = options.i18n.ns;%>\n            <div class="description"><%- i18n.t(decoration.description, obj ) %></div>\n            <div class="extra">\n                <span class="source"><%- decoration.source %></span> |\n                <span class="causality"><%- decoration.causality %></span>\n            </div>\n        </td>\n    </tr>\n<% }); %>\n</table>\n';
+    var DECORATIONS_TO_HTML_TPL = '<table class="tabular decorations">\n\t<tr>\n\t\t<th colspan="2"><%- name %></th>\n\t</tr>\n<% _.forEach(decorations, function(decoration) { %>\n    <tr>\n        <td class="decoration-head">\n\n        <div class="picto picto-<%- decoration.picto %>">\n\t\t\t<%\n\t\t\t\tif(decoration.context !== undefined && decoration.context.rgbcolor !== undefined) { %>\n\t\t\t\t<span class="decoColor" style="background-color: <%- decoration.context.rgbcolor %>">X</span>\n\t\t\t<% } %>\n\n\t\t</div>\n            <div class="datetime">\n                <span class="date"><%- timeFormat(\'%x\')(new Date(decoration.time))%></span>\n                <span class="time"><%- timeFormat(\'%X\')(new Date(decoration.time))%></span>\n            </div>\n        </td>\n        <td class="decoration-body">\n\t\t\t<% var obj = {} ;\n\t\t\tif (decoration.context) {\n\t\t\t\tcolorspan = ""\n\t\t\t\tif (decoration.context.boolean !== undefined) {\n\t\t\t\t\tif (decoration.context.boolean) {\n\t\t\t\t\t\tdecoration.description += ".on";\n\t\t\t\t\t} else {\n\t\t\t\t\t\tdecoration.description += ".off";\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\tobj = decoration.context;\n\t\t\t}\n\t\t\tobj["ns"] = options.i18n.ns;\n\t\t\tobj["program"] = decoration.programName;\n\t\t\tobj["device"] = decoration.deviceName;%>\n            <div class="description"><%- i18n.t(decoration.description, obj ) %></div>\n            <div class="extra">\n\t\t\t\t<% if (decoration.causality == "Program") { %>\n                <span class="source"><%- decoration.programName %></span>\n\t\t\t\t<% } else { %>\n                <span class="causality"><%- decoration.causality %></span>\n\t\t\t\t<% } %>\n            </div>\n        </td>\n    </tr>\n<% }); %>\n</table>\n';
 
     // Inline include of templates files.
     var DECORATIONS_TO_TXT_TPL = '<% _.forEach(decorations, function(decoration) { %>\n<%- timeFormat(\'%x\')(new Date(decoration.time))%> <%- timeFormat(\'%X\')(new Date(decoration.time)) %> | <%- i18n.t(decoration.description, decoration.context, { ns: options.i18n.ns }) %> <<%- decoration.source %>, <%- decoration.causality %>>\n<% }); %>';
@@ -1083,7 +1083,6 @@
     
                 // If `packet` contains a request then we must reinitialize some stuff in the dashboard.
                 if (packet.request) {
-                    console.log(packet.request);
                     // If a global eventline is sent then we must reset the dashboard.
                     if (packet.eventline) {
                         // Reset the dashboard whenever a new eventline is sent.
@@ -1103,6 +1102,9 @@
                     } else {
                         // Otherwise clean the dashboard. This will not affect the focusline.
                         this._clean();
+                    }
+                    if (packet.request.args.focus) {
+                        this._setFocusedThing(packet.request.args.focus);   
                     }
                 }
     
@@ -1269,6 +1271,7 @@
             for (attr in attrs) {
                 this._state[attr] = attrs[attr];
             }
+            return this;
         },
     
         _delState: function(key) {
@@ -1284,13 +1287,20 @@
             for (key in keys) {
                 delete this._state[keys[key]];
             }
+            return this;
         },
         
         prevEvent:function() {
-            this._goToEvent( this._getFocusedProgram()._findNextFrame(this._getRulerCoordinate(), "prev"));
+            var f = this._getFocusedThing();
+            if (f != null) {
+                this._goToEvent( f._findNextFrame(this._getRulerCoordinate(), "prev"));
+            }
         },
         nextEvent:function() {
-            this._goToEvent(this._getFocusedProgram()._findNextFrame(this._getRulerCoordinate(), "next"));
+            var f = this._getFocusedThing();
+            if (f != null) {
+                this._goToEvent(f._findNextFrame(this._getRulerCoordinate(), "next"));
+            }
         },
     
         _goToEvent:function(frame) {
@@ -1298,10 +1308,10 @@
                 console.log("No  event")
             } else {
                 //console.log(frame);
-                var time = this._getFocusedProgram().timescale(frame.timestamp);
+                var time = this._getFocusedThing().timescale(frame.timestamp);
                 this._$ruler.css("left", time);
                 this._notifyWidgetsOnRulerFocusChanged(this._$ruler.position());
-                this._onWidgetMarkerClick(frame.data);
+                //this._onWidgetMarkerClick(frame.data);
             }
                 
         },
@@ -1309,9 +1319,17 @@
         _getState: function(attr) {
             return this._state[attr];
         },
+            
+        _setFocusedThing : function(id) {
+          if (this._programs[id]) {
+            this.focusedThing = this._programs[id];
+          } else {
+            this.focusedThing = this._devices[id];
+          }
+        },
         
-        _getFocusedProgram : function() {
-            return this._programs["program-7919"];
+        _getFocusedThing : function() {
+            return this.focusedThing;
         },
     
         // Get zoom context
@@ -1677,7 +1695,7 @@
                 case 'program':
                     return _.has(this._programs, id);
                 default:
-                    false;
+                    return false;
             }
         },
     
