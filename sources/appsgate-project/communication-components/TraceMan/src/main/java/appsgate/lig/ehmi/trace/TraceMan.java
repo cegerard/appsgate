@@ -241,7 +241,7 @@ public class TraceMan implements TraceManSpec {
         //if the equipment has been instantiated from ApAM spec before
         GrammarDescription grammar = getGrammar(objectID);
         if (grammar != null && grammar.generateTrace()) {
-            JSONObject jsonDecoration = Trace.getJSONDecoration(Trace.DECORATION_TYPE.access, "write", caller, timeStamp, null, objectID,
+            JSONObject jsonDecoration = Trace.getJSONDecoration(Trace.DECORATION_TYPE.access, "write", caller, timeStamp, null, objectID, null, this.getDeviceName(objectID),
                     grammar.getTraceMessageFromCommand(command), grammar.getContextFromParams(command, jsonArgs));
             JSONObject deviceJson = Trace.getJSONDevice(objectID, null, jsonDecoration, grammar, this);
             //Create the notification JSON object
