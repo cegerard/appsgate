@@ -37,9 +37,14 @@
       "setPurple" : "set color to purple",
       "setPink" : "set color to pink",
       "setWhite" : "set color to white",
-	  "setColorJson" : "change color to __color__",
+	  "setColorJson" : "change color to (H: __color.hue__, S: __color.sat__, B: __color.bri__)",
       "off" : "$t(translation:devices.lamp.action.turnOff)",
-      "on" : "$t(translation:devices.lamp.action.turnOn)"
+      "on" : "$t(translation:devices.lamp.action.turnOn)",
+      "getState" : {
+        "on" : "Lamp is now on and __program__ has been ",
+        "off" : "Lamp is now off and __program__ has been "
+      },
+      "state": "Lamp has changed of state"
     },
 	"Temperature" : {
 	  "change" : {
@@ -82,6 +87,9 @@
     },
     "MailAccount" : {
       "sendMailSimple" : "program __source__ send mail to __to__"
+    },
+    "Mediaplayer" : {
+      "pause" : "Mettre le media player __device__ en pause"
     }
   },
   "groups": {

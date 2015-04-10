@@ -40,16 +40,6 @@ public interface TraceManSpec {
     public void coreUpdateNotify(long timeStamp, String srcId, String coreType,
             String userType, String name, JSONObject description, String eventType);
 
-    /**
-     * TODO: consider delete of this function, the other one directly uses the json array of arguments
-     *
-     * @param objectID
-     * @param command
-     * @param caller
-     * @param params
-     * @param timeStamp
-     */
-    public void commandHasBeenPassed(String objectID, String command, String caller, ArrayList<Object> params, long timeStamp);
 
     /**
     * @param objectID
