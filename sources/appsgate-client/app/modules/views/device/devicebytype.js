@@ -295,15 +295,30 @@ define([
       },
 
       /**
+       * Using this function to get additionnal details about a device in other views
+       *
+       * @param type
+       * @param places
+       * @returns {{}}
+       */
+      createTemplate: function(type) {
+        var temp = {};
+        temp = this.tpl({
+          type: type,
+          places: places
+        });
+        return temp;
+      },
+
+      /**
       * Render the list
       */
       render: function() {
         
         if (!appRouter.isModalShown) {
-          this.$el.html(this.tpl({
-            type: this.id,
-            places: places
-          }));
+          this.$el.html(
+              this.createTemplate(this.id)
+          );
 
           this.updateGroupOnOff(this.id);
 

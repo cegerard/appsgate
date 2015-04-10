@@ -1080,6 +1080,15 @@
     }
   },
   "adapters": {
+    "id-label" : "ID",
+    "type-label" : " Type",
+    "status": {
+      "connected": "Connecté",
+      "disconnected": "Déconnecté",
+      "waiting": "En attente"
+    },
+    "status-label": "Statut",
+
     "enocean": {
       "name": {
         "plural": "Drivers EnOcean",

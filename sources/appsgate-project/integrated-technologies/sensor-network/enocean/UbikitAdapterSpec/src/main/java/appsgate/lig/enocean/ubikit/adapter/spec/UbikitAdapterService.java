@@ -73,6 +73,13 @@ public interface UbikitAdapterService {
 	 * @param pair true to set the pairing mode, false to shutdown the pairing mode.
 	 */
 	public void setPairingMode (boolean pair);
+	
+	/**
+	 * Get the current the pairing mode 
+	 * (note: that at startup the pairing mode is considered to be false)
+	 */
+	public boolean getPairingMode();
+	
 
 	public boolean unpairDevice (String uid);	
 	

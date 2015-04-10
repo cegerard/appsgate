@@ -1,7 +1,7 @@
 define([
   "app",
-  "text!templates/adapters/menu.html",
-  "text!templates/adapters/adapterMenuContainer.html"
+  "text!templates/adapters/menu/menu.html",
+  "text!templates/adapters/menu/adapterMenuContainer.html"
 
   ], function(App, AdapterMenuTemplate, AdapterMenuContainerTemplate) {
 
@@ -72,10 +72,10 @@ define([
           this.$el.append(this.tpl());
 
           var container = document.createDocumentFragment();
-          _.forEach(adapters.getTypes(), function(type) {
+          _.forEach(adapters.models, function(adapter) {
               $(container).append(self.tplAdapterMenuContainer({
                 adapters: adapters,
-                type: String(type)
+                type: adapter.get("type")
               }));
           });
 

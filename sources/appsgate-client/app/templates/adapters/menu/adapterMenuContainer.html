@@ -1,0 +1,11 @@
+<a href="#adapters/<%= type %>" class="list-group-item" id="<%= type %>">
+    <!-- header -->
+    <p class="list-group-item-heading lead">
+        <% if (type === "UbikitAdapterService") { %>
+            <span data-i18n="adapters.enocean.name.singular"></span>
+        <% } %>
+        <% if (type === "WeatherAdapterSpec") { %>
+        <span data-i18n="adapters.weather.name.singular"></span>
+        <% } %>
+    </p>
+</a>

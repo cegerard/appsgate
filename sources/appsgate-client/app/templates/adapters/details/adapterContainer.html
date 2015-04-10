@@ -1,0 +1,80 @@
+<div class="lead">
+	<button type="button" class="pull-left btn btn-default back-button">
+		<span class="glyphicon glyphicon-chevron-left"></span>
+	</button>&nbsp;
+	<% if (adapter.get("name") !== "") { %>
+		<%= adapter.get("name") %>
+	<% } else { %>
+		<%= adapter.get("type") %>
+	<% } %>
+	<div class="pull-right">
+		<button type="button" class="btn btn-default" data-target="#edit-adapter-modal" data-toggle="modal"><i class="glyphicon glyphicon-edit"></i> <span data-i18n="form.edit-button"></span></button>
+	</div>
+</div>
+
+<ul class="list-group scrollable">
+	<% if (typeof sensorImg !== "undefined") { %>
+		<li class="list-group-item">
+            <strong data-i18n="devices.photo-label.singular"></strong>
+			<img src="<%= sensorImg %>" class="img-responsive">
+		</li>
+	<% } %>
+	<li class="list-group-item">
+		<strong data-i18n="adapters.type-label"></strong>
+		<div class="pull-right">
+			<%= type %>
+		</div>
+	</li>
+	<li class="list-group-item">
+		<strong data-i18n="adapters.id-label"></strong>
+		<div class="pull-right">
+			<%= adapter.get("id") %>
+		</div>
+	</li>
+
+	<li class="list-group-item">
+		<strong data-i18n="adapters.status-label"></strong>
+		<div class="pull-right">
+			<% if (adapter.get("status") === "0") { %>
+				<span class="label label-danger" data-i18n="adapters.status.disconnected"></span>
+			<% } else if (adapter.get("status" === "1")) { %>
+				<span class="label label-warning" data-i18n="adapters.status.waiting"></span>
+			<% } else { %>
+				<span class="label label-success" data-i18n="adapters.status.connected"></span>
+			<% } %>
+		</div>
+	</li>
+	 <%= adapterDetails({ adapter : adapter }) %>
+</ul>
+
+<!-- modal to edit a adapter -->
+<div id="edit-adapter-modal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h3>
+					<% if (adapter.get("name") !== "") { %>
+						<%= adapter.get("name") %>
+					<% } else { %>
+						<%= adapter.get("id") %>
+					<% } %>
+				</h3>
+			</div>
+			<div class="modal-body">
+					<div class="row">
+						<div class="col-md-3" data-i18n="modal-edit-service.name-label"></div>
+						<div class="col-md-9">
+							<input type="text" class="form-control" id="service-name" data-i18n="[placeholder]modal-edit-service.name-placeholder">
+							<p class="hide text-danger" data-i18n="modal-edit-service.name-already-existing"></p>
+						</div>
+					</div><br>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-default cancel-edit-service" data-dismiss="modal" data-i18n="form.cancel-button"></button>
+				<button class="btn btn-primary valid-button" data-i18n="form.valid-button"></button>
+			</div>
+		</div>
+	</div>
+</div>
+

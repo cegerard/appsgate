@@ -75,6 +75,8 @@ public class UbikitAdapter extends CoreObjectBehavior implements
 	private ScheduledExecutorService instanciationService;
 	private HashMap<String, Instance> sidToInstanceName;
 	private HashMap<String, ArrayList<EnOceanProfiles>> tempEventCapabilitiesMap;
+	
+	private boolean pairingMode = false;
 
 	/**
 	 * iPOJO EnOcean PEM resolution
@@ -299,7 +301,7 @@ public class UbikitAdapter extends CoreObjectBehavior implements
 			// logger.debug(apamInst.getAllProperties().keySet().toString());
 			allJSONItem.put(pei.getUID());
 		}
-        logger.debug("getAllItem(), returning"+allJSONItem.toString());
+        logger.debug("getAllItem(), returning "+allJSONItem.toString());
 
 
         return allJSONItem;
@@ -383,6 +385,7 @@ public class UbikitAdapter extends CoreObjectBehavior implements
 			eventGate.postEvent(new ExitPairingModeEvent());
 			logger.debug("pairing mode off event sent");
 		}
+		pairingMode = pair;
 
 		// TODO removed this call when PairingModeEvent work
 		pairingModeChanged(pair);
@@ -443,6 +446,10 @@ public class UbikitAdapter extends CoreObjectBehavior implements
 		logger.debug("Unparing device with UID {} resulted in {}",uid,result);
 		Instance apamInstance=sidToInstanceName.remove(uid);
 		((ComponentBrokerImpl)CST.componentBroker).disappearedComponent(apamInstance.getName());
+		
+		
+		fireNotificationMessage("items", null, getAllItem().toString());
+
 		return result;
 	}
 
@@ -506,6 +513,7 @@ public class UbikitAdapter extends CoreObjectBehavior implements
 				nbTry++;
 			}
 		}
+		fireNotificationMessage("items", null, getAllItem().toString());
 	}
 
 	/**
@@ -654,7 +662,8 @@ public class UbikitAdapter extends CoreObjectBehavior implements
 		descr.put("type", getUserType());
 		descr.put("coreType", getCoreType());
 		descr.put("status", getObjectStatus());
-		descr.put("pairingMode", "unknown");
+		descr.put("items", getAllItem());
+		descr.put("pairingMode", getPairingMode());
 
 		return descr;
 	}
@@ -662,6 +671,11 @@ public class UbikitAdapter extends CoreObjectBehavior implements
 	@Override
 	public CORE_TYPE getCoreType() {
 		return CORE_TYPE.ADAPTER;
+	}
+
+	@Override
+	public boolean getPairingMode() {
+		return pairingMode;
 	}
 
 }

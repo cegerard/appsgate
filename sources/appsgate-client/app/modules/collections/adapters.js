@@ -52,10 +52,7 @@ define([
             });
 
             dispatcher.trigger("adaptersCollectionWaiting");
-
-
         },
-
 
         addAdapter: function(brick) {
             var self = this;
@@ -78,43 +75,13 @@ define([
             }
         },
 
-
         removeAdapter: function(adapter) {
 
           adapters.remove(adapter);
         },
 
-
-        getTypes: function() {
-
-            var types=[];
-
-            alavailabletypes=this.groupBy(function(adapter) {
-                return adapter.get("type");
-            });
-
-            _.each(alavailabletypes,function(box){
-                types[types.length]=box[0].get("type");
-            });
-
-            sortedTypes= _.sortBy(types,
-                function(type){
-                    var i18=this.getTypeLabelPrefix(type);
-                    return $.i18n.t(i18+"singular").toLowerCase();
-                },this);
-            return sortedTypes;
-        },
-
-        getTypeLabelPrefix:function(type){
-            var i18;
-            if (type == "1001") {
-                i18="devices.temperature.name.";
-            }
-            return i18;
-        },
-
         getEnoceanAdapter: function() {
-            return adapters.findWhere({type: "1001"});
+            return adapters.findWhere({type: "UbikitAdapterService"});
         },
         getWeatherAdapter: function() {
             return adapters.findWhere({type: "WeatherAdapterSpec"});

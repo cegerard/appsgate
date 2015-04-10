@@ -22,10 +22,28 @@ define([
         } catch (err) {}
       });
 
+    },
+
+    setPairingMode:function(mode) {
+
+      communicator.sendMessage({
+        objectId: this.get("id"),
+        "method":"setPairingMode",
+        "args":[{"type":"boolean","value":mode}],
+        "callId":"setPairingMode",
+        "TARGET":"EHMI"
+      });
+    },
+    getAllItem:function() {
+
+      communicator.sendMessage({
+        objectId: this.get("id"),
+        "method":"getAllItem",
+        "args":[],
+        "callId":"getAllItem",
+        "TARGET":"EHMI"
+      });
     }
-
-
-
   });
   return EnOcean;
 });
