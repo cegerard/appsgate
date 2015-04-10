@@ -157,7 +157,7 @@ public class GrammarDescription {
         }
         for (int i = 0 ; i < arguments.size(); i++) {
             try {
-                ret.put(arguments.get(i), params.getJSONObject(i).getString("value"));
+                ret.put(arguments.get(i), params.getJSONObject(i).get("value"));
             } catch (JSONException ex) {
                 LOGGER.error("GetContextFromParams, array invalid: {}", params.toString());
                 return new JSONObject();

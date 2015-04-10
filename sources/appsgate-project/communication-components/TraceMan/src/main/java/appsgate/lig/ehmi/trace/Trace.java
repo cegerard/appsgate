@@ -503,6 +503,7 @@ public class Trace {
             context = gram.getContextFromParams(notif.getDescription(), notif.getParams());
             try {
                 context.put("value", notif.getResult());
+                Trace.addString(context, notif.getResult());
             } catch (JSONException e) {
                 // Do nothing
             }

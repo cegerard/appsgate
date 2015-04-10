@@ -37,9 +37,14 @@
       "setPurple" : "allumer en violet",
       "setPink" : "allumer en rose",
       "setWhite" : "allumer en blanc",
-	  "setColorJson" : "changer la couleur en __color__",
+	  "setColorJson" : "changer la couleur en (H: __color.hue__, S: __color.sat__, B: __color.bri__)",
       "off" : "$t(translation:devices.lamp.action.turnOff)",
-      "on" : "$t(translation:devices.lamp.action.turnOn)"
+      "on" : "$t(translation:devices.lamp.action.turnOn)",
+      "getState" : {
+        "on" : " __program__ sait que la lampe [__device__] est allumée",
+        "off" : " __program__ sait que la lampe [__device__] est éteinte"
+      },
+      "state": "Lamp has changed of state"
     },
 	"Temperature" : {
 	  "change" : {
@@ -82,6 +87,9 @@
     },
     "MailAccount" : {
       "sendMailSimple" : "Le programme __source__ envoit un mail à __to__"
+    },
+    "Mediaplayer" : {
+      "pause" : "Mettre le media player __device__ en pause"
     }
   },
   "groups": {
