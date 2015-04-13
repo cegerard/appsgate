@@ -131,6 +131,9 @@ public class Trace {
      * @return
      */
     public static JSONObject addString(JSONObject jsonObject, String value) {
+        if (value == null) {
+            return jsonObject;
+        }
         if (value.equalsIgnoreCase("true")) {
             try {
                 jsonObject.put("boolean", true);
@@ -395,17 +398,20 @@ public class Trace {
      * @return
      */
     public static JSONObject getJSONDevice(String srcId, JSONObject event, JSONObject cause, GrammarDescription g, TraceMan t) {
+        if (g == null) {
+            LOGGER.error("Unable to build a trace on an unknown type for {}", srcId);
+            LOGGER.debug("No trace have been produced for {} with cause: {}", event, cause);
+            return null;
+        }
+        if (!g.generateTrace()) {
+            LOGGER.trace("{} does not generate device traces.", g.getType());
+            return null;
+        }
         JSONObject objectNotif = new JSONObject();
         try {
             objectNotif.put("id", srcId);
             objectNotif.put("name", t.getDeviceName(srcId));
-            if (g != null) {
-                objectNotif.put("type", g.getType());
-            } else {
-                LOGGER.error("Unable to build a trace on an unknown type for {}", srcId);
-                LOGGER.debug("No trace have been produced for {} with cause: {}", event, cause);
-                return null;
-            }
+            objectNotif.put("type", g.getType());
             JSONObject location = new JSONObject();
             location.put("id", t.getPlaceId(srcId));
             String placeName = t.getPlaceName(srcId);
