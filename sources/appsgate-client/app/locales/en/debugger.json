@@ -59,10 +59,14 @@
         "change" : {
           "consumption" : "consumption indicates __text__ W",
           "plugState" : {
-            "on" : "Switch [__device__] is on",
-            "off" : "Switch [__device__] is off"
+            "on" : "Plug is on",
+            "off" : "Plug is off"
           }
-        }
+        },
+          "plugState" : {
+            "on" : "Plug [__device__] is on detected by [__program__]",
+            "off" : "Plug [__device__] is off detected by [__program__]"
+          }
 	},
     "DomiCube" : {
       "change" : {

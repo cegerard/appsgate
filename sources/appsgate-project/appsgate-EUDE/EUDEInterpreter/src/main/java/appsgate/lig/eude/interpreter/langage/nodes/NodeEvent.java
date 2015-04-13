@@ -161,7 +161,7 @@ public class NodeEvent extends Node implements INodeEvent {
                 LOGGER.error("Unable to remove the node listening from {}", this);
             }
             setStarted(false);
-            ProgramEventNotification n = new ProgramEventNotification(this.getProgramNode(), this.getIID(), this.getSourceId(), eventName);
+            ProgramEventNotification n = new ProgramEventNotification(this.getProgramNode(), this.getIID(), this.getSourceId(), eventName, eventValue);
             this.notifyLine(n);
             fireEndEvent(new EndEvent(this));
         }

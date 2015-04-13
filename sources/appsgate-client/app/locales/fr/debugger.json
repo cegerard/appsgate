@@ -59,10 +59,14 @@
         "change" : {
           "consumption" : "La consommation est de __text__ W",
           "plugState" : {
-            "on" : "La prise [__device__] est allumée",
-            "off" : "la prise [__device__] est fermée"
+            "on" : "La prise est allumée",
+            "off" : "la prise est éteinte"
           }
-        }
+        },
+          "plugState" : {
+            "on" : "La prise [__device__] est allumée capté par [__program__]",
+            "off" : "La prise [__device__] est éteinte capté par [__program__]"
+          }
 	},
     "DomiCube" : {
       "change" : {

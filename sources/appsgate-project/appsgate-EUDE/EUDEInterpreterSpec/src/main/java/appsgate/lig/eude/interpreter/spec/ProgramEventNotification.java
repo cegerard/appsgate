@@ -19,9 +19,11 @@ public class ProgramEventNotification extends ProgramTraceNotification{
      * @param nodeId
      * @param deviceId
      * @param desc 
+     * @param value 
      */
-    public ProgramEventNotification(ProgramDesc source, String nodeId, String deviceId, String desc) {
+    public ProgramEventNotification(ProgramDesc source, String nodeId, String deviceId, String desc, String value) {
         super(source, nodeId, deviceId, source.getId(), desc, Type.WRITE);
+        setResult(value);
     }
     
     @Override
