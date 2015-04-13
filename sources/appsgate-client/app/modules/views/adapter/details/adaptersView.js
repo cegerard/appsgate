@@ -23,8 +23,8 @@ define([
         var self = this;
         self.listenTo(adapters, "add", self.reload);
         adapters.models.forEach(function(adapter) {
-            self.listenTo(adapter, "change", self.autoupdate);
-            self.listenTo(adapter, "remove", self.render);
+           // self.listenTo(adapter, "change", self.autoupdate);
+           // self.listenTo(adapter, "remove", self.render);
         });
       },
       autoupdate: function(device) {

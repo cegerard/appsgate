@@ -25,7 +25,7 @@ define([
 
           appRouter.showMenuView(new AdapterMenuView());
 
-            firstElement = $($($(".aside-menu .list-group")[1]).find(".list-group-item")[0]);
+            firstElement = $($($(".aside-menu .list-group")[0]).find(".list-group-item")[0]);
 
             // set active the first element - displayed by default
             firstElement.addClass("active");
@@ -49,11 +49,12 @@ define([
         */
         details: function(id) {
             console.log("rendering details for type : ",id);
-            adapter = adapters.findWhere({type: id});
+            adapter = adapters.get(id);
+            var type = adapter.get("type");
 
-            switch (id) {
+            switch (type) {
                 case "UbikitAdapterService": //
-                    appRouter.showDetailsView(new EnOceanAdapterView({id:id, model: adapter}));
+                    appRouter.showDetailsView(new EnOceanAdapterView({id:type, model: adapter}));
                     break;
             }
 

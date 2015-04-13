@@ -611,7 +611,10 @@
       }
     },
     "type-label": "Type",
+    "name-label": "Name",
+    "id-label": "ID",
     "value-label": "Value"
+
   },
   "edit-name-modal": {
     "already-existing": "Name already exists.",
@@ -1080,8 +1083,21 @@
     }
   },
   "adapters": {
+    "id-label" : "ID",
+    "type-label" : " Type",
+    "status": {
+      "connected": "Connected",
+      "disconnected": "Disconnected",
+      "waiting": "Waiting"
+    },
     "enocean": {
-      "name": {
+      "control": {
+        "no-item": "No EnOcean device paired",
+        "start-pairing": "Start Pairing mode",
+        "stop-pairing": "Stop Pairing mode",
+        "unpair": "Unpair"
+      },
+     "name": {
         "plural": "EnOcean Drivers",
         "singular": "EnOcean Driver"
       }

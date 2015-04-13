@@ -1,0 +1,13 @@
+<% if(pairingMode === "true") { %>
+<button class="btn btn-default btn-toggle-pairing btn-danger">
+    <div class="glyphicon glyphicon-eye-close">
+        <i data-i18n="adapters.enocean.control.stop-pairing" style="word-spacing: -5px;"/>
+    </div>
+</button>
+<% } else { %>
+<button class="btn btn-default btn-toggle-pairing btn-success">
+    <div class="glyphicon glyphicon-eye-open">
+       <i data-i18n="adapters.enocean.control.start-pairing" style="word-spacing: -5px;"/>
+    </div>
+</button>
+<% } %>

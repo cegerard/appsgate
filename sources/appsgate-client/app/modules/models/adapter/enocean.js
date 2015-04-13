@@ -16,14 +16,32 @@ define([
      */
     initialize: function() {
       EnOcean.__super__.initialize.apply(this, arguments);
-      dispatcher.on(this.get("id"), function(json) {
-        try {
-          t = JSON.parse(json.value);
-        } catch (err) {}
+      var self = this;
+
+      dispatcher.on(this.get("id"), function(event) {
+        console.log("EnOcean adapter, received event : ",event);
+        switch(event.varName) {
+          case "pairingMode":
+            console.log("pairing mode changed");
+            self.trigger("pairingModeChanged");
+            break;
+          case "items":
+            console.log("paired items list changed");
+            self.trigger("itemsChanged");
+            break;
+        }
       });
-
     },
+    unpair:function(id) {
 
+      communicator.sendMessage({
+        objectId: this.get("id"),
+        "method":"unpairDevice",
+        "args":[{"type":"String","value":id}],
+        "callId":"unpairDevice",
+        "TARGET":"EHMI"
+      });
+    },
     setPairingMode:function(mode) {
 
       communicator.sendMessage({
@@ -34,6 +52,7 @@ define([
         "TARGET":"EHMI"
       });
     },
+
     getAllItem:function() {
 
       communicator.sendMessage({

@@ -611,6 +611,8 @@
       }
     },
     "type-label": "Type",
+    "name-label": "Nom",
+    "id-label": "ID",
     "value-label": "Valeur"
   },
   "edit-name-modal": {
@@ -1090,6 +1092,12 @@
     "status-label": "Statut",
 
     "enocean": {
+      "control": {
+        "no-item": "Aucun équipement EnOcean appairé",
+        "start-pairing": "Démarrer l'appairage",
+        "stop-pairing": "Arrêter l'appairage",
+        "unpair": " Desappairer"
+      },
       "name": {
         "plural": "Drivers EnOcean",
         "singular": "Driver EnOcean"

@@ -50,11 +50,9 @@ define([
         } else {
           if (Backbone.history.fragment === "adapters") {
             $($(".navbar li")[0]).addClass("active");
-          } else if (Backbone.history.fragment.split("/")[1] === "types") {
-            $("#side-" + Backbone.history.fragment.split("/")[2]).addClass("active");
           } else {
             var adapterId = Backbone.history.fragment.split("/")[1];
-            $("#side-" + adapters.get(adapterId).get("type")).addClass("active");
+            $("[id='"+adapterId+"']").addClass("active");
           }
         }
       },
@@ -68,14 +66,12 @@ define([
           // initialize the content
           this.$el.html(this.tpl());
 
-          // for each category of adapter, add a menu item
-          this.$el.append(this.tpl());
-
           var container = document.createDocumentFragment();
           _.forEach(adapters.models, function(adapter) {
               $(container).append(self.tplAdapterMenuContainer({
                 adapters: adapters,
-                type: adapter.get("type")
+                type: adapter.get("type"),
+                id: adapter.get("id")
               }));
           });
 
@@ -86,11 +82,11 @@ define([
           });
 
           $.each(adapterGroups, function(idx, itm) {
-            $(self.$el.find(".list-group")[1]).append(itm);
+            $(self.$el.find(".list-group")[0]).append(itm);
           });
 
 
-          $(self.$el.find(".list-group")[1]).addClass("scrollable-menu");
+          $(self.$el.find(".list-group")[0]).addClass("scrollable-menu");
 
           // set active the current item menu
           this.updateSideMenu();

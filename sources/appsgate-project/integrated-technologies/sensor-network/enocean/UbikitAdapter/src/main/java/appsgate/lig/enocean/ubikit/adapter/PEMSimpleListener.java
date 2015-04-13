@@ -77,6 +77,7 @@ public class PEMSimpleListener implements NewItemEvent.Listener, ItemAddedEvent.
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+        		adapter.fireNotificationMessage("undefinedItem", null, newUndefinedJSON.toString());
                 sendToClientService.send(onEventMSG.toString());
 
             } else if (cs == NewItemEvent.CapabilitySelection.MULTIPLE) {
@@ -146,6 +147,7 @@ public class PEMSimpleListener implements NewItemEvent.Listener, ItemAddedEvent.
         } catch (JSONException e) {
             e.printStackTrace();
         }
+		adapter.fireNotificationMessage("items", null, adapter.getAllItem().toString());
         sendToClientService.send(onEventMSG.toString());
     }
 
@@ -168,6 +170,7 @@ public class PEMSimpleListener implements NewItemEvent.Listener, ItemAddedEvent.
         } catch (JSONException e) {
             e.printStackTrace();
         }
+		adapter.fireNotificationMessage("items", null, adapter.getAllItem().toString());        
         sendToClientService.send(onEventMSG.toString());
     }
 
