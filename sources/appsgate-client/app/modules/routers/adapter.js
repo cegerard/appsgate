@@ -2,9 +2,11 @@ define([
   "app",
     "views/adapter/menu/menu",
     "views/adapter/details/adaptersView",
-    "views/adapter/details/enoceanAdapter"
+    "views/adapter/details/enoceanAdapter",
+    "views/adapter/details/weatherAdapter"
 
-], function(App, AdapterMenuView, AdaptersDetailsView, EnOceanAdapterView) {
+
+], function(App, AdapterMenuView, AdaptersDetailsView, EnOceanAdapterView, WeatherAdapterView) {
 
       var AdapterRouter = {};
       /**
@@ -56,6 +58,11 @@ define([
                 case "UbikitAdapterService": //
                     appRouter.showDetailsView(new EnOceanAdapterView({id:type, model: adapter}));
                     break;
+                case "WeatherAdapterSpec": //
+                    appRouter.showDetailsView(new WeatherAdapterView({id:type, model: adapter}));
+                    break;
+                default :
+                    console.warn("unknown type of adapter");
             }
 
         }
