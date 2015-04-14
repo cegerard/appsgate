@@ -345,17 +345,27 @@ _.extend(Debugger.Dashboard.prototype, Backbone.Events, {
     },
         
     _setFocusedThing : function(id) {
-      if (this._programs[id]) {
-        this.focusedThing = this._programs[id];
-      } else {
-        this.focusedThing = this._devices[id];
-      }
+        this.focusedThing = id;
     },
     
     _getFocusedThing : function() {
-        return this.focusedThing;
+        if (! this._hasFocusedThing()) {
+            return null;
+        }
+        if (this._programs[this.focusedThing]) {
+            return this._programs[this.focusedThing];
+        } 
+        if (this._devices[this.focusedThing]){
+            return this._devices[this.focusedThing];
+        }
+        return null;
     },
 
+    _hasFocusedThing: function() {
+        return (this.focusedThing !== undefined && this.focusedThing !== null) ;
+  
+    },
+    
     // Get zoom context
     _getHistoryZoomContext: function() {
         return _.pick(this._state, [
