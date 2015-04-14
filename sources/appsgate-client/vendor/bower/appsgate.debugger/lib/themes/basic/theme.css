@@ -461,7 +461,7 @@ html, body {
 /* line 116, ../../../../src/themes/basic/theme.scss */
 .dashboard .element-container .element .title {
   padding-left: 10px;
-  width: 165px;
+  width: 130px;
 }
 /* line 120, ../../../../src/themes/basic/theme.scss */
 .dashboard .element-container .element .picto {
@@ -500,7 +500,7 @@ html, body {
 /* line 151, ../../../../src/themes/basic/theme.scss */
 .dashboard .group-container .placeholder.sidebar .menu, .dashboard .element-container .placeholder.sidebar .menu {
   float: left;
-  width: 25px;
+  width: 60px;
 }
 /* line 154, ../../../../src/themes/basic/theme.scss */
 .dashboard .group-container .placeholder.sidebar .menu button, .dashboard .element-container .placeholder.sidebar .menu button {

@@ -314,25 +314,27 @@ _.extend(Debugger.Dashboard.prototype, Backbone.Events, {
         return this;
     },
     
-    prevEvent:function() {
-        var f = this._getFocusedThing();
+    _prevEvent:function(attr) {
+        var f = this._getFocusedThing(attr.id);
         if (f != null) {
-            this._goToEvent( f._findNextFrame(this._getRulerCoordinate(), "prev"));
+            f._findNextFrame(this._getRulerCoordinate(), "next");
+            this._goToEvent( f._findNextFrame(this._getRulerCoordinate(), "prev"), f);
         }
     },
-    nextEvent:function() {
-        var f = this._getFocusedThing();
+    _nextEvent:function(attr) {
+        var f = this._getFocusedThing(attr.id);
         if (f != null) {
-            this._goToEvent(f._findNextFrame(this._getRulerCoordinate(), "next"));
+            f._findNextFrame(this._getRulerCoordinate(), "next")
+            this._goToEvent(f._findNextFrame(this._getRulerCoordinate(), "next"), f);
         }
     },
 
-    _goToEvent:function(frame) {
+    _goToEvent:function(frame, obj) {
         if (frame === undefined) {
             console.log("No  event")
         } else {
             //console.log(frame);
-            var time = this._getFocusedThing().timescale(frame.timestamp);
+            var time = obj.timescale(frame.timestamp);
             this._$ruler.css("left", time);
             this._notifyWidgetsOnRulerFocusChanged(this._$ruler.position());
             //this._onWidgetMarkerClick(frame.data);
@@ -344,27 +346,17 @@ _.extend(Debugger.Dashboard.prototype, Backbone.Events, {
         return this._state[attr];
     },
         
-    _setFocusedThing : function(id) {
-        this.focusedThing = id;
-    },
     
-    _getFocusedThing : function() {
-        if (! this._hasFocusedThing()) {
-            return null;
-        }
-        if (this._programs[this.focusedThing]) {
-            return this._programs[this.focusedThing];
+    _getFocusedThing : function(id) {
+        if (this._programs[id]) {
+            return this._programs[id];
         } 
-        if (this._devices[this.focusedThing]){
-            return this._devices[this.focusedThing];
+        if (this._devices[id]){
+            return this._devices[id];
         }
         return null;
     },
 
-    _hasFocusedThing: function() {
-        return (this.focusedThing !== undefined && this.focusedThing !== null) ;
-  
-    },
     
     // Get zoom context
     _getHistoryZoomContext: function() {
@@ -1013,6 +1005,8 @@ _.extend(Debugger.Dashboard.prototype, Backbone.Events, {
             // Bind dashboard to widget events.
             this.listenTo(widget, 'marker:click', this._onWidgetMarkerClick);
             this.listenTo(widget, 'eventline:focus:request', this._onWidgetFocusRequest);
+            this.listenTo(widget, 'eventline:focus:next', this._nextEvent);
+            this.listenTo(widget, 'eventline:focus:prev', this._prevEvent);
             this.listenTo(widget, 'eventline:name:click', this._onWidgetNameClick);
 
             // Find and attach it to the group to which it belongs.

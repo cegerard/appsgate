@@ -40,7 +40,7 @@
         "sidebar": {
             "width": "250px",
             "menu": {
-                "width": "25px"
+                "width": "60px"
             }
         },
         "aside": {

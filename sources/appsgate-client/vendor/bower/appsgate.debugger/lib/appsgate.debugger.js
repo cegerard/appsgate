@@ -84,7 +84,7 @@
     		"sidebar": {
     			"width": 250,
     			"menu": {
-    				"width": 25
+    				"width": 60
     			}
     		},
     		"aside": {
@@ -1290,25 +1290,27 @@
             return this;
         },
         
-        prevEvent:function() {
-            var f = this._getFocusedThing();
+        _prevEvent:function(attr) {
+            var f = this._getFocusedThing(attr.id);
             if (f != null) {
-                this._goToEvent( f._findNextFrame(this._getRulerCoordinate(), "prev"));
+                f._findNextFrame(this._getRulerCoordinate(), "next");
+                this._goToEvent( f._findNextFrame(this._getRulerCoordinate(), "prev"), f);
             }
         },
-        nextEvent:function() {
-            var f = this._getFocusedThing();
+        _nextEvent:function(attr) {
+            var f = this._getFocusedThing(attr.id);
             if (f != null) {
-                this._goToEvent(f._findNextFrame(this._getRulerCoordinate(), "next"));
+                f._findNextFrame(this._getRulerCoordinate(), "next")
+                this._goToEvent(f._findNextFrame(this._getRulerCoordinate(), "next"), f);
             }
         },
     
-        _goToEvent:function(frame) {
+        _goToEvent:function(frame, obj) {
             if (frame === undefined) {
                 console.log("No  event")
             } else {
                 //console.log(frame);
-                var time = this._getFocusedThing().timescale(frame.timestamp);
+                var time = obj.timescale(frame.timestamp);
                 this._$ruler.css("left", time);
                 this._notifyWidgetsOnRulerFocusChanged(this._$ruler.position());
                 //this._onWidgetMarkerClick(frame.data);
@@ -1320,18 +1322,18 @@
             return this._state[attr];
         },
             
-        _setFocusedThing : function(id) {
-          if (this._programs[id]) {
-            this.focusedThing = this._programs[id];
-          } else {
-            this.focusedThing = this._devices[id];
-          }
-        },
         
-        _getFocusedThing : function() {
-            return this.focusedThing;
+        _getFocusedThing : function(id) {
+            if (this._programs[id]) {
+                return this._programs[id];
+            } 
+            if (this._devices[id]){
+                return this._devices[id];
+            }
+            return null;
         },
     
+        
         // Get zoom context
         _getHistoryZoomContext: function() {
             return _.pick(this._state, [
@@ -1979,6 +1981,8 @@
                 // Bind dashboard to widget events.
                 this.listenTo(widget, 'marker:click', this._onWidgetMarkerClick);
                 this.listenTo(widget, 'eventline:focus:request', this._onWidgetFocusRequest);
+                this.listenTo(widget, 'eventline:focus:next', this._nextEvent);
+                this.listenTo(widget, 'eventline:focus:prev', this._prevEvent);
                 this.listenTo(widget, 'eventline:name:click', this._onWidgetNameClick);
     
                 // Find and attach it to the group to which it belongs.
@@ -2780,9 +2784,16 @@
         EventlineActions: {
             initUIEventlineActions: function() {
                 var self = this;
-    
+                // Button used to go to the prev event
+                this._$leftButton = $('<span class="glyphicon-chevron-left glyphicon"></span>').css({
+                    'font-size' : "0.7em",
+                    'top' : '-0.1em'
+                }).on('click', function() {
+                    self.triggerMethod.apply(this, ['eventline:focus:prev'].concat(self.attributes));
+                });
                 // Button used to focus debugger on this eventline
                 this._$focusButton = $('<button type="button "></button>"').css({
+                    'display' : 'inline',
                     'margin-top': this.computed('widget.height') * 0.1,
                     'height': this.computed('widget.height') * 0.8,
                     'margin-left': this.computed('widget.height') * 0.1,
@@ -2793,9 +2804,18 @@
                 ).on('click', function() {
                     self.triggerMethod.apply(this, ['eventline:focus:request'].concat(self.attributes));
                 });
+                // Button used to go to the prev event
+                this._$rightButton = $('<span class="glyphicon-chevron-right glyphicon"></span>').css({
+                    'font-size' : "0.7em",
+                    'top' : '-0.1em'
+                }).on('click', function() {
+                    self.triggerMethod.apply(this, ['eventline:focus:next'].concat(self.attributes));
+                });
     
                 // Attach focus button to sidemenu
+                this._$sidemenu.append(this._$leftButton);
                 this._$sidemenu.append(this._$focusButton);
+                this._$sidemenu.append(this._$rightButton);
     
                 // Catch click on eventline name
                 this._$name.on('click', function(){
