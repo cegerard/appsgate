@@ -427,6 +427,10 @@ public class TraceMan implements TraceManSpec {
 
     @Override
     public void getTracesBetweenInterval(Long from, Long to, boolean withEventLine, JSONObject request) {
+        if (from >= to) {
+            LOGGER.warn("Asking for an invalid intervall");
+            return;
+        }
         JSONObject requestResult = new JSONObject();
         JSONArray tracesTab;
         try {
@@ -602,7 +606,7 @@ public class TraceMan implements TraceManSpec {
                         eventLine.put(entry);
                         interval.clear();
                     }
-                    i--; //Ensure that all trace are placed in time stamp interval
+                    //i--; //Ensure that all trace are placed in time stamp interval
                     beg = end;
                     end += timeLineDelta;
                 }
