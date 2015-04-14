@@ -29,6 +29,10 @@ define([
             console.log("paired items list changed");
             self.trigger("itemsChanged");
             break;
+          case "undefinedItems":
+            console.log("undefined items list changed");
+            self.trigger("undefinedItemsChanged");
+            break;
         }
       });
     },
@@ -54,12 +58,25 @@ define([
     },
 
     getAllItem:function() {
-
       communicator.sendMessage({
         objectId: this.get("id"),
         "method":"getAllItem",
         "args":[],
         "callId":"getAllItem",
+        "TARGET":"EHMI"
+      });
+    },
+    validate:function(id, profile) {
+      communicator.sendMessage({
+        objectId: this.get("id"),
+        "method":"validateItem",
+        "args":[
+          {"type": "String",
+            "value": id},
+          {"type": "String",
+            "value": profile}
+        ],
+        "callId":"validateItem",
         "TARGET":"EHMI"
       });
     }

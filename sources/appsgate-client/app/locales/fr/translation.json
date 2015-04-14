@@ -1096,6 +1096,8 @@
         "no-item": "Aucun équipement EnOcean appairé",
         "start-pairing": "Démarrer l'appairage",
         "stop-pairing": "Arrêter l'appairage",
+        "choose-profile": "Choisir le profil",
+        "validate": " Valider",
         "unpair": " Desappairer"
       },
       "name": {

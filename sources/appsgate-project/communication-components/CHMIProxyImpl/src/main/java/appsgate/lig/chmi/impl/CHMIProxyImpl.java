@@ -1,6 +1,5 @@
 package appsgate.lig.chmi.impl;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Dictionary;

@@ -433,6 +433,15 @@ public class UbikitAdapter extends CoreObjectBehavior implements
         eventGate.postEvent(addItEvent);
 		logger.debug("item validated " + sensorID);
 	}
+	@Override
+	public void validateItem(String sensorID, String profile) {
+		logger.debug("validateItem(String sensorID = " + sensorID
+		        +", String profile = "+profile
+		        + ")");	
+		ArrayList<String> capList = new ArrayList<String>();
+		capList.add(profile);
+		validateItem(sensorID, capList, true);
+	}
 
 	/**
 	 * Unpair a device based on its UID
@@ -441,16 +450,23 @@ public class UbikitAdapter extends CoreObjectBehavior implements
 	 */
 	public boolean unpairDevice (String uid){
 		logger.debug("Unparing device with UID {} from ubikit",uid);
-		PhysicalEnvironmentItem item=enoceanBridge.removeItem(uid);
-		Boolean result=item!=null;
-		logger.debug("Unparing device with UID {} resulted in {}",uid,result);
-		Instance apamInstance=sidToInstanceName.remove(uid);
-		((ComponentBrokerImpl)CST.componentBroker).disappearedComponent(apamInstance.getName());
-		
-		
-		fireNotificationMessage("items", null, getAllItem().toString());
-
-		return result;
+		if(tempEventCapabilitiesMap.containsKey(uid)) {
+			logger.debug("unpairDevice(...), uid is an undefined device");
+			removeTempEventCapability(uid);
+			sidToInstanceName.remove(uid);
+			return true;
+		} else {
+			logger.debug("unpairDevice(...), uid is a paired device");
+			PhysicalEnvironmentItem item=enoceanBridge.removeItem(uid);
+			Boolean result=item!=null;
+			logger.debug("Unparing device with UID {} resulted in {}",uid,result);
+			Instance apamInstance=sidToInstanceName.remove(uid);
+			((ComponentBrokerImpl)CST.componentBroker).disappearedComponent(apamInstance.getName());
+						
+			fireNotificationMessage("items", null, getAllItem().toString());
+			
+			return result;
+		}
 	}
 
 	/**
@@ -612,6 +628,10 @@ public class UbikitAdapter extends CoreObjectBehavior implements
 
     public void addSidToInstance(String sid, Instance instance) {
         sidToInstanceName.put(sid, instance);
+        if(tempEventCapabilitiesMap.containsKey(sid)) {
+        	removeTempEventCapability(sid);
+        }
+		fireNotificationMessage("items", null, getAllItem().toString());
     }
 
     public boolean containSid(String sid) {
@@ -621,7 +641,22 @@ public class UbikitAdapter extends CoreObjectBehavior implements
     public void addTempEventCapability(String sid,ArrayList<EnOceanProfiles> tempCapList ) {
         tempEventCapabilitiesMap.put(sid,
                 tempCapList);
+        fireNotificationMessage("undefinedItems", null, getUndefinedItems().toString());
     }
+    
+    @Override
+	public JSONObject getUndefinedItems() {
+    	JSONObject result = new JSONObject();
+    	for(String id : tempEventCapabilitiesMap.keySet()) {
+    		try {
+				result.put(id, getItemCapabilities(id));
+			} catch (JSONException e) {
+				logger.error("JSONException during during getUndefinedItems(), ",e);
+			}
+    	}
+    	return result;
+    }
+
 
     public ArrayList<EnOceanProfiles> getTempEventCapability(String sid ) {
         return tempEventCapabilitiesMap.get(sid);
@@ -629,6 +664,7 @@ public class UbikitAdapter extends CoreObjectBehavior implements
 
     public void removeTempEventCapability(String sid ) {
         tempEventCapabilitiesMap.remove(sid);
+        fireNotificationMessage("undefinedItems", null, getUndefinedItems().toString());        
     }
     
     
@@ -663,6 +699,7 @@ public class UbikitAdapter extends CoreObjectBehavior implements
 		descr.put("coreType", getCoreType());
 		descr.put("status", getObjectStatus());
 		descr.put("items", getAllItem());
+		descr.put("undefinedItems", getUndefinedItems());
 		descr.put("pairingMode", getPairingMode());
 
 		return descr;

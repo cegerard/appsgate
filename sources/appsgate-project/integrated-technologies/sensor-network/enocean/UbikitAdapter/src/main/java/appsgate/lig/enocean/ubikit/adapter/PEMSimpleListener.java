@@ -147,7 +147,6 @@ public class PEMSimpleListener implements NewItemEvent.Listener, ItemAddedEvent.
         } catch (JSONException e) {
             e.printStackTrace();
         }
-		adapter.fireNotificationMessage("items", null, adapter.getAllItem().toString());
         sendToClientService.send(onEventMSG.toString());
     }
 
@@ -170,7 +169,6 @@ public class PEMSimpleListener implements NewItemEvent.Listener, ItemAddedEvent.
         } catch (JSONException e) {
             e.printStackTrace();
         }
-		adapter.fireNotificationMessage("items", null, adapter.getAllItem().toString());        
         sendToClientService.send(onEventMSG.toString());
     }
 

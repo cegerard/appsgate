@@ -18,10 +18,17 @@ import org.json.JSONObject;
 public interface UbikitAdapterService {
 
 	/**
-	 * Get all items ass a JSONArray
-	 * @return JSONArray that contain all item
+	 * Get configured items as a JSONArray
+	 * @return JSONArray that contain configured items
 	 */
 	public JSONArray getAllItem();
+	
+	/**
+	 * Get items that have not been validated (capability selection) as a JSONObject
+	 * {id1:[capabilities1], id2:[capabilities2], ... , idn:[capabilities1], idn:[capabilitiesn]}
+	 * @return JSONObject that contain undefined items and their respective capabilities
+	 */
+	public JSONObject getUndefinedItems();	
 	
 	/**
 	 * Get the item by its identifier
@@ -44,7 +51,13 @@ public interface UbikitAdapterService {
 	 * @param doesCapabilitiesHaveToBeSelected boolean that is use to know if you need to select one of those capabilities for this sensor
 	 */
 	public void validateItem(String sensorID, ArrayList<String> capList, boolean doesCapabilitiesHaveToBeSelected);
-	
+
+	/**
+	 * Validate an item profile for Ubikit EnOcean PEM
+	 * @param sensorID the item identifier
+	 * @param profile a single capability for the device
+	 */
+	public void validateItem(String sensorID, String profile);
 	
 	/****************************/
 	/*****  Actuator part  ******/

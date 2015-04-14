@@ -1095,7 +1095,9 @@
         "no-item": "No EnOcean device paired",
         "start-pairing": "Start Pairing mode",
         "stop-pairing": "Stop Pairing mode",
-        "unpair": "Unpair"
+        "choose-profile": "Choose a profile",
+        "validate": " Validate",
+        "unpair": " Unpair"
       },
      "name": {
         "plural": "EnOcean Drivers",
