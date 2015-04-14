@@ -45,11 +45,15 @@ define([
           $(item).removeClass("active");
         });
 
-        if (Backbone.history.fragment === "adapters") {
-          $($(".navbar li")[0]).addClass("active");
+        if (typeof e !== "undefined") {
+          $(e.currentTarget).addClass("active");
         } else {
-          var adapterId = Backbone.history.fragment.split("/")[1];
-          $("[id='"+adapterId+"']").addClass("active");
+          if (Backbone.history.fragment === "adapters") {
+            $($(".navbar li")[0]).addClass("active");
+          } else {
+            var adapterId = Backbone.history.fragment.split("/")[1];
+            $("[id='"+adapterId+"']").addClass("active");
+          }
         }
       },
       /**
