@@ -146,13 +146,6 @@ define([
 			}
         });
         
-        $("#prevEvent").on("click", function(e){
-          dashboard.prevEvent();
-          });
-        $("#nextEvent").on("click", function(e){
-          dashboard.nextEvent();
-          });
-
         // listen to zoom request from dashboard
         dashboard.on('zoom:request', function (context) {
             self.$('#datetimepicker-toolbar').show();

@@ -745,9 +745,16 @@ Widgets.Mixins = {
     EventlineActions: {
         initUIEventlineActions: function() {
             var self = this;
-
+            // Button used to go to the prev event
+            this._$leftButton = $('<span class="glyphicon-chevron-left glyphicon"></span>').css({
+                'font-size' : "0.7em",
+                'top' : '-0.1em'
+            }).on('click', function() {
+                self.triggerMethod.apply(this, ['eventline:focus:prev'].concat(self.attributes));
+            });
             // Button used to focus debugger on this eventline
             this._$focusButton = $('<button type="button "></button>"').css({
+                'display' : 'inline',
                 'margin-top': this.computed('widget.height') * 0.1,
                 'height': this.computed('widget.height') * 0.8,
                 'margin-left': this.computed('widget.height') * 0.1,
@@ -758,9 +765,18 @@ Widgets.Mixins = {
             ).on('click', function() {
                 self.triggerMethod.apply(this, ['eventline:focus:request'].concat(self.attributes));
             });
+            // Button used to go to the prev event
+            this._$rightButton = $('<span class="glyphicon-chevron-right glyphicon"></span>').css({
+                'font-size' : "0.7em",
+                'top' : '-0.1em'
+            }).on('click', function() {
+                self.triggerMethod.apply(this, ['eventline:focus:next'].concat(self.attributes));
+            });
 
             // Attach focus button to sidemenu
+            this._$sidemenu.append(this._$leftButton);
             this._$sidemenu.append(this._$focusButton);
+            this._$sidemenu.append(this._$rightButton);
 
             // Catch click on eventline name
             this._$name.on('click', function(){
