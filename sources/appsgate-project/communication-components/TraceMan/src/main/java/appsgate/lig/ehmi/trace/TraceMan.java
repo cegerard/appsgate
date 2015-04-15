@@ -606,7 +606,7 @@ public class TraceMan implements TraceManSpec {
                         eventLine.put(entry);
                         interval.clear();
                     }
-                    //i--; //Ensure that all trace are placed in time stamp interval
+                    i--; //Ensure that all trace are placed in time stamp interval
                     beg = end;
                     end += timeLineDelta;
                 }
