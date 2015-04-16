@@ -526,27 +526,35 @@ html, body {
   text-align: center;
 }
 
-/* line 185, ../../../../src/themes/basic/theme.scss */
-.tabular.decorations tr {
-  height: 80px;
+/* line 184, ../../../../src/themes/basic/theme.scss */
+.tabular.decorations {
+  width: 100%;
 }
-/* line 187, ../../../../src/themes/basic/theme.scss */
+/* line 186, ../../../../src/themes/basic/theme.scss */
+.tabular.decorations th {
+  text-align: center;
+  font-weight: 700;
+  background-color: gainsboro;
+  padding: O 0.6em;
+}
+/* line 194, ../../../../src/themes/basic/theme.scss */
 .tabular.decorations tr:nth-child(odd) {
   background-color: #f6f6f6;
 }
-/* line 190, ../../../../src/themes/basic/theme.scss */
+/* line 197, ../../../../src/themes/basic/theme.scss */
 .tabular.decorations tr:nth-child(even) {
   background-color: #fafafa;
 }
-/* line 194, ../../../../src/themes/basic/theme.scss */
+/* line 201, ../../../../src/themes/basic/theme.scss */
 .tabular.decorations td {
   padding-bottom: 1em;
 }
-/* line 197, ../../../../src/themes/basic/theme.scss */
+/* line 204, ../../../../src/themes/basic/theme.scss */
 .tabular.decorations .decoration-head {
   width: 80px;
+  height: 80px;
 }
-/* line 199, ../../../../src/themes/basic/theme.scss */
+/* line 207, ../../../../src/themes/basic/theme.scss */
 .tabular.decorations .decoration-head .picto {
   width: 50px;
   margin-left: 15px;
@@ -554,7 +562,7 @@ html, body {
   line-height: 50px;
   background-size: 50px 50px;
 }
-/* line 205, ../../../../src/themes/basic/theme.scss */
+/* line 213, ../../../../src/themes/basic/theme.scss */
 .tabular.decorations .decoration-head .picto .decoColor {
   border: thin solid #EEEEEE;
   color: transparent;
@@ -562,33 +570,34 @@ html, body {
   bottom: 12px;
   left: 35px;
 }
-/* line 213, ../../../../src/themes/basic/theme.scss */
+/* line 221, ../../../../src/themes/basic/theme.scss */
 .tabular.decorations .decoration-head .datetime {
   width: 80px;
   height: 30px;
   text-align: center;
 }
-/* line 217, ../../../../src/themes/basic/theme.scss */
+/* line 225, ../../../../src/themes/basic/theme.scss */
 .tabular.decorations .decoration-head .datetime .date, .tabular.decorations .decoration-head .datetime .time {
   line-height: 10px;
   font-size: x-small;
 }
-/* line 224, ../../../../src/themes/basic/theme.scss */
+/* line 232, ../../../../src/themes/basic/theme.scss */
 .tabular.decorations .decoration-body .description {
   height: 50px;
+  padding: 0.8em 1.8em 0.8em 0.2em;
 }
-/* line 227, ../../../../src/themes/basic/theme.scss */
+/* line 236, ../../../../src/themes/basic/theme.scss */
 .tabular.decorations .decoration-body .extra {
   height: 30px;
   text-align: right;
 }
-/* line 230, ../../../../src/themes/basic/theme.scss */
+/* line 239, ../../../../src/themes/basic/theme.scss */
 .tabular.decorations .decoration-body .extra .source, .tabular.decorations .decoration-body .extra .causality {
   line-height: 10px;
   font-size: x-small;
 }
 
-/* line 244, ../../../../src/themes/basic/theme.scss */
+/* line 253, ../../../../src/themes/basic/theme.scss */
 .axis path,
 .axis line,
 .grid line {
@@ -598,12 +607,12 @@ html, body {
   shape-rendering: auto;
 }
 
-/* line 253, ../../../../src/themes/basic/theme.scss */
+/* line 262, ../../../../src/themes/basic/theme.scss */
 .grid path {
   display: none;
 }
 
-/* line 257, ../../../../src/themes/basic/theme.scss */
+/* line 266, ../../../../src/themes/basic/theme.scss */
 .axis.top {
   background-image: linear-gradient(to bottom, #ffffff 0%, rgba(255, 255, 255, 0) 100%);
   background-image: -o-linear-gradient(top, #fff 0%, rgba(255, 255, 255, 0) 100%);
@@ -613,7 +622,7 @@ html, body {
   top: 16px;
 }
 
-/* line 266, ../../../../src/themes/basic/theme.scss */
+/* line 275, ../../../../src/themes/basic/theme.scss */
 .axis.bottom {
   background-image: linear-gradient(to top, #ffffff 0%, rgba(255, 255, 255, 0) 100%);
   background-image: -o-linear-gradient(bottom, #fff 0%, rgba(255, 255, 255, 0) 100%);
@@ -623,24 +632,24 @@ html, body {
   bottom: 0px;
 }
 
-/* line 275, ../../../../src/themes/basic/theme.scss */
+/* line 284, ../../../../src/themes/basic/theme.scss */
 .axis text {
   fill: #4c4c4c;
   font-family: sans-serif;
   font-size: 11px;
 }
 
-/* line 281, ../../../../src/themes/basic/theme.scss */
+/* line 290, ../../../../src/themes/basic/theme.scss */
 .state.area {
   fill: rgba(154, 207, 7, 0.2);
   stroke-width: 0;
 }
-/* line 285, ../../../../src/themes/basic/theme.scss */
+/* line 294, ../../../../src/themes/basic/theme.scss */
 .state.area .focused {
   fill: rgba(154, 207, 7, 0.5);
 }
 
-/* line 290, ../../../../src/themes/basic/theme.scss */
+/* line 299, ../../../../src/themes/basic/theme.scss */
 .state.border {
   stroke: rgba(154, 207, 7, 0.8);
   stroke-width: 2px;
@@ -648,159 +657,159 @@ html, body {
   fill: transparent;
 }
 
-/* line 297, ../../../../src/themes/basic/theme.scss */
+/* line 306, ../../../../src/themes/basic/theme.scss */
 .state.border.pending {
   stroke-linecap: 'square';
   stroke-dasharray: 1, 2;
 }
 
-/* line 302, ../../../../src/themes/basic/theme.scss */
+/* line 311, ../../../../src/themes/basic/theme.scss */
 .value.area {
   fill: rgba(41, 81, 109, 0.2);
   stroke-width: 0;
 }
-/* line 306, ../../../../src/themes/basic/theme.scss */
+/* line 315, ../../../../src/themes/basic/theme.scss */
 .value.area .focused {
   fill: rgba(41, 81, 109, 0.5);
 }
 
-/* line 311, ../../../../src/themes/basic/theme.scss */
+/* line 320, ../../../../src/themes/basic/theme.scss */
 .value.border {
   stroke: rgba(41, 81, 109, 0.8);
   stroke-width: 2px;
   fill: transparent;
 }
 
-/* line 317, ../../../../src/themes/basic/theme.scss */
+/* line 326, ../../../../src/themes/basic/theme.scss */
 .value.border.pending {
   stroke-linecap: 'round';
   stroke-dasharray: 1, 2;
 }
 
-/* line 322, ../../../../src/themes/basic/theme.scss */
+/* line 331, ../../../../src/themes/basic/theme.scss */
 .program {
   fill: rgba(255, 255, 255, 0.3);
   stroke-width: 2px;
 }
-/* line 325, ../../../../src/themes/basic/theme.scss */
+/* line 334, ../../../../src/themes/basic/theme.scss */
 .program .deployed {
   fill: rgba(204, 204, 204, 0.3);
   stroke: #26d43b;
 }
-/* line 329, ../../../../src/themes/basic/theme.scss */
+/* line 338, ../../../../src/themes/basic/theme.scss */
 .program .deployed.focused {
   fill: rgba(204, 204, 204, 0.6);
 }
-/* line 332, ../../../../src/themes/basic/theme.scss */
+/* line 341, ../../../../src/themes/basic/theme.scss */
 .program .processing {
   fill: rgba(154, 207, 7, 0.3);
   stroke: #26d43b;
 }
-/* line 336, ../../../../src/themes/basic/theme.scss */
+/* line 345, ../../../../src/themes/basic/theme.scss */
 .program .processing.focused {
   fill: rgba(154, 207, 7, 0.6);
 }
-/* line 339, ../../../../src/themes/basic/theme.scss */
+/* line 348, ../../../../src/themes/basic/theme.scss */
 .program .incomplete {
   fill: rgba(204, 204, 204, 0.3);
   stroke: rgba(240, 73, 68, 0.5);
 }
-/* line 343, ../../../../src/themes/basic/theme.scss */
+/* line 352, ../../../../src/themes/basic/theme.scss */
 .program .incomplete.focused {
   fill: rgba(204, 204, 204, 0.6);
 }
-/* line 346, ../../../../src/themes/basic/theme.scss */
+/* line 355, ../../../../src/themes/basic/theme.scss */
 .program .limping {
   fill: rgba(255, 153, 51, 0.3);
   stroke: rgba(240, 73, 68, 0.5);
 }
-/* line 350, ../../../../src/themes/basic/theme.scss */
+/* line 359, ../../../../src/themes/basic/theme.scss */
 .program .limping.focused {
   fill: rgba(255, 153, 51, 0.6);
 }
-/* line 353, ../../../../src/themes/basic/theme.scss */
+/* line 362, ../../../../src/themes/basic/theme.scss */
 .program .invalid {
   fill: rgba(204, 204, 204, 0.3);
   stroke: red;
 }
-/* line 357, ../../../../src/themes/basic/theme.scss */
+/* line 366, ../../../../src/themes/basic/theme.scss */
 .program .invalid.focused {
   fill: rgba(204, 204, 204, 0.6);
 }
 
-/* line 363, ../../../../src/themes/basic/theme.scss */
+/* line 372, ../../../../src/themes/basic/theme.scss */
 .status line {
   stroke-width: 2px;
   stroke-linecap: round;
   stroke-dasharray: 1, 5;
 }
-/* line 369, ../../../../src/themes/basic/theme.scss */
+/* line 378, ../../../../src/themes/basic/theme.scss */
 .status .connection {
   stroke: rgba(154, 207, 7, 0.8);
 }
-/* line 372, ../../../../src/themes/basic/theme.scss */
+/* line 381, ../../../../src/themes/basic/theme.scss */
 .status .connection.focused {
   stroke: #9acf07;
 }
-/* line 375, ../../../../src/themes/basic/theme.scss */
+/* line 384, ../../../../src/themes/basic/theme.scss */
 .status .problem {
   stroke: rgba(206, 96, 39, 0.8);
 }
-/* line 378, ../../../../src/themes/basic/theme.scss */
+/* line 387, ../../../../src/themes/basic/theme.scss */
 .status .problem.focused {
   stroke: #ce6027;
 }
-/* line 381, ../../../../src/themes/basic/theme.scss */
+/* line 390, ../../../../src/themes/basic/theme.scss */
 .status .disconnection {
   stroke: rgba(206, 66, 66, 0.8);
 }
-/* line 384, ../../../../src/themes/basic/theme.scss */
+/* line 393, ../../../../src/themes/basic/theme.scss */
 .status .disconnection.focused {
   stroke: #ce4242;
 }
 
-/* line 389, ../../../../src/themes/basic/theme.scss */
+/* line 398, ../../../../src/themes/basic/theme.scss */
 .focusline .area,
 .focusline rect {
   fill: rgba(105, 105, 105, 0.3);
   stroke-width: 0;
 }
 
-/* line 395, ../../../../src/themes/basic/theme.scss */
+/* line 404, ../../../../src/themes/basic/theme.scss */
 .focusline .border {
   fill: none;
   stroke: rgba(105, 0, 105, 0.5);
 }
 
-/* line 400, ../../../../src/themes/basic/theme.scss */
+/* line 409, ../../../../src/themes/basic/theme.scss */
 .ruler-shadow {
   fill: rgba(255, 0, 0, 0.3);
 }
 
-/* line 405, ../../../../src/themes/basic/theme.scss */
+/* line 414, ../../../../src/themes/basic/theme.scss */
 .spikes line {
   stroke-width: 2px;
   stroke: rgba(154, 207, 7, 0.8);
 }
-/* line 410, ../../../../src/themes/basic/theme.scss */
+/* line 419, ../../../../src/themes/basic/theme.scss */
 .spikes .focused {
   stroke-width: 4px;
   stroke: #9acf07;
 }
 
-/* line 417, ../../../../src/themes/basic/theme.scss */
+/* line 426, ../../../../src/themes/basic/theme.scss */
 .brush .extent {
   fill: rgba(144, 195, 191, 0.1);
   stroke: #90c3bf;
   stroke-width: 0px;
   shape-rendering: auto;
 }
-/* line 424, ../../../../src/themes/basic/theme.scss */
+/* line 433, ../../../../src/themes/basic/theme.scss */
 .brush .resize rect.handle {
   visibility: visible !important;
   fill: rgba(105, 105, 105, 0.5);
 }
-/* line 429, ../../../../src/themes/basic/theme.scss */
+/* line 438, ../../../../src/themes/basic/theme.scss */
 .brush .mask {
   fill: rgba(255, 255, 255, 0.8);
   stroke: transparent;
@@ -808,7 +817,7 @@ html, body {
   shape-rendering: auto;
 }
 
-/* line 437, ../../../../src/themes/basic/theme.scss */
+/* line 446, ../../../../src/themes/basic/theme.scss */
 .decoration {
   cursor: pointer;
   stroke-width: 1;
@@ -818,7 +827,7 @@ html, body {
   filter: drop-shadow(-5px -5px 5px #000);
 }
 
-/* line 449, ../../../../src/themes/basic/theme.scss */
+/* line 458, ../../../../src/themes/basic/theme.scss */
 .konami-background {
   background: url(icons/konami.gif) no-repeat center center fixed;
   -webkit-background-size: cover;

@@ -182,8 +182,15 @@ html, body {
 
 .tabular {
     &.decorations {
+        width: 100%;
+        th {
+            text-align: center;
+            font-weight: 700;
+            background-color: gainsboro;
+            padding: O.6em;
+        }
         tr {
-            height: 80px;
+            
             &:nth-child(odd) {
                 background-color: $element_odd_fill_color;
             }
@@ -196,6 +203,7 @@ html, body {
         }
         .decoration-head {
             width: 80px;
+            height: 80px;
             .picto {
                 width: 50px;
                 margin-left: 15px;
@@ -223,6 +231,7 @@ html, body {
         .decoration-body {
             .description {
                 height: 50px;
+                padding: 0.8em 1.8em 0.8em 0.2em;
             }
             .extra {
                 height: 30px;
