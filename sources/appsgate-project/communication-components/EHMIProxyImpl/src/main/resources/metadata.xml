@@ -15,11 +15,17 @@
             <interface field="systemClockCoreObject"/>
 		</relation>
 		
-		<relation field="devicePropertiesTable" resolve="exist" fail="wait"/>
-		<relation field="placeManager" resolve="exist" fail="wait" />
-		<relation field="userManager" resolve="exist" fail="wait"/>
-		<relation field="interpreter"  resolve="exist" fail="wait"/>
-		<relation field="dependency"  resolve="exist" fail="wait"/>
+		<!-- Eager policy instead of wait failing mode for context --> 
+		<relation field="devicePropertiesTable" resolve="exist" creation="eager"
+		    added="devicePropertiesTableBound" removed="devicePropertiesTableUnbound"/>
+		<relation field="placeManager" resolve="exist" creation="eager"
+            added="placeManagerBound" removed="placeManagerUnbound"/>		    
+		<relation field="userManager" resolve="exist" creation="eager"
+            added="userManagerBound" removed="userManagerUnbound"/>		 
+            
+		
+		<relation field="interpreter"  resolve="exist" />
+		<relation field="dependency"  resolve="exist" />
 		<relation field="traceManager" resolve="exist" creation="eager" added="traceManBound"/>
         <relation field="weatherAdapter" resolve="exist" fail="wait" />
         <relation field="schedulerService" resolve="exist"  fail="wait"/>

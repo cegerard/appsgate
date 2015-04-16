@@ -27,6 +27,7 @@ import appsgate.lig.chmi.spec.CHMIProxySpec;
 import appsgate.lig.chmi.spec.GenericCommand;
 import appsgate.lig.chmi.spec.listeners.CoreEventsListener;
 import appsgate.lig.chmi.spec.listeners.CoreUpdatesListener;
+import appsgate.lig.chmi.spec.listeners.CoreUpdatesListener.UPDATE_TYPE;
 import appsgate.lig.clock.sensor.spec.CoreClockSpec;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
@@ -114,23 +115,11 @@ public class CHMIProxyImpl implements CHMIProxySpec {
         try {
             //notify that a new device, service or simulated instance appeared
             CoreObjectSpec newObj = (CoreObjectSpec) inst.getServiceObject();
-            String newMsg = "";
-            if (newObj.getCoreType().equals(CORE_TYPE.DEVICE)) {
-            	newMsg = "newDevice";
-            } else if (newObj.getCoreType().equals(CORE_TYPE.SERVICE)) {
-            	newMsg = "newService";
-            } else if (newObj.getCoreType().equals(CORE_TYPE.SIMULATED_DEVICE)) {
-            	newMsg = "newSimulatedDevice";
-            } else if (newObj.getCoreType().equals(CORE_TYPE.SIMULATED_SERVICE)) {
-            	newMsg = "newSimulatedService";
-            }
-            
-            notifyAllUpdatesListeners(newMsg, newObj.getAbstractObjectId(), newObj.getUserType(), newObj.getDescription(), newObj.getBehaviorDescription());
+            notifyAllUpdatesListeners(UPDATE_TYPE.NEW, newObj.getCoreType(), newObj.getAbstractObjectId(), newObj.getUserType(), newObj.getDescription(), newObj.getBehaviorDescription());
             
         } catch (Exception ex) {
             logger.error("If getCoreType method error trace appeare below it is because the service or the device doesn't implement all methode in"
-                    + "the CoreObjectSpec interface.");
-            ex.printStackTrace();
+                    + "the CoreObjectSpec interface : ", ex);
         }
     }
 
@@ -142,31 +131,18 @@ public class CHMIProxyImpl implements CHMIProxySpec {
     public void removedAbstractObject(Instance inst) {
         logger.debug("Abstract device removed: " + inst.getName());
         JSONObject obj = new JSONObject();
-        CoreObjectSpec rmObj = (CoreObjectSpec) inst.getServiceObject();
-        String deviceId = rmObj.getAbstractObjectId();
-        try {
-            obj.put("objectId", deviceId);
-        } catch (JSONException e) {
-            logger.error(e.getMessage());
-        }
 
-        synchronized(this){
-        	String newMsg ="";
-        	if (rmObj.getCoreType().equals(CORE_TYPE.DEVICE)) {
-        		newMsg ="removeDevice";
-        	} else if (rmObj.getCoreType().equals(CORE_TYPE.SERVICE)) {
-        		newMsg ="removeService";
-        	} else if (rmObj.getCoreType().equals(CORE_TYPE.SIMULATED_DEVICE)) {
-        		newMsg ="removeSimulatedDevice";
-        	} else if (rmObj.getCoreType().equals(CORE_TYPE.SIMULATED_SERVICE)) {
-        		newMsg ="removeSimulatedService";
-        	}
-        	
-            try{
-            	notifyAllUpdatesListeners(newMsg, deviceId, rmObj.getUserType(), null, null);
-        	}catch(ExternalComDependencyException comException) {
-        		logger.debug("Resolution failled for send to client service dependency, no message will be sent.");
-        	}
+        synchronized(this){ 
+            CoreObjectSpec rmObj = (CoreObjectSpec) inst.getServiceObject();
+            String deviceId = rmObj.getAbstractObjectId();
+            
+            try {
+                obj.put("objectId", deviceId);
+            } catch (JSONException e) {
+                logger.error(e.getMessage());
+            }
+
+            notifyAllUpdatesListeners(UPDATE_TYPE.REMOVE, rmObj.getCoreType(), deviceId, rmObj.getUserType(), null, null);
         }
     }
 
@@ -425,9 +401,9 @@ public class CHMIProxyImpl implements CHMIProxySpec {
 	 * @param desc the object description (state, id etc.)
 	 * @param behavior the object behavior, can be empty JSONObject
 	 */
-	private void notifyAllUpdatesListeners(String coreType, String objectId, String userType, JSONObject descr, JSONObject behavior) {
+	private void notifyAllUpdatesListeners(UPDATE_TYPE updateType, CORE_TYPE coreType, String objectId, String userType, JSONObject descr, JSONObject behavior) {
 		for(CoreUpdatesListener listener : updatesListenerList) {
-			listener.notifyUpdate(coreType, objectId, userType, descr, behavior);
+			listener.notifyUpdate(updateType, coreType, objectId, userType, descr, behavior);
 		}
 	}
 

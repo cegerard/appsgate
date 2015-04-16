@@ -2,6 +2,8 @@ package appsgate.lig.chmi.spec.listeners;
 
 import org.json.JSONObject;
 
+import appsgate.lig.core.object.spec.CoreObjectSpec.CORE_TYPE;
+
 /**
  * This interface is a listener template for core Updates notifications
  *
@@ -12,36 +14,6 @@ import org.json.JSONObject;
 public interface CoreUpdatesListener {
 
     /**
-     * Get the core type of the core object {device, service, simulated_device,
-     * simulated_service}
-     *
-     * @return the core type as a String
-     */
-    public String getCoreType();
-
-    /**
-     * Get the user type of the core object The user type is a string that code
-     * the device type like color light, switch, smart plug, contact, etc.
-     *
-     * @return the user type as a coded string
-     */
-    public String getUserType();
-
-    /**
-     * Get the core object description
-     *
-     * @return the description as a JSONObject
-     */
-    public JSONObject getObjectDescription();
-
-    /**
-     * Get the core object behavior description
-     *
-     * @return the behavior description as a JSONObject
-     */
-    public JSONObject getBehaviorDescription();
-
-    /**
      * Notify that a new update has come
      *
      * @param coreType
@@ -50,6 +22,22 @@ public interface CoreUpdatesListener {
      * @param behavior
      * @param descirption
      */
-    public void notifyUpdate(String coreType, String objectId, String userType, JSONObject descirption, JSONObject behavior);
+    public void notifyUpdate(UPDATE_TYPE updateType, CORE_TYPE coreType, String objectId, String userType, JSONObject descirption, JSONObject behavior);
 
+    /** 
+     * Adding some strong type to the available updates
+     * @author thibaud
+     *
+     */
+    public enum UPDATE_TYPE {
+    	NEW("new"),
+    	REMOVE("remove");
+    	private String name;
+    	private UPDATE_TYPE(String name) {
+			this.name = name;
+		}
+    	public String getName() {
+    		return name;
+    	}
+    }
 }

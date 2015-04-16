@@ -1,6 +1,5 @@
 package appsgate.lig.chmi.spec;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 
 import org.json.JSONArray;

@@ -45,7 +45,6 @@ import appsgate.lig.ehmi.spec.trace.TraceManSpec;
 import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
 
 import java.net.*;
-import java.sql.ClientInfoStatus;
 import java.util.*;
 
 /**
@@ -256,7 +255,7 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
                             String id = devicesArray.getJSONObject(i).getString(
                                     "id");
 
-                            if (!"21".equals(type)) {
+                            if (!"21".equals(type) && devicePropertiesTableBound) {
                                 devicePropertiesTable.addGrammarForDevice(id, type, new GrammarDescription(coreProxy.getDeviceBehaviorFromType(type)));
                             }
                         }
@@ -354,7 +353,7 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
         long timeStamp = System.currentTimeMillis();
         while (!synchroContext && ((System.currentTimeMillis() - timeStamp) < TIMEOUT)) {
             try {
-                if (devicePropertiesTable == null || placeManager == null) {
+                if (!devicePropertiesTableBound || !placeManagerBound ) {
                     Thread.sleep(500);
                 } else {
                     synchroContext = true;
@@ -418,7 +417,7 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
 
     @Override
     public StateDescription getEventsFromState(String objectId, String stateName) {
-        if (devicePropertiesTable == null) {
+        if (!devicePropertiesTableBound) {
             logger.error("no context data available");
             return null;
         }
@@ -440,7 +439,7 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
 
     @Override
     public GrammarDescription getGrammarFromType(String deviceType) {
-        if (devicePropertiesTable == null) {
+        if (!devicePropertiesTableBound) {
             logger.error("getGrammarFromType({}): No context data available", deviceType);
             return null;
         }
@@ -456,7 +455,7 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
 
     @Override
     public JSONArray getPlaces() {
-        if (placeManager == null) {
+        if (!placeManagerBound) {
             logger.error("no context data available");
             return null;
         }
@@ -465,7 +464,7 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
 
     @Override
     public void moveDevice(String objId, String srcPlaceId, String destPlaceId) {
-        if (placeManager == null) {
+        if (!placeManagerBound) {
             logger.error("no context data available");
             return;
         }
@@ -479,7 +478,7 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
 
     @Override
     public String getCoreObjectPlaceId(String objId) {
-        if (placeManager == null) {
+        if (!placeManagerBound) {
             logger.error("no context data available");
             return null;
         }
@@ -489,7 +488,7 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
     @Override
     public ArrayList<String> getDevicesInSpaces(ArrayList<String> typeList,
             ArrayList<String> spaces) {
-        if (placeManager == null) {
+        if (!placeManagerBound) {
             logger.error("no context data available");
             return null;
         }
@@ -545,7 +544,7 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
 
     @Override
     public boolean removeProperty(String placeId, String key) {
-        if (placeManager == null) {
+        if (!placeManagerBound) {
             logger.error("no context data available");
             return false;
         }
@@ -637,7 +636,7 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
         logger.trace("addContextData(JSONObject object : {}, String objectId : {})", object, objectId);
         try {
             object.put("placeId", getCoreObjectPlaceId(objectId));
-            object.put("name", devicePropertiesTable.getName(objectId, ""));
+            object.put("name", (devicePropertiesTableBound?devicePropertiesTable.getName(objectId, ""):""));
         } catch (JSONException e) {
             logger.error(e.getMessage());
         }
@@ -932,7 +931,7 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
 
     @Override
     public GrammarDescription getGrammarFromDevice(String deviceId) {
-        if (devicePropertiesTable == null) {
+        if (!devicePropertiesTableBound) {
             logger.error("no context data available");
             return null;
         }
@@ -1086,11 +1085,21 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
     }
     
     public DevicePropertiesTableSpec getDevicePropertiesTable() {
-		return devicePropertiesTable;
+        if (!devicePropertiesTableBound) {
+            logger.error("no context data available");
+            return null;
+        } else {
+        	return devicePropertiesTable;
+        }
 	}
 
 	public PlaceManagerSpec getPlaceManager() {
-		return placeManager;
+        if (!placeManagerBound) {
+            logger.error("no context data available");
+            return null;
+        } else {
+        	return placeManager;
+        }
 	}
 
 	/**
@@ -1114,6 +1123,31 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
 			}
 
 		}
-		
 	}
+	
+	boolean devicePropertiesTableBound = false;
+	private void devicePropertiesTableBound() {
+		devicePropertiesTableBound = true;
+	}
+	private void devicePropertiesTableUnbound() {
+		devicePropertiesTableBound = false;
+	}
+	
+	boolean placeManagerBound = false;
+	private void placeManagerBound() {
+		placeManagerBound = true;
+	}
+	private void placeManagerUnbound() {
+		placeManagerBound = false;
+	}
+	
+	boolean userManagerBound = false;
+	private void userManagerBound() {
+		userManagerBound = true;
+	}
+	private void userManagerUnbound() {
+		userManagerBound = false;
+	}	
+	
+	
 }

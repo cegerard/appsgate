@@ -77,12 +77,20 @@ public interface CoreObjectSpec {
         public JSONObject getBehaviorDescription();
         
         public enum CORE_TYPE{
-		SERVICE,
-		DEVICE,
-		SIMULATED_DEVICE,
-		SIMULATED_SERVICE,
-		ADAPTER,
-		EXTENDED;
+		SERVICE("Service"),
+		DEVICE("Device"),
+		SIMULATED_DEVICE("SimulatedDevice"),
+		SIMULATED_SERVICE("SimulatedService"),
+		ADAPTER("Adapter"),
+		EXTENDED("Extended");
+		
+    	private String name;
+    	private CORE_TYPE(String name) {
+			this.name = name;
+		}
+    	public String getName() {
+    		return name;
+    	}
 	}
         
 	
