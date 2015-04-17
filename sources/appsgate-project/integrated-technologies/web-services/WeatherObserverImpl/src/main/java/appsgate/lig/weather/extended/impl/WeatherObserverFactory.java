@@ -255,8 +255,7 @@ public class WeatherObserverFactory extends CoreObjectBehavior implements Weathe
 					+ location + " : " + exc.getMessage());
 			exc.printStackTrace();
 			if (inst != null) {
-				((ComponentBrokerImpl) CST.componentBroker)
-						.disappearedComponent(inst);
+				((ComponentBrokerImpl) CST.componentBroker).disappearedComponent(inst.getName());
 			}
 			return null;
 		}
@@ -323,8 +322,7 @@ public class WeatherObserverFactory extends CoreObjectBehavior implements Weathe
 	private void removeApAMInstance(Instance inst) {
 		logger.trace("removeApAMInstance(Instance inst : " + inst.getName());
 		if (inst != null) {
-			((ComponentBrokerImpl) CST.componentBroker)
-					.disappearedComponent(inst);
+			((ComponentBrokerImpl) CST.componentBroker).disappearedComponent(inst.getName());
 		}
 	}
 
