@@ -459,7 +459,7 @@ define([
       buildKeyboard: function() {
         var n = this.Grammar.parse(this.programJSON, this.currentNode);
 		if (n === null) {
-		  console.error("Unable to parse the program");
+		  console.debug("Unable to parse the program");
 		  return false;
 		}
           this.ProgramKeyboardBuilder.buildKeyboard(n);
