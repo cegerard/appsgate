@@ -94,7 +94,7 @@ public class NodeStateProgram extends NodeState {
     }
 
     @Override
-    protected Boolean isOfState() {
+    protected Boolean computeState() {
         try {
             
             NodeProgram p = getMediator().getNodeProgram(getObjectId());

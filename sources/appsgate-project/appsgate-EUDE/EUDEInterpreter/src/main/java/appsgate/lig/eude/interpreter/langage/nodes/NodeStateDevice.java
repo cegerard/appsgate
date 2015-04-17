@@ -138,7 +138,7 @@ public class NodeStateDevice extends NodeState {
     }
 
     @Override
-    protected Boolean isOfState() {
+    protected Boolean computeState() {
         if (desc == null){
             LOGGER.error("No state have been set");
             return false;

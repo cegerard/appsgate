@@ -41,7 +41,7 @@ abstract public class NodeState extends Node implements ICanBeEvaluated {
     private Node eventEndNode;
     private INodeEvent eventEnd = null;
 
-    private boolean isOnRules;
+    private Boolean isOnRules;
 
     /**
      * Private constructor to allow copy
@@ -105,13 +105,12 @@ abstract public class NodeState extends Node implements ICanBeEvaluated {
         setStarted(true);
         buildEventsList();
         // We are in state
-        Boolean state = isOfState();
-        if (state == null) {
+        isOnRules = computeState();
+        if (isOnRules == null) {
             LOGGER.error("Unable to compute a boolean value for {}", this);
             SpokExecutionException ex = new SpokExecutionException("Unable to compute a boolean value for this state");
             return ex.getJSONDescription();
         }
-        isOnRules = state;
         if (isOnRules) {
             fireStartEvent(new StartEvent(this));
         }
@@ -173,6 +172,9 @@ abstract public class NodeState extends Node implements ICanBeEvaluated {
      * @return
      */
     public boolean isOnRules() {
+        if (isOnRules == null) {
+            return false;
+        }
         return isOnRules;
     }
 
@@ -227,7 +229,7 @@ abstract public class NodeState extends Node implements ICanBeEvaluated {
     /**
      * @return true if the state is ok
      */
-    abstract protected Boolean isOfState();
+    abstract protected Boolean computeState();
 
     /**
      * @param start
@@ -248,11 +250,10 @@ abstract public class NodeState extends Node implements ICanBeEvaluated {
 
     @Override
     public NodeValue getResult() {
-        Boolean state = isOfState();
-        if (state == null) {
+        if (isOnRules == null) {
             return null;
         }
-        if (isOfState()) {
+        if (isOnRules) {
             return new NodeValue("boolean", "true", this);
         } else {
             return new NodeValue("boolean", "false", this);
