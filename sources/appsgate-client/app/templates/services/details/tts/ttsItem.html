@@ -1,20 +1,22 @@
-<a class="list-group-item" value="<%= book_id %>"
+<a class="list-group-item tts-item" value="<%= book_id %>"
         book_id="<%= book_id %>"
         text="<%= text %>"
         voice="<%= voice %>"
         speed="<%= speed %>"
         url="<%= audioUrl %>"
         >
-        <div class="pull-right">
-                <button type="button" class="btn btn-default btn-tts-delete" rel="popover">
-                        <i class="glyphicon glyphicon-trash"></i><span data-i18n="services.tts.control.delete"></span>
-                </button>
-        </div>
+
+        <% if (deletable) { %>
+                <div class="pull-right">
+                        <button type="button" class="btn btn-default btn-tts-delete" rel="popover">
+                                <i class="glyphicon glyphicon-trash"></i><span data-i18n="services.tts.control.delete"></span>
+                        </button>
+                </div>
+        <% } %>
         <div style="padding:0.5em 0 0.5em">
                 <%= $.i18n.t("services.tts.notification.message") %>: <%= text%>, <%= $.i18n.t("services.tts.notification.voice") %>: <%= voice%>
         </div>
         <audio class="test-tts" controls="controls">
                 <source src="<%= audioUrl %>" type="audio/mp3" />
         </audio>
-        <!--<div class="tts-audio"/>-->
 </a>

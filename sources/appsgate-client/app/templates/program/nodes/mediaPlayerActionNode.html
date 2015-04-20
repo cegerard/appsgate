@@ -28,8 +28,20 @@
     <% } %>
 
     <% if (node.methodName == "audioNotification" ) { %>
-        <input type="text" target-id="<%= node.iid %>" value="<%= node.args[0].value %>" size="40" class="arg-input ttsInput" target-index="0"/>
-        <span data-i18n='devices.mediaplayer.keyboard.complement'    />
+    <button class="btn btn-default" data-target="#tts-items-modal" data-toggle="modal" target-iid="<%= node.iid %>">
+        <% if(typeof node !== 'undefined') { %>
+        <span class="btn-tts-choice" target-iid="<%= node.iid %>"
+              text="<%= node.args[0].value %>"
+              voice="<%= node.args[1].value %>"
+              speed="<%= node.args[2].value %>">
+              <%= node.args[0].value %> (<%= node.args[1].value %>)</span>
+        <% } else { %>
+        <span class="btn-tts-choice" data-i18n='devices.mediaplayer.keyboard.browse' target-iid="<%= node.iid %>"/>
+        <% } %>
+    </button>
+
+
+    <span data-i18n='devices.mediaplayer.keyboard.complement'    />
     <% } %>
 
     <% if (node.methodName == "play" ) { %>

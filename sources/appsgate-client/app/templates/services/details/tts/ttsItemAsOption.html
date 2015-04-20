@@ -1,0 +1,12 @@
+<option class="list-group-item" value="<%= book_id %>"
+        book_id="<%= book_id %>"
+        text="<%= text %>"
+        voice="<%= voice %>"
+        speed="<%= speed %>"
+        url="<%= audioUrl %>"
+        >
+        <span>
+                <%= $.i18n.t("services.tts.notification.message") %>: <%= text%>, <%= $.i18n.t("services.tts.notification.voice") %>: <%= voice%>
+        </span>
+
+</option>
