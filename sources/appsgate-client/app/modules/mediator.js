@@ -64,8 +64,15 @@ define([
           if (typeof curNode[o] === 'object') {
             this.findMaxId(curNode[o]);
           }
-          if (curNode[o].iid > this.maxNodeId) {
-            this.maxNodeId = curNode[o].iid;
+          var mid = -1;
+          if (typeof curNode !== 'undefined'
+            && typeof curNode.iid !== 'undefined') {
+            mid = curNode.iid;
+          }
+
+
+          if (mid > this.maxNodeId) {
+            this.maxNodeId = mid;
           }
         }
         return this.maxNodeId;
