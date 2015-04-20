@@ -194,11 +194,14 @@ define([
           }));
           v.methodName = "audioNotification";
           v.phrase = "devices.mediaplayer.language.audioNotification-action";
-          v.args = [
-            {"type": "String", "value": "message"},
-            {"type": "String", "value": "Juliette"},
-            {"type": "int", "value": 5}
-          ];
+          v.args = undefined;
+          // Explicitly removed args to force choosing a notification message (none by default)
+          //  v.args =
+          //    [
+          //  {"type": "String", "value": "message"},
+          //  {"type": "String", "value": "Juliette"},
+          //  {"type": "int", "value": 5}
+          //];
           $(btn).attr("json", JSON.stringify(v));
           break;
         default:
