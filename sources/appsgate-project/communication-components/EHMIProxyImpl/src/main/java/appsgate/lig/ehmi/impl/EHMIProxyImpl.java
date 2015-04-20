@@ -79,12 +79,12 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
      */
     private DevicePropertiesTableSpec devicePropertiesTable;
 
-	/**
+    /**
      * The space manager ApAM component to handle the object space
      */
     private PlaceManagerSpec placeManager;
-    
-	/**
+
+    /**
      * The space manager ApAM component to handle the user space
      */
     private UserBaseSpec userManager;
@@ -216,7 +216,7 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
             } else {
                 logger.error("EHMI command listener subscription failed.");
             }
-            
+
         } catch (ExternalComDependencyException comException) {
             logger.debug("Resolution failed for listener service dependency, the EHMICommandListener will not be registered");
         }
@@ -283,7 +283,7 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
 
         } else {
             logger.trace("... coreProxy is not (yet) there");
-            
+
             return false;
         }
     }
@@ -328,11 +328,11 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
         waitForContext();
 
         JSONArray devices = new JSONArray();
-        if (!synchroCoreProxy()){
+        if (!synchroCoreProxy()) {
             logger.debug("No core proxy found");
             return devices;
         }
-            
+
         try {
             return addContextData(coreProxy.getDevicesDescription());
         } catch (CoreDependencyException coreException) {
@@ -353,7 +353,7 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
         long timeStamp = System.currentTimeMillis();
         while (!synchroContext && ((System.currentTimeMillis() - timeStamp) < TIMEOUT)) {
             try {
-                if (!devicePropertiesTableBound || !placeManagerBound ) {
+                if (!devicePropertiesTableBound || !placeManagerBound) {
                     Thread.sleep(500);
                 } else {
                     synchroContext = true;
@@ -436,7 +436,6 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
 
     }
 
-
     @Override
     public GrammarDescription getGrammarFromType(String deviceType) {
         if (!devicePropertiesTableBound) {
@@ -474,7 +473,6 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
 
         placeManager.moveObject(objId, srcPlaceId, destPlaceId);
     }
-    
 
     @Override
     public String getCoreObjectPlaceId(String objId) {
@@ -636,7 +634,7 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
         logger.trace("addContextData(JSONObject object : {}, String objectId : {})", object, objectId);
         try {
             object.put("placeId", getCoreObjectPlaceId(objectId));
-            object.put("name", (devicePropertiesTableBound?devicePropertiesTable.getName(objectId, ""):""));
+            object.put("name", (devicePropertiesTableBound ? devicePropertiesTable.getName(objectId, "") : ""));
         } catch (JSONException e) {
             logger.error(e.getMessage());
         }
@@ -756,7 +754,7 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
 
             traceManager.commandHasBeenPassed(objIdentifier, method, "user", jsonArgs, getCurrentTimeInMillis());
         }
-        
+
         return coreProxy.executeCommand(clientId, objIdentifier, method, jsonArgs, callId, this);
     }
 
@@ -791,7 +789,7 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(Long.valueOf(coreListener.getValue()));
             // register the alarm
-            int alarmId = systemClock.registerPeriodicAlarm(calendar, 24*60*60*1000 ,new TimeObserver("EHMI listener for clock event"));
+            int alarmId = systemClock.registerPeriodicAlarm(calendar, 24 * 60 * 60 * 1000, new TimeObserver("EHMI listener for clock event"));
             // change the event entry with the alarmId value
             //eventKey.setValue(String.valueOf(alarmId));
             eventKey = new TimeEntry(eventKey, alarmId);
@@ -830,9 +828,9 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
         Set<Entry> keys = eventsListeners.keySet();
         Iterator<Entry> keysIt = keys.iterator();
 
-        while (keysIt.hasNext()&& eventKey.getObjectId() != null) {
+        while (keysIt.hasNext() && eventKey.getObjectId() != null) {
             Entry key = keysIt.next();
-            if (key.getObjectId()!= null && key.equals(eventKey)) {
+            if (key.getObjectId() != null && key.equals(eventKey)) {
                 ArrayList<CoreListener> coreListenerList = eventsListeners
                         .get(key);
                 coreListenerList.remove(coreListener);
@@ -1083,71 +1081,76 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
     public SpokObject getProgram(String programid) {
         return interpreter.getNodeProgram(programid);
     }
-    
+
     public DevicePropertiesTableSpec getDevicePropertiesTable() {
         if (!devicePropertiesTableBound) {
             logger.error("no context data available");
             return null;
         } else {
-        	return devicePropertiesTable;
+            return devicePropertiesTable;
         }
-	}
+    }
 
-	public PlaceManagerSpec getPlaceManager() {
+    public PlaceManagerSpec getPlaceManager() {
         if (!placeManagerBound) {
             logger.error("no context data available");
             return null;
         } else {
-        	return placeManager;
+            return placeManager;
         }
-	}
+    }
 
-	/**
-	 * listener for asynchronous command response
-	 * this one helps to eliminate the ClientCommunicationManager from the GenericCommands
-	 * and allows EHMI to intercept responses
-	 */
-	@Override
-	public void notifyResponse(String objectId, String value, String callId, int clientId) {
-		// This first version only does what was excpected from Generic Commands and EHMI Commands,
-		// sends the response to the websocket 
-		if(sendToClientService != null) {
-			try {
-				JSONObject msg = new JSONObject();
-				msg.put("value", value);
-				msg.put("objectId", objectId);
-				msg.put("callId", callId);
-				sendToClientService.send(clientId, msg.toString());
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
+    /**
+     * listener for asynchronous command response this one helps to eliminate
+     * the ClientCommunicationManager from the GenericCommands and allows EHMI
+     * to intercept responses
+     */
+    @Override
+    public void notifyResponse(String objectId, String value, String callId, int clientId) {
+        // This first version only does what was excpected from Generic Commands and EHMI Commands,
+        // sends the response to the websocket 
+        if (sendToClientService != null) {
+            try {
+                JSONObject msg = new JSONObject();
+                msg.put("value", value);
+                msg.put("objectId", objectId);
+                msg.put("callId", callId);
+                sendToClientService.send(clientId, msg.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
-		}
-	}
-	
-	boolean devicePropertiesTableBound = false;
-	private void devicePropertiesTableBound() {
-		devicePropertiesTableBound = true;
-	}
-	private void devicePropertiesTableUnbound() {
-		devicePropertiesTableBound = false;
-	}
-	
-	boolean placeManagerBound = false;
-	private void placeManagerBound() {
-		placeManagerBound = true;
-	}
-	private void placeManagerUnbound() {
-		placeManagerBound = false;
-	}
-	
-	boolean userManagerBound = false;
-	private void userManagerBound() {
-		userManagerBound = true;
-	}
-	private void userManagerUnbound() {
-		userManagerBound = false;
-	}	
-	
-	
+        }
+    }
+
+    boolean devicePropertiesTableBound = false;
+
+    private void devicePropertiesTableBound() {
+        devicePropertiesTableBound = true;
+    }
+
+    private void devicePropertiesTableUnbound() {
+        devicePropertiesTableBound = false;
+    }
+
+    boolean placeManagerBound = false;
+
+    private void placeManagerBound() {
+        placeManagerBound = true;
+    }
+
+    private void placeManagerUnbound() {
+        placeManagerBound = false;
+    }
+
+    boolean userManagerBound = false;
+
+    private void userManagerBound() {
+        userManagerBound = true;
+    }
+
+    private void userManagerUnbound() {
+        userManagerBound = false;
+    }
+
 }
