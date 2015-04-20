@@ -337,6 +337,7 @@ _.extend(Debugger.Dashboard.prototype, Backbone.Events, {
             var time = obj.timescale(frame.timestamp);
             this._$ruler.css("left", time);
             this._notifyWidgetsOnRulerFocusChanged(this._$ruler.position());
+            this.triggerMethod.apply(this, ['eventline:focus:time'].concat(frame.timestamp));
             //this._onWidgetMarkerClick(frame.data);
         }
             
