@@ -596,7 +596,7 @@ define([
             $(".programInput").animate({scrollTop: focusPosition}, 1000);
           }
 
-          $( document ).tooltip();
+//          $( document ).tooltip();
 
           this.refreshing = false;
         }

@@ -386,7 +386,7 @@ define([
           $("body").i18n();
 
           // using jqueryui tooltips
-          $( document ).tooltip();
+//          $( document ).tooltip();
 
           // progress indicators should be updated at the end as they are sensitive to the sizes and positions of elements
           self.updateProgressIndicators();
