@@ -1,0 +1,27 @@
+<apam xmlns="fr.imag.adele.apam" xmlns:ipojo="org.apache.felix.ipojo"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
+                          org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
+
+	<implementation name="EnergyMonitoringAdapterImpl"
+	    classname="appsgate.lig.energy.monitoring.service.EnergyMonitoringAdapterImpl"
+	    specification="EnergyMonitoringAdapter"
+	    push="stateChanged"
+	    singleton="true">	    
+	</implementation>
+
+    <implementation name="CoreEnergyMonitoringGroupImpl"
+        classname="appsgate.lig.energy.monitoring.service.CoreEnergyMonitoringGroupImpl"
+        specification="CoreEnergyMonitoringGroup"
+        push="stateChanged">   
+        
+        <definition name="groupName" type="string" field="name"/>
+        <definition name="serviceId" type="string" field="serviceId"/>
+        <property name="serviceId" value="$this$name"/>
+        
+        
+        <callback onInit="onInit"/>
+        
+    </implementation>
+
+</apam>

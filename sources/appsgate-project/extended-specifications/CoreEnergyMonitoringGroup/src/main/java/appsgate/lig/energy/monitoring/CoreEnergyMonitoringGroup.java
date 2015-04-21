@@ -1,6 +1,7 @@
 package appsgate.lig.energy.monitoring;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  * This Extended Service monitor energy relative to:
@@ -100,47 +101,29 @@ public interface CoreEnergyMonitoringGroup {
 	/**
 	 * The the budget total and the budget unit, general formula:
 	 * Remaining = BudgetTotal - (BudgetUnit x EnergyDuringTimePeriod)
-	 * @param budgetTotal
-	 * @param budgetUnit
+	 * @param budgetTotal if -1, no budget defined
+	 * @param budgetUnit 1 is a default value (Watt/sec)
 	 */
 	public void setBudget(double budgetTotal, double budgetUnit);
 	
+	/**
+	 * Get the Monitoring Periods as a JSONArray of JSONObject, each one represents a Period
+	 * @see  appsgate.lig.energy.monitoring.utils.Period
+	 * @return
+	 */
+	public JSONArray getPeriods();
 	
 	/**
-	 * Budget will only be measured between the start and the end of the period, the period can repeat during time
-	 * at each interval.
-	 * Note that changing the period reset the budget measure.
-	 * @param startDate 
-	 * @param endDate
-	 * @param periodOffset by default 0 (used if relative to reals days, week, month, ...) 
-	 * @param periodInterval in ms (for instance 24 x 60 x 60 x 1000 define an interval of a day),
-	 * if 0, there will be no intervals
+	 * Add a period 
+	 * @see  appsgate.lig.energy.monitoring.utils.Period
+	 * @param period
 	 */
-	public void setPeriod(long startDate, long endDate, long periodOffset, long periodInterval);
+	public void addPeriod(JSONObject period);
 	
-	
-	/**
-	 * Return the starting date of the Energy monitoring period for this group
-	 * @return the starting date in millisecs from the epoch (01/01/1970) 
-	 */
-	public long getPeriodStart(); 
-	
-	/**
-	 * Return the ending date of the Energy monitoring period for this group
-	 * @return the ending date in millisecs from the epoch (01/01/1970) 
-	 */
-	public long getPeriodEnd();
 
 	/**
-	 * Return the interval offset since the epoch. Each interval will apply
-	 * @return the interval in millisecs
+	 * Remove period from specified index if existing
+	 * @param index
 	 */
-	public long getPeriodOffset();		
-
-	/**
-	 * Return the interval defined
-	 * @return the interval in millisecs
-	 */
-	public long getPeriodInterval();			
-
+	public void removePeriodAtIndex(int index);
 }
