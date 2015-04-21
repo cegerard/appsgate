@@ -1103,9 +1103,6 @@
                         // Otherwise clean the dashboard. This will not affect the focusline.
                         this._clean();
                     }
-                    if (packet.request.args.focus) {
-                        this._setFocusedThing(packet.request.args.focus);   
-                    }
                 }
     
                 if (packet.isHistoryTrace) {
@@ -1313,6 +1310,7 @@
                 var time = obj.timescale(frame.timestamp);
                 this._$ruler.css("left", time);
                 this._notifyWidgetsOnRulerFocusChanged(this._$ruler.position());
+                this.triggerMethod.apply(this, ['eventline:focus:time'].concat(frame.timestamp));
                 //this._onWidgetMarkerClick(frame.data);
             }
                 

@@ -13,6 +13,11 @@ public interface DependencyManagerSpec {
      * @return the current graph of dependencies
      */
     public SpokObject getGraph();
+    /**
+     * send the graph of dependencies at the given 
+     * @param timestamp 
+     */
+    public void sendGraphAt(Long timestamp);
 
     /**
      *
@@ -48,5 +53,7 @@ public interface DependencyManagerSpec {
      * @return the dependencies, null if does not exists
      */
     public Dependencies getDependenciesAt(String id, Long timestamp);
+    
+    
 
 }
