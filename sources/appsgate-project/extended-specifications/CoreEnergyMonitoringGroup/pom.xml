@@ -1,0 +1,41 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>appsgate.components</groupId>
+        <artifactId>extended-specifications</artifactId>
+        <version>1.0.0</version>
+    </parent>
+    
+    <artifactId>CoreEnergyMonitoringGroup</artifactId>
+    <packaging>bundle</packaging>
+    <name>CoreEnergyMonitoringGroup</name>
+    
+    <description>Specification of a group of smart plugs and energy monitoring devices, to compute consumption during time periods</description>
+    
+
+    <!-- Dependencies Description -->
+    <dependencies>
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>CoreObjectSpec</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>CoreSmartPlugSpec</artifactId>
+            <version>${project.version}</version>
+        </dependency>        
+    </dependencies>
+    
+    <!-- Build Description -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>fr.imag.adele.apam</groupId>
+                <artifactId>apam-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+    
+</project>
