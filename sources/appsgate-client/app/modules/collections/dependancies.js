@@ -41,6 +41,15 @@ define([
 					dispatcher.trigger("router:loaded");
 				}
 			});
+			dispatcher.on("loadGraphAt", function (graph) {
+				console.log("loadGraphAt");
+					var currentDependency = self.at(0);
+					currentDependency.updateModel(graph);
+					console.log("Dependence 0 apres modif %o", currentDependency);
+					//					self.isUpdate = false;
+					dispatcher.trigger("UpdateGraphFinished");
+				
+			});
 
 //			self.differencies = (function () {
 //				this.relations = [];

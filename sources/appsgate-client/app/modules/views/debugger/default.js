@@ -174,6 +174,16 @@ define([
                 console.log("Device of type "+attributes.type+" and with id "+attributes.id+" was clicked");
             }
         });
+        
+        dashboard.on('eventline:focus:time', function(timestamp) {
+            communicator.sendMessage({
+                        method: "getWorldState",
+                        args: [{type : "Long", value : timestamp}],
+                        callId: "worldState",
+                        TARGET: "EHMI"
+                    });
+        });
+
 
         // setup ui
         this.$('.btn-primary').on('click', function(){

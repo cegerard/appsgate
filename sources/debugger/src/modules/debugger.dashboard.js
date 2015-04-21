@@ -127,9 +127,6 @@ _.extend(Debugger.Dashboard.prototype, Backbone.Events, {
                     // Otherwise clean the dashboard. This will not affect the focusline.
                     this._clean();
                 }
-                if (packet.request.args.focus) {
-                    this._setFocusedThing(packet.request.args.focus);   
-                }
             }
 
             if (packet.isHistoryTrace) {

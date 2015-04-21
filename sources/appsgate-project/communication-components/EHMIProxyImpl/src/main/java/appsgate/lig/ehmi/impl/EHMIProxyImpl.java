@@ -1153,4 +1153,8 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
         userManagerBound = false;
     }
 
+    
+    public void getWorldState(Long timestamp) {
+       dependency.sendGraphAt(timestamp);
+    }
 }
