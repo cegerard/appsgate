@@ -15,40 +15,18 @@ define([
 
 			// listen to the event when the graph is loaded
 			dispatcher.on("loadGraph", function (graph) {
-
-				if (!self.isRefresh) {
-
-					var currentDependency = self.at(0);
-					currentDependency.updateModel(graph);
-					console.log("Dependence 0 apres modif %o", currentDependency);
-					//					self.isUpdate = false;
-					dispatcher.trigger("UpdateGraphFinished");
-					//
-				} else {
-					// Create new dependancy object
-					var newDependancy = new Dependancy();
-					newDependancy.loadData(graph);
-
-					if (self.length > 0) {
-						// If there was already a model, detachEvent to be sure to have no event attached on this old model
-						self.at(0).detachEvents();
-					}
-
-					// Replace the existing dependancy if it already exists or just add it
-					self.reset(newDependancy);
-					self.isRefresh = false;
-					dispatcher.trigger("dependanciesReady");
-					dispatcher.trigger("router:loaded");
+				if (App.isDebugMode()) {
+					console.log("debug mode");
+					return;
 				}
+				handleGraph(self, graph);
 			});
 			dispatcher.on("loadGraphAt", function (graph) {
-				console.log("loadGraphAt");
-					var currentDependency = self.at(0);
-					currentDependency.updateModel(graph);
-					console.log("Dependence 0 apres modif %o", currentDependency);
-					//					self.isUpdate = false;
-					dispatcher.trigger("UpdateGraphFinished");
-				
+				if (!App.isDebugMode()) {
+					console.log("normal mode");
+					return;
+				}
+				handleGraph(self, graph);
 			});
 
 //			self.differencies = (function () {
@@ -141,7 +119,33 @@ define([
 
 		}
 	});
+	function handleGraph(self, graph) {
+				if (!self.isRefresh) {
 
+					var currentDependency = self.at(0);
+					currentDependency.updateModel(graph);
+					console.log("Dependence 0 apres modif %o", currentDependency);
+					//					self.isUpdate = false;
+					dispatcher.trigger("UpdateGraphFinished");
+					//
+				} else {
+					// Create new dependancy object
+					var newDependancy = new Dependancy();
+					newDependancy.loadData(graph);
+
+					if (self.length > 0) {
+						// If there was already a model, detachEvent to be sure to have no event attached on this old model
+						self.at(0).detachEvents();
+					}
+
+					// Replace the existing dependancy if it already exists or just add it
+					self.reset(newDependancy);
+					self.isRefresh = false;
+					dispatcher.trigger("dependanciesReady");
+					dispatcher.trigger("router:loaded");
+				}
+
+	}
 	return Dependancies;
 
 });

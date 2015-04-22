@@ -14,7 +14,7 @@ define([
 		},
 		// No selected entity
 		all: function () {
-
+			
 			// remove and unbind the current view for the menu
 			if (appRouter.currentMenuView) {
 				appRouter.currentMenuView.close();
@@ -31,12 +31,23 @@ define([
 			dependancies.refresh();
 			
 			// Send the request to the server to get the graph and build the graph (args @true)
-			communicator.sendMessage({
-				method: "getGraph",
-				args: [{type:"Boolean", value: false}],
-				callId: "loadGraph",
-				TARGET: "EHMI"
-			});
+		
+			if (App.isDebugMode()) {
+				communicator.sendMessage({
+					method: "getWorldState",
+					args: [{type:"Long", value: App.worldTimestamp}],
+					callId: "worldState",
+					TARGET: "EHMI"
+				});
+			} else {
+				communicator.sendMessage({
+					method: "getGraph",
+					args: [{type:"Boolean", value: false}],
+					callId: "loadGraph",
+					TARGET: "EHMI"
+				});
+			 
+			}
 
 			$("#main").append(appRouter.circlemenutemplate());
 
