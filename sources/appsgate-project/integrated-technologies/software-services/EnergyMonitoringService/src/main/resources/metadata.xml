@@ -15,6 +15,14 @@
         specification="CoreEnergyMonitoringGroup"
         push="stateChanged">   
         
+        <relation specification="CoreSmartPlugSpec"  multiple="true" resolve="exist">
+            <!-- TODO: should add a constraint to keep only those sensors added in the group 
+        <definition name="sensors" field="sensors" type="{String}" injected="internal"/>
+            <constraints>
+                <instance filter="deviceId <* $this$sensors"/>
+            </constraints>-->
+            <message push="energyChangedEvent"/>
+        </relation>
         <definition name="groupName" type="string" field="name"/>
         <definition name="serviceId" type="string" field="serviceId"/>
         <property name="serviceId" value="$this$name"/>

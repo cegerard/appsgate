@@ -101,10 +101,10 @@ public class EnergyMonitoringAdapterImpl extends CoreObjectBehavior implements
 	 */
 	@Override
 	public String createGroup(String groupName, JSONArray sensors,
-			double budgetTotal, double budgetUnit, JSONArray periods) {
+			double budgetTotal, double budgetUnit) {
 		logger.trace("createGroup(String groupName : {}, JSONArray sensors : {}, "
-				+ "double budgetTotal : {}, double budgetUnit : {}, JSONArray periods : {},",
-				groupName, sensors, budgetTotal, budgetUnit, periods);
+				+ "double budgetTotal : {}, double budgetUnit : {})",
+				groupName, sensors, budgetTotal, budgetUnit);
 
 		Implementation implem = CST.apamResolver.findImplByName(null,CoreEnergyMonitoringGroupImpl.IMPL_NAME);
 		if(implem == null) {
@@ -129,7 +129,7 @@ public class EnergyMonitoringAdapterImpl extends CoreObjectBehavior implements
 			logger.error("createGroup(...) Unable to get Service Object"); 			
 			return null;
 		}
-		group.configure(sensors, budgetTotal, budgetUnit, periods);		
+		group.configure(sensors, budgetTotal, budgetUnit);		
 
 		stateChanged(ADDED_GROUP, null, group.getAbstractObjectId());
 		return group.getAbstractObjectId();
@@ -145,7 +145,7 @@ public class EnergyMonitoringAdapterImpl extends CoreObjectBehavior implements
 		// 1 budget unit -> default value
 
 		logger.trace("createEmptyGroup(String groupName : {})", groupName);
-		return createGroup(groupName, new JSONArray(), -1, 1 , new JSONArray());
+		return createGroup(groupName, new JSONArray(), -1, 1);
 	}
 
 	/* (non-Javadoc)
