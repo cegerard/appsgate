@@ -118,7 +118,7 @@ public class EnoceanPlugAcuatorSensorImpl extends CoreObjectBehavior implements 
 	
 	public void activeEnergyChanged(String activeEnergy) {
 		logger.info("The sensor, "+ sensorId+" activeEnergy changed to "+activeEnergy);
-		//notifyChanges("activeEnergy", activeEnergy); //Delete active energy notifications cause they are not currently used
+		notifyChanges("activeEnergy", activeEnergy); //Active Energy message reactivated because used for energy consumption
 		addValue(new Float(activeEnergy), new Long(lastRequest));
 	}
 
