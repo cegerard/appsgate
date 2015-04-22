@@ -24,9 +24,13 @@
 				colorspan = ""
 				if (decoration.context.boolean !== undefined) {
 					if (decoration.context.boolean) {
-						decoration.description += ".on";
+						if ( ! decoration.description.endsWith(".on")) {
+							decoration.description += ".on";
+						}
 					} else {
-						decoration.description += ".off";
+						if ( ! decoration.description.endsWith(".off")) {
+							decoration.description += ".off";
+						}
 					}
 				}
 				obj = decoration.context;

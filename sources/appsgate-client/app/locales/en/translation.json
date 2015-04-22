@@ -1062,6 +1062,7 @@
         "voice": "Voice"
       },
       "control": {
+        "choose-message": "Choose a message",
         "existing": "Existing notifications",
         "delete": "Delete",
         "test": "Test",

@@ -13,6 +13,8 @@
     <packaging>pom</packaging>
     <modules>
         <module>ExtendedWeatherObserverSpec</module>
+        <module>CoreEnergyMonitoringGroup</module>
+        <module>EnergyMonitoringAdapter</module>
     </modules>
 
 

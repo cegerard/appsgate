@@ -2,6 +2,7 @@ define([
   "app",
   "models/device/device",
   "text!templates/program/nodes/mediaPlayerActionNode.html",
+  "text!templates/services/details/tts/ttsItemAsOption.html",
   "jstree"
 ], function(App, Device, ActionTemplate) {
 
@@ -20,6 +21,7 @@ define([
       MediaPlayer.__super__.initialize.apply(this, arguments);
       var self = this;
 
+
       // setting default friendly name if none exists
       if (this.get("name") === "" ||  this.get("name") == undefined) {
         this.set("name", this.get("friendlyName"));
@@ -33,6 +35,11 @@ define([
       dispatcher.on(this.get("ref"), function(volume) {
         console.log("received volume : " + volume);
         self.set("volume", volume);
+      });
+      // listening for volume value
+      dispatcher.on("tts:itemsChanged", function() {
+        console.log("tts:itemsChanged need to update mediaPlayer template");
+        dispatcher.trigger("updateTemplate", 'action', self);
       });
     },
     getEvents: function() {
@@ -187,11 +194,14 @@ define([
           }));
           v.methodName = "audioNotification";
           v.phrase = "devices.mediaplayer.language.audioNotification-action";
-          v.args = [
-            {"type": "String", "value": "message"},
-            {"type": "String", "value": "Juliette"},
-            {"type": "int", "value": 5}
-          ];
+          v.args = undefined;
+          // Explicitly removed args to force choosing a notification message (none by default)
+          //  v.args =
+          //    [
+          //  {"type": "String", "value": "message"},
+          //  {"type": "String", "value": "Juliette"},
+          //  {"type": "int", "value": 5}
+          //];
           $(btn).attr("json", JSON.stringify(v));
           break;
         default:
@@ -388,12 +398,14 @@ define([
         }
       });
     },
+
     /**
      * @returns the action template specific for media player
      */
     getTemplateAction: function() {
       return _.template(ActionTemplate);
     }
+
   });
   return MediaPlayer;
 });

@@ -468,6 +468,13 @@ body {
   from { -webkit-transform: rotate(0deg);}
   to { -webkit-transform: rotate(360deg);}
 }
+
+.appsgate-title {
+  width: 100%;
+  text-align: center;
+  color: rgba(68, 50, 79, 0.12);
+  font-size: xx-large;
+}
 /* --------------------- Places styles ---------------------------------*/
 
 .place-details {

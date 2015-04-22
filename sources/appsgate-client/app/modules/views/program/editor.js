@@ -1,8 +1,10 @@
 define([
   "app",
   "modules/mediator",
-  "text!templates/program/editor/editor.html"
-  ], function(App, Mediator, programEditorTemplate) {
+  "text!templates/program/editor/editor.html",
+  "text!templates/services/details/tts/ttsItem.html"
+
+  ], function(App, Mediator, programEditorTemplate, TTSItemsTemplate) {
 
     var ProgramEditorView = {};
     /**
@@ -36,6 +38,7 @@ define([
         "change .clock-before-after-picker": "onChangeClockBeforeAfter",
 
         "click .valid-media": "onValidMediaButton",
+
         "keyup .programNameInput": "validEditName"
       },
       /**
@@ -219,28 +222,64 @@ define([
       onClickProg: function(e) {
         // checking what kind of button was clicked
         button = e.target;
-        if (button !== null && typeof button.classList !== 'undefined' && (button.classList.contains('btn-media-choice') || button.classList.contains('default-media-choice'))) {
-          e.stopPropagation();
-          this.onBrowseMedia($(button));
-        }
-        else if (button.tagName.toUpperCase() !== "SELECT" && button.tagName !== "INPUT"  && button.tagName !== "TEXTAREA"){
-          while (button !== null && button.id  === '') {
-            button = button.parentNode;
-          }
-          if (button.id ==="") {
-            // clicking on a "et" button
-            // do nothing
-            return;
-          }
-          // checking if the node has to be deleted or selected
-          if ($(button).hasClass("glyphicon-trash")) {
-            this.Mediator.removeNode(button.id);
-          } else {
-            this.Mediator.setCurrentPos(button.id);
-            dispatcher.trigger("refreshDisplay");
+        if (button !== null && typeof button.classList !== 'undefined') {
+          if (button.classList.contains('btn-media-choice') || button.classList.contains('default-media-choice')) {
+            e.stopPropagation();
+            this.onBrowseMedia($(button));
+          } else if (button.classList.contains('btn-tts-choice')) {
+            e.stopPropagation();
+            this.onBrowseTTS($(button));
+          } else if (button.tagName.toUpperCase() !== "SELECT" && button.tagName !== "INPUT" && button.tagName !== "TEXTAREA") {
+            while (button !== null && button.id === '') {
+              button = button.parentNode;
+            }
+            if (button.id === "") {
+              // clicking on a "et" button
+              // do nothing
+              return;
+            }
+            // checking if the node has to be deleted or selected
+            if ($(button).hasClass("glyphicon-trash")) {
+              this.Mediator.removeNode(button.id);
+            } else {
+              this.Mediator.setCurrentPos(button.id);
+              dispatcher.trigger("refreshDisplay");
+            }
           }
         }
       },
+
+
+      onBrowseTTS: function(selectedTTS) {
+        var self = this;
+        var ttsItems = services.getCoreTTS().getTTSItems();
+
+        var currentDevice;
+        $("#tts-items-modal").attr("target-iid", selectedTTS.attr("target-iid"));
+        $(".select-tts").empty();
+
+        for (var i = 0; i < ttsItems.length; i++) {
+            $(".select-tts").append(_.template(TTSItemsTemplate)({
+              book_id: ttsItems[i].book_id,
+              text: ttsItems[i].text,
+              voice: ttsItems[i].voice,
+              speed: ttsItems[i].speed,
+              audioUrl: ttsItems[i].audios[0],
+              deletable: false
+            }));
+          $(".tts-item[value='"+ttsItems[i].book_id+"']").one("click", function(event) {
+            console.log("Event : ", event.currentTarget);
+            self.Mediator.setNodeAttribute($("#tts-items-modal").attr("target-iid"), "args", [
+              {type: "String", value: event.currentTarget.getAttribute("text")},
+              {type: "String", value: event.currentTarget.getAttribute("voice")},
+              {type: "int", value: event.currentTarget.getAttribute("speed")}
+            ]);
+            $("#tts-items-modal").modal("hide");
+            self.refreshDisplay();
+          })
+        }
+      },
+
       // Displays a tree of items the player can read
       onBrowseMedia: function(selectedMedia) {
         var self = this;
@@ -328,6 +367,7 @@ define([
           }
         });
       },
+
       onValidMediaButton: function() {
         $("#media-browser-modal").modal("hide");
         this.refreshDisplay();
@@ -556,7 +596,7 @@ define([
             $(".programInput").animate({scrollTop: focusPosition}, 1000);
           }
 
-          $( document ).tooltip();
+//          $( document ).tooltip();
 
           this.refreshing = false;
         }

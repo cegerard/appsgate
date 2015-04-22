@@ -178,7 +178,8 @@ define([
                     text: ttsItems[i].text,
                     voice: ttsItems[i].voice,
                     speed: ttsItems[i].speed,
-                    audioUrl: ttsItems[i].audios[0]
+                    audioUrl: ttsItems[i].audios[0],
+                    deletable:true
                 }));
             }
             if(latest_book>=0) {

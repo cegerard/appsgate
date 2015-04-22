@@ -1,0 +1,58 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>appsgate.components</groupId>
+    <artifactId>software-services</artifactId>
+    <version>1.0.0</version>
+  </parent>
+  <artifactId>EnergyMonitoringService</artifactId>
+  
+    <packaging>bundle</packaging>
+    <name>EnergyMonitoringService</name>
+    
+    <description>Implementation of the EnergyMonitoringAdapter and of the CoreEnergyMonitoringGroup</description>
+    
+
+    <!-- Dependencies Description -->
+    <dependencies>
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>CoreObjectSpec</artifactId>
+            <version>${project.version}</version>
+        </dependency>      
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>CoreEnergyMonitoringGroup</artifactId>
+            <version>${project.version}</version>
+        </dependency>              
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>EnergyMonitoringAdapter</artifactId>
+            <version>${project.version}</version>
+        </dependency> 
+        
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>fr.imag.adele.apam</groupId>
+            <artifactId>apam-core</artifactId>
+            <version>${apam.current.version}</version>
+        </dependency>        
+                
+    </dependencies>
+    
+    <!-- Build Description -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>fr.imag.adele.apam</groupId>
+                <artifactId>apam-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+    
+</project>

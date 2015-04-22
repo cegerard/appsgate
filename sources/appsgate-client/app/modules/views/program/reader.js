@@ -386,7 +386,7 @@ define([
           $("body").i18n();
 
           // using jqueryui tooltips
-          $( document ).tooltip();
+//          $( document ).tooltip();
 
           // progress indicators should be updated at the end as they are sensitive to the sizes and positions of elements
           self.updateProgressIndicators();
@@ -447,25 +447,31 @@ define([
         }
 
         // update true/false nodes
+        var lastIfTime = 0;
+        var lastTimeSpan = null;
         $(".progress-true-false-indicator").each(function(index) {
           var span = $(this);
           var nodeCounter = self.model.get("nodesCounter");
-          if(typeof nodeCounter[span.attr("true-node")] !== "undefined" && typeof nodeCounter[span.attr("false-node")] !== "undefined") {
-            if(nodeCounter[span.attr("true-node")] > nodeCounter[span.attr("false-node")]){
+          var timeTrueNode = self.getLastItem(nodeCounter[span.attr("true-node")]);
+          var timeFalseNode = self.getLastItem(nodeCounter[span.attr("false-node")]);
+                                                                 
+          if(timeTrueNode !== 0 || timeFalseNode !== 0) {
+            var time = Math.floor(Math.max(timeTrueNode, timeFalseNode)/ 1000);
+              if (time < lastIfTime) {
+                return;
+              }
+              lastIfTime = time;
+              if (lastTimeSpan) {
+                lastTimeSpan.addClass("hidden");
+              }
+              lastTimeSpan = span;
+            if(timeTrueNode > timeFalseNode){
               span.text($.i18n.t("debugger.yes"));
               span.addClass("progress-true-indicator");
             } else {
               span.text($.i18n.t("debugger.no"));
               span.addClass("progress-false-indicator");
             }
-            span.removeClass("hidden");
-          } else if ( typeof nodeCounter[span.attr("true-node")] !== "undefined" && typeof nodeCounter[span.attr("false-node")] === "undefined" ) {
-            span.text($.i18n.t("debugger.yes"));
-            span.addClass("progress-true-indicator");
-            span.removeClass("hidden");
-          } else if ( typeof nodeCounter[span.attr("true-node")] === "undefined" && typeof nodeCounter[span.attr("false-node")] !== "undefined" ) {
-            span.text($.i18n.t("debugger.no"));
-            span.addClass("progress-false-indicator");
             span.removeClass("hidden");
           }
         });
@@ -478,6 +484,12 @@ define([
         $("#bubbleModal").find(".modal-body").html(this.tplTimestamps({times : ts.split(",")}));
         $("#bubbleModal").modal("show");
 
+      },
+      getLastItem: function(  arr) {
+        if (arr == undefined) {
+          return 0;
+        }
+        return arr[arr.length -1];
       },
       /**
       * Render the editor view

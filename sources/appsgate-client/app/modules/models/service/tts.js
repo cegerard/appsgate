@@ -40,6 +40,7 @@ define([
         ttsItemsCollection.set(JSON.parse(event.value));
         self.set("ttsItems",ttsItemsCollection.toJSON());
         self.trigger("itemsChanged");
+        dispatcher.trigger("tts:itemsChanged");
       } else if(event.varName === 'ttsRunning') {
         console.log("ttsItem onGoing  : ", event.value);
         self.addOngoing(event.value);

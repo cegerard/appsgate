@@ -139,17 +139,20 @@ public class DependencyManagerImpl implements DependencyManagerSpec {
         return false;
     }
 
+    private void sendGraph(JSONObject graph) {
+        sendGraph(graph, "loadGraph");
+    }
     /**
      * send the graph to the client
      *
      * @param graph
      */
-    private void sendGraph(JSONObject graph) {
+    private void sendGraph(JSONObject graph, String callId) {
         JSONObject msg = new JSONObject();
         try {
             msg.put("value", graph.toString());
             msg.put("objectId", "EHMI");
-            msg.put("callId", "loadGraph");
+            msg.put("callId", callId);
         } catch (JSONException ex) {
         }
         ehmiProxy.sendFromConnection(ClientCommunicationManager.DEFAULT_SERVER_NAME, msg.toString());
@@ -243,6 +246,11 @@ public class DependencyManagerImpl implements DependencyManagerSpec {
     @Override
     public Dependencies getDependenciesAt(String id, Long timestamp) {
         return getDependencyAtTime(timestamp).getDependencies(id);
+    }
+
+    @Override
+    public void sendGraphAt(Long timestamp) {
+        sendGraph(getDependencyAtTime(timestamp).getJSONDescription(), "loadGraphAt");
     }
 
 }

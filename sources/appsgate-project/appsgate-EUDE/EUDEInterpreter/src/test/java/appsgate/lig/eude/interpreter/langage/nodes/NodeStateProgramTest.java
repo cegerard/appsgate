@@ -72,10 +72,10 @@ public class NodeStateProgramTest extends NodeTest {
     public void testState() {
         programNode.setProcessing(null);
         Assert.assertTrue(programNode.isRunning());
-        Assert.assertTrue(state.isOfState());
+        Assert.assertTrue(state.computeState());
         programNode.setStopped();
         Assert.assertFalse(programNode.isRunning());
-        Assert.assertFalse(state.isOfState());
+        Assert.assertFalse(state.isOnRules());
 
     }
 }

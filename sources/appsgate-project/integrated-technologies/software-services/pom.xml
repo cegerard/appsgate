@@ -17,5 +17,6 @@
 	<modules>
 		<module>ConfigurableClockImpl</module>
 		<module>LocalMediaPlayer</module>
+		<module>EnergyMonitoringService</module>
 	</modules>
 </project>

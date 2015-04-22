@@ -28,6 +28,8 @@
 		"colorChanged" : "la couleur a changé"
 	  },
       "blink30" : "Faire clignoter",
+      "decreaseBrightness" : "Baisser la luminosité de [__device__]",
+      "increaseBrightness" : "Augmenter la luminosité de [__device__]",
       "setBrightness" : "Mettre la luminosité de [__device__] à __brightness__",
       "setRed" : "allumer en rouge",
       "setBlue" : "allumer en bleu",
@@ -44,7 +46,10 @@
         "on" : " __program__ sait que la lampe [__device__] est allumée",
         "off" : " __program__ sait que la lampe [__device__] est éteinte"
       },
-      "state": "Lamp has changed of state"
+      "state": {
+        "on" : "$t(decorations.ColorLight.getState.on)",
+        "off" : "$t(decorations.ColorLight.getState.off)"
+      }
     },
 	"Temperature" : {
 	  "change" : {
@@ -94,6 +99,12 @@
     },
     "Mediaplayer" : {
       "pause" : "Mettre le media player __device__ en pause"
+    },
+    "Clock" : {
+      "checkCurrentTimeOfDay" : {
+        "off" : "Nous ne sommes pas dans l'intervalle de temps",
+        "on" : "Nous sommes dans l'intervalle de temps"
+      }
     }
   },
   "groups": {
