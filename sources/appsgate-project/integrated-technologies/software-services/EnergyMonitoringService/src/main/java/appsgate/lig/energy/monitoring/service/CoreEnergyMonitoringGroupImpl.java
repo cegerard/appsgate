@@ -55,7 +55,7 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	
 	
 	public CoreEnergyMonitoringGroupImpl() {
-    	userType = CoreEnergyMonitoringGroupImpl.class.getSimpleName();
+    	userType = CoreEnergyMonitoringGroup.class.getSimpleName();
     	status = 2;
 	}
 	
