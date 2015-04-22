@@ -259,24 +259,35 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		return periods;
 	}
 
-	@Override
-	public void addPeriod(JSONObject period) {
-		// TODO Auto-generated method stub
-		
-		stateChanged(PERIODS_KEY, null, periods.toString());
-
-		
-	}
-
-	@Override
-	public void removePeriodAtIndex(int index) {
-		// TODO Auto-generated method stub
-		
-		stateChanged(PERIODS_KEY, null, periods.toString());
-	}	
 	
 	private NotificationMsg stateChanged(String varName, String oldValue, String newValue) {
 		return new CoreNotificationMsg(varName, oldValue, newValue, this.getAbstractObjectId());
+	}
+
+
+	@Override
+	public String addPeriod(long startDate, long endDate, boolean resetOnStart,
+			boolean resetOnEnd) {
+		// TODO Auto-generated method stub
+		
+		stateChanged(PERIODS_KEY, null, periods.toString());
+		
+		return null;
+	}
+
+
+	@Override
+	public void removePeriodById(String eventID) {
+		// TODO Auto-generated method stub
+		stateChanged(PERIODS_KEY, null, periods.toString());
+		
+	}
+
+
+	@Override
+	public JSONObject getPeriodInfo(String eventID) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

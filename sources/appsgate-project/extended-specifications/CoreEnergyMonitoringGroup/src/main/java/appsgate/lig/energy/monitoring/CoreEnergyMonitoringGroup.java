@@ -32,7 +32,7 @@ public interface CoreEnergyMonitoringGroup {
 	
 	/**
 	 * Get the current energy sensors in this group
-	 * @return an array of objectID, each object ID is an EnergySensor (for instance a SmartPlug)
+	 * @return an array of objectID, each object ID (String) is an EnergySensor (for instance a SmartPlug)
 	 */
 	public JSONArray getEnergySensorsGroup();
 	
@@ -66,14 +66,14 @@ public interface CoreEnergyMonitoringGroup {
 	
 	/**
 	 * Get the total Energy used in this group since last reset
-	 * Expressed in watt/seconds
+	 * Expressed according to the BudgetUnit (if budget unit = 1 this is watt/sec)
 	 * @return
 	 */
 	public double getTotalEnergy();
 	
 	/**
 	 * Get the Energy used in this group since last reset, during the defined time period(s)
-	 * Expressed in watt/seconds
+	 * Expressed according to the BudgetUnit (if budget unit = 1 this is watt/sec)
 	 * @return
 	 */
 	public double geEnergyDuringTimePeriod();
@@ -101,29 +101,40 @@ public interface CoreEnergyMonitoringGroup {
 	/**
 	 * The the budget total and the budget unit, general formula:
 	 * Remaining = BudgetTotal - (BudgetUnit x EnergyDuringTimePeriod)
+	 * Note: Setting the budget restet the remaining budget
 	 * @param budgetTotal if -1, no budget defined
 	 * @param budgetUnit 1 is a default value (Watt/sec)
 	 */
 	public void setBudget(double budgetTotal, double budgetUnit);
 	
 	/**
-	 * Get the Monitoring Periods as a JSONArray of JSONObject, each one represents a Period
-	 * @see  appsgate.lig.energy.monitoring.utils.Period
+	 * Get the Monitoring Periods as a JSONArray of eventIDs (String),
+	 * each one represents an Event in the scheduler
 	 * @return
 	 */
 	public JSONArray getPeriods();
 	
 	/**
-	 * Add a period 
-	 * @see  appsgate.lig.energy.monitoring.utils.Period
-	 * @param period
+	 * Adds a basic single period with fixed starting and ending dates
+	 * No periodicity by default (it has to be managed using the scheduler or google agenda)
+	 * @param startDate the starting date in millisecs from the epoch (01/01/1970) 
+	 * @param endDate the ending date in millisecs from the epoch (01/01/1970)
+	 * @param resetOnStart if true, the budget remaining will be reseted each Time the period starts
+	 * @param resetOnEnd if true, the budget remaining will be reseted each Time the period ends
+	 * @return	the Event ID (String) as used in the Scheduler
 	 */
-	public void addPeriod(JSONObject period);
+	public String addPeriod(long startDate, long endDate, boolean resetOnStart, boolean resetOnEnd);
 	
-
 	/**
-	 * Remove period from specified index if existing
-	 * @param index
+	 * Remove the specified periodID
+	 * @param periodID as referenced in the scheduler
 	 */
-	public void removePeriodAtIndex(int index);
+	public void removePeriodById(String eventID);
+	
+	/**
+	 * Gets informations about the specified periodfriom the scheduler
+	 * all these are summed in a JSONObject
+	 * @param eventID as referenced in the scheduler
+	 */
+	public JSONObject getPeriodInfo(String eventID);		
 }
