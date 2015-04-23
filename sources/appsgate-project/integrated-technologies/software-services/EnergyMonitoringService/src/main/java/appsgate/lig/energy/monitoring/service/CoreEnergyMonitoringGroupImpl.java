@@ -56,14 +56,17 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	double budgetUnit;
 	ArrayList<String> periods;
 	
+	double lastTotal = 0;
+	double lastEnergyDuringPeriod = 0;
+	
 	
 	public final static String NAME_KEY = "name";
 	public final static String SENSORS_KEY = "sensors";
+	public final static String ENERGY_KEY="energy";	
 	public final static String BUDGETTOTAL_KEY="budgetTotal";
 	public final static String BUDGETUNIT_KEY="budgetUnit";
 	public final static String BUDGETREMAINING_KEY="budgetRemaining";
 	public final static String BUDGETRESETED_KEY="budgetReseted";
-	
 	public final static String PERIODS_KEY="periods";	
 	
 	
@@ -181,9 +184,33 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		for(ActiveEnergySensor sensor : sensors.values()) {
 			sensor.resetEnergy();
 		}
-		stateChanged(BUDGETRESETED_KEY, null, "");
-		stateChanged(BUDGETREMAINING_KEY, String.valueOf(budgetTotal), String.valueOf(budgetTotal));
 
+		stateChanged(BUDGETRESETED_KEY, null, BUDGETRESETED_KEY);
+		
+		computeEnergy();
+	}
+	
+	private void computeEnergy() {
+		logger.trace("computeEnergy()");
+		
+		double total = 0;
+		double energyDuringPeriod = 0;
+		for(ActiveEnergySensor sensor : sensors.values()) {
+			total+=sensor.getTotalEnergy();
+			energyDuringPeriod+=sensor.getEnergyDuringPeriod();
+		}
+		
+		if(total != lastTotal) {
+			logger.trace("computeEnergy(), total energy as changed sincle last Time");
+			stateChanged(ENERGY_KEY, String.valueOf(lastTotal*budgetUnit), String.valueOf(total*budgetUnit));
+			lastTotal = total;
+		}
+		if(energyDuringPeriod != lastEnergyDuringPeriod) {
+			logger.trace("computeEnergy(), energy during period as changed since last Time");
+			stateChanged(BUDGETREMAINING_KEY, String.valueOf(lastEnergyDuringPeriod*budgetUnit), String.valueOf(total*energyDuringPeriod));
+			
+			lastEnergyDuringPeriod = energyDuringPeriod;
+		}
 	}
 
 	/* (non-Javadoc)
@@ -191,12 +218,8 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	 */
 	@Override
 	public double getTotalEnergy() {
-		double total = 0;
-		for(ActiveEnergySensor sensor : sensors.values()) {
-			total+=sensor.getTotalEnergy();
-		}
-		logger.trace("getTotalEnergy(), returning total: {} x unit : {}", total, budgetUnit);
-		return total*budgetUnit;
+		logger.trace("getTotalEnergy(), returning total: {} x unit : {}", lastTotal, budgetUnit);
+		return lastTotal*budgetUnit;
 	}
 
 	/* (non-Javadoc)
@@ -204,12 +227,8 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	 */
 	@Override
 	public double geEnergyDuringTimePeriod() {
-		double total = 0;
-		for(ActiveEnergySensor sensor : sensors.values()) {
-			total+=sensor.getEnergyDuringPeriod();
-		}
-		logger.trace("getEnergyDuringPeriod(), returning energy: {} x unit : {}", total, budgetUnit);
-		return total*budgetUnit;
+		logger.trace("getEnergyDuringPeriod(), returning energy: {} x unit : {}", lastEnergyDuringPeriod, budgetUnit);
+		return lastEnergyDuringPeriod*budgetUnit;
 	}
 
 	/* (non-Javadoc)
@@ -293,6 +312,7 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 
 		descr.put(NAME_KEY, getName());
 		descr.put(SENSORS_KEY, getEnergySensorsGroup());
+		descr.put(ENERGY_KEY, getTotalEnergy());
 		descr.put(BUDGETTOTAL_KEY, getBudgetTotal());
 		descr.put(BUDGETUNIT_KEY, getBudgetUnit());
 		descr.put(PERIODS_KEY, getPeriods());
@@ -360,6 +380,7 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		long time = System.currentTimeMillis(); // TODO: maybe we should use the CoreClock Time ?
 		
 		sensors.get(sensorID).newEnergyMeasure(value, checkPeriod(time));
+		computeEnergy();
 	}
 	
 	/**
