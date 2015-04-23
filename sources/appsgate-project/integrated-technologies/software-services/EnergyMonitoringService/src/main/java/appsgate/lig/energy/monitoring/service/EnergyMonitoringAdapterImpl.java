@@ -30,8 +30,8 @@ import appsgate.lig.energy.monitoring.adapter.EnergyMonitoringAdapter;
 public class EnergyMonitoringAdapterImpl extends CoreObjectBehavior implements
 		EnergyMonitoringAdapter, CoreObjectSpec {
 	
-	public static final String ADDED_GROUP = "added";
-	public static final String REMOVED_GROUP = "removed";
+	public static final String ADDED_GROUP = "energyGroupAdded";
+	public static final String REMOVED_GROUP = "energyGroupRemoved";
 	
     /**
      * CoreObject Stuff
@@ -39,11 +39,11 @@ public class EnergyMonitoringAdapterImpl extends CoreObjectBehavior implements
 	private String serviceId;
 	private String userType;
 	private int status;
-	
+		
 	private final static Logger logger = LoggerFactory.getLogger(EnergyMonitoringAdapterImpl.class);
 	
 	public EnergyMonitoringAdapterImpl() {
-    	serviceId = this.getClass().getName()+"-"+this.hashCode();
+    	serviceId = this.getClass().getSimpleName();// Do no need any hashcode or UUID, this service should be a singleton
     	userType = EnergyMonitoringAdapter.class.getSimpleName();
     	status = 2;
 	}
@@ -114,9 +114,6 @@ public class EnergyMonitoringAdapterImpl extends CoreObjectBehavior implements
 		logger.trace("createGroup(), implem found");
 		Map<String, String> properties = new HashMap<String, String>();
 		properties.put("groupName", groupName);
-		properties.put("instance.name", CoreEnergyMonitoringGroupImpl.class.getName()
-				+"-"+groupName
-				+"-"+UUID.randomUUID());
 		
 		Instance inst = implem.createInstance(null, properties);
 		if(inst == null) {
