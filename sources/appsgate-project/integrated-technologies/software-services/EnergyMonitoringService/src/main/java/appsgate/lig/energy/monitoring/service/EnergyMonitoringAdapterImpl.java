@@ -21,7 +21,7 @@ import appsgate.lig.core.object.messages.CoreNotificationMsg;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
-import appsgate.lig.energy.monitoring.EnergyMonitoringAdapter;
+import appsgate.lig.energy.monitoring.adapter.EnergyMonitoringAdapter;
 
 /**
  * @author thibaud

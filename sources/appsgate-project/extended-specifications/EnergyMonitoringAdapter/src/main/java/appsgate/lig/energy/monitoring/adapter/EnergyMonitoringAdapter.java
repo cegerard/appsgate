@@ -1,4 +1,4 @@
-package appsgate.lig.energy.monitoring;
+package appsgate.lig.energy.monitoring.adapter;
 
 import org.json.JSONArray;
 

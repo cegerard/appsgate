@@ -4,7 +4,7 @@
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
 	<specification name="CoreEnergyMonitoringGroup"
-		interfaces="appsgate.lig.energy.monitoring.CoreEnergyMonitoringGroup, appsgate.lig.core.object.spec.CoreObjectSpec"
+		interfaces="appsgate.lig.energy.monitoring.group.CoreEnergyMonitoringGroup, appsgate.lig.core.object.spec.CoreObjectSpec"
 		messages="appsgate.lig.core.object.messages.NotificationMsg">
 		
 	</specification>
