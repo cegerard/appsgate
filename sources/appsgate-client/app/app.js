@@ -230,16 +230,24 @@ define(function(require, exports, module) {
         return this.modeDebug;
     };
     
+    app.toggleDebugMode = function() {
+      if (this.modeDebug ) {
+        this.unsetDebugMode();
+      } else {
+        this.setDebugMode();
+      }
+    };
+    
     app.setDebugMode = function(timestamp) {
         this.modeDebug = true;
         this.worldTimestamp = timestamp;
         $(document.body).addClass("debugMode");
-    }
+    };
     app.unsetDebugMode = function() {
         this.modeDebug = false;
-        this.worldTimestamp = timestamp;
+        this.worldTimestamp = null;
         $(document.body).removeClass("debugMode");
-    }
+    };
 
     
     /**
@@ -298,7 +306,7 @@ define(function(require, exports, module) {
     function onFocusOutCircleMenu(e) {
         $('.circlemenu').circleMenu('close');
     }
-    
+    window.app = app;
 
     return app;
 });
