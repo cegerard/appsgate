@@ -7,7 +7,12 @@
 	    classname="appsgate.lig.energy.monitoring.service.EnergyMonitoringAdapterImpl"
 	    specification="EnergyMonitoringAdapter"
 	    push="stateChanged"
-	    singleton="true">	    
+	    singleton="true">	 
+	    
+        <relation implementation="MongoDBConfiguration" field="dbConfig" resolve="exist"
+            added="dbBound" removed="dbUnbound">
+        </relation>	    
+	    
 	</implementation>
 
     <implementation name="CoreEnergyMonitoringGroupImpl"

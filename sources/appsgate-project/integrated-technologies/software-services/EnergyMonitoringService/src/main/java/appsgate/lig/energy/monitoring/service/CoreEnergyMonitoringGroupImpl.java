@@ -130,6 +130,7 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	 */
 	@Override
 	public void setName(String name) {
+		logger.trace("setName(String name : {})",name);
 		stateChanged(NAME_KEY, this.name, name);
 		this.name = name;
 	}
