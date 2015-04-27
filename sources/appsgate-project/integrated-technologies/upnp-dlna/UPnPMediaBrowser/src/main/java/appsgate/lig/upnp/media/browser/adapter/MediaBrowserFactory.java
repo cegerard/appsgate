@@ -11,6 +11,7 @@ import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Implementation;
 import fr.imag.adele.apam.Instance;
 import fr.imag.adele.apam.impl.ComponentImpl.InvalidConfiguration;
+import fr.imag.adele.apam.impl.ComponentBrokerImpl;
 import fr.imag.adele.apam.impl.InstanceImpl;
 
 public class MediaBrowserFactory {
@@ -37,9 +38,9 @@ public class MediaBrowserFactory {
 	public void mediaServerUnbound(Instance device) {
 
 		Implementation adapterImplementation = CST.componentBroker.getImpl("MediaBrowser");
-		for (Instance player : adapterImplementation.getInsts()) {
-			if (player.getProperty(UPnPDevice.ID).equals(device.getPropertyObject(UPnPDevice.ID)))
-				((InstanceImpl)player).unregister();
+		for (Instance browser : adapterImplementation.getInsts()) {
+			if (browser.getProperty(UPnPDevice.ID).equals(device.getPropertyObject(UPnPDevice.ID)))
+				((ComponentBrokerImpl)CST.componentBroker).disappearedComponent(browser.getName());
 		}
 	}
 

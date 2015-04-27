@@ -184,7 +184,7 @@ public class EnergyMonitoringAdapterImpl extends CoreObjectBehavior implements
 			logger.error("removeGroup(...) Unable to find APAM Instance"); 			
 			return;
 		}
-		((ComponentBrokerImpl)CST.componentBroker).disappearedComponent(inst);
+		((ComponentBrokerImpl)CST.componentBroker).disappearedComponent(groupID);
 				
 		stateChanged(REMOVED_GROUP, null, groupID);
 	}
