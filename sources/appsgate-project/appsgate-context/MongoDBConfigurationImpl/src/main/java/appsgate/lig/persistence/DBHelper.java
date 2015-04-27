@@ -178,7 +178,7 @@ public class DBHelper {
 			dbCollection.remove(document);
 			return true;
 		} catch(Exception exc) {
-			logger.error("Exception while inserting object, "+exc.getMessage());
+			logger.error("Exception while removing object, "+exc.getMessage());
 			return false;
 		}
 	}
