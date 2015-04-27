@@ -3,6 +3,7 @@
  */
 package appsgate.lig.energy.monitoring.service;
 
+import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -22,6 +23,7 @@ import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.energy.monitoring.adapter.EnergyMonitoringAdapter;
+import appsgate.lig.energy.monitoring.group.CoreEnergyMonitoringGroup;
 
 /**
  * @author thibaud
@@ -95,6 +97,20 @@ public class EnergyMonitoringAdapterImpl extends CoreObjectBehavior implements
 	public CORE_TYPE getCoreType() {
 		return CORE_TYPE.SERVICE;
 	}
+	
+	private static final SecureRandom idGenerator= new SecureRandom();
+	
+	/**
+	 * Helper method to generate a short and unique ID (UUID are too long to be friendly) 
+	 * These might no bee unique
+	 * @return
+	 */
+	private String  generateInstanceID() {
+		byte[] id = new byte[8];
+		idGenerator.nextBytes(id);
+		
+		return new String(id);
+	}
 
 	/* (non-Javadoc)
 	 * @see appsgate.lig.energy.monitoring.EnergyMonitoringAdapter#createGroup(java.lang.String, org.json.JSONArray, double, double, long, long, long, long)
@@ -114,6 +130,9 @@ public class EnergyMonitoringAdapterImpl extends CoreObjectBehavior implements
 		logger.trace("createGroup(), implem found");
 		Map<String, String> properties = new HashMap<String, String>();
 		properties.put("groupName", groupName);
+		properties.put("instance.name",
+				CoreEnergyMonitoringGroupImpl.class.getSimpleName()
+				+"-"+generateInstanceID());
 		
 		Instance inst = implem.createInstance(null, properties);
 		if(inst == null) {
@@ -126,7 +145,7 @@ public class EnergyMonitoringAdapterImpl extends CoreObjectBehavior implements
 			logger.error("createGroup(...) Unable to get Service Object"); 			
 			return null;
 		}
-		group.configure(sensors, budgetTotal, budgetUnit);		
+		group.configureNew(sensors, budgetTotal, budgetUnit);		
 
 		stateChanged(ADDED_GROUP, null, group.getAbstractObjectId());
 		return group.getAbstractObjectId();
