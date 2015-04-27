@@ -3,10 +3,13 @@
  */
 package appsgate.lig.energy.monitoring.service;
 
+import java.io.UnsupportedEncodingException;
 import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import javax.xml.bind.DatatypeConverter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,7 +53,10 @@ public class EnergyMonitoringAdapterImpl extends CoreObjectBehavior implements
     	status = 2;
 	}
 	
-	
+	public static void main(String argv[]) {
+		EnergyMonitoringAdapterImpl adapter= new EnergyMonitoringAdapterImpl();
+		System.out.println("Generating unique ID : "+adapter.generateInstanceID());
+	}
 
 	/* (non-Javadoc)
 	 * @see appsgate.lig.core.object.spec.CoreObjectSpec#getAbstractObjectId()
@@ -105,11 +111,13 @@ public class EnergyMonitoringAdapterImpl extends CoreObjectBehavior implements
 	 * These might no bee unique
 	 * @return
 	 */
-	private String  generateInstanceID() {
+	public String  generateInstanceID() {
 		byte[] id = new byte[8];
 		idGenerator.nextBytes(id);
+		String result = DatatypeConverter.printBase64Binary(id);
 		
-		return new String(id);
+		return result.substring(0, result.indexOf('='));
+		
 	}
 
 	/* (non-Javadoc)
