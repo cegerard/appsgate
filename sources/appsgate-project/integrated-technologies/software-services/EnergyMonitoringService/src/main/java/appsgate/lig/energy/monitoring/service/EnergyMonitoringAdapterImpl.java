@@ -3,9 +3,13 @@
  */
 package appsgate.lig.energy.monitoring.service;
 
+import java.io.UnsupportedEncodingException;
+import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import javax.xml.bind.DatatypeConverter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,7 +25,8 @@ import appsgate.lig.core.object.messages.CoreNotificationMsg;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
-import appsgate.lig.energy.monitoring.EnergyMonitoringAdapter;
+import appsgate.lig.energy.monitoring.adapter.EnergyMonitoringAdapter;
+import appsgate.lig.energy.monitoring.group.CoreEnergyMonitoringGroup;
 
 /**
  * @author thibaud
@@ -30,8 +35,8 @@ import appsgate.lig.energy.monitoring.EnergyMonitoringAdapter;
 public class EnergyMonitoringAdapterImpl extends CoreObjectBehavior implements
 		EnergyMonitoringAdapter, CoreObjectSpec {
 	
-	public static final String ADDED_GROUP = "added";
-	public static final String REMOVED_GROUP = "removed";
+	public static final String ADDED_GROUP = "energyGroupAdded";
+	public static final String REMOVED_GROUP = "energyGroupRemoved";
 	
     /**
      * CoreObject Stuff
@@ -39,16 +44,19 @@ public class EnergyMonitoringAdapterImpl extends CoreObjectBehavior implements
 	private String serviceId;
 	private String userType;
 	private int status;
-	
+		
 	private final static Logger logger = LoggerFactory.getLogger(EnergyMonitoringAdapterImpl.class);
 	
 	public EnergyMonitoringAdapterImpl() {
-    	serviceId = this.getClass().getName()+"-"+this.hashCode();
+    	serviceId = this.getClass().getSimpleName();// Do no need any hashcode or UUID, this service should be a singleton
     	userType = EnergyMonitoringAdapter.class.getSimpleName();
     	status = 2;
 	}
 	
-	
+	public static void main(String argv[]) {
+		EnergyMonitoringAdapterImpl adapter= new EnergyMonitoringAdapterImpl();
+		System.out.println("Generating unique ID : "+adapter.generateInstanceID());
+	}
 
 	/* (non-Javadoc)
 	 * @see appsgate.lig.core.object.spec.CoreObjectSpec#getAbstractObjectId()
@@ -95,16 +103,32 @@ public class EnergyMonitoringAdapterImpl extends CoreObjectBehavior implements
 	public CORE_TYPE getCoreType() {
 		return CORE_TYPE.SERVICE;
 	}
+	
+	private static final SecureRandom idGenerator= new SecureRandom();
+	
+	/**
+	 * Helper method to generate a short and unique ID (UUID are too long to be friendly) 
+	 * These might no bee unique
+	 * @return
+	 */
+	public String  generateInstanceID() {
+		byte[] id = new byte[8];
+		idGenerator.nextBytes(id);
+		String result = DatatypeConverter.printBase64Binary(id);
+		
+		return result.substring(0, result.indexOf('='));
+		
+	}
 
 	/* (non-Javadoc)
 	 * @see appsgate.lig.energy.monitoring.EnergyMonitoringAdapter#createGroup(java.lang.String, org.json.JSONArray, double, double, long, long, long, long)
 	 */
 	@Override
 	public String createGroup(String groupName, JSONArray sensors,
-			double budgetTotal, double budgetUnit, JSONArray periods) {
+			double budgetTotal, double budgetUnit) {
 		logger.trace("createGroup(String groupName : {}, JSONArray sensors : {}, "
-				+ "double budgetTotal : {}, double budgetUnit : {}, JSONArray periods : {},",
-				groupName, sensors, budgetTotal, budgetUnit, periods);
+				+ "double budgetTotal : {}, double budgetUnit : {})",
+				groupName, sensors, budgetTotal, budgetUnit);
 
 		Implementation implem = CST.apamResolver.findImplByName(null,CoreEnergyMonitoringGroupImpl.IMPL_NAME);
 		if(implem == null) {
@@ -114,9 +138,9 @@ public class EnergyMonitoringAdapterImpl extends CoreObjectBehavior implements
 		logger.trace("createGroup(), implem found");
 		Map<String, String> properties = new HashMap<String, String>();
 		properties.put("groupName", groupName);
-		properties.put("instance.name", CoreEnergyMonitoringGroupImpl.class.getName()
-				+"-"+groupName
-				+"-"+UUID.randomUUID());
+		properties.put("instance.name",
+				CoreEnergyMonitoringGroupImpl.class.getSimpleName()
+				+"-"+generateInstanceID());
 		
 		Instance inst = implem.createInstance(null, properties);
 		if(inst == null) {
@@ -129,7 +153,7 @@ public class EnergyMonitoringAdapterImpl extends CoreObjectBehavior implements
 			logger.error("createGroup(...) Unable to get Service Object"); 			
 			return null;
 		}
-		group.configure(sensors, budgetTotal, budgetUnit, periods);		
+		group.configureNew(sensors, budgetTotal, budgetUnit);		
 
 		stateChanged(ADDED_GROUP, null, group.getAbstractObjectId());
 		return group.getAbstractObjectId();
@@ -145,7 +169,7 @@ public class EnergyMonitoringAdapterImpl extends CoreObjectBehavior implements
 		// 1 budget unit -> default value
 
 		logger.trace("createEmptyGroup(String groupName : {})", groupName);
-		return createGroup(groupName, new JSONArray(), -1, 1 , new JSONArray());
+		return createGroup(groupName, new JSONArray(), -1, 1);
 	}
 
 	/* (non-Javadoc)

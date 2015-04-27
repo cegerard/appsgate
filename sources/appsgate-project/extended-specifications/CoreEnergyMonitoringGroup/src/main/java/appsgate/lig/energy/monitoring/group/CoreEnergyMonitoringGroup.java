@@ -1,4 +1,4 @@
-package appsgate.lig.energy.monitoring;
+package appsgate.lig.energy.monitoring.group;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -113,6 +113,14 @@ public interface CoreEnergyMonitoringGroup {
 	 * @return
 	 */
 	public JSONArray getPeriods();
+	
+	/**
+	 * set the Monitoring Periods using JSONArray of eventIDs (String),
+	 * each one represents an Event in the scheduler
+	 * The periods are added only if the found in the scheduler
+	 */
+	public void setPeriods(JSONArray periods);
+
 	
 	/**
 	 * Adds a basic single period with fixed starting and ending dates

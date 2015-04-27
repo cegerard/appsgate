@@ -22,6 +22,8 @@ define(function(require, exports, module) {
     app.initialize = function() {
     
         this.MAX_NAME_LENGTH = 30;
+        
+        this.modeDebug = false;
     
         // Initialize the application-wide event dispatcher
         window.dispatcher = _.clone(Backbone.Events);
@@ -222,8 +224,32 @@ define(function(require, exports, module) {
 
         // Initialize the communication layer
         communicator.initialize();
+        
+    };
+    app.isDebugMode = function() {
+        return this.modeDebug;
+    };
+    
+    app.toggleDebugMode = function() {
+      if (this.modeDebug ) {
+        this.unsetDebugMode();
+      } else {
+        this.setDebugMode();
+      }
+    };
+    
+    app.setDebugMode = function(timestamp) {
+        this.modeDebug = true;
+        this.worldTimestamp = timestamp;
+        $(document.body).addClass("debugMode");
+    };
+    app.unsetDebugMode = function() {
+        this.modeDebug = false;
+        this.worldTimestamp = null;
+        $(document.body).removeClass("debugMode");
     };
 
+    
     /**
     * Callback when the user has validated new settings
     *
@@ -280,7 +306,7 @@ define(function(require, exports, module) {
     function onFocusOutCircleMenu(e) {
         $('.circlemenu').circleMenu('close');
     }
-    
+    window.app = app;
 
     return app;
 });

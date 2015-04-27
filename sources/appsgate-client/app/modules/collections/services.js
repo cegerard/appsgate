@@ -7,8 +7,12 @@ define([
     "text!templates/program/nodes/defaultStateNode.html",
     "models/service/mail",
     "models/service/weather",
-    "models/service/tts"
-], function(App, Service, ActionTemplate, EventTemplate, PropertyTemplate, StateTemplate, Mail, Weather, TTS) {
+    "models/service/tts",
+    "models/service/CoreEnergyMonitoringGroup",
+    "models/service/EnergyMonitoringAdapter"
+
+], function(App, Service, ActionTemplate, EventTemplate, PropertyTemplate, StateTemplate, Mail, Weather, TTS,
+            CoreEnergyMonitoringGroup, EnergyMonitoringAdapter) {
 
     var Services = {};
 
@@ -64,6 +68,13 @@ define([
                 case "104":
                     service = new TTS(brick);
                     break;
+                case "CoreEnergyMonitoringGroup":
+                    service = new CoreEnergyMonitoringGroup(brick);
+                    break;
+                case "EnergyMonitoringAdapter":
+                    service = new EnergyMonitoringAdapter(brick);
+                    break;
+
                 default:
                     console.log("unknown type of SERVICE ", brick.type, brick);
                     break;
@@ -101,6 +112,12 @@ define([
          */
         getCoreTTS: function() {
             return services.findWhere({type: "104"});
+        },
+        /**
+         * @return EnergyMonitoring Adapter for the home - unique Service
+         */
+        getEnergyMonitoringAdapter: function() {
+            return services.findWhere({type: "EnergyMonitoringAdapter"});
         },
         /**
          * @returns the template corresponding to the device
