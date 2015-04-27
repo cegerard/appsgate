@@ -84,17 +84,38 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		sensors = new HashMap<String, ActiveEnergySensor>();
 	}
 	
-	public void configure(JSONArray sensors,
+	/**
+	 * This one configures a new Energy monitoring group, with no period attached
+	 * @param sensors
+	 * @param budgetTotal
+	 * @param budgetUnit
+	 */
+	public void configureNew(JSONArray sensors,
 			double budgetTotal, double budgetUnit) {
-		logger.trace("configure(JSONArray sensors : {}, "
+		logger.trace("configureNew(JSONArray sensors : {}, "
 				+ "double budgetTotal : {}, double budgetUnit : {})",
 				sensors, budgetTotal, budgetUnit);
+		// The configuration of serviceId and name MUST have already be injected during instance creation 
+		
 		setEnergySensorsGroup(sensors);
 		setBudget(budgetTotal, budgetUnit);
 		
 		this.periods = new ArrayList<String>();
 	}
 
+	public void configureFromJSON(JSONObject configuration) {
+		logger.trace("configureFromJSON(JSONObject configuration : {})",
+				configuration);
+		// The configuration of serviceId and name MUST have already be injected during instance creation 
+		
+		setEnergySensorsGroup(configuration.optJSONArray(SENSORS_KEY));
+		setBudget(configuration.optDouble(BUDGETTOTAL_KEY, -1),
+				configuration.optDouble(BUDGETUNIT_KEY, 1));
+		setPeriods(configuration.optJSONArray(PERIODS_KEY));
+		
+		// TODO, check if we also set the total Energy
+		// (that seems hazardous at first glance, we may have miss information and the overall total may be wrong)
+	}	
 	
 	/* (non-Javadoc)
 	 * @see appsgate.lig.energy.monitoring.CoreEnergyMonitoringGroup#getName()
@@ -135,6 +156,7 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 				privateAddEnergySensor(s);
 			}
 		}
+		computeEnergy();
 		stateChanged(SENSORS_KEY, null, getEnergySensorsGroup().toString());
 	}
 	
@@ -349,8 +371,7 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 			boolean resetOnEnd) {
 		// TODO we have to use the scheduler
 		
-		stateChanged(PERIODS_KEY, null, periods.toString());
-		
+		stateChanged(PERIODS_KEY, null, new JSONArray(this.periods.toString()).toString());
 		return null;
 	}
 
@@ -358,7 +379,7 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	@Override
 	public void removePeriodById(String eventID) {
 		// TODO we have to use the scheduler
-		stateChanged(PERIODS_KEY, null, periods.toString());
+		stateChanged(PERIODS_KEY, null, new JSONArray(this.periods.toString()).toString());
 	}
 
 
@@ -367,6 +388,23 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		// TODO we have to use the scheduler
 		return null;
 	}
+	
+	@Override
+	public void setPeriods(JSONArray periods) {
+		logger.trace("setPeriods(JSONArray periods : {})",periods);
+		this.periods = new ArrayList<String>();
+		for(int i = 0; periods!= null
+				&& i<periods.length(); i++) {
+			String s = periods.optString(i);
+			if(s!=null
+					//TODO shoud verify the periods exists in the scheduler 
+					) {
+				this.periods.add(s);
+			}
+		}
+		stateChanged(PERIODS_KEY, null, new JSONArray(this.periods.toString()).toString());
+	}
+	
 	
 	private synchronized void addActiveEnergyMeasure(String sensorID, double value) {
 		// Here is the core business function, 

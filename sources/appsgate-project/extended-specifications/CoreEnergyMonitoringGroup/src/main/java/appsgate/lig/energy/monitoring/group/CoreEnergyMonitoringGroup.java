@@ -115,6 +115,14 @@ public interface CoreEnergyMonitoringGroup {
 	public JSONArray getPeriods();
 	
 	/**
+	 * set the Monitoring Periods using JSONArray of eventIDs (String),
+	 * each one represents an Event in the scheduler
+	 * The periods are added only if the found in the scheduler
+	 */
+	public void setPeriods(JSONArray periods);
+
+	
+	/**
 	 * Adds a basic single period with fixed starting and ending dates
 	 * No periodicity by default (it has to be managed using the scheduler or google agenda)
 	 * @param startDate the starting date in millisecs from the epoch (01/01/1970) 
