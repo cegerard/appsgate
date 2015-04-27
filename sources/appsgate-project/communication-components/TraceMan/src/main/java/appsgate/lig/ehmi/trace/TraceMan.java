@@ -370,7 +370,9 @@ public class TraceMan implements TraceManSpec {
         long timeStamp = getCurrentTimeInMillis();
 
         if (n instanceof ProgramTraceNotification) {
-            JSONObject o = Trace.getDecorationNotification((ProgramTraceNotification) n, timeStamp, this);
+            ProgramTraceNotification traceNotif = (ProgramTraceNotification) n;
+            JSONObject o = Trace.getDecorationNotification(traceNotif, timeStamp, this);
+            dbTracer.addExecutionTrace(timeStamp, traceNotif.getProgramId(), traceNotif.getInstructionId());
             trace(o, timeStamp);
             return;
         }
@@ -960,7 +962,12 @@ public class TraceMan implements TraceManSpec {
      * @param srcId
      * @return
      */
-    JSONObject getDevice(String srcId) {
+    public JSONObject getDevice(String srcId) {
         return EHMIProxy.getDevice(srcId);
+    }
+
+    @Override
+    public JSONArray getLastNodesId(Long timestamp) {
+        return dbTracer.getLastNodesId(timestamp);
     }
 }

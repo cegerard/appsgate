@@ -14,4 +14,5 @@ public interface TraceHistory {
     JSONArray get(Long timestamp, Integer count);
     JSONArray getInterval(Long start, Long end);
     JSONArray getLastState(JSONArray ids, Long timestamp);
+    void addExecutionTrace(Long timestamp, String pid, String node_id);
 }

@@ -75,6 +75,15 @@ public interface EUDE_InterpreterSpec {
      * @return HashMap with all the existing programs
      */
     public HashMap<String, JSONObject> getListPrograms();
+    /**
+     * Return a hash map containing all the programs known by the interpreter.
+     * The keys are the programs' name and the value are the programs under
+     * their JSON format
+     *
+     * @param timestamp
+     * @return HashMap with all the existing programs at a given time
+     */
+    public HashMap<String, JSONObject> getListProgramsAt(Long timestamp);
 
     /**
      * Check if a program is active or not
