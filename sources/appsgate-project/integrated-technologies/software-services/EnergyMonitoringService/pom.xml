@@ -41,7 +41,14 @@
             <groupId>fr.imag.adele.apam</groupId>
             <artifactId>apam-core</artifactId>
             <version>${apam.current.version}</version>
-        </dependency>        
+        </dependency>      
+        
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>MongoDBConfigurationImpl</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+                
                 
     </dependencies>
     

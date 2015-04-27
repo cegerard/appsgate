@@ -3,11 +3,12 @@
  */
 package appsgate.lig.energy.monitoring.service;
 
-import java.io.UnsupportedEncodingException;
 import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
+import java.util.Set;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -26,17 +27,21 @@ import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.energy.monitoring.adapter.EnergyMonitoringAdapter;
-import appsgate.lig.energy.monitoring.group.CoreEnergyMonitoringGroup;
+import appsgate.lig.persistence.DBHelper;
+import appsgate.lig.persistence.MongoDBConfiguration;
 
 /**
  * @author thibaud
  *
  */
 public class EnergyMonitoringAdapterImpl extends CoreObjectBehavior implements
-		EnergyMonitoringAdapter, CoreObjectSpec {
+		EnergyMonitoringAdapter, CoreObjectSpec, Runnable {
 	
 	public static final String ADDED_GROUP = "energyGroupAdded";
 	public static final String REMOVED_GROUP = "energyGroupRemoved";
+	
+	MongoDBConfiguration dbConfig;
+	boolean dbBound = false;
 	
     /**
      * CoreObject Stuff
@@ -51,11 +56,8 @@ public class EnergyMonitoringAdapterImpl extends CoreObjectBehavior implements
     	serviceId = this.getClass().getSimpleName();// Do no need any hashcode or UUID, this service should be a singleton
     	userType = EnergyMonitoringAdapter.class.getSimpleName();
     	status = 2;
-	}
-	
-	public static void main(String argv[]) {
-		EnergyMonitoringAdapterImpl adapter= new EnergyMonitoringAdapterImpl();
-		System.out.println("Generating unique ID : "+adapter.generateInstanceID());
+    	ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
+    	executor.scheduleAtFixedRate(this, 5, 60*5, TimeUnit.SECONDS);
 	}
 
 	/* (non-Javadoc)
@@ -129,34 +131,52 @@ public class EnergyMonitoringAdapterImpl extends CoreObjectBehavior implements
 		logger.trace("createGroup(String groupName : {}, JSONArray sensors : {}, "
 				+ "double budgetTotal : {}, double budgetUnit : {})",
 				groupName, sensors, budgetTotal, budgetUnit);
+		
+		if(!dbBound()) {
+			logger.warn("No Database bound, cannot guarantee the group configuration will be saved in the database,"
+					+ " Instance will not be created  (restart DB first)");
+			return null;
+		}		
 
+		String instanceName = CoreEnergyMonitoringGroupImpl.class.getSimpleName()
+				+"-"+generateInstanceID();
+		CoreEnergyMonitoringGroupImpl group = createApamComponent(groupName,instanceName);
+				
+		if(group == null) {
+			logger.error("createGroup(...) Unable to get Service Object"); 			
+			return null;
+		}
+		group.configureNew(sensors, budgetTotal, budgetUnit);
+		storeInstanceConfiguration(group.getDescription());
+
+		stateChanged(ADDED_GROUP, null, group.getAbstractObjectId());
+		return group.getAbstractObjectId();
+	}
+	
+	/**
+	 * Helper method that use ApAM api to create the component
+	 * @param groupName
+	 * @return
+	 */
+	private CoreEnergyMonitoringGroupImpl createApamComponent(String groupName, String InstanceName) {
 		Implementation implem = CST.apamResolver.findImplByName(null,CoreEnergyMonitoringGroupImpl.IMPL_NAME);
 		if(implem == null) {
-			logger.error("createGroup(...) Unable to get APAM Implementation"); 
+			logger.error("createApamComponent(...) Unable to get APAM Implementation"); 
 			return null;
 		}
 		logger.trace("createGroup(), implem found");
 		Map<String, String> properties = new HashMap<String, String>();
 		properties.put("groupName", groupName);
-		properties.put("instance.name",
-				CoreEnergyMonitoringGroupImpl.class.getSimpleName()
-				+"-"+generateInstanceID());
+		properties.put("instance.name",InstanceName);
 		
 		Instance inst = implem.createInstance(null, properties);
+
 		if(inst == null) {
-			logger.error("createGroup(...) Unable to create APAM Instance"); 			
+			logger.error("createApamComponent(...) Unable to create APAM Instance"); 			
 			return null;
 		}
 		
-		CoreEnergyMonitoringGroupImpl group = (CoreEnergyMonitoringGroupImpl)inst.getServiceObject();
-		if(group == null) {
-			logger.error("createGroup(...) Unable to get Service Object"); 			
-			return null;
-		}
-		group.configureNew(sensors, budgetTotal, budgetUnit);		
-
-		stateChanged(ADDED_GROUP, null, group.getAbstractObjectId());
-		return group.getAbstractObjectId();
+		return (CoreEnergyMonitoringGroupImpl)inst.getServiceObject();
 	}
 
 	/* (non-Javadoc)
@@ -178,19 +198,119 @@ public class EnergyMonitoringAdapterImpl extends CoreObjectBehavior implements
 	@Override
 	public void removeGroup(String groupID) {
 		logger.trace("removeGroup(String groupID : {})", groupID);
+		if(!dbBound()) {
+			logger.warn("No Database bound, cannot guarantee the group will be removed from the database,"
+					+ " Running Instance will not be destroyed (restart DB first)");
+			return;
+		}
 		
 		Instance inst = CST.apamResolver.findInstByName(null, groupID);
 		if(inst == null) {
 			logger.error("removeGroup(...) Unable to find APAM Instance"); 			
 			return;
 		}
+
 		((ComponentBrokerImpl)CST.componentBroker).disappearedComponent(groupID);
+		removeInstanceConfiguration(groupID);
 				
 		stateChanged(REMOVED_GROUP, null, groupID);
 	}
 	
 	private NotificationMsg stateChanged(String varName, String oldValue, String newValue) {
 		return new CoreNotificationMsg(varName, oldValue, newValue, this.getAbstractObjectId());
+	}
+	
+	String dbName = CoreObjectSpec.DBNAME_DEFAULT;
+	String dbCollectionName = this.getClass().getSimpleName();
+	DBHelper dbHelper = null;
+
+	
+	/**
+	 * When db is bound look for the EnergyGroup stored
+	 * and restore the missing ones.
+	 */
+	private boolean dbBound() {
+		logger.trace("dbBound()");
+		
+		// The first time, we will synchro all groups in the DB, and after, return shortly
+		if(dbBound) return true;
+		
+		if(dbConfig == null
+				||!dbConfig.isValid()) {
+			logger.warn("dbBound(), dbConfig unavailable");
+			dbUnbound();
+			
+		} else {		
+			dbHelper = dbConfig.getDBHelper(dbName, dbCollectionName);
+			if(dbHelper == null
+					|| dbHelper.getJSONEntries() == null) {
+				logger.warn("dbBound(), dbHelper unavailable");
+				dbUnbound();
+			} else {
+				// Synchro DB => running Instances
+				Set<JSONObject> entries = dbHelper.getJSONEntries();
+				for(JSONObject entry : entries) {
+					if( CST.componentBroker.getInst(entry.getString("id")) == null) {
+						logger.trace("dbBound(), no running instance with same id : {}, creating one with description : {}",
+								entry.getString("id"),
+								entry);
+						CoreEnergyMonitoringGroupImpl group = createApamComponent(entry.getString("name"),entry.getString("id"));
+						group.configureFromJSON(entry);
+					} else {
+						logger.trace("dbBound(), already an instance with id : {}, keeping the existing one", entry.getString("id"));						
+					}		
+				}
+				dbBound = true;				
+			}
+		}
+		return dbBound;
+	}
+	
+	/**
+	 * when no db is available stop refuse to create/remove Energy Groups as they won't be stored
+	 */
+	private void dbUnbound() {
+		logger.trace("dbUnbound()");
+		dbHelper = null;
+		dbBound = false;
+
+	}
+	
+	private void storeInstanceConfiguration(JSONObject serviceDescription) {
+		logger.trace("storeInstanceConfiguration(JSONObject serviceDescription : {})", serviceDescription);
+		if(dbBound 
+				&& dbHelper!= null) {
+			serviceDescription.put(DBHelper.ENTRY_ID, serviceDescription.getString("id"));
+			boolean result = dbHelper.insertJSON(serviceDescription);
+			if(result) {
+				logger.trace("storeInstanceConfiguration(...), group successfully inserted/updated in the database");
+			} else {
+				logger.error("storeInstanceConfiguration(...), group not inserted in the database");
+			}
+		}
+	}
+	
+	private void removeInstanceConfiguration(String serviceId) {
+		logger.trace("removeInstanceConfiguration(String serviceId : {})", serviceId);
+		if(dbBound 
+				&& dbHelper!= null) {
+			boolean result = dbHelper.remove(serviceId);
+			if(result) {
+				logger.trace("storeInstanceConfiguration(...), group successfully removed from the database");
+			} else {
+				logger.error("storeInstanceConfiguration(...), group not removed from the database");
+			}			
+		}
+	}
+
+	@Override
+	public void run() {
+		logger.trace("run()");
+		if(dbBound()) {
+			// TODO synchro running instance => DB 
+			
+		}		
 	}	
+	
 
 }

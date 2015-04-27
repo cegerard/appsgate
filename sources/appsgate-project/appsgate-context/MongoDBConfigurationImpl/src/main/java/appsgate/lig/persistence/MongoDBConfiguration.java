@@ -13,7 +13,7 @@ import com.mongodb.MongoException;
 
 public class MongoDBConfiguration {
 
-	private final Logger logger = LoggerFactory
+	private final static Logger logger = LoggerFactory
 			.getLogger(MongoDBConfiguration.class);
 
 	public static final String IMPL_NAME = "MongoDBConfiguration";
@@ -31,6 +31,10 @@ public class MongoDBConfiguration {
 
 	public void setConfiguration(String dbHost, int dbPort, int dbTimeOut,
 			MongoClient mongoClient, MongoDBConfigFactory factory, String instanceName) {
+		logger.trace("setConfiguration(String dbHost : {}, int dbPort : {}, int dbTimeOut : {},"
+			+" MongoClient mongoClient : {}, MongoDBConfigFactory factory : {}, String instanceName : {})",
+			dbHost, dbPort, dbTimeOut, mongoClient, factory, instanceName);
+
 		this.dbHost = dbHost;
 		this.dbPort = dbPort;
 		this.dbTimeOut = dbTimeOut;
@@ -178,7 +182,7 @@ public class MongoDBConfiguration {
 	public boolean isValid() {
 		boolean valid = checkMongoClient(mongoClient);
 		if(!valid) {
-			logger.info("isValid(), not valid anymore, call the facotry to destroy ourself");
+			logger.info("isValid(), not valid anymore, call the factory to destroy ourself");
 			if(factory != null) {
 				factory.destroyconfig(myName);
 			}
@@ -187,12 +191,13 @@ public class MongoDBConfiguration {
 	}
 
 	static public boolean checkMongoClient(MongoClient mongoClient) {
+		logger.trace("checkMongoClient(MongoClient mongoClient : {})", mongoClient);
 		if (mongoClient != null) {
-			try {
-				// Forces the connection to check valid
+			try {// Forces the connection to check valid
 				mongoClient.getDatabaseNames();
 				return true;
 			} catch (MongoException exception) {
+				logger.error("checkMongoClient(...), exception occured", exception);
 				return false;
 			}
 		}
