@@ -145,4 +145,23 @@ public interface CoreEnergyMonitoringGroup {
 	 * @param eventID as referenced in the scheduler
 	 */
 	public JSONObject getPeriodInfo(String eventID);		
+	
+	
+	/**
+	 * returns true if the group is currently monitoring Energy consumption (and decreasing budget)
+	 * @return
+	 */
+	public boolean isMonitoring();
+	
+	/**
+	 * Used to force the monitoring even if we are not on a monitoring period
+	 * Won't stop until a call to stopMonitoring or if a monitoring period ends
+	 */
+	public void startMonitoring();
+	
+	/**
+	 * Used to force the stop of monitoring even if we are inside a monitoring period
+	 * Won't start again until a call to startMonitoring or if a monitoring period begin
+	 */
+	public void stopMonitoring();
 }

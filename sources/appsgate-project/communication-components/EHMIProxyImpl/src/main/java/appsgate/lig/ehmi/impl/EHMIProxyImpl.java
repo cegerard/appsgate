@@ -635,7 +635,10 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
         logger.trace("addContextData(JSONObject object : {}, String objectId : {})", object, objectId);
         try {
             object.put("placeId", getCoreObjectPlaceId(objectId));
-            object.put("name", (devicePropertiesTableBound ? devicePropertiesTable.getName(objectId, "") : ""));
+            String contextName = (devicePropertiesTableBound ? devicePropertiesTable.getName(objectId, "") : "");
+            if((contextName != null && contextName.length()>0) || !object.has("name") ) {
+            	object.put("name", contextName);
+            }
         } catch (JSONException e) {
             logger.error(e.getMessage());
         }
