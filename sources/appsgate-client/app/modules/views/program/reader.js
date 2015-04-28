@@ -417,23 +417,14 @@ define([
         var input = $(".programInput");
         var workspace = $(".editorWorkspace");
         var activeSet = $.map(this.model.get("activeNodes"), function(value,index){return [[index, value]];});
-        $(".active-node-indicator").addClass("hidden");
+        $(".debugActivated").removeClass("debugActivated");
         var currentNode = this.model.get("currentNode");
-        var activeIndicator = $(input).find("#active-" +currentNode);
-        if (activeIndicator.length > 0 ) {
-          var editorWidth = workspace.width();
-          var leftOffset = activeIndicator.offset().left - workspace.position().left;
-          $(activeIndicator).width(editorWidth);
-          $(activeIndicator).offset({
-            left: leftOffset
-          });
-
-          activeIndicator.removeClass("hidden");
-
-        }
+        $("#"+currentNode).addClass("debugActivated");
         return input;
       },
-            updateProgressIndicators: function() {
+            
+      updateProgressIndicators: function() {
+        $(".debugActivated").removeClass("debugActivated");
         var self = this;
         var input = $(".programInput");
         var workspace = $(".editorWorkspace");
