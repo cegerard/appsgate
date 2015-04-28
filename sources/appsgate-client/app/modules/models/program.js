@@ -115,6 +115,9 @@ define([
 			}
 			return $.i18n.t('programs.state.'+this.getState()) + ": " + $.i18n.t(err.msg, err);
 		},
+		setCurrentNode: function(node_id){
+			this.set("currentNode", node_id);
+		},
         // override its synchronization method to send a notification on the network
         sync: function(method, model) {
             var self = this;

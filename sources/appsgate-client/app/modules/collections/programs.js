@@ -17,13 +17,30 @@ define([
 
             // listen to the event when the list of programs is received
             dispatcher.on("listPrograms", function(programs) {
-                _.each(programs, function(program) {
-                    self.add(program);
-                });
-
-                dispatcher.trigger("programsReady");
+                if (!app.isDebugMode()) {
+                    _.each(programs, function(program) {
+                        self.add(program);
+                    });
+                    dispatcher.trigger("programsReady");
+                }
+            });
+            // listen to the event when the state of the programs is received
+            dispatcher.on("programState", function(programs) {
+                if (app.isDebugMode()) {
+                    self.reset();
+                    _.each(programs, function(program) {
+                        self.add(program);
+                    });
+                }
             });
 
+            dispatcher.on("programIds", function(programs) {
+                if (app.isDebugMode()) {
+                    _.each(programs, function(p) {
+                        self.get(p.pid).setCurrentNode(p.node);
+                    });
+                }
+            });
             // listen to the event when a program appears and add it
             dispatcher.on("newProgram", function(program) {
                 self.add(program);
@@ -45,13 +62,18 @@ define([
                 }
             });
 
-            // send the request to fetch the programs
+            this.getPrograms();
+        },
+        // send the request to fetch the programs
+        getPrograms: function() {
+            this.reset();
             communicator.sendMessage({
                 method: "getPrograms",
                 args: [],
                 callId: "listPrograms",
                 TARGET: "EHMI"
             });
+
         },
         getName: function(id) {
           if(this.get(id)) {

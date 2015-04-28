@@ -247,6 +247,7 @@ define(function(require, exports, module) {
         this.modeDebug = false;
         this.worldTimestamp = null;
         $(document.body).removeClass("debugMode");
+        window.programs.getPrograms();
     };
 
     
