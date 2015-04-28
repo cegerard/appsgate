@@ -68,6 +68,7 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	public final static String BUDGETREMAINING_KEY="budgetRemaining";
 	public final static String BUDGETRESETED_KEY="budgetReseted";
 	public final static String PERIODS_KEY="periods";	
+	public final static String ISMONITORING_KEY = "isMonitoring";
 	
 	
 	public CoreEnergyMonitoringGroupImpl() {
@@ -162,8 +163,10 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	}
 	
 	private double getActiveEnergy(String sensorID) {
-		double activeEnergy = 0;
-		// TODO ask the real sensor
+		// We cannot know the latest energy measure
+		// because we may have lost the latest update that was done before adding the sensor
+		// So we get the max value, just to be sure to reset the sensor on next measure
+		double activeEnergy = Double.MAX_VALUE;
 		
 		return activeEnergy;
 	}
@@ -339,6 +342,7 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		descr.put(BUDGETTOTAL_KEY, getBudgetTotal());
 		descr.put(BUDGETUNIT_KEY, getBudgetUnit());
 		descr.put(PERIODS_KEY, getPeriods());
+		descr.put(ISMONITORING_KEY, isMonitoring());
 
 		return descr;
 	}
@@ -464,5 +468,32 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	
 	private NotificationMsg stateChanged(String varName, String oldValue, String newValue) {
 		return new CoreNotificationMsg(varName, oldValue, newValue, this.getAbstractObjectId());
+	}
+
+
+	@Override
+	public boolean isMonitoring() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	@Override
+	public void startMonitoring() {
+		// TODO Auto-generated method stub
+		
+		// TODO send this if monitoring status was false previously
+		stateChanged(ISMONITORING_KEY, "false", "true");
+		
+	}
+
+
+	@Override
+	public void stopMonitoring() {
+		// TODO Auto-generated method stub
+		
+		// TODO send this if monitoring status was true previously
+		stateChanged(ISMONITORING_KEY, "true","false");
+		
 	}
 }
