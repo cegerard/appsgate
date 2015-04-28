@@ -5,7 +5,9 @@ package appsgate.lig.energy.monitoring.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -19,6 +21,11 @@ import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.energy.monitoring.group.CoreEnergyMonitoringGroup;
 import appsgate.lig.energy.monitoring.service.models.ActiveEnergySensor;
+import appsgate.lig.scheduler.ScheduledInstruction;
+import appsgate.lig.scheduler.ScheduledInstruction.Commands;
+import appsgate.lig.scheduler.SchedulerSpec;
+import appsgate.lig.scheduler.SchedulingException;
+import appsgate.lig.scheduler.utils.DateFormatter;
 
 /**
  * @author thibaud
@@ -47,6 +54,13 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	 * This field should be injected at startup
 	 */
 	private String name;
+	
+	/**
+	 * Should be injected by ApAM
+	 */
+	private SchedulerSpec scheduler;
+	
+	
 	
 	/**
 	 * The String is the sensorID, the value holds the measures, index and state
@@ -212,7 +226,6 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		}
 
 		stateChanged(BUDGETRESETED_KEY, null, BUDGETRESETED_KEY);
-		
 		computeEnergy();
 	}
 	
@@ -374,16 +387,71 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	@Override
 	public String addPeriod(long startDate, long endDate, boolean resetOnStart,
 			boolean resetOnEnd) {
-		// TODO we have to use the scheduler
+		logger.trace("addPeriod(long startDate : {}, long endDate : {}, boolean resetOnStart : {},"
+			+" boolean resetOnEnd : {})",startDate, endDate, resetOnStart, resetOnEnd);
 		
-		stateChanged(PERIODS_KEY, null, new JSONArray(this.periods.toString()).toString());
-		return null;
+		if(scheduler == null) {
+			logger.error("No scheduler found, won't add the period");
+			return null;
+		}
+		
+		Set<ScheduledInstruction> onBeginInstructions= new HashSet<ScheduledInstruction>();
+		Set<ScheduledInstruction> onEndInstructions= new HashSet<ScheduledInstruction>();
+		
+		if (startDate > 0) {
+			logger.trace("addPeriod(...), adding instruction to start monitoring");
+			onBeginInstructions.add(formatInstruction("startMonitoring", null));
+		}
+		
+		if (endDate > 0) {
+			logger.trace("addPeriod(...), adding instruction to stop monitoring");
+			onEndInstructions.add(formatInstruction("stopMonitoring", null));
+		}
+		
+		if(resetOnStart) {
+			logger.trace("addPeriod(...), adding instruction to reset monitoring at start of period");
+			onBeginInstructions.add(formatInstruction("resetEnergy", null));			
+		}
+		
+		if(resetOnEnd) {
+			logger.trace("addPeriod(...), adding instruction to reset monitoring at stop of period");
+			onEndInstructions.add(formatInstruction("resetEnergy", null));			
+		}
+		
+		String eventId=null;
+		try {
+			eventId = scheduler.createEvent("AppsGate Energy Monitoring", onBeginInstructions, onEndInstructions,
+					DateFormatter.format(startDate), DateFormatter.format(endDate));
+			periods.add(eventId);
+			stateChanged(PERIODS_KEY, null, new JSONArray(this.periods.toString()).toString());
+			
+		} catch (SchedulingException e) {
+			logger.error("Error when trying to add event in the scheduler : ", e);
+		}
+		return eventId;
+
+	}
+	
+	private ScheduledInstruction formatInstruction(String methodName, JSONArray args) {
+		JSONObject target = new JSONObject();
+		target.put("objectId", serviceId);
+		target.put("method", methodName);
+		target.put("args", (args==null?new JSONArray():args));
+		target.put("TARGET", "EHMI");
+		
+		return new ScheduledInstruction(Commands.GENERAL_COMMAND.getName(), target.toString());
 	}
 
 
 	@Override
 	public void removePeriodById(String eventID) {
-		// TODO we have to use the scheduler
+		if(scheduler == null) {
+			logger.error("No scheduler found, won't remove the period");
+			return;
+		}
+		
+		scheduler.removeEvent(eventID);
+		periods.remove(eventID);
 		stateChanged(PERIODS_KEY, null, new JSONArray(this.periods.toString()).toString());
 	}
 

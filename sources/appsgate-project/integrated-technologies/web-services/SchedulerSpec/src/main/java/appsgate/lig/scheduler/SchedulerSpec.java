@@ -112,6 +112,12 @@ public interface SchedulerSpec extends AlarmEventObserver{
 			Set<ScheduledInstruction> onBeginInstructions,
 			Set<ScheduledInstruction> onEndInstructions,
 			String dateStart, String dateEnd ) throws SchedulingException;
+	
+	/**
+	 * The method try to remove an event using its eventID
+	 * @return true if event was successfully removed from calendar
+	 */
+	public boolean removeEvent(String eventID);
 
 	/**
 	 * The method implements what to do when a registered events occurs

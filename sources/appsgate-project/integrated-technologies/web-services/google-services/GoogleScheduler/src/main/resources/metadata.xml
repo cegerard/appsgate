@@ -23,7 +23,7 @@
         </relation>
         <relation specification="GoogleAdapter" field="serviceAdapter" resolve="exist" />
         
-        <relation implementation="EHMIProxyImpl" resolve="exist" fail="wait">
+        <relation specification="EHMIProxySpec" resolve="exist" fail="wait">
             <interface field="ehmiService"/>
             <interface field="commandListener"/>
         </relation>

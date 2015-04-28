@@ -12,6 +12,14 @@ public class ScheduledInstruction {
 		STOP_PROGRAM("stopProgram"),
 		GENERAL_COMMAND("command");
 		
+		/* (non-Javadoc)
+		 * @see java.lang.Enum#toString()
+		 */
+		@Override
+		public String toString() {
+			return getName();
+		}
+
 		String name;
 		Commands(String name) {
 			this.name = name;
