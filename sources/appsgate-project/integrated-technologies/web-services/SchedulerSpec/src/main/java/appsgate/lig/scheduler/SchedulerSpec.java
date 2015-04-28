@@ -81,6 +81,8 @@ public interface SchedulerSpec extends AlarmEventObserver{
 
 
 	/**
+	 * (This one is the legacy method only applicable to start/stop program,
+	 * the general purpose with command name and parameter should be used instead (it allows all kind of commands
 	 * Create a basic Calendar Event, at AppsGate Clock Time, to schedule the start or stop of a program
 	 * The Event is created just one hour before current Time, and last for 30 minutes
 	 * Changed specification, if start is false AND stop is true, then the program should stop at the beginning of the event
@@ -92,6 +94,7 @@ public interface SchedulerSpec extends AlarmEventObserver{
 	 * @throws SchedulingException
 	 */
 	public String createEvent(String eventName, String programId, boolean startOnBegin, boolean stopOnEnd) throws SchedulingException;
+	
 	
 	/**
 	 * Create a basic Calendar Event, with specified instructions

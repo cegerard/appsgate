@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.Timer;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,7 @@ import appsgate.lig.ehmi.spec.EHMIProxySpec;
 import appsgate.lig.google.helpers.GoogleCalendarReader;
 import appsgate.lig.google.services.GoogleAdapter;
 import appsgate.lig.google.services.GoogleEvent;
+import appsgate.lig.manager.client.communication.service.subscribe.CommandListener;
 import appsgate.lig.scheduler.ScheduledInstruction;
 import appsgate.lig.scheduler.SchedulerSpec;
 import appsgate.lig.scheduler.SchedulingException;
@@ -74,6 +76,9 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 
 	// this one will be injected by ApAM
 	EHMIProxySpec ehmiService;
+
+	// this one will be injected by ApAM
+	CommandListener commandListener;
 
 
 	Object lock;
@@ -257,23 +262,6 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 
 	}
 
-	/**
-	 * Deprecated test
-	 * @param args
-	 */
-	@Deprecated
-	public static void main(String[] args) {
-		try {
-			//dateFormat=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-			SimpleDateFormat dateFormatbis=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-			System.out.println(dateFormatbis.parse("2014-09-16T12:45:23+0200"));
-			dateFormat.parse("2014-09-16T18:27:00+0200");
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
 	private void registerEventAlarms(GoogleEvent event, long currentTime) {
 		logger.trace("registerEventAlarms for : "+event.toString());
 
@@ -326,10 +314,16 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 		if(ehmiService==null) {
 			throw new SchedulingException("No EHMI Proxy service registered, instruction will not be triggered");
 		}
-		if(ScheduledInstruction.CALL_PROGRAM.equals(command)) {
+		if(ScheduledInstruction.Commands.CALL_PROGRAM.getName().equals(command)) {
 			ehmiService.callProgram(target);			
-		} else if (ScheduledInstruction.STOP_PROGRAM.equals(command)) {
+		} else if (ScheduledInstruction.Commands.STOP_PROGRAM.getName().equals(command)) {
 			ehmiService.stopProgram(target);
+		} else if (ScheduledInstruction.Commands.GENERAL_COMMAND.getName().equals(command)) {
+			try {
+				commandListener.onReceivedCommand(new JSONObject(target));
+			} catch (JSONException e) {
+				logger.warn("problem when parsing target : {} (should be a valid JSONObject in a single line) : ", target, e);
+			}		
 		} else {
 			logger.warn("Command unknown : " +command); 
 		}
@@ -520,7 +514,9 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 	}
 
 	@Override
-	public String createEvent(String eventName, String programId, boolean startOnBegin,
+	public String createEvent(String eventName,
+			String programId,
+			boolean startOnBegin,
 			boolean stopOnEnd) throws SchedulingException {
 		logger.trace("String createEvent(String eventName : "+eventName 
 				+ ", String programId : "+programId
@@ -560,7 +556,7 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 		if(startOnBegin) {
 			description += GoogleEvent.ON_BEGIN
 					+ ScheduledInstruction.SEPARATOR
-					+ ScheduledInstruction.CALL_PROGRAM
+					+ ScheduledInstruction.Commands.CALL_PROGRAM.getName()
 					+ ScheduledInstruction.SEPARATOR
 					+ programId
 					+ "\n";
@@ -568,14 +564,14 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 		if(stopOnEnd && startOnBegin) {
 			description += GoogleEvent.ON_END
 					+ ScheduledInstruction.SEPARATOR
-					+ ScheduledInstruction.STOP_PROGRAM
+					+ ScheduledInstruction.Commands.STOP_PROGRAM.getName()
 					+ ScheduledInstruction.SEPARATOR
 					+ programId
 					+ "\n";
 		}else if (stopOnEnd && !startOnBegin) {
 				description += GoogleEvent.ON_BEGIN
 						+ ScheduledInstruction.SEPARATOR
-						+ ScheduledInstruction.STOP_PROGRAM
+						+ ScheduledInstruction.Commands.STOP_PROGRAM.getName()
 						+ ScheduledInstruction.SEPARATOR
 						+ programId
 						+ "\n";
@@ -711,5 +707,5 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 		}
 		logger.trace("checkProgramsScheduled(...), returning "+response.toString());
 		return response;
-	}	
+	}
 }

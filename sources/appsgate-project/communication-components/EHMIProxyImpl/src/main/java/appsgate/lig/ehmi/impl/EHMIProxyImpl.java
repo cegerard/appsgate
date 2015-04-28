@@ -59,7 +59,7 @@ import java.util.*;
  * @version 1.0.0
  *
  */
-public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponseListener {
+public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponseListener, CommandListener {
 
     /**
      *
@@ -1112,7 +1112,7 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
     public void notifyResponse(String objectId, String value, String callId, int clientId) {
         // This first version only does what was excpected from Generic Commands and EHMI Commands,
         // sends the response to the websocket 
-        if (sendToClientService != null) {
+        if (sendToClientService != null && clientId>0) {
             try {
                 JSONObject msg = new JSONObject();
                 msg.put("value", value);
@@ -1160,4 +1160,12 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
     public void getWorldState(Long timestamp) {
        dependency.sendGraphAt(timestamp);
     }
+
+    /**
+     * EHMI Can be directly used to execute commands
+     */
+	@Override
+	public void onReceivedCommand(JSONObject command) {
+		commandListener.onReceivedCommand(command);
+	}
 }
