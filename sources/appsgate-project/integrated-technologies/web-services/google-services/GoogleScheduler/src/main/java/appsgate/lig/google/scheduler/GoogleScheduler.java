@@ -2,6 +2,7 @@ package appsgate.lig.google.scheduler;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.security.acl.LastOwnerException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -126,7 +127,7 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 			if((System.currentTimeMillis()-timeStamp)>refreshLease) {
 				timeStamp = System.currentTimeMillis();
 
-				Set <GoogleEvent> events = getEvents(currentTime);
+				Set <GoogleEvent> events = getEvents(currentTime, -1);
 
 				// If no events, we do nothing (expecting the refresh timer to wake up in case of new events registered)
 				if(events==null ||events.size()<1) {
@@ -172,6 +173,13 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 			}
 		}
 	}
+	
+	
+	
+	Set <GoogleEvent> cachedListOpen = null; 
+	long cachedStartTime = -1;
+	long cachedLastRequest = -1;
+	static final long CACHE_INTERVAL = 5*1000;
 
 	private Set <GoogleEvent> getEvents(long startTime, long endTime) throws SchedulingException{
 		logger.trace("getEvents(long startTime : "+startTime
@@ -181,6 +189,19 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 			logger.error("No GoogleAdapter service registered, unavailable to get events");
 			throw new SchedulingException("No GoogleAdapter service registered, unavailable to get events");
 		}
+		
+		long currentTime = System.currentTimeMillis();
+		
+		if(cachedListOpen != null // We have a list of events ready
+				&& currentTime < cachedLastRequest+CACHE_INTERVAL // The latest request was just a few seconds before
+				&& endTime == -1 // This is an open (and costly) request
+				&& startTime >  cachedStartTime-CACHE_INTERVAL // The request adress a similar period as the cached one
+				&& startTime < cachedStartTime+CACHE_INTERVAL
+				) {
+			logger.trace("getEvents(...), another similar request near the previous one, returning a cached list of events");
+			return cachedListOpen;
+		}
+		
 
 		Map<String, String> requestParameters=new HashMap<String, String>();
 		if(startTime != -1) {
@@ -190,8 +211,15 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 			requestParameters.put(GoogleCalendarReader.PARAM_TIMEMAX, dateFormat.format(new Date(endTime)));
 		}
 
-		// if request has an open period, we do have to check specifically reccuring events (only the first one is considered)
-		if(startTime == -1 || endTime == -1) {
+		// if request has an open ended period, we do have to check specifically reccuring events (only the first one is considered)
+		if (endTime == -1 && startTime != -1) {
+			logger.trace("getEvents(...), the request on open end time seems different from the previous one, reseting the cache indexes");
+			cachedLastRequest = currentTime;
+			cachedStartTime = startTime;
+
+			cachedListOpen = serviceAdapter.getEvents(calendarId, requestParameters);
+			return cachedListOpen;
+		}else if (startTime == -1 || endTime == -1) {
 			return serviceAdapter.getEvents(calendarId, requestParameters);
 		} else {
 			// else all events are retruning, including multple occurence of recuring events
@@ -202,15 +230,6 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 
 	}
 
-
-	private Set <GoogleEvent> getEvents(long startTime) throws SchedulingException{
-		logger.trace("getEvents(long startTime : "+startTime+")");
-
-		long endPeriod = startTime + observationInterval;
-
-		return getEvents(startTime, endPeriod);
-
-	}
 
 	@Override	
 	public void resetScheduler() throws SchedulingException{
@@ -487,6 +506,7 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 
 		requestContent=content.toString();
 
+		cachedLastRequest = -1;
 		GoogleEvent event = serviceAdapter.addEvent(calendarId, requestContent);
 
 		if( event == null) {
@@ -564,7 +584,8 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 		content.put("description", description);
 
 		requestContent=content.toString();
-
+		
+		cachedLastRequest = -1;
 		GoogleEvent event = serviceAdapter.addEvent(calendarId, requestContent);
 
 		if( event == null) {
