@@ -7,6 +7,7 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoException;
+import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -30,9 +31,13 @@ public class TraceMongo implements TraceHistory {
      */
     private static final String DBNAME = "TraceHistory";
     /**
-     * The collection containing symbol table
+     * The collection containing trace table
      */
     private static final String TRACES = "traces";
+    /**
+     * The collection containing execution table
+     */
+    private static final String EXECUTION_TRACES = "execution";
 
     /**
      * The connection to the mongo db
@@ -71,6 +76,24 @@ public class TraceMongo implements TraceHistory {
             }
         }
         return false;
+    }
+
+    @Override
+    public void addExecutionTrace(Long timestamp, String pid, String node) {
+        if (isValidConf()) {
+            try {
+                DBCollection context = conf.getDB(DBNAME).getCollection(EXECUTION_TRACES);
+
+                BasicDBObject newVal = new BasicDBObject("pid", pid)
+                        .append("time", timestamp)
+                        .append("node", node);
+
+                context.insert(newVal);
+
+            } catch (MongoException e) {
+                LOGGER.error("A Database Excepion has been raised: " + e);
+            }
+        }
     }
 
     @Override
@@ -206,7 +229,7 @@ public class TraceMongo implements TraceHistory {
                 a.put(new JSONObject(o));
             } catch (JSONException ex) {
 
-            } catch(NullPointerException e){
+            } catch (NullPointerException e) {
                 // Traces database not clean
             }
         }
@@ -224,6 +247,39 @@ public class TraceMongo implements TraceHistory {
             return false;
         }
         return true;
+    }
+
+    public JSONArray getLastNodesId(Long timestamp) {
+        JSONArray arr = new JSONArray();
+        if (isValidConf()) {
+            DBCollection collection = conf.getDB(DBNAME).getCollection(EXECUTION_TRACES);
+            for (Object o : collection.distinct("pid")) {
+                String id = o.toString();
+                DBCursor cursor = collection
+                        .find(BasicDBObjectBuilder.start().add("time", BasicDBObjectBuilder.start("$lte", timestamp).get()).add("pid", id).get())
+                        .sort(new BasicDBObject("time", -1)).limit(1);
+                try {
+                    if (!cursor.hasNext()) {
+                        LOGGER.debug("No logs for {} before the start of window", id);
+                        continue;
+                    }
+                } catch (Exception e) {
+                    LOGGER.error("Unable to parse cursor" + e.getMessage());
+                    continue;
+                }
+                String node = cursor.next().get("node").toString();
+                try {
+                    JSONObject json = new JSONObject();
+                    json.put("pid", id);
+                    json.put("node", node);
+                    arr.put(json);
+                } catch (JSONException ex) {
+
+                }
+            }
+        }
+        return arr;
+
     }
 
 }

@@ -1,6 +1,5 @@
 package appsgate.lig.ehmi.spec.trace;
 
-import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -86,4 +85,10 @@ public interface TraceManSpec {
      */
     public JSONObject getStatus();
 
+    /**
+     * 
+     * @param timestamp
+     * @return 
+     */
+    public JSONArray getLastNodesId(Long timestamp);
 }

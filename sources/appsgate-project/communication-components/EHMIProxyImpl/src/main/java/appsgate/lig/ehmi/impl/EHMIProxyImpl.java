@@ -43,6 +43,7 @@ import appsgate.lig.ehmi.spec.messages.ClockAlarmNotificationMsg;
 import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 import appsgate.lig.ehmi.spec.trace.TraceManSpec;
 import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
+import appsgate.lig.manager.client.communication.ClientCommunicationManager;
 
 import java.net.*;
 import java.util.*;
@@ -1156,9 +1157,35 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
         userManagerBound = false;
     }
 
-    
+    /**
+     *
+     * @param timestamp
+     */
     public void getWorldState(Long timestamp) {
-       dependency.sendGraphAt(timestamp);
+        dependency.sendGraphAt(timestamp);
+        HashMap<String, JSONObject> map = interpreter.getListProgramsAt(timestamp);
+        JSONArray programList = new JSONArray();
+        for (String key : map.keySet()) {
+            programList.put(map.get(key));
+        }
+        JSONObject msg = new JSONObject();
+        try {
+            msg.put("value", programList.toString());
+            msg.put("objectId", "EHMI");
+            msg.put("callId", "programState");
+        } catch (JSONException ex) {
+
+        }
+        sendFromConnection(ClientCommunicationManager.DEFAULT_SERVER_NAME, msg.toString());
+        JSONArray lastNodesId = traceManager.getLastNodesId(timestamp);
+        try {
+            msg.put("value", lastNodesId.toString());
+            msg.put("callId", "programIds");
+        } catch (JSONException ex) {
+
+        }
+        sendFromConnection(ClientCommunicationManager.DEFAULT_SERVER_NAME, msg.toString());
+
     }
 
     /**

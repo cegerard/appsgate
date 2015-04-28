@@ -10,10 +10,10 @@ import org.slf4j.LoggerFactory;
 
 import appsgate.lig.context.services.DataBasePullService;
 import appsgate.lig.context.services.DataBasePushService;
-import appsgate.lig.persistence.MongoDBConfigFactory;
 import appsgate.lig.persistence.MongoDBConfiguration;
 
 import com.mongodb.BasicDBObject;
+import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
@@ -23,268 +23,267 @@ import com.mongodb.MongoException;
  * The context history is use to all every context component to save its state.
  * It offer services to save the current state and to get the last state save
  * to/from a mongo data base
- * 
+ *
  * @author Cédric Gérard
  * @since June 16, 2013
  * @version 1.0.0
- * 
+ *
  * @see DataBasePullService
  * @see DataBasePushService
- * 
+ *
  */
-
 public class ContextHistory implements DataBasePullService, DataBasePushService {
 
-	private final Logger logger = LoggerFactory.getLogger(ContextHistory.class);
+    private final Logger logger = LoggerFactory.getLogger(ContextHistory.class);
 
-	private static final String DBNAME_DEFAULT = "ContextHistory";
+    private static final String DBNAME_DEFAULT = "ContextHistory";
 
-	/*
-	 * The collection containing the links (wires) created, and deleted
-	 */
+    /*
+     * The collection containing the links (wires) created, and deleted
+     */
+    private final MongoDBConfiguration myConfiguration = null;
 
-	private MongoDBConfiguration myConfiguration = null;
+    /**
+     * The collection containing symbol table
+     */
+    private static final String CONTEXT_COLLECTION = "context";
 
-	/**
-	 * The collection containing symbol table
-	 */
-	private static final String CONTEXT_COLLECTION = "context";
-
-	public void start() throws Exception {
-	}
-
-	public void stop() {
-	}
-
-    public boolean testDB() {
-        if (myConfiguration != null && myConfiguration.isValid()) {
-            return true;
-        }
-        else return false;
+    public void start() throws Exception {
     }
 
-	@Override
-	public boolean pushData_add(String name, String userID, String objectID,
-			String addedValue, ArrayList<Entry<String, Object>> properties) {
-		if (myConfiguration != null && myConfiguration.isValid())
-			try {
-				DBCollection context = myConfiguration.getDB(DBNAME_DEFAULT).getCollection(
-						CONTEXT_COLLECTION);
+    public void stop() {
+    }
 
-				BasicDBObject newVal = new BasicDBObject("name", name)
-						.append("time", System.currentTimeMillis())
-						.append("op", DataBasePushService.OP.ADD.toString())
-						.append("userID", userID).append("objectID", objectID)
-						.append("addedValue", addedValue);
+    @Override
+    public boolean testDB() {
+        return myConfiguration != null && myConfiguration.isValid();
+    }
 
-				ArrayList<BasicDBObject> stateArray = new ArrayList<BasicDBObject>();
+    @Override
+    public boolean pushData_add(String name, String userID, String objectID,
+            String addedValue, ArrayList<Entry<String, Object>> properties) {
+        if (myConfiguration != null && myConfiguration.isValid()) {
+            try {
+                DBCollection context = myConfiguration.getDB(DBNAME_DEFAULT).getCollection(
+                        CONTEXT_COLLECTION);
 
-				for (Map.Entry<String, Object> e : properties) {
-					stateArray.add(new BasicDBObject(e.getKey(), e.getValue()));
-				}
+                BasicDBObject newVal = new BasicDBObject("name", name)
+                        .append("time", System.currentTimeMillis())
+                        .append("op", DataBasePushService.OP.ADD.toString())
+                        .append("userID", userID).append("objectID", objectID)
+                        .append("addedValue", addedValue);
 
-				newVal.append("state", stateArray);
+                ArrayList<BasicDBObject> stateArray = new ArrayList<BasicDBObject>();
 
-				context.insert(newVal);
-				return true;
+                for (Map.Entry<String, Object> e : properties) {
+                    stateArray.add(new BasicDBObject(e.getKey(), e.getValue()));
+                }
 
-			} catch (MongoException e) {
-				stop();
-			}
-		return false;
-	}
+                newVal.append("state", stateArray);
 
-	@Override
-	public boolean pushData_remove(String name, String userID, String objectID,
-			String removedValue, ArrayList<Entry<String, Object>> properties) {
-		if (myConfiguration != null && myConfiguration.isValid())
+                context.insert(newVal);
+                return true;
 
-			try {
-				DBCollection context = myConfiguration.getDB(DBNAME_DEFAULT).getCollection(
-						CONTEXT_COLLECTION);
+            } catch (MongoException e) {
+                stop();
+            }
+        }
+        return false;
+    }
 
-				BasicDBObject newVal = new BasicDBObject("name", name)
-						.append("time", System.currentTimeMillis())
-						.append("op", DataBasePushService.OP.REMOVE.toString())
-						.append("userID", userID).append("objectID", objectID)
-						.append("removedValue", removedValue);
+    @Override
+    public boolean pushData_remove(String name, String userID, String objectID,
+            String removedValue, ArrayList<Entry<String, Object>> properties) {
+        if (myConfiguration != null && myConfiguration.isValid()) {
+            try {
+                DBCollection context = myConfiguration.getDB(DBNAME_DEFAULT).getCollection(
+                        CONTEXT_COLLECTION);
 
-				ArrayList<BasicDBObject> stateArray = new ArrayList<BasicDBObject>();
+                BasicDBObject newVal = new BasicDBObject("name", name)
+                        .append("time", System.currentTimeMillis())
+                        .append("op", DataBasePushService.OP.REMOVE.toString())
+                        .append("userID", userID).append("objectID", objectID)
+                        .append("removedValue", removedValue);
 
-				for (Map.Entry<String, Object> e : properties) {
-					stateArray.add(new BasicDBObject(e.getKey(), e.getValue()));
-				}
+                ArrayList<BasicDBObject> stateArray = new ArrayList<BasicDBObject>();
 
-				newVal.append("state", stateArray);
+                for (Map.Entry<String, Object> e : properties) {
+                    stateArray.add(new BasicDBObject(e.getKey(), e.getValue()));
+                }
 
-				context.insert(newVal);
-				return true;
-			} catch (MongoException e) {
-				stop();
-			}
-		return false;
-	}
+                newVal.append("state", stateArray);
 
-	@Override
-	public boolean pushData_change(String name, String userID, String objectID,
-			String oldValue, String newValue,
-			ArrayList<Entry<String, Object>> properties) {
-		if (myConfiguration != null && myConfiguration.isValid())
-			try {
+                context.insert(newVal);
+                return true;
+            } catch (MongoException e) {
+                stop();
+            }
+        }
+        return false;
+    }
 
-				DBCollection context = myConfiguration.getDB(DBNAME_DEFAULT).getCollection(
-						CONTEXT_COLLECTION);
+    @Override
+    public boolean pushData_change(String name, String userID, String objectID,
+            String oldValue, String newValue,
+            ArrayList<Entry<String, Object>> properties) {
+        if (myConfiguration != null && myConfiguration.isValid()) {
+            try {
 
-				BasicDBObject newVal = new BasicDBObject("name", name)
-						.append("time", System.currentTimeMillis())
-						.append("op", DataBasePushService.OP.CHANGE.toString())
-						.append("userID", userID).append("objectID", objectID)
-						.append("oldValue", oldValue)
-						.append("newValue", newValue);
+                DBCollection context = myConfiguration.getDB(DBNAME_DEFAULT).getCollection(
+                        CONTEXT_COLLECTION);
 
-				ArrayList<BasicDBObject> stateArray = new ArrayList<BasicDBObject>();
+                BasicDBObject newVal = new BasicDBObject("name", name)
+                        .append("time", System.currentTimeMillis())
+                        .append("op", DataBasePushService.OP.CHANGE.toString())
+                        .append("userID", userID).append("objectID", objectID)
+                        .append("oldValue", oldValue)
+                        .append("newValue", newValue);
 
-				for (Map.Entry<String, Object> e : properties) {
-					stateArray.add(new BasicDBObject(e.getKey(), e.getValue()));
-				}
+                ArrayList<BasicDBObject> stateArray = new ArrayList<BasicDBObject>();
 
-				newVal.append("state", stateArray);
+                for (Map.Entry<String, Object> e : properties) {
+                    stateArray.add(new BasicDBObject(e.getKey(), e.getValue()));
+                }
 
-				context.insert(newVal);
-				return true;
-			} catch (MongoException e) {
-				stop();
-			}
-		return false;
-	}
+                newVal.append("state", stateArray);
 
+                context.insert(newVal);
+                return true;
+            } catch (MongoException e) {
+                stop();
+            }
+        }
+        return false;
+    }
 
+    @Override
+    public JSONObject pullLastObjectVersion(String ObjectName) {
+        // force connection to be established
 
+        if (myConfiguration != null && myConfiguration.isValid()) {
 
-	@Override
-	public JSONObject pullLastObjectVersion(String ObjectName) {
-		// force connection to be established
+            DBCollection context = myConfiguration.getDB(DBNAME_DEFAULT).getCollection(
+                    CONTEXT_COLLECTION);
+            DBCursor cursor = context
+                    .find(new BasicDBObject("name", ObjectName));
 
-		if (myConfiguration != null && myConfiguration.isValid()) {
+            return formatResult(cursor);
 
-			DBCollection context = myConfiguration.getDB(DBNAME_DEFAULT).getCollection(
-					CONTEXT_COLLECTION);
-			DBCursor cursor = context
-					.find(new BasicDBObject("name", ObjectName));
+        }
+        return null;
+    }
 
-			DBObject val = null;
-			Long curTime, lastTime;
-			lastTime = Long.valueOf(0);
+    @Override
+    public JSONObject pullObjectVersionAt(String simpleName, Long timestamp) {
+        if (myConfiguration != null && myConfiguration.isValid()) {
 
-			for (DBObject cur : cursor) {
-				curTime = (Long) cur.get("time");
-				if (curTime > lastTime) {
-					lastTime = curTime;
-					val = cur;
-				}
-			}
+            DBCollection context = myConfiguration.getDB(DBNAME_DEFAULT).getCollection(
+                    CONTEXT_COLLECTION);
+            DBCursor cursor = context
+                    .find(BasicDBObjectBuilder.start().add("time", BasicDBObjectBuilder.start("$lte", timestamp).get()).add("name", simpleName).get())
+                    .sort(new BasicDBObject("time", -1)).limit(1);
+            return formatResult(cursor);
 
-			if (val != null) {
-				return new JSONObject(val.toMap());
-			}
-		}
+        }
+        return null;
+    }
 
-		return null;
-	}
+    @Override
+    public boolean pushData_add(String name, String objectID,
+            String addedValue, ArrayList<Entry<String, Object>> properties) {
+        if (myConfiguration != null && myConfiguration.isValid()) {
+            try {
 
-	@Override
-	public boolean pushData_add(String name, String objectID,
-			String addedValue, ArrayList<Entry<String, Object>> properties) {
-		if (myConfiguration != null && myConfiguration.isValid())
-			try {
+                DBCollection context = myConfiguration.getDB(DBNAME_DEFAULT).getCollection(
+                        CONTEXT_COLLECTION);
 
-				DBCollection context = myConfiguration.getDB(DBNAME_DEFAULT).getCollection(
-						CONTEXT_COLLECTION);
+                BasicDBObject newVal = new BasicDBObject("name", name)
+                        .append("time", System.currentTimeMillis())
+                        .append("op", DataBasePushService.OP.ADD.toString())
+                        .append("objectID", objectID)
+                        .append("addedValue", addedValue);
 
-				BasicDBObject newVal = new BasicDBObject("name", name)
-						.append("time", System.currentTimeMillis())
-						.append("op", DataBasePushService.OP.ADD.toString())
-						.append("objectID", objectID)
-						.append("addedValue", addedValue);
+                ArrayList<BasicDBObject> stateArray = new ArrayList<BasicDBObject>();
 
-				ArrayList<BasicDBObject> stateArray = new ArrayList<BasicDBObject>();
+                for (Map.Entry<String, Object> e : properties) {
+                    stateArray.add(new BasicDBObject(e.getKey(), e.getValue()));
+                }
 
-				for (Map.Entry<String, Object> e : properties) {
-					stateArray.add(new BasicDBObject(e.getKey(), e.getValue()));
-				}
+                newVal.append("state", stateArray);
 
-				newVal.append("state", stateArray);
+                context.insert(newVal);
+                return true;
+            } catch (MongoException e) {
+                stop();
+            }
+        }
+        return false;
+    }
 
-				context.insert(newVal);
-				return true;
-			} catch (MongoException e) {
-				stop();
-			}
-		return false;
-	}
+    @Override
+    public boolean pushData_remove(String name, String objectID,
+            String removedValue, ArrayList<Entry<String, Object>> properties) {
+        if (myConfiguration != null && myConfiguration.isValid()) {
+            try {
+                DBCollection context = myConfiguration.getDB(DBNAME_DEFAULT).getCollection(
+                        CONTEXT_COLLECTION);
 
-	@Override
-	public boolean pushData_remove(String name, String objectID,
-			String removedValue, ArrayList<Entry<String, Object>> properties) {
-		if (myConfiguration != null && myConfiguration.isValid())
-			try {
-				DBCollection context = myConfiguration.getDB(DBNAME_DEFAULT).getCollection(
-						CONTEXT_COLLECTION);
+                BasicDBObject newVal = new BasicDBObject("name", name)
+                        .append("time", System.currentTimeMillis())
+                        .append("op", DataBasePushService.OP.REMOVE.toString())
+                        .append("objectID", objectID)
+                        .append("removedValue", removedValue);
 
-				BasicDBObject newVal = new BasicDBObject("name", name)
-						.append("time", System.currentTimeMillis())
-						.append("op", DataBasePushService.OP.REMOVE.toString())
-						.append("objectID", objectID)
-						.append("removedValue", removedValue);
+                ArrayList<BasicDBObject> stateArray = new ArrayList<BasicDBObject>();
 
-				ArrayList<BasicDBObject> stateArray = new ArrayList<BasicDBObject>();
+                for (Map.Entry<String, Object> e : properties) {
+                    stateArray.add(new BasicDBObject(e.getKey(), e.getValue()));
+                }
 
-				for (Map.Entry<String, Object> e : properties) {
-					stateArray.add(new BasicDBObject(e.getKey(), e.getValue()));
-				}
+                newVal.append("state", stateArray);
 
-				newVal.append("state", stateArray);
+                context.insert(newVal);
+                return true;
+            } catch (MongoException e) {
+                stop();
+            }
+        }
+        return false;
+    }
 
-				context.insert(newVal);
-				return true;
-			} catch (MongoException e) {
-				stop();
-			}
-		return false;
-	}
+    @Override
+    public boolean pushData_change(String name, String objectID,
+            String oldValue, String newValue,
+            ArrayList<Entry<String, Object>> properties) {
+        if (myConfiguration != null && myConfiguration.isValid()) {
+            try {
 
-	@Override
-	public boolean pushData_change(String name, String objectID,
-			String oldValue, String newValue,
-			ArrayList<Entry<String, Object>> properties) {
-		if (myConfiguration != null && myConfiguration.isValid())
-			try {
+                DBCollection context = myConfiguration.getDB(DBNAME_DEFAULT).getCollection(
+                        CONTEXT_COLLECTION);
 
-				DBCollection context = myConfiguration.getDB(DBNAME_DEFAULT).getCollection(
-						CONTEXT_COLLECTION);
+                BasicDBObject newVal = new BasicDBObject("name", name)
+                        .append("time", System.currentTimeMillis())
+                        .append("op", DataBasePushService.OP.CHANGE.toString())
+                        .append("objectID", objectID)
+                        .append("oldValue", oldValue)
+                        .append("newValue", newValue);
 
-				BasicDBObject newVal = new BasicDBObject("name", name)
-						.append("time", System.currentTimeMillis())
-						.append("op", DataBasePushService.OP.CHANGE.toString())
-						.append("objectID", objectID)
-						.append("oldValue", oldValue)
-						.append("newValue", newValue);
+                ArrayList<BasicDBObject> stateArray = new ArrayList<BasicDBObject>();
 
-				ArrayList<BasicDBObject> stateArray = new ArrayList<BasicDBObject>();
+                for (Map.Entry<String, Object> e : properties) {
+                    stateArray.add(new BasicDBObject(e.getKey(), e.getValue()));
+                }
 
-				for (Map.Entry<String, Object> e : properties) {
-					stateArray.add(new BasicDBObject(e.getKey(), e.getValue()));
-				}
+                newVal.append("state", stateArray);
 
-				newVal.append("state", stateArray);
-
-				context.insert(newVal);
-				return true;
-			} catch (MongoException e) {
-				stop();
-			}
-		return false;
-	}
+                context.insert(newVal);
+                return true;
+            } catch (MongoException e) {
+                stop();
+            }
+        }
+        return false;
+    }
 
     public void unbindConfiguration() {
         // TODO
@@ -296,5 +295,23 @@ public class ContextHistory implements DataBasePullService, DataBasePushService 
 
     }
 
+    private JSONObject formatResult(DBCursor cursor) {
+        DBObject val = null;
+        Long curTime, lastTime;
+        lastTime = Long.valueOf(0);
+
+        for (DBObject cur : cursor) {
+            curTime = (Long) cur.get("time");
+            if (curTime > lastTime) {
+                lastTime = curTime;
+                val = cur;
+            }
+        }
+
+        if (val != null) {
+            return new JSONObject(val.toMap());
+        }
+        return null;
+    }
 
 }
