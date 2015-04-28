@@ -256,7 +256,7 @@ public class TraceMongo implements TraceHistory {
             for (Object o : collection.distinct("pid")) {
                 String id = o.toString();
                 DBCursor cursor = collection
-                        .find(BasicDBObjectBuilder.start().add("time", BasicDBObjectBuilder.start("$lte", timestamp).get()).add("name", id).get())
+                        .find(BasicDBObjectBuilder.start().add("time", BasicDBObjectBuilder.start("$lte", timestamp).get()).add("pid", id).get())
                         .sort(new BasicDBObject("time", -1)).limit(1);
                 try {
                     if (!cursor.hasNext()) {
