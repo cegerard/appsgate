@@ -20,15 +20,20 @@
 		<dependency>
 			<groupId>appsgate.components</groupId>
 			<artifactId>ClientCommunicationManager</artifactId>
-			<version>1.0.0</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>appsgate.components</groupId>
 			<artifactId>CHMIProxySpec</artifactId>
-			<version>1.0.0</version>
+			<version>${project.version}</version>
 		</dependency>
-	</dependencies>
-
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>ClientCommunicationManager</artifactId>
+            <version>${project.version}</version>
+        </dependency>		
+    </dependencies>
+		
 	<!-- Build Description -->
 	<build>
 		<plugins>
