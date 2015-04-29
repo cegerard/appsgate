@@ -393,18 +393,15 @@ public class Trace {
      * @param srcId
      * @param event
      * @param cause
-     * @param g
      * @param t
      * @return
      */
-    public static JSONObject getJSONDevice(String srcId, JSONObject event, JSONObject cause, GrammarDescription g, TraceMan t) {
+    public static JSONObject getJSONDevice(String srcId, JSONObject event, JSONObject cause, TraceMan t) {
+        GrammarDescription g = t.getGrammar(srcId);
+
         if (g == null) {
             LOGGER.error("Unable to build a trace on an unknown type for {}", srcId);
             LOGGER.debug("No trace have been produced for {} with cause: {}", event, cause);
-            return null;
-        }
-        if (!g.generateTrace()) {
-            LOGGER.trace("{} does not generate device traces.", g.getType());
             return null;
         }
         JSONObject objectNotif = new JSONObject();
@@ -515,9 +512,9 @@ public class Trace {
             }
             desc = gram.getTraceMessageFromCommand(notif.getDescription());
         }
-        JSONObject jsonDecoration = Trace.getJSONDecoration(Trace.DECORATION_TYPE.state, notif.getType(), "Program", timeStamp, notif.getProgramId(), notif.getDeviceId(),
+        JSONObject jsonDecoration = Trace.getJSONDecoration(DECORATION_TYPE.state, notif.getType(), "Program", timeStamp, notif.getProgramId(), notif.getDeviceId(),
                 notif.getProgramName(), t.getDeviceName(notif.getDeviceId()), desc, context);
-        JSONObject d = Trace.getJSONDevice(notif.getDeviceId(), null, jsonDecoration, gram, t);
+        JSONObject d = Trace.getJSONDevice(notif.getDeviceId(), null, jsonDecoration, t);
         try {
             pJson.put("decorations", new JSONArray().put(jsonDecoration));
         } catch (JSONException ex) {
@@ -562,4 +559,84 @@ public class Trace {
         return deviceState;
     }
 
+        /**
+     * Compute the event line for debugger
+     *
+     * @param traces default traces tab
+     * @param from start time stamp
+     * @param to end time stamp
+     * @param timeLineDelta
+     * @return the event line as a JSONArray
+     * @throws JSONException
+     */
+    public static JSONArray eventLineComputation(JSONArray traces, long from, long to, long timeLineDelta) throws JSONException {
+
+        JSONArray eventLine = new JSONArray();
+        int size = traces.length();
+        JSONObject trace;
+        long beg = from;
+        long end = from + timeLineDelta;
+        ArrayList<JSONObject> interval = new ArrayList<>();
+
+        if (size > 0) {
+
+            if (traces.getJSONObject(0).getLong("timestamp") > from) {
+                JSONObject firstEntry = new JSONObject();
+                firstEntry.put("timestamp", from);
+                firstEntry.put("value", 0);
+                eventLine.put(firstEntry);
+            }
+
+            for (int i = 0; i < size; i++) {
+
+                trace = traces.getJSONObject(i);
+                long ts = trace.getLong("timestamp");
+
+                if (ts >= beg && ts < end) {
+                    interval.add(trace);
+                } else {
+                    if (!interval.isEmpty()) {
+                        JSONObject entry = new JSONObject();
+                        entry.put("timestamp", beg);
+                        int nbEvent = 0;
+                        for (JSONObject tr : interval) {
+                            nbEvent += tr.getJSONArray("programs").length() + tr.getJSONArray("devices").length();
+                        }
+                        entry.put("value", nbEvent);
+                        eventLine.put(entry);
+                        interval.clear();
+                    }
+                    i--; //Ensure that all trace are placed in time stamp interval
+                    beg = end;
+                    end += timeLineDelta;
+                }
+            }
+
+            if (!interval.isEmpty()) {
+                JSONObject entry = new JSONObject();
+                entry.put("timestamp", beg);
+                int nbEvent = 0;
+                for (JSONObject tr : interval) {
+                    nbEvent += tr.getJSONArray("programs").length() + tr.getJSONArray("devices").length();
+                }
+                entry.put("value", nbEvent);
+                eventLine.put(entry);
+            }
+
+        } else {
+            JSONObject firstEntry = new JSONObject();
+            firstEntry.put("timestamp", from);
+            firstEntry.put("value", 0);
+            eventLine.put(firstEntry);
+        }
+
+        JSONObject lastEntry = new JSONObject();
+        lastEntry.put("timestamp", to);
+        lastEntry.put("value", 0);
+        eventLine.put(lastEntry);
+
+        return eventLine;
+    }
+    
+    
 }

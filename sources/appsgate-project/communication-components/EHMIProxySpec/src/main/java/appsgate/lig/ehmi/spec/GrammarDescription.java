@@ -109,7 +109,6 @@ public class GrammarDescription {
     }
 
     public String getValueVarName(String what) {
-        String ret = what;
         try {
             JSONArray a = json.getJSONArray("traceDesc");
             int i = 0;
@@ -121,7 +120,8 @@ public class GrammarDescription {
             }
         } catch (JSONException ex) {
         }
-        return ret;
+        LOGGER.debug("The var {} is not present in the grammar.json file and should not be traced", what);
+        return null;
     }
 
     public boolean generateTrace() {
