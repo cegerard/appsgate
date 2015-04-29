@@ -3,6 +3,8 @@
  */
 package appsgate.lig.energy.monitoring.service.models;
 
+import appsgate.lig.energy.monitoring.group.CoreEnergyMonitoringGroup;
+
 /**
  * Helper class to handle energyIndex
  * manage directly watts/secs
@@ -15,6 +17,8 @@ package appsgate.lig.energy.monitoring.service.models;
 public class ActiveEnergySensor {
 	
 	String sensorId;
+	CoreEnergyMonitoringGroup group;
+	
 	/**
 	 * @return the sensorId
 	 */
@@ -28,10 +32,10 @@ public class ActiveEnergySensor {
 	 */
 	public ActiveEnergySensor(String sensorId,
 			double energyIndex,
-			boolean insideMonitoringPeriod) {
+			CoreEnergyMonitoringGroup group) {
 		this.sensorId = sensorId;
 		lastEnergyIndex = energyIndex;
-		wasInsideMonitoringPeriod = insideMonitoringPeriod;
+		this.group = group;
 		resetEnergy();
 	}
 	/**
@@ -53,54 +57,31 @@ public class ActiveEnergySensor {
 		energyDuringPeriod = 0;
 	}
 	
-	public void newEnergyMeasure(double energyIndex,
-			boolean insideMonitoringPeriod) {
+	public void newEnergyMeasure(double energyIndex) {
 		double diff = 0;
 		if(energyIndex < lastEnergyIndex) {
 			// This is likely that Plug has been reseted since last measure (for instance unplugged)
 			// But the energy from 0 to the current index have been consumed for sure since last time
 			diff = energyIndex;
-			// TODO: maybe we should trigger an event indicating that we may have lost data (plug not paired or whatever) ? 
 		} else if (energyIndex >= lastEnergyIndex) {
 			// Plug does seems to work properly since last time and energy have changed
 			diff = energyIndex-lastEnergyIndex;
 		}
 		totalEnergy+=diff;
 		
-		if (insideMonitoringPeriod) {
-			if(wasInsideMonitoringPeriod) {
-				// if we are in a period and we were previously in a period, we add the value
-				energyDuringPeriod+=diff;
-			}// no need for else, we consider that we just entered in the period
-		} else {
-			if(wasInsideMonitoringPeriod) {
-				// to be consistent with the previous case, we consider that we just exited from the period
-				energyDuringPeriod+=diff;
-			}
+		if(group.isMonitoring()) {
+			// if we are in a period and we were previously in a period, we add the value
+			energyDuringPeriod+=diff;
 		}
 		
 		lastEnergyIndex = energyIndex;
-		wasInsideMonitoringPeriod = insideMonitoringPeriod;		
+	}
+	
+	public double getEnergyIndex() {
+		return lastEnergyIndex;
 	}
 
 	double totalEnergy;
 	double energyDuringPeriod;
 	double lastEnergyIndex;
-	boolean wasInsideMonitoringPeriod;
-	
-	/**
-	 * @return the wasInsideMonitoringPeriod
-	 */
-	public boolean isInsideMonitoringPeriod() {
-		return wasInsideMonitoringPeriod;
-	}
-
-	/**
-	 * Useful if we know that we entered/exited a period but there was no measure since  
-	 * @param wasInsideMonitoringPeriod the wasInsideMonitoringPeriod to set
-	 */
-	public void setInsideMonitoringPeriod(boolean insideMonitoringPeriod) {
-		this.wasInsideMonitoringPeriod = insideMonitoringPeriod;
-	}
-
 }

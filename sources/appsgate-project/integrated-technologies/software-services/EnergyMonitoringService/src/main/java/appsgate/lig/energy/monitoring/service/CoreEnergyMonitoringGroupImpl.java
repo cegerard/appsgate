@@ -36,10 +36,6 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		CoreEnergyMonitoringGroup {
 	
 	public static final String IMPL_NAME = "CoreEnergyMonitoringGroupImpl";
-	
-	public static final String MSG_VARNAME_ACTIVEENERGY = "activeEnergy";
-	public static final String MSG_VARNAME_ANOTHERTBD = "to be defined";
-
 
 	private final static Logger logger = LoggerFactory.getLogger(CoreEnergyMonitoringGroupImpl.class);
 	
@@ -72,6 +68,7 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	
 	double lastTotal = 0;
 	double lastEnergyDuringPeriod = 0;
+	private boolean isMonitoring = false;
 	
 	
 	public final static String NAME_KEY = "name";
@@ -157,6 +154,15 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	public JSONArray getEnergySensorsGroup() {
 		return new JSONArray(sensors.keySet());
 	}
+	
+	/**
+	 * method to help using contains
+	 * @return
+	 */
+	public Set<String> getEnergySensorsGroupAsSet() {
+		return sensors.keySet();
+	}
+
 
 	/* (non-Javadoc)
 	 * @see appsgate.lig.energy.monitoring.CoreEnergyMonitoringGroup#setEnergySensorsGroup(org.json.JSONArray)
@@ -177,21 +183,22 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	}
 	
 	private double getActiveEnergy(String sensorID) {
-		// We cannot know the latest energy measure
-		// because we may have lost the latest update that was done before adding the sensor
-		// So we get the max value, just to be sure to reset the sensor on next measure
-		double activeEnergy = Double.MAX_VALUE;
-		
-		return activeEnergy;
+		double value = EnergySensorPool.getInstance().getEnergyMeasure(sensorID);
+		// We do not call the real sensor to gets its latest energy measure
+		if(value >= 0) {
+			// If the sensor is known we get the reported latest value
+			return value;
+		} else {
+			// if the sensor is unkonwn 
+			// or we may have lost the latest update that was done before adding the sensor
+			// We get the max value, just to be sure to reset the sensor on next measure			
+			return Double.MAX_VALUE;
+		}
 	}
 	
-	private synchronized void privateAddEnergySensor(String sensorID) {
-		// TODO (we have 1° to check the period, and to 2° get the current measure of the sensor)
-		long time = System.currentTimeMillis(); // TODO: maybe we should use the CoreClock Time ?
-		
+	private synchronized void privateAddEnergySensor(String sensorID) {	
 		sensors.put(sensorID, new ActiveEnergySensor(sensorID,
-				getActiveEnergy(sensorID),
-				checkPeriod(time)));
+				getActiveEnergy(sensorID), this));
 	}
 
 	/* (non-Javadoc)
@@ -487,51 +494,12 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		// 3° check if we are in a monitoring period
 		// and decrease the budget accordingly
 		logger.trace("addActiveEnergyMeasure(String sensorID : {}, double value : {})",sensorID, value);
-		
-		long time = System.currentTimeMillis(); // TODO: maybe we should use the CoreClock Time ?
-		
-		sensors.get(sensorID).newEnergyMeasure(value, checkPeriod(time));
+				
+		sensors.get(sensorID).newEnergyMeasure(value);
 		computeEnergy();
 	}
 	
-	/**
-	 * Every sensors that might trigger energy-related event should send message
-	 * This handler filters
-	 * 1° sensor providing event not in the current group (not optimal, we should only bind event provider from the group)
-	 * 2° event is not related to energy consumption (not optimal, event should have been filtered above)
-	 */
-	@SuppressWarnings("unused")
-	private void energyChangedEvent(NotificationMsg msg) {
-		logger.trace("energyChangedEvent(NotificationMsg msg : {})",msg.JSONize());
-		// Filter 0, basic filtering
-		if(msg != null
-				&& msg.getSource() != null
-				&& msg.getVarName() != null
-				&& msg.getNewValue() != null) {
-			// Filter 1 sensor providing event not in the current group (not optimal, we should only bind event provider from the group)
-			if(sensors.keySet().contains(msg.getSource())) {
-				// Filter/routing 2 event is not related to energy consumption (not optimal, event should have been filtered above)
-				if(msg.getVarName().equals(MSG_VARNAME_ACTIVEENERGY)) {
-					try {
-						double value = Double.parseDouble(msg.getNewValue());
-						addActiveEnergyMeasure(msg.getSource(), value);
-					} catch (NumberFormatException e) {
-						logger.error("energyChangedEvent(..), value is not a double or float : ", e);
-					} 
-				} else if (msg.getVarName().equals(MSG_VARNAME_ANOTHERTBD)) {
-					// If other category of energy measures from other devices types are used,
-					// they should be added in this if/else structure
-					logger.trace("energyChangedEvent(..), you should not be there");
-				} else {
-					logger.trace("energyChangedEvent(..), message varName is not managed for the moment");
-				}
-			} else {
-				logger.trace("energyChangedEvent(..), sensor is not in this group");				
-			}
-		} else {
-			logger.trace("energyChangedEvent(..), empty message or no source/varName/value specified");
-		}		
-	}
+
 	
 	
 	private NotificationMsg stateChanged(String varName, String oldValue, String newValue) {
@@ -541,27 +509,46 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 
 	@Override
 	public boolean isMonitoring() {
-		// TODO Auto-generated method stub
-		return false;
+		return isMonitoring;
 	}
 
 
 	@Override
-	public void startMonitoring() {
-		// TODO Auto-generated method stub
-		
-		// TODO send this if monitoring status was false previously
-		stateChanged(ISMONITORING_KEY, "false", "true");
-		
+	public synchronized void startMonitoring() {
+		logger.trace("startMonitoring()");
+		if(!isMonitoring){
+			logger.trace("startMonitoring(), starting monitoring status");
+			isMonitoring = true;
+			stateChanged(ISMONITORING_KEY, "false", "true");
+		} else {
+			logger.trace("startMonitoring(), already monitoring, does nothing");
+		}
 	}
-
 
 	@Override
-	public void stopMonitoring() {
-		// TODO Auto-generated method stub
-		
-		// TODO send this if monitoring status was true previously
-		stateChanged(ISMONITORING_KEY, "true","false");
-		
+	public synchronized void stopMonitoring() {
+		logger.trace("stopMonitoring()");
+		logger.trace("startMonitoring()");
+		if(isMonitoring){
+			logger.trace("stopMonitoring(), stoppping monitoring status");
+			isMonitoring = false;
+			stateChanged(ISMONITORING_KEY, "true","false");
+		} else {
+			logger.trace("stopMonitoring(), already stopped, does nothing");
+		}
 	}
+	
+	public void energyChanged(String sensorId) {
+		logger.trace("energyChanged(String sensorId : {})",
+				sensorId);
+		// basic filtering
+		// Maybe useless, this callback should be called only if relevant
+		if(sensorId != null && sensors.keySet().contains(sensorId)) {
+			addActiveEnergyMeasure(sensorId,
+					EnergySensorPool.getInstance().getEnergyMeasure(sensorId));
+		} else {
+			logger.trace("energyChanged(..), empty sensorID or energyIndex irrelevant");
+		}		
+	}
+	
 }

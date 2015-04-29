@@ -50,12 +50,21 @@ public class EnergyMonitoringAdapterImpl extends CoreObjectBehavior implements
 	private String userType;
 	private int status;
 		
+	public static final String MSG_VARNAME_ACTIVEENERGY = "activeEnergy";
+	public static final String MSG_VARNAME_ANOTHERTBD = "to be defined";
+	
+	Map<String, CoreEnergyMonitoringGroupImpl> instances;
+
+	
+	
+		
 	private final static Logger logger = LoggerFactory.getLogger(EnergyMonitoringAdapterImpl.class);
 	
 	public EnergyMonitoringAdapterImpl() {
     	serviceId = this.getClass().getSimpleName();// Do no need any hashcode or UUID, this service should be a singleton
     	userType = EnergyMonitoringAdapter.class.getSimpleName();
     	status = 2;
+    	instances = new HashMap<String, CoreEnergyMonitoringGroupImpl>();
     	ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
     	executor.scheduleAtFixedRate(this, 5, 60*5, TimeUnit.SECONDS);
 	}
@@ -148,6 +157,7 @@ public class EnergyMonitoringAdapterImpl extends CoreObjectBehavior implements
 		}
 		group.configureNew(sensors, budgetTotal, budgetUnit);
 		storeInstanceConfiguration(group.getDescription());
+		instances.put(instanceName, group);
 
 		stateChanged(ADDED_GROUP, null, group.getAbstractObjectId());
 		return group.getAbstractObjectId();
@@ -209,6 +219,8 @@ public class EnergyMonitoringAdapterImpl extends CoreObjectBehavior implements
 			logger.error("removeGroup(...) Unable to find APAM Instance"); 			
 			return;
 		}
+		
+		instances.remove(groupID);
 		((ComponentBrokerImpl)CST.componentBroker).disappearedComponent(inst);
 		removeInstanceConfiguration(groupID);
 				
@@ -220,15 +232,17 @@ public class EnergyMonitoringAdapterImpl extends CoreObjectBehavior implements
 	}
 	
 	String dbName = CoreObjectSpec.DBNAME_DEFAULT;
-	String dbCollectionName = this.getClass().getSimpleName();
-	DBHelper dbHelper = null;
+	String dbCollectionNameGroups = this.getClass().getSimpleName()+"Groups";
+	String dbCollectionNameSensors = this.getClass().getSimpleName()+"Sensors";
+	DBHelper dbHelperGroups = null;
+	DBHelper dbHelperSensors = null;
 
 	
 	/**
 	 * When db is bound look for the EnergyGroup stored
 	 * and restore the missing ones.
 	 */
-	private boolean dbBound() {
+	private synchronized boolean dbBound() {
 		logger.trace("dbBound()");
 		
 		// The first time, we will synchro all groups in the DB, and after, return shortly
@@ -239,28 +253,62 @@ public class EnergyMonitoringAdapterImpl extends CoreObjectBehavior implements
 			logger.warn("dbBound(), dbConfig unavailable");
 			dbUnbound();
 			
-		} else {		
-			dbHelper = dbConfig.getDBHelper(dbName, dbCollectionName);
-			if(dbHelper == null
-					|| dbHelper.getJSONEntries() == null) {
-				logger.warn("dbBound(), dbHelper unavailable");
+		} else {
+			
+			logger.trace("dbBound(), restoring Sensors");
+			dbHelperSensors = dbConfig.getDBHelper(dbName, dbCollectionNameSensors);
+			if(dbHelperSensors == null
+					|| dbHelperSensors.getJSONEntries() == null) {
+				logger.warn("dbBound(), dbHelper unavailable for Sensors");
 				dbUnbound();
+				return false;
+			} else {
+				// Synchro DB => sensors index pool
+				Set<JSONObject> entries = dbHelperSensors.getJSONEntries();
+				for(JSONObject entry : entries) {
+					// the DB key _id must be used for sensor Id
+					String sensorId = entry.get(DBHelper.ENTRY_ID).toString();
+					if( sensorId != null ) {
+						String energyIndex = entry.optString(sensorId,"-1");
+						logger.trace("dbBound(), restoring sensor id : {}, with energyIndex : {}",sensorId, energyIndex);
+						try {
+							EnergySensorPool.getInstance().addEnergyMeasure(sensorId, Double.parseDouble(energyIndex));
+						} catch (NumberFormatException e) {
+							logger.error("dbBound(), error when parsing energy index value : ",e);
+						}
+					} else {
+						logger.trace("dbBound(), already sensor with id : {}, does not restore the one in the db");						
+					}		
+				}
+			}
+			
+			
+			logger.trace("dbBound(), restoring Groups");
+			dbHelperGroups = dbConfig.getDBHelper(dbName, dbCollectionNameGroups);
+			if(dbHelperGroups == null
+					|| dbHelperGroups.getJSONEntries() == null) {
+				logger.warn("dbBound(), dbHelper unavailable for Groups");
+				dbUnbound();
+				return false;
 			} else {
 				// Synchro DB => running Instances
-				Set<JSONObject> entries = dbHelper.getJSONEntries();
+				Set<JSONObject> entries = dbHelperGroups.getJSONEntries();
 				for(JSONObject entry : entries) {
-					if( CST.componentBroker.getInst(entry.getString("id")) == null) {
+					String id = entry.getString("id");
+					if( id != null && CST.componentBroker.getInst(id) == null) {
 						logger.trace("dbBound(), no running instance with same id : {}, creating one with description : {}",
-								entry.getString("id"),
+								id,
 								entry);
-						CoreEnergyMonitoringGroupImpl group = createApamComponent(entry.getString("name"),entry.getString("id"));
+						CoreEnergyMonitoringGroupImpl group = createApamComponent(entry.getString("name"),id);
 						group.configureFromJSON(entry);
+						instances.put(id, group);						
 					} else {
 						logger.trace("dbBound(), already an instance with id : {}, keeping the existing one", entry.getString("id"));						
 					}		
 				}
-				dbBound = true;				
 			}
+			logger.trace("dbBound(), finished restoring sensors and groups");			
+			dbBound = true;
 		}
 		return dbBound;
 	}
@@ -270,17 +318,18 @@ public class EnergyMonitoringAdapterImpl extends CoreObjectBehavior implements
 	 */
 	private void dbUnbound() {
 		logger.trace("dbUnbound()");
-		dbHelper = null;
-		dbBound = false;
+		dbHelperGroups = null;
+		dbHelperSensors = null;
 
+		dbBound = false;
 	}
 	
 	private void storeInstanceConfiguration(JSONObject serviceDescription) {
 		logger.trace("storeInstanceConfiguration(JSONObject serviceDescription : {})", serviceDescription);
 		if(dbBound 
-				&& dbHelper!= null) {
+				&& dbHelperGroups!= null) {
 			serviceDescription.put(DBHelper.ENTRY_ID, serviceDescription.getString("id"));
-			boolean result = dbHelper.insertJSON(serviceDescription);
+			boolean result = dbHelperGroups.insertJSON(serviceDescription);
 			if(result) {
 				logger.trace("storeInstanceConfiguration(...), group successfully inserted/updated in the database");
 			} else {
@@ -292,8 +341,8 @@ public class EnergyMonitoringAdapterImpl extends CoreObjectBehavior implements
 	private void removeInstanceConfiguration(String serviceId) {
 		logger.trace("removeInstanceConfiguration(String serviceId : {})", serviceId);
 		if(dbBound 
-				&& dbHelper!= null) {
-			boolean result = dbHelper.remove(serviceId);
+				&& dbHelperGroups!= null) {
+			boolean result = dbHelperGroups.remove(serviceId);
 			if(result) {
 				logger.trace("storeInstanceConfiguration(...), group successfully removed from the database");
 			} else {
@@ -309,7 +358,52 @@ public class EnergyMonitoringAdapterImpl extends CoreObjectBehavior implements
 			// TODO synchro running instance => DB 
 			
 		}		
-	}	
+	}
 	
-
+	
+	/**
+	 * Every sensors that might trigger energy-related event should send message
+	 * This handler filters
+	 * 1° sensor providing event not in the current group (not optimal, we should only bind event provider from the group)
+	 * 2° event is not related to energy consumption (not optimal, event should have been filtered above)
+	 */
+	@SuppressWarnings("unused")
+	private void energyChangedEvent(NotificationMsg msg) {
+		logger.trace("energyChangedEvent(NotificationMsg msg : {})",msg.JSONize());
+		// Filter 0, basic filtering
+		if(msg != null
+				&& msg.getSource() != null
+				&& msg.getVarName() != null
+				&& msg.getNewValue() != null) {
+			// Filter/routing 1 event is not related to energy consumption (not optimal, event should have been filtered above)
+			if(msg.getVarName().equals(MSG_VARNAME_ACTIVEENERGY)) {
+				try {
+					double value = Double.parseDouble(msg.getNewValue());
+					String sensorId= msg.getSource();
+					EnergySensorPool.getInstance().addEnergyMeasure(sensorId,
+							value);
+					for(CoreEnergyMonitoringGroupImpl group : instances.values()) {
+						if(group.getEnergySensorsGroupAsSet().contains(sensorId)) {
+							group.energyChanged(sensorId);
+						}
+					}
+					if(dbBound() && dbHelperSensors != null) {
+						dbHelperSensors.insertJSON(new JSONObject()
+						.put(DBHelper.ENTRY_ID, sensorId)
+						.put(sensorId, String.valueOf(value)));
+					}
+				} catch (NumberFormatException e) {
+					logger.error("energyChangedEvent(..), value is not a double or float : ", e);
+				} 
+			} else if (msg.getVarName().equals(MSG_VARNAME_ANOTHERTBD)) {
+				// If other category of energy measures from other devices types are used,
+				// they should be added in this if/else structure
+				logger.trace("energyChangedEvent(..), you should not be there");
+			} else {
+				logger.trace("energyChangedEvent(..), message varName is not managed for the moment");
+			}
+		} else {
+			logger.trace("energyChangedEvent(..), empty message or no source/varName/value specified");
+		}		
+	}
 }
