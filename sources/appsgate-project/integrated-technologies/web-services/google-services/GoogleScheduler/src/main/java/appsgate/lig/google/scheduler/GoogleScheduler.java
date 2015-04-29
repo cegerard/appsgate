@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
+import java.util.regex.Pattern;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -588,15 +589,15 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 	}
 
 	@Override
-	public Set<?> listEventsSchedulingProgramId(String programId,
+	public JSONArray listEventsMatchingPattern(String pattern,
 			String startPeriod, String endPeriod) throws SchedulingException {
-		logger.trace("listEventsSchedulingProgramId(String programId : "+programId
+		logger.trace("listEventsMatchingPattern(String pattern : "+pattern
 				+",String startPeriod : "+startPeriod
 				+",String endPeriod : "+endPeriod				
 				+")");
-
-		if(programId==null ||programId.length()==0) {
-			logger.warn("listEventsSchedulingProgramId(...), no programId specified");
+		
+		if(pattern==null ||pattern.length()==0) {
+			logger.warn("listEventsMatchingPattern(...), no pattern specified");
 			return null;
 		}
 
@@ -614,19 +615,33 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 			logger.debug("Cannot Parse endPeriod : "+exc.getMessage());
 			stopping = -1;
 		}
+		
+		Pattern regExp = null;
+		try {
+			regExp = Pattern.compile(pattern);
+			if (regExp == null) throw new NullPointerException("compiled regexp is null");
+		} catch (Exception e) {
+			logger.warn("listEventsMatchingPattern(...), invalid regexp pattern : ",e);
+			return null;
+		}
+
 
 		Set <GoogleEvent> bigList = getEvents(starting, stopping);
-		Set <GoogleEvent> results = new HashSet<GoogleEvent>();
+		JSONArray results = new JSONArray();
 		
-		if(bigList == null) {
-			logger.trace("checkProgramIdScheduled(...), no Events registered,");
+		if(bigList == null ||bigList.size()<1) {
+			logger.trace("listEventsMatchingPattern(...), no Events registered");
 			return results;
 		}
 
 		for(GoogleEvent event : bigList) {
-			if (event.isSchedulingProgram(programId)) {
-				logger.trace("checkProgramIdScheduled(...), adding event : "+event.getName());
-				results.add(event);
+			if (event != null
+					&&event.getDescription() != null
+					&&regExp.matcher(event.getDescription()).matches()) {
+				logger.trace("listEventsMatchingPattern(...),"
+						+ " description matching : {}, adding event :{}",
+						event.getDescription(),event.getName());
+				results.put(event.toJSON());
 			}
 		}
 
