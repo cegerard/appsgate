@@ -355,7 +355,7 @@ public class EnergyMonitoringAdapterImpl extends CoreObjectBehavior implements
 	public void run() {
 		logger.trace("run()");
 		if(dbBound()) {
-			// TODO synchro running instance => DB 
+			//  synchro running instance => DB no more needed (each event is directly stored)
 			
 		}		
 	}
@@ -380,17 +380,33 @@ public class EnergyMonitoringAdapterImpl extends CoreObjectBehavior implements
 				try {
 					double value = Double.parseDouble(msg.getNewValue());
 					String sensorId= msg.getSource();
+					logger.trace("energyChangedEvent(..), sensorID: {}, value: {}. Updating the pool",
+							sensorId, value);
 					EnergySensorPool.getInstance().addEnergyMeasure(sensorId,
 							value);
-					for(CoreEnergyMonitoringGroupImpl group : instances.values()) {
-						if(group.getEnergySensorsGroupAsSet().contains(sensorId)) {
-							group.energyChanged(sensorId);
-						}
-					}
+
+					
 					if(dbBound() && dbHelperSensors != null) {
+						logger.trace("energyChangedEvent(..), updating the database (sensor pool)");
+						
 						dbHelperSensors.insertJSON(new JSONObject()
 						.put(DBHelper.ENTRY_ID, sensorId)
 						.put(sensorId, String.valueOf(value)));
+					}
+					
+					logger.trace("energyChangedEvent(..), notifying groups");
+					for(CoreEnergyMonitoringGroupImpl group : instances.values()) {
+						if(group.getEnergySensorsGroupAsSet().contains(sensorId)) {
+							logger.trace("energyChangedEvent(..), updating the group id: {}, name: {}",
+									group.getAbstractObjectId(),
+									group.getName());
+
+							group.energyChanged(sensorId);
+							if(dbBound() && dbHelperGroups != null) {
+								logger.trace("energyChangedEvent(..), updating the database (group configuration)");
+								storeInstanceConfiguration(group.getDescription());
+							}							
+						}
 					}
 				} catch (NumberFormatException e) {
 					logger.error("energyChangedEvent(..), value is not a double or float : ", e);

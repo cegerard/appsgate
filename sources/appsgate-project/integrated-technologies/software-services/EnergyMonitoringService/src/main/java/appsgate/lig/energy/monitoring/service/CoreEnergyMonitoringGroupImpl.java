@@ -68,6 +68,10 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	
 	double lastTotal = 0;
 	double lastEnergyDuringPeriod = 0;
+	//Remaining values are used when an existing group is restored for the database
+	double remainingDuringPeriod = 0;
+	double remainingTotal=0;
+	
 	private boolean isMonitoring = false;
 	
 	
@@ -80,6 +84,10 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	public final static String BUDGETRESETED_KEY="budgetReseted";
 	public final static String PERIODS_KEY="periods";	
 	public final static String ISMONITORING_KEY = "isMonitoring";
+
+	public final static String RAW_ENERGY_KEY="rawEnergy";	
+	public final static String RAW_ENERGYDURINGPERIOD_KEY="rawEnergyDuringPeriod";	
+	
 	
 	
 	public CoreEnergyMonitoringGroupImpl() {
@@ -110,7 +118,8 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		// The configuration of serviceId and name MUST have already be injected during instance creation 
 		
 		setEnergySensorsGroup(sensors);
-		setBudget(budgetTotal, budgetUnit);
+		this.budgetTotal = budgetTotal;
+		this.budgetUnit = budgetUnit;
 		
 		this.periods = new ArrayList<String>();
 	}
@@ -119,14 +128,21 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		logger.trace("configureFromJSON(JSONObject configuration : {})",
 				configuration);
 		// The configuration of serviceId and name MUST have already be injected during instance creation 
+
+		remainingTotal = configuration.optDouble(RAW_ENERGY_KEY, 0);
+		remainingDuringPeriod = configuration.optDouble(RAW_ENERGYDURINGPERIOD_KEY, 0);
 		
+		lastTotal = remainingTotal;
+		lastEnergyDuringPeriod = remainingDuringPeriod;
+		
+		budgetTotal = configuration.optDouble(BUDGETTOTAL_KEY, -1);
+		budgetUnit = configuration.optDouble(BUDGETUNIT_KEY, 1);
+				
 		setEnergySensorsGroup(configuration.optJSONArray(SENSORS_KEY));
-		setBudget(configuration.optDouble(BUDGETTOTAL_KEY, -1),
-				configuration.optDouble(BUDGETUNIT_KEY, 1));
 		setPeriods(configuration.optJSONArray(PERIODS_KEY));
 		
-		// TODO, check if we also set the total Energy
-		// (that seems hazardous at first glance, we may have miss information and the overall total may be wrong)
+		// Decided to configure also set the total Energy
+		// (beware we may have miss information and the overall total may be wrong)
 	}	
 	
 	/* (non-Javadoc)
@@ -231,6 +247,8 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		for(ActiveEnergySensor sensor : sensors.values()) {
 			sensor.resetEnergy();
 		}
+		remainingTotal = 0;
+		remainingDuringPeriod = 0;
 
 		stateChanged(BUDGETRESETED_KEY, null, BUDGETRESETED_KEY);
 		computeEnergy();
@@ -247,13 +265,13 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		}
 		
 		if(total != lastTotal) {
-			logger.trace("computeEnergy(), total energy as changed sincle last Time");
-			stateChanged(ENERGY_KEY, String.valueOf(lastTotal*budgetUnit), String.valueOf(total*budgetUnit));
+			logger.trace("computeEnergy(), total energy as changed since last Time");
+			stateChanged(ENERGY_KEY, String.valueOf((lastTotal+remainingTotal)*budgetUnit), String.valueOf((total+remainingTotal)*budgetUnit));
 			lastTotal = total;
 		}
 		if(energyDuringPeriod != lastEnergyDuringPeriod) {
 			logger.trace("computeEnergy(), energy during period as changed since last Time");
-			stateChanged(BUDGETREMAINING_KEY, String.valueOf(lastEnergyDuringPeriod*budgetUnit), String.valueOf(total*energyDuringPeriod));
+			stateChanged(BUDGETREMAINING_KEY, String.valueOf((lastEnergyDuringPeriod+remainingDuringPeriod)*budgetUnit), String.valueOf((energyDuringPeriod+remainingDuringPeriod)*budgetUnit));
 			
 			lastEnergyDuringPeriod = energyDuringPeriod;
 		}
@@ -264,8 +282,8 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	 */
 	@Override
 	public double getTotalEnergy() {
-		logger.trace("getTotalEnergy(), returning total: {} x unit : {}", lastTotal, budgetUnit);
-		return lastTotal*budgetUnit;
+		logger.trace("getTotalEnergy(), returning total: {} x unit : {}", (lastTotal+remainingTotal), budgetUnit);
+		return (lastTotal+remainingTotal)*budgetUnit;
 	}
 
 	/* (non-Javadoc)
@@ -274,7 +292,7 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	@Override
 	public double geEnergyDuringTimePeriod() {
 		logger.trace("getEnergyDuringPeriod(), returning energy: {} x unit : {}", lastEnergyDuringPeriod, budgetUnit);
-		return lastEnergyDuringPeriod*budgetUnit;
+		return (lastEnergyDuringPeriod+remainingDuringPeriod)*budgetUnit;
 	}
 
 	/* (non-Javadoc)
@@ -358,12 +376,19 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 
 		descr.put(NAME_KEY, getName());
 		descr.put(SENSORS_KEY, getEnergySensorsGroup());
-		descr.put(ENERGY_KEY, getTotalEnergy());
-		descr.put(BUDGETTOTAL_KEY, getBudgetTotal());
-		descr.put(BUDGETUNIT_KEY, getBudgetUnit());
-		descr.put(PERIODS_KEY, getPeriods());
+		descr.put(ENERGY_KEY, String.valueOf(getTotalEnergy()));
+		descr.put(BUDGETTOTAL_KEY, String.valueOf(getBudgetTotal()));
+		descr.put(BUDGETUNIT_KEY, String.valueOf(getBudgetUnit()));
+		descr.put(BUDGETREMAINING_KEY, String.valueOf(getRemainingBudget()));		
+		descr.put(PERIODS_KEY, String.valueOf(getPeriods()));
 		descr.put(ISMONITORING_KEY, isMonitoring());
 
+		/**
+		 * Those raw index are mostly used for persistance
+		 */
+		descr.put(RAW_ENERGY_KEY, lastTotal+remainingTotal);
+		descr.put(RAW_ENERGYDURINGPERIOD_KEY, lastEnergyDuringPeriod+remainingDuringPeriod);
+		
 		return descr;
 	}
 
