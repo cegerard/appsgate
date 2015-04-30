@@ -32,16 +32,16 @@ public interface SchedulerSpec extends AlarmEventObserver{
 	public String getCalendarId();
 	
 	/**
-	 * List a set of Events referencing the programId (might be on begin/end or start/stop)
-	 * @param programId the program-id (not the program name)
+	 * List a set of Events that contain in their "description" field the specified regex pattern
+	 * @param regexPattern must be a valid java regex pattern (for instance "toto*tutu[0-9]{4}"
 	 *  (we do not check if the program-id really exist as we parse Google Calendar events)
 	 * @param startPeriod the starting period to observe, if -1 we start from the beginning of the calendar
 	 * (formatted according to RFC 3339 : 2014-09-16T12:45:23+0200) 
 	 * @param endPeriod the ending of the period to observe, if -1 we parse until no more events left
 	 * (formatted according to RFC 3339 : 2014-09-16T12:45:23+0200) 
-	 * @return The set of Events (events format depends on a particular implementation, such as google event)
+	 * @return The set of Events as a JSONArray (each events is a JSONObject containing all the event fields)
 	 */
-	public Set<?> listEventsSchedulingProgramId(String programId, String startPeriod, String endPeriod)
+	public JSONArray listEventsMatchingPattern(String regexPattern, String startPeriod, String endPeriod)
 			throws SchedulingException;
 	
 	/**
@@ -81,6 +81,8 @@ public interface SchedulerSpec extends AlarmEventObserver{
 
 
 	/**
+	 * (This one is the legacy method only applicable to start/stop program,
+	 * the general purpose with command name and parameter should be used instead (it allows all kind of commands
 	 * Create a basic Calendar Event, at AppsGate Clock Time, to schedule the start or stop of a program
 	 * The Event is created just one hour before current Time, and last for 30 minutes
 	 * Changed specification, if start is false AND stop is true, then the program should stop at the beginning of the event
@@ -92,6 +94,7 @@ public interface SchedulerSpec extends AlarmEventObserver{
 	 * @throws SchedulingException
 	 */
 	public String createEvent(String eventName, String programId, boolean startOnBegin, boolean stopOnEnd) throws SchedulingException;
+	
 	
 	/**
 	 * Create a basic Calendar Event, with specified instructions
@@ -109,6 +112,12 @@ public interface SchedulerSpec extends AlarmEventObserver{
 			Set<ScheduledInstruction> onBeginInstructions,
 			Set<ScheduledInstruction> onEndInstructions,
 			String dateStart, String dateEnd ) throws SchedulingException;
+	
+	/**
+	 * The method try to remove an event using its eventID
+	 * @return true if event was successfully removed from calendar
+	 */
+	public boolean removeEvent(String eventID);
 
 	/**
 	 * The method implements what to do when a registered events occurs

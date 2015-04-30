@@ -81,5 +81,9 @@ public class TraceFile implements TraceHistory {
         return false;
     }
 
+    @Override
+    public void addExecutionTrace(Long timestamp, String pid, String node_id) {
+    }
+
     
 }

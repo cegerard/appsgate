@@ -376,13 +376,6 @@ public class EHMIProxyMock implements EHMIProxySpec {
     }
 
     @Override
-    public Set<?> listEventsSchedulingProgramId(String programId,
-            String startPeriod, String endPeriod) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public boolean checkProgramIdScheduled(String programId) {
         // TODO Auto-generated method stub
         return false;

@@ -431,6 +431,7 @@
         "stop-media-action": "Stop"
       },
       "keyboard": {
+        "no-browser" : "No media content",
         "increaseVolume": "Increase volume on __myVar__",
         "decreaseVolume": "Decrease volume on __myVar__",
         "volume-event": "The volume on a __myVar__ changes to __myVar2__",

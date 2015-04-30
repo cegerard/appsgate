@@ -23,7 +23,6 @@ define([
 			});
 			dispatcher.on("loadGraphAt", function (graph) {
 				if (!App.isDebugMode()) {
-					console.log("normal mode");
 					return;
 				}
 				handleGraph(self, graph);

@@ -3,7 +3,6 @@ package appsgate.lig.google.services;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
-import java.text.SimpleDateFormat;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -36,9 +35,7 @@ public class GoogleEvent {
 	public static final String PARAM_DATETIME="dateTime";
 	
 	public static final String PARAM_UNPARSED="unparsedJSON";
-	
-	public final static SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-	
+		
 	/**
 	 * Reserved keyword for AppsGate in the description,
 	 * to map appsgate instruction (such as appsgate schedules)

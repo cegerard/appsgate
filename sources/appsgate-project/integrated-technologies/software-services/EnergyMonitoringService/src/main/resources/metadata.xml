@@ -12,13 +12,6 @@
         <relation implementation="MongoDBConfiguration" field="dbConfig" resolve="exist"
             added="dbBound" removed="dbUnbound">
         </relation>	    
-	    
-	</implementation>
-
-    <implementation name="CoreEnergyMonitoringGroupImpl"
-        classname="appsgate.lig.energy.monitoring.service.CoreEnergyMonitoringGroupImpl"
-        specification="CoreEnergyMonitoringGroup"
-        push="stateChanged">   
         
         <relation specification="CoreSmartPlugSpec"  multiple="true" resolve="exist">
             <!-- TODO: should add a constraint to keep only those sensors added in the group 
@@ -27,7 +20,22 @@
                 <instance filter="deviceId <* $this$sensors"/>
             </constraints>-->
             <message push="energyChangedEvent"/>
+        </relation>        
+	    
+	</implementation>
+
+    <implementation name="CoreEnergyMonitoringGroupImpl"
+        classname="appsgate.lig.energy.monitoring.service.CoreEnergyMonitoringGroupImpl"
+        specification="CoreEnergyMonitoringGroup"
+        push="stateChanged">   
+        
+
+        
+        <relation specification="SchedulerSpec" resolve="exist">
+            <interface field="scheduler"/>
         </relation>
+        
+        
         <definition name="groupName" type="string" field="name"/>
         <definition name="serviceId" type="string" field="serviceId"/>
         <property name="serviceId" value="$this$name"/>

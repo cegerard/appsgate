@@ -286,55 +286,70 @@ define([
         var browsers = devices.getMediaBrowsers();
         var currentDevice;
 
+
         // make sure the tree is empty
         $(".browser-container").jstree('destroy');
-        $("#media-browser-modal").attr("target-iid", selectedMedia.attr("target-iid"));
-        var xml_data = "";
-        for (var i = 0; i < browsers.length; i++) {
-          var name = browsers[i].get("friendlyName") !== "" ? browsers[i].get("friendlyName") : browsers[i].get("id");
-          xml_data += "<item id='" + browsers[i].get("id") + "' rel='root'>" + "<content><name>" + name + "</name></content></item>";
-        }
+        if(browsers === undefined || browsers.length<1) {
+          console.log("No browsers found");
+        } else {
 
-        var mediabrowser = $(".browser-container").jstree({
-          "xml_data": {
-            data: "<root>" + xml_data + "</root>"
-          },
-          "themes": {
-            "theme": "apple",
-          },
-          "unique": {
-            "error_callback": function(n, p, f) {
-              console.log("unique conflict");
-            }
-          },
-          "types": {
+          $("#media-browser-modal").attr("target-iid", selectedMedia.attr("target-iid"));
+          var xml_data = "";
+          for (var i = 0; i < browsers.length; i++) {
+            var name = browsers[i].get("friendlyName") !== "" ? browsers[i].get("friendlyName") : browsers[i].get("id");
+            xml_data += "<item id='" + browsers[i].get("id") + "' rel='root'>" + "<content><name>" + name + "</name></content></item>";
+          }
+
+          var mediabrowser = $(".browser-container").jstree({
+            "xml_data": {
+              data: "<root>" + xml_data + "</root>"
+            },
+            "themes": {
+              "theme": "apple",
+            },
+            "unique": {
+              "error_callback": function (n, p, f) {
+                console.log("unique conflict");
+              }
+            },
             "types": {
-              "media": {
-                "valid_children": "none",
-                "icon": {
-                  "image": "app/img/drive.png"
-                }
+              "types": {
+                "media": {
+                  "valid_children": "none",
+                  "icon": {
+                    "image": "app/img/drive.png"
+                  }
+                },
               },
             },
-          },
-          "plugins": ["xml_data", "themes", "types", "crrm", "ui", "unique"]
-        }).delegate("a", "click", function(event, data) {
-          event.preventDefault();
-          var target = "" + event.currentTarget.parentNode.id;
-          if (typeof currentDevice === 'undefined' || event.currentTarget.parentNode.getAttribute("rel") === "root") {
-            currentDevice = devices.get(target);
-            target = "0";
-          }
-          if (event.currentTarget.parentNode.getAttribute("rel") !== "media") {
-            $("#media-browser-modal .media-button").addClass("disabled");
-            currentDevice.remoteControl("browse", [{"type": "String", "value": target}, {"type": "String", "value": "BrowseDirectChildren"}, {"type": "String", "value": "*"}, {"type": "long", "value": "0"}, {"type": "long", "value": "0"}, {"type": "String", "value": ""}]);
-          }
-          else {
-            $("#media-browser-modal .media-button").removeClass("disabled");
-            self.Mediator.setNodeAttribute($("#media-browser-modal").attr("target-iid"), "args", [{type: "String", value: event.currentTarget.parentNode.attributes.res.value},{type: "String", value: event.currentTarget.textContent}]);
-            self.Mediator.setNodeAttribute($("#media-browser-modal").attr("target-iid"), "fileName", event.currentTarget.textContent);
-          }
-        });
+            "plugins": ["xml_data", "themes", "types", "crrm", "ui", "unique"]
+          }).delegate("a", "click", function (event, data) {
+            event.preventDefault();
+            var target = "" + event.currentTarget.parentNode.id;
+            if (typeof currentDevice === 'undefined' || event.currentTarget.parentNode.getAttribute("rel") === "root") {
+              currentDevice = devices.get(target);
+              target = "0";
+            }
+            if (event.currentTarget.parentNode.getAttribute("rel") !== "media") {
+              $("#media-browser-modal .media-button").addClass("disabled");
+              currentDevice.remoteControl("browse", [{"type": "String", "value": target}, {
+                "type": "String",
+                "value": "BrowseDirectChildren"
+              }, {"type": "String", "value": "*"}, {"type": "long", "value": "0"}, {
+                "type": "long",
+                "value": "0"
+              }, {"type": "String", "value": ""}]);
+            }
+            else {
+              $("#media-browser-modal .media-button").removeClass("disabled");
+              self.Mediator.setNodeAttribute($("#media-browser-modal").attr("target-iid"), "args", [{
+                type: "String",
+                value: event.currentTarget.parentNode.attributes.res.value
+              }, {type: "String", value: event.currentTarget.textContent}]);
+              self.Mediator.setNodeAttribute($("#media-browser-modal").attr("target-iid"), "fileName", event.currentTarget.textContent);
+            }
+          });
+        }
 
         dispatcher.on("mediaBrowserResults", function(result) {
           var D = null;

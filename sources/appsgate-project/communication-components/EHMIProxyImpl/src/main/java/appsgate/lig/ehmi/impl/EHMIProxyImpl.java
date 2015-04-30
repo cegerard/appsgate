@@ -43,6 +43,7 @@ import appsgate.lig.ehmi.spec.messages.ClockAlarmNotificationMsg;
 import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 import appsgate.lig.ehmi.spec.trace.TraceManSpec;
 import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
+import appsgate.lig.manager.client.communication.ClientCommunicationManager;
 
 import java.net.*;
 import java.util.*;
@@ -59,7 +60,7 @@ import java.util.*;
  * @version 1.0.0
  *
  */
-public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponseListener {
+public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponseListener, CommandListener {
 
     /**
      *
@@ -1026,25 +1027,6 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
     }
 
     @Override
-    public Set<?> listEventsSchedulingProgramId(String programId, String startPeriod, String endPeriod) {
-        logger.trace("listEventsSchedulingProgramId("
-                + "String programId : {},"
-                + "String startPeriod : {}"
-                + ", String endPeriod) : {}", programId, startPeriod, endPeriod);
-        if (schedulerService == null) {
-            logger.error("No scheduling service, aborting)");
-        } else {
-            try {
-                return schedulerService.listEventsSchedulingProgramId(programId, startPeriod, endPeriod);
-            } catch (SchedulingException exc) {
-                logger.error("Error when when checking the scheduler : "
-                        + exc.getMessage());
-            }
-        }
-        return null;
-    }
-
-    @Override
     public boolean checkProgramIdScheduled(String programId) {
         if (schedulerService == null) {
             logger.error("No scheduling service, aborting)");
@@ -1112,7 +1094,7 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
     public void notifyResponse(String objectId, String value, String callId, int clientId) {
         // This first version only does what was excpected from Generic Commands and EHMI Commands,
         // sends the response to the websocket 
-        if (sendToClientService != null) {
+        if (sendToClientService != null && clientId>0) {
             try {
                 JSONObject msg = new JSONObject();
                 msg.put("value", value);
@@ -1156,8 +1138,42 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
         userManagerBound = false;
     }
 
-    
+    /**
+     *
+     * @param timestamp
+     */
     public void getWorldState(Long timestamp) {
-       dependency.sendGraphAt(timestamp);
+        dependency.sendGraphAt(timestamp);
+        HashMap<String, JSONObject> map = interpreter.getListProgramsAt(timestamp);
+        JSONArray programList = new JSONArray();
+        for (String key : map.keySet()) {
+            programList.put(map.get(key));
+        }
+        JSONObject msg = new JSONObject();
+        try {
+            msg.put("value", programList.toString());
+            msg.put("objectId", "EHMI");
+            msg.put("callId", "programState");
+        } catch (JSONException ex) {
+
+        }
+        sendFromConnection(ClientCommunicationManager.DEFAULT_SERVER_NAME, msg.toString());
+        JSONArray lastNodesId = traceManager.getLastNodesId(timestamp);
+        try {
+            msg.put("value", lastNodesId.toString());
+            msg.put("callId", "programIds");
+        } catch (JSONException ex) {
+
+        }
+        sendFromConnection(ClientCommunicationManager.DEFAULT_SERVER_NAME, msg.toString());
+
     }
+
+    /**
+     * EHMI Can be directly used to execute commands
+     */
+	@Override
+	public void onReceivedCommand(JSONObject command) {
+		commandListener.onReceivedCommand(command);
+	}
 }

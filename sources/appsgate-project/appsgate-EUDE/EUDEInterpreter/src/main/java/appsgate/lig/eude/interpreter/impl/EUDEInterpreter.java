@@ -310,6 +310,33 @@ public class EUDEInterpreter extends CoreObjectBehavior
     }
 
     @Override
+    public HashMap<String, JSONObject> getListProgramsAt(Long timestamp) {
+        HashMap<String, JSONObject> mapProgramJSON = new HashMap<String, JSONObject>();
+
+        if (contextHistory_pull != null && contextHistory_pull.testDB()) {
+
+            LOGGER.debug("Restore interpreter program list from database");
+            JSONObject userbase = contextHistory_pull.pullObjectVersionAt(this.getClass().getSimpleName(), timestamp);
+            if (userbase != null) {
+                try {
+                    JSONArray state = userbase.getJSONArray("state");
+                    for (int i = 0; i < state.length(); i++) {
+                        JSONObject obj = state.getJSONObject(i);
+                        String key = (String) obj.keys().next();
+                        mapProgramJSON.put(key, new JSONObject(obj.getString(key)));
+
+                    }
+                    LOGGER.debug("program list successfully synchronized with database");
+
+                } catch (JSONException e) {
+                    LOGGER.warn("JSONException: {}", e.getMessage());
+                }
+            }
+        }
+        return mapProgramJSON;
+    }
+
+    @Override
     public boolean isProgramActive(String programId) {
         if (!restorePrograms()) {
             return false;

@@ -99,11 +99,11 @@ define([
       * Called when browse button is pressed, displays a tree of available media
       */
       onBrowseMedia: function(e) {
+        $('#media-browser-modal').modal('show');
         if(devices.getMediaBrowsers() != undefined && devices.getMediaBrowsers().length>0) {
-          $('#media-browser-modal').modal('show');
           this.model.onBrowseMedia($("#selectedMedia"));
         } else {
-          $('#media-browser-modal').modal('hide');
+          console.log("no media browser found");
         }
       },
       /**
