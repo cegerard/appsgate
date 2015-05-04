@@ -143,6 +143,7 @@ public class ClientCommunicationManager implements ListenerService, SendWebsocke
 	
 	@Override
 	public void send(String msg) {
+		logger.debug("send(String msg : {})", msg);
 		logger.debug("retreiving web sockets...");
 		WebSocketServer server = socketMap.get(DEFAULT_SERVER_NAME);
 		Collection<WebSocket> sockets = server.connections();
