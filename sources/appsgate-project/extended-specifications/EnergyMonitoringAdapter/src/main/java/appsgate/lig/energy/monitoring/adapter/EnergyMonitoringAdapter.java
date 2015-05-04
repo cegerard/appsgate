@@ -17,7 +17,7 @@ public interface EnergyMonitoringAdapter {
 	 * @see  appsgate.lig.energy.monitoring.utils.Period
 	 * @return the groupID if the service was successfully created
 	 */
-	public String createGroup(String groupName,
+	public String createEnergyMonitoringGroup(String groupName,
 			JSONArray sensors,
 			double budgetTotal, double budgetUnit);
 	
@@ -26,8 +26,8 @@ public interface EnergyMonitoringAdapter {
 	 * @param groupName user defined name for the group
 	 * @return the groupID if the service was successfully created
 	 */
-	public String createEmptyGroup(String groupName);	
+	public String createEnergyMonitoringEmptyGroup(String groupName);	
 	
-	public void removeGroup(String groupID);
+	public void removeEnergyMonitoringGroup(String groupID);
 
 }

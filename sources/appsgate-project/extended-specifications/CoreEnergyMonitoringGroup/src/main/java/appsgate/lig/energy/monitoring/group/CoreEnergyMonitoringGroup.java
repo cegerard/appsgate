@@ -188,4 +188,12 @@ public interface CoreEnergyMonitoringGroup {
 	 * Won't start again until a call to startMonitoring or if a monitoring period begin
 	 */
 	public void stopMonitoring();
+	
+	/**
+	 * get the timestamp of the last reset, the budget remaining and total consumption
+	 * are since this timestamp
+	 * (the timestamp is build again the CoreClock, in may not be the real system time)
+	 * @return a timestamp as a long value in millisecs from the epoch (01/01/1970)  
+	 */
+	public long getLastResetTimestamp();
 }

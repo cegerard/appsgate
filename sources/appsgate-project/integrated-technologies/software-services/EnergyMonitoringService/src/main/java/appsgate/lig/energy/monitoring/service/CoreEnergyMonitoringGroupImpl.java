@@ -15,6 +15,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import appsgate.lig.clock.sensor.spec.CoreClockSpec;
 import appsgate.lig.core.object.messages.CoreNotificationMsg;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectBehavior;
@@ -74,6 +75,10 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	
 	private boolean isMonitoring = false;
 	
+	long lastResetTimestamp;
+	
+	private CoreClockSpec clock;
+	
 	
 	public final static String NAME_KEY = "name";
 	public final static String SENSORS_KEY = "sensors";
@@ -81,10 +86,12 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	public final static String BUDGETTOTAL_KEY="budgetTotal";
 	public final static String BUDGETUNIT_KEY="budgetUnit";
 	public final static String BUDGETREMAINING_KEY="budgetRemaining";
-	public final static String BUDGETRESETED_KEY="budgetReseted";
+	public final static String BUDGETRESETED_KEY="budgetReset";
 	public final static String PERIODS_KEY="periods";	
 	public final static String ISMONITORING_KEY = "isMonitoring";
+	public final static String LASTRESET_KEY = "lastReset";
 
+	
 	public final static String RAW_ENERGY_KEY="rawEnergy";	
 	public final static String RAW_ENERGYDURINGPERIOD_KEY="rawEnergyDuringPeriod";	
 	
@@ -122,6 +129,8 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		this.budgetUnit = budgetUnit;
 		
 		this.periods = new ArrayList<String>();
+		
+		lastResetTimestamp = clock.getCurrentTimeInMillis();
 	}
 
 	public void configureFromJSON(JSONObject configuration) {
@@ -141,7 +150,8 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		setEnergySensorsGroup(configuration.optJSONArray(SENSORS_KEY));
 		setPeriods(configuration.optJSONArray(PERIODS_KEY));
 		
-		// Decided to configure also set the total Energy
+		lastResetTimestamp = configuration.optLong(LASTRESET_KEY, clock.getCurrentTimeInMillis());
+		
 		// (beware we may have miss information and the overall total may be wrong)
 	}	
 	
@@ -247,6 +257,7 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		for(ActiveEnergySensor sensor : sensors.values()) {
 			sensor.resetEnergy();
 		}
+		lastResetTimestamp = clock.getCurrentTimeInMillis();		
 		remainingTotal = 0;
 		remainingDuringPeriod = 0;
 
@@ -290,7 +301,7 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	 * @see appsgate.lig.energy.monitoring.CoreEnergyMonitoringGroup#geEnergyDuringTimePeriod()
 	 */
 	@Override
-	public double geEnergyDuringTimePeriod() {
+	public double getEnergyDuringTimePeriod() {
 		logger.trace("getEnergyDuringPeriod(), returning energy: {} x unit : {}", lastEnergyDuringPeriod, budgetUnit);
 		return (lastEnergyDuringPeriod+remainingDuringPeriod)*budgetUnit;
 	}
@@ -300,7 +311,7 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	 */
 	@Override
 	public double getRemainingBudget() {
-		double total = geEnergyDuringTimePeriod();
+		double total = getEnergyDuringTimePeriod();
 		logger.trace("getRemainingBudget(), returning budgetTotal: {} - energyConsumed : {}", budgetTotal, total);
 		return budgetTotal-total;
 	}
@@ -309,7 +320,7 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	 * @see appsgate.lig.energy.monitoring.CoreEnergyMonitoringGroup#getBudgetTotal()
 	 */
 	@Override
-	public double getBudgetTotal() {
+	public double getBudget() {
 		logger.trace("getBudgetTotal(), returning budgetTotal: {} ", budgetTotal);
 		return budgetTotal;
 	}
@@ -327,15 +338,10 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	 * @see appsgate.lig.energy.monitoring.CoreEnergyMonitoringGroup#setBudget(double, double)
 	 */
 	@Override
-	public void setBudget(double budgetTotal, double budgetUnit) {
+	public void setBudget(double budgetTotal) {
 		logger.trace("setBudget(double budgetTotal : {}, double budgetUnit : {})", budgetTotal, budgetUnit);
 		stateChanged(BUDGETTOTAL_KEY, String.valueOf(this.budgetTotal), String.valueOf(budgetTotal));
-		stateChanged(BUDGETUNIT_KEY, String.valueOf(this.budgetUnit), String.valueOf(budgetUnit));
 		this.budgetTotal = budgetTotal;
-		this.budgetUnit = budgetUnit;
-		
-		// Changing budget sholud reset the energy counters
-		resetEnergy();
 	}
 
 	/* (non-Javadoc)
@@ -377,11 +383,12 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		descr.put(NAME_KEY, getName());
 		descr.put(SENSORS_KEY, getEnergySensorsGroup());
 		descr.put(ENERGY_KEY, String.valueOf(getTotalEnergy()));
-		descr.put(BUDGETTOTAL_KEY, String.valueOf(getBudgetTotal()));
+		descr.put(BUDGETTOTAL_KEY, String.valueOf(getBudget()));
 		descr.put(BUDGETUNIT_KEY, String.valueOf(getBudgetUnit()));
 		descr.put(BUDGETREMAINING_KEY, String.valueOf(getRemainingBudget()));		
 		descr.put(PERIODS_KEY, String.valueOf(getPeriods()));
 		descr.put(ISMONITORING_KEY, isMonitoring());
+		descr.put(LASTRESET_KEY, getLastResetTimestamp());
 
 		/**
 		 * Those raw index are mostly used for persistance
@@ -574,6 +581,34 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		} else {
 			logger.trace("energyChanged(..), empty sensorID or energyIndex irrelevant");
 		}		
+	}
+
+
+	@Override
+	public void addAnnotation(String annotation) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public JSONArray getAnnotations() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public void setBudgetUnit(double budgetUnit) {
+		logger.trace("setBudgetUnit(double budgetUnit : {})", budgetUnit);
+		stateChanged(BUDGETUNIT_KEY, String.valueOf(this.budgetUnit), String.valueOf(budgetUnit));
+		this.budgetUnit = budgetUnit;	
+	}
+
+
+	@Override
+	public long getLastResetTimestamp() {
+		return lastResetTimestamp;
 	}
 	
 }
