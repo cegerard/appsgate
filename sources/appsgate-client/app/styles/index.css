@@ -938,6 +938,10 @@ button.program-incomplete{
   width: 100%;
   margin-bottom: 15px;
 }
+.read-only .debugActivated {
+  border: thin solid red !important;
+  background-color: yellow !important;
+}
 /* --------------------- Modal styles ----------------------------------*/
 
 .valid-disabled.disabled {

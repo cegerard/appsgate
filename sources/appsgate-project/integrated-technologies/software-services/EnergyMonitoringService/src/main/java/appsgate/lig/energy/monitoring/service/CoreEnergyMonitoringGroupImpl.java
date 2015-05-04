@@ -5,7 +5,9 @@ package appsgate.lig.energy.monitoring.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,12 +15,18 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import appsgate.lig.clock.sensor.spec.CoreClockSpec;
 import appsgate.lig.core.object.messages.CoreNotificationMsg;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.energy.monitoring.group.CoreEnergyMonitoringGroup;
 import appsgate.lig.energy.monitoring.service.models.ActiveEnergySensor;
+import appsgate.lig.scheduler.ScheduledInstruction;
+import appsgate.lig.scheduler.ScheduledInstruction.Commands;
+import appsgate.lig.scheduler.SchedulerSpec;
+import appsgate.lig.scheduler.SchedulingException;
+import appsgate.lig.scheduler.utils.DateFormatter;
 
 /**
  * @author thibaud
@@ -29,10 +37,6 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		CoreEnergyMonitoringGroup {
 	
 	public static final String IMPL_NAME = "CoreEnergyMonitoringGroupImpl";
-	
-	public static final String MSG_VARNAME_ACTIVEENERGY = "activeEnergy";
-	public static final String MSG_VARNAME_ANOTHERTBD = "to be defined";
-
 
 	private final static Logger logger = LoggerFactory.getLogger(CoreEnergyMonitoringGroupImpl.class);
 	
@@ -49,6 +53,13 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	private String name;
 	
 	/**
+	 * Should be injected by ApAM
+	 */
+	private SchedulerSpec scheduler;
+	
+	
+	
+	/**
 	 * The String is the sensorID, the value holds the measures, index and state
 	 */
 	private Map<String, ActiveEnergySensor> sensors;
@@ -58,6 +69,15 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	
 	double lastTotal = 0;
 	double lastEnergyDuringPeriod = 0;
+	//Remaining values are used when an existing group is restored for the database
+	double remainingDuringPeriod = 0;
+	double remainingTotal=0;
+	
+	private boolean isMonitoring = false;
+	
+	long lastResetTimestamp;
+	
+	private CoreClockSpec clock;
 	
 	
 	public final static String NAME_KEY = "name";
@@ -66,8 +86,15 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	public final static String BUDGETTOTAL_KEY="budgetTotal";
 	public final static String BUDGETUNIT_KEY="budgetUnit";
 	public final static String BUDGETREMAINING_KEY="budgetRemaining";
-	public final static String BUDGETRESETED_KEY="budgetReseted";
+	public final static String BUDGETRESETED_KEY="budgetReset";
 	public final static String PERIODS_KEY="periods";	
+	public final static String ISMONITORING_KEY = "isMonitoring";
+	public final static String LASTRESET_KEY = "lastReset";
+
+	
+	public final static String RAW_ENERGY_KEY="rawEnergy";	
+	public final static String RAW_ENERGYDURINGPERIOD_KEY="rawEnergyDuringPeriod";	
+	
 	
 	
 	public CoreEnergyMonitoringGroupImpl() {
@@ -98,23 +125,34 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		// The configuration of serviceId and name MUST have already be injected during instance creation 
 		
 		setEnergySensorsGroup(sensors);
-		setBudget(budgetTotal, budgetUnit);
+		this.budgetTotal = budgetTotal;
+		this.budgetUnit = budgetUnit;
 		
 		this.periods = new ArrayList<String>();
+		
+		lastResetTimestamp = clock.getCurrentTimeInMillis();
 	}
 
 	public void configureFromJSON(JSONObject configuration) {
 		logger.trace("configureFromJSON(JSONObject configuration : {})",
 				configuration);
 		// The configuration of serviceId and name MUST have already be injected during instance creation 
+
+		remainingTotal = configuration.optDouble(RAW_ENERGY_KEY, 0);
+		remainingDuringPeriod = configuration.optDouble(RAW_ENERGYDURINGPERIOD_KEY, 0);
 		
+		lastTotal = remainingTotal;
+		lastEnergyDuringPeriod = remainingDuringPeriod;
+		
+		budgetTotal = configuration.optDouble(BUDGETTOTAL_KEY, -1);
+		budgetUnit = configuration.optDouble(BUDGETUNIT_KEY, 1);
+				
 		setEnergySensorsGroup(configuration.optJSONArray(SENSORS_KEY));
-		setBudget(configuration.optDouble(BUDGETTOTAL_KEY, -1),
-				configuration.optDouble(BUDGETUNIT_KEY, 1));
 		setPeriods(configuration.optJSONArray(PERIODS_KEY));
 		
-		// TODO, check if we also set the total Energy
-		// (that seems hazardous at first glance, we may have miss information and the overall total may be wrong)
+		lastResetTimestamp = configuration.optLong(LASTRESET_KEY, clock.getCurrentTimeInMillis());
+		
+		// (beware we may have miss information and the overall total may be wrong)
 	}	
 	
 	/* (non-Javadoc)
@@ -142,6 +180,15 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	public JSONArray getEnergySensorsGroup() {
 		return new JSONArray(sensors.keySet());
 	}
+	
+	/**
+	 * method to help using contains
+	 * @return
+	 */
+	public Set<String> getEnergySensorsGroupAsSet() {
+		return sensors.keySet();
+	}
+
 
 	/* (non-Javadoc)
 	 * @see appsgate.lig.energy.monitoring.CoreEnergyMonitoringGroup#setEnergySensorsGroup(org.json.JSONArray)
@@ -162,19 +209,22 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	}
 	
 	private double getActiveEnergy(String sensorID) {
-		double activeEnergy = 0;
-		// TODO ask the real sensor
-		
-		return activeEnergy;
+		double value = EnergySensorPool.getInstance().getEnergyMeasure(sensorID);
+		// We do not call the real sensor to gets its latest energy measure
+		if(value >= 0) {
+			// If the sensor is known we get the reported latest value
+			return value;
+		} else {
+			// if the sensor is unkonwn 
+			// or we may have lost the latest update that was done before adding the sensor
+			// We get the max value, just to be sure to reset the sensor on next measure			
+			return Double.MAX_VALUE;
+		}
 	}
 	
-	private synchronized void privateAddEnergySensor(String sensorID) {
-		// TODO (we have 1° to check the period, and to 2° get the current measure of the sensor)
-		long time = System.currentTimeMillis(); // TODO: maybe we should use the CoreClock Time ?
-		
+	private synchronized void privateAddEnergySensor(String sensorID) {	
 		sensors.put(sensorID, new ActiveEnergySensor(sensorID,
-				getActiveEnergy(sensorID),
-				checkPeriod(time)));
+				getActiveEnergy(sensorID), this));
 	}
 
 	/* (non-Javadoc)
@@ -207,9 +257,11 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		for(ActiveEnergySensor sensor : sensors.values()) {
 			sensor.resetEnergy();
 		}
+		lastResetTimestamp = clock.getCurrentTimeInMillis();		
+		remainingTotal = 0;
+		remainingDuringPeriod = 0;
 
 		stateChanged(BUDGETRESETED_KEY, null, BUDGETRESETED_KEY);
-		
 		computeEnergy();
 	}
 	
@@ -224,13 +276,13 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		}
 		
 		if(total != lastTotal) {
-			logger.trace("computeEnergy(), total energy as changed sincle last Time");
-			stateChanged(ENERGY_KEY, String.valueOf(lastTotal*budgetUnit), String.valueOf(total*budgetUnit));
+			logger.trace("computeEnergy(), total energy as changed since last Time");
+			stateChanged(ENERGY_KEY, String.valueOf((lastTotal+remainingTotal)*budgetUnit), String.valueOf((total+remainingTotal)*budgetUnit));
 			lastTotal = total;
 		}
 		if(energyDuringPeriod != lastEnergyDuringPeriod) {
 			logger.trace("computeEnergy(), energy during period as changed since last Time");
-			stateChanged(BUDGETREMAINING_KEY, String.valueOf(lastEnergyDuringPeriod*budgetUnit), String.valueOf(total*energyDuringPeriod));
+			stateChanged(BUDGETREMAINING_KEY, String.valueOf((lastEnergyDuringPeriod+remainingDuringPeriod)*budgetUnit), String.valueOf((energyDuringPeriod+remainingDuringPeriod)*budgetUnit));
 			
 			lastEnergyDuringPeriod = energyDuringPeriod;
 		}
@@ -241,17 +293,17 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	 */
 	@Override
 	public double getTotalEnergy() {
-		logger.trace("getTotalEnergy(), returning total: {} x unit : {}", lastTotal, budgetUnit);
-		return lastTotal*budgetUnit;
+		logger.trace("getTotalEnergy(), returning total: {} x unit : {}", (lastTotal+remainingTotal), budgetUnit);
+		return (lastTotal+remainingTotal)*budgetUnit;
 	}
 
 	/* (non-Javadoc)
 	 * @see appsgate.lig.energy.monitoring.CoreEnergyMonitoringGroup#geEnergyDuringTimePeriod()
 	 */
 	@Override
-	public double geEnergyDuringTimePeriod() {
+	public double getEnergyDuringTimePeriod() {
 		logger.trace("getEnergyDuringPeriod(), returning energy: {} x unit : {}", lastEnergyDuringPeriod, budgetUnit);
-		return lastEnergyDuringPeriod*budgetUnit;
+		return (lastEnergyDuringPeriod+remainingDuringPeriod)*budgetUnit;
 	}
 
 	/* (non-Javadoc)
@@ -259,7 +311,7 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	 */
 	@Override
 	public double getRemainingBudget() {
-		double total = geEnergyDuringTimePeriod();
+		double total = getEnergyDuringTimePeriod();
 		logger.trace("getRemainingBudget(), returning budgetTotal: {} - energyConsumed : {}", budgetTotal, total);
 		return budgetTotal-total;
 	}
@@ -268,7 +320,7 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	 * @see appsgate.lig.energy.monitoring.CoreEnergyMonitoringGroup#getBudgetTotal()
 	 */
 	@Override
-	public double getBudgetTotal() {
+	public double getBudget() {
 		logger.trace("getBudgetTotal(), returning budgetTotal: {} ", budgetTotal);
 		return budgetTotal;
 	}
@@ -286,15 +338,10 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	 * @see appsgate.lig.energy.monitoring.CoreEnergyMonitoringGroup#setBudget(double, double)
 	 */
 	@Override
-	public void setBudget(double budgetTotal, double budgetUnit) {
+	public void setBudget(double budgetTotal) {
 		logger.trace("setBudget(double budgetTotal : {}, double budgetUnit : {})", budgetTotal, budgetUnit);
 		stateChanged(BUDGETTOTAL_KEY, String.valueOf(this.budgetTotal), String.valueOf(budgetTotal));
-		stateChanged(BUDGETUNIT_KEY, String.valueOf(this.budgetUnit), String.valueOf(budgetUnit));
 		this.budgetTotal = budgetTotal;
-		this.budgetUnit = budgetUnit;
-		
-		// Changing budget sholud reset the energy counters
-		resetEnergy();
 	}
 
 	/* (non-Javadoc)
@@ -335,11 +382,20 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 
 		descr.put(NAME_KEY, getName());
 		descr.put(SENSORS_KEY, getEnergySensorsGroup());
-		descr.put(ENERGY_KEY, getTotalEnergy());
-		descr.put(BUDGETTOTAL_KEY, getBudgetTotal());
-		descr.put(BUDGETUNIT_KEY, getBudgetUnit());
-		descr.put(PERIODS_KEY, getPeriods());
+		descr.put(ENERGY_KEY, String.valueOf(getTotalEnergy()));
+		descr.put(BUDGETTOTAL_KEY, String.valueOf(getBudget()));
+		descr.put(BUDGETUNIT_KEY, String.valueOf(getBudgetUnit()));
+		descr.put(BUDGETREMAINING_KEY, String.valueOf(getRemainingBudget()));		
+		descr.put(PERIODS_KEY, String.valueOf(getPeriods()));
+		descr.put(ISMONITORING_KEY, isMonitoring());
+		descr.put(LASTRESET_KEY, getLastResetTimestamp());
 
+		/**
+		 * Those raw index are mostly used for persistance
+		 */
+		descr.put(RAW_ENERGY_KEY, lastTotal+remainingTotal);
+		descr.put(RAW_ENERGYDURINGPERIOD_KEY, lastEnergyDuringPeriod+remainingDuringPeriod);
+		
 		return descr;
 	}
 
@@ -370,16 +426,71 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	@Override
 	public String addPeriod(long startDate, long endDate, boolean resetOnStart,
 			boolean resetOnEnd) {
-		// TODO we have to use the scheduler
+		logger.trace("addPeriod(long startDate : {}, long endDate : {}, boolean resetOnStart : {},"
+			+" boolean resetOnEnd : {})",startDate, endDate, resetOnStart, resetOnEnd);
 		
-		stateChanged(PERIODS_KEY, null, new JSONArray(this.periods.toString()).toString());
-		return null;
+		if(scheduler == null) {
+			logger.error("No scheduler found, won't add the period");
+			return null;
+		}
+		
+		Set<ScheduledInstruction> onBeginInstructions= new HashSet<ScheduledInstruction>();
+		Set<ScheduledInstruction> onEndInstructions= new HashSet<ScheduledInstruction>();
+		
+		if (startDate > 0) {
+			logger.trace("addPeriod(...), adding instruction to start monitoring");
+			onBeginInstructions.add(formatInstruction("startMonitoring", null));
+		}
+		
+		if (endDate > 0) {
+			logger.trace("addPeriod(...), adding instruction to stop monitoring");
+			onEndInstructions.add(formatInstruction("stopMonitoring", null));
+		}
+		
+		if(resetOnStart) {
+			logger.trace("addPeriod(...), adding instruction to reset monitoring at start of period");
+			onBeginInstructions.add(formatInstruction("resetEnergy", null));			
+		}
+		
+		if(resetOnEnd) {
+			logger.trace("addPeriod(...), adding instruction to reset monitoring at stop of period");
+			onEndInstructions.add(formatInstruction("resetEnergy", null));			
+		}
+		
+		String eventId=null;
+		try {
+			eventId = scheduler.createEvent("AppsGate Energy Monitoring", onBeginInstructions, onEndInstructions,
+					DateFormatter.format(startDate), DateFormatter.format(endDate));
+			periods.add(eventId);
+			stateChanged(PERIODS_KEY, null, new JSONArray(this.periods.toString()).toString());
+			
+		} catch (SchedulingException e) {
+			logger.error("Error when trying to add event in the scheduler : ", e);
+		}
+		return eventId;
+
+	}
+	
+	private ScheduledInstruction formatInstruction(String methodName, JSONArray args) {
+		JSONObject target = new JSONObject();
+		target.put("objectId", serviceId);
+		target.put("method", methodName);
+		target.put("args", (args==null?new JSONArray():args));
+		target.put("TARGET", "EHMI");
+		
+		return new ScheduledInstruction(Commands.GENERAL_COMMAND.getName(), target.toString());
 	}
 
 
 	@Override
 	public void removePeriodById(String eventID) {
-		// TODO we have to use the scheduler
+		if(scheduler == null) {
+			logger.error("No scheduler found, won't remove the period");
+			return;
+		}
+		
+		scheduler.removeEvent(eventID);
+		periods.remove(eventID);
 		stateChanged(PERIODS_KEY, null, new JSONArray(this.periods.toString()).toString());
 	}
 
@@ -415,54 +526,89 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		// 3° check if we are in a monitoring period
 		// and decrease the budget accordingly
 		logger.trace("addActiveEnergyMeasure(String sensorID : {}, double value : {})",sensorID, value);
-		
-		long time = System.currentTimeMillis(); // TODO: maybe we should use the CoreClock Time ?
-		
-		sensors.get(sensorID).newEnergyMeasure(value, checkPeriod(time));
+				
+		sensors.get(sensorID).newEnergyMeasure(value);
 		computeEnergy();
 	}
 	
-	/**
-	 * Every sensors that might trigger energy-related event should send message
-	 * This handler filters
-	 * 1° sensor providing event not in the current group (not optimal, we should only bind event provider from the group)
-	 * 2° event is not related to energy consumption (not optimal, event should have been filtered above)
-	 */
-	@SuppressWarnings("unused")
-	private void energyChangedEvent(NotificationMsg msg) {
-		logger.trace("energyChangedEvent(NotificationMsg msg : {})",msg.JSONize());
-		// Filter 0, basic filtering
-		if(msg != null
-				&& msg.getSource() != null
-				&& msg.getVarName() != null
-				&& msg.getNewValue() != null) {
-			// Filter 1 sensor providing event not in the current group (not optimal, we should only bind event provider from the group)
-			if(sensors.keySet().contains(msg.getSource())) {
-				// Filter/routing 2 event is not related to energy consumption (not optimal, event should have been filtered above)
-				if(msg.getVarName().equals(MSG_VARNAME_ACTIVEENERGY)) {
-					try {
-						double value = Double.parseDouble(msg.getNewValue());
-						addActiveEnergyMeasure(msg.getSource(), value);
-					} catch (NumberFormatException e) {
-						logger.error("energyChangedEvent(..), value is not a double or float : ", e);
-					} 
-				} else if (msg.getVarName().equals(MSG_VARNAME_ANOTHERTBD)) {
-					// If other category of energy measures from other devices types are used,
-					// they should be added in this if/else structure
-					logger.trace("energyChangedEvent(..), you should not be there");
-				} else {
-					logger.trace("energyChangedEvent(..), message varName is not managed for the moment");
-				}
-			} else {
-				logger.trace("energyChangedEvent(..), sensor is not in this group");				
-			}
-		} else {
-			logger.trace("energyChangedEvent(..), empty message or no source/varName/value specified");
-		}		
-	}
+
 	
 	
 	private NotificationMsg stateChanged(String varName, String oldValue, String newValue) {
 		return new CoreNotificationMsg(varName, oldValue, newValue, this.getAbstractObjectId());
 	}
+
+
+	@Override
+	public boolean isMonitoring() {
+		return isMonitoring;
+	}
+
+
+	@Override
+	public synchronized void startMonitoring() {
+		logger.trace("startMonitoring()");
+		if(!isMonitoring){
+			logger.trace("startMonitoring(), starting monitoring status");
+			isMonitoring = true;
+			stateChanged(ISMONITORING_KEY, "false", "true");
+		} else {
+			logger.trace("startMonitoring(), already monitoring, does nothing");
+		}
+	}
+
+	@Override
+	public synchronized void stopMonitoring() {
+		logger.trace("stopMonitoring()");
+		logger.trace("startMonitoring()");
+		if(isMonitoring){
+			logger.trace("stopMonitoring(), stoppping monitoring status");
+			isMonitoring = false;
+			stateChanged(ISMONITORING_KEY, "true","false");
+		} else {
+			logger.trace("stopMonitoring(), already stopped, does nothing");
+		}
+	}
+	
+	public void energyChanged(String sensorId) {
+		logger.trace("energyChanged(String sensorId : {})",
+				sensorId);
+		// basic filtering
+		// Maybe useless, this callback should be called only if relevant
+		if(sensorId != null && sensors.keySet().contains(sensorId)) {
+			addActiveEnergyMeasure(sensorId,
+					EnergySensorPool.getInstance().getEnergyMeasure(sensorId));
+		} else {
+			logger.trace("energyChanged(..), empty sensorID or energyIndex irrelevant");
+		}		
+	}
+
+
+	@Override
+	public void addAnnotation(String annotation) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public JSONArray getAnnotations() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public void setBudgetUnit(double budgetUnit) {
+		logger.trace("setBudgetUnit(double budgetUnit : {})", budgetUnit);
+		stateChanged(BUDGETUNIT_KEY, String.valueOf(this.budgetUnit), String.valueOf(budgetUnit));
+		this.budgetUnit = budgetUnit;	
+	}
+
+
+	@Override
+	public long getLastResetTimestamp() {
+		return lastResetTimestamp;
+	}
+	
 }

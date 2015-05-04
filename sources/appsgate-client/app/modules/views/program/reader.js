@@ -389,7 +389,11 @@ define([
 //          $( document ).tooltip();
 
           // progress indicators should be updated at the end as they are sensitive to the sizes and positions of elements
-          self.updateProgressIndicators();
+          if (app.isDebugMode()) {
+            self.updateDebugMode();
+          } else {
+            self.updateProgressIndicators();
+          }
 
         });
 
@@ -408,7 +412,19 @@ define([
 
         return input;
       },
+      updateDebugMode: function() {
+        var self = this;
+        var input = $(".programInput");
+        var workspace = $(".editorWorkspace");
+        var activeSet = $.map(this.model.get("activeNodes"), function(value,index){return [[index, value]];});
+        $(".debugActivated").removeClass("debugActivated");
+        var currentNode = this.model.get("currentNode");
+        $("#"+currentNode).addClass("debugActivated");
+        return input;
+      },
+            
       updateProgressIndicators: function() {
+        $(".debugActivated").removeClass("debugActivated");
         var self = this;
         var input = $(".programInput");
         var workspace = $(".editorWorkspace");
@@ -478,6 +494,7 @@ define([
 
         return input;
       },
+
       showTimestamps : function(e) {
         self = this;
         var ts = $(e.currentTarget).attr("ts");

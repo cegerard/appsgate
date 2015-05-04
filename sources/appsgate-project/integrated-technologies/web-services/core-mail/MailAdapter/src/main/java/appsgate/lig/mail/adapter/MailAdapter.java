@@ -146,8 +146,7 @@ public class MailAdapter implements MailConnexionListener{
             			&& inst.getProperty("deviceId").equals(String.valueOf(connexion.hashCode())) ) {
             		logger.trace("connexionBroken(...), removing apam instance : "+inst.getName());
 
-        			((ComponentBrokerImpl) CST.componentBroker)
-					.disappearedComponent(inst);            		
+        			((ComponentBrokerImpl) CST.componentBroker).disappearedComponent(inst.getName());            		
             	}
             }
         } catch( Exception exc) {

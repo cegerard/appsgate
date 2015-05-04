@@ -1,7 +1,6 @@
 package appsgate.lig.ehmi.impl.listeners;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -60,7 +59,7 @@ public class EHMICommandListener implements CommandListener {
 	public void onReceivedCommand(JSONObject obj) {
 		logger.trace("onReceivedCommand(JSONObject obj : {})", obj.toString());
 		try {
-			int clientId = obj.getInt("clientId");
+			int clientId=-1;
 			String method = obj.getString("method");
 			JSONArray args = obj.getJSONArray("args");
 			String callId = null;
@@ -72,6 +71,13 @@ public class EHMICommandListener implements CommandListener {
 					logger.debug("method with return call");
 				} else {
 					logger.debug("method without return");
+				}
+				
+				if(obj.has("clientId")) {
+					clientId = obj.getInt("clientId");
+					logger.debug("method with clientId");
+				} else {
+					logger.debug("method without clientId (won't return to a client using webSocket)");
 				}
 				
 				if(!obj.has("objectId")){

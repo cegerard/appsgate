@@ -116,7 +116,12 @@ public class DBHelper {
 	public boolean insertJSON(JSONObject obj) {
 		logger.trace("insertJSON(JSONObject obj : "+obj.toString()+")");
 		try {
-			dbCollection.insert((DBObject)JSON.parse(obj.toString()));
+			if(obj.has(ENTRY_ID)) {
+				dbCollection.update(new BasicDBObject(ENTRY_ID, obj.get(ENTRY_ID)),
+						(DBObject)JSON.parse(obj.toString()), true, false);
+			} else {
+				dbCollection.insert((DBObject)JSON.parse(obj.toString()));
+			}
 			return true;
 		} catch(Exception exc) {
 			logger.error("Exception while inserting object, "+exc.getMessage());

@@ -22,7 +22,12 @@
              <message push="clockSetChanged"/>
         </relation>
         <relation specification="GoogleAdapter" field="serviceAdapter" resolve="exist" />
-        <relation specification="EHMIProxySpec" field="ehmiService" resolve="exist" />
+        
+        <relation specification="EHMIProxySpec" resolve="exist" fail="wait">
+            <interface field="ehmiService"/>
+            <interface field="commandListener"/>
+        </relation>
+        
         
         
 		<callback onInit="start" />

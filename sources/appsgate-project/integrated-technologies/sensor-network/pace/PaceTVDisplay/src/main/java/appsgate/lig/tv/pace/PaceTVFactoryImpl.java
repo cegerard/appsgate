@@ -149,7 +149,7 @@ public class PaceTVFactoryImpl extends TimerTask implements TVFactory{
 		} catch (Exception exc) {
 			logger.warn("Exception when creating PaceTVImpl : " + exc.getMessage());
 			if(inst != null) {
-				((ComponentBrokerImpl) CST.componentBroker).disappearedComponent(inst);
+				((ComponentBrokerImpl) CST.componentBroker).disappearedComponent(inst.getName());
 				logger.trace("createTVInstance(...), removed corresponding instance");
 			}
 			currentServiceId = null;
@@ -160,24 +160,20 @@ public class PaceTVFactoryImpl extends TimerTask implements TVFactory{
 	@Override
 	public void removeTVInstance(String serviceId) {
 		logger.trace("removeTVInstance(String serviceId : "+serviceId+")");
-		Implementation observerImpl = CST.apamResolver.findImplByName(null,
-				PaceTVImpl.IMPL_NAME);
+		Implementation observerImpl = CST.apamResolver.findImplByName(null,PaceTVImpl.IMPL_NAME);
 
 		if (observerImpl != null) {
 			for (Instance inst : observerImpl.getInsts()) {
-				PaceTVImpl service = (PaceTVImpl) inst
-						.getServiceObject();
+				PaceTVImpl service = (PaceTVImpl) inst.getServiceObject();
 				if(serviceId == null ) {
 					logger.trace("destroyTVInstance(...), as serviceId is null"
 							+ " destroying all instances including this one with id "+service.getAbstractObjectId());
-					((ComponentBrokerImpl) CST.componentBroker)
-					.disappearedComponent(inst);	
+					((ComponentBrokerImpl) CST.componentBroker).disappearedComponent(inst.getName());	
 					currentServiceId = null;
 				} else if (serviceId.equals(service.getAbstractObjectId())) {
 					logger.trace("destroyTVInstance(...), found serviceId "+service.getAbstractObjectId()
 							+", removing it");
-					((ComponentBrokerImpl) CST.componentBroker)
-					.disappearedComponent(inst);
+					((ComponentBrokerImpl) CST.componentBroker).disappearedComponent(inst.getName());
 					currentServiceId = null;
 				}
 			}	

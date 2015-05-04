@@ -108,4 +108,8 @@ public class TraceRT implements TraceHistory {
             LOGGER.trace("Subscriber was not present: {}", clientId);
         }
     }
+
+    @Override
+    public void addExecutionTrace(Long timestamp, String pid, String node_id) {
+    }
 }
