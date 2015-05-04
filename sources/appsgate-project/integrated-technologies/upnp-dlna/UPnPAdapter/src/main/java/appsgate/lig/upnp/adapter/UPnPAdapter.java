@@ -25,6 +25,7 @@ import fr.imag.adele.apam.ApamResolver;
 import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Implementation;
 import fr.imag.adele.apam.apform.ApformInstance;
+import fr.imag.adele.apam.impl.ComponentBrokerImpl;
 import fr.imag.adele.apam.impl.InstanceImpl;
 import fr.imag.adele.apam.util.ApamFilter;
 
@@ -318,7 +319,7 @@ public class UPnPAdapter {
 			for (ApformInstance proxy : proxies) {
 				try {
 					if (proxy.getApamComponent() != null) {
-						((InstanceImpl)proxy.getApamComponent()) .unregister();
+						((ComponentBrokerImpl)CST.componentBroker).disappearedComponent(proxy.getApamComponent().getName());
 					}
 				} catch (Exception e) {
 					logger.error("[UPnP Apam Discovery] Service proxy could not be disposed  "+proxy.getDeclaration().getName(),e);

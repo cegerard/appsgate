@@ -221,7 +221,7 @@ public class EnergyMonitoringAdapterImpl extends CoreObjectBehavior implements
 		}
 		
 		instances.remove(groupID);
-		((ComponentBrokerImpl)CST.componentBroker).disappearedComponent(inst);
+		((ComponentBrokerImpl)CST.componentBroker).disappearedComponent(groupID);
 		removeInstanceConfiguration(groupID);
 				
 		stateChanged(REMOVED_GROUP, null, groupID);
