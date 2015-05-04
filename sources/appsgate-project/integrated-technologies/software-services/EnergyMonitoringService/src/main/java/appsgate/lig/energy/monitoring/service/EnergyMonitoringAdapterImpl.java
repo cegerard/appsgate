@@ -135,7 +135,7 @@ public class EnergyMonitoringAdapterImpl extends CoreObjectBehavior implements
 	 * @see appsgate.lig.energy.monitoring.EnergyMonitoringAdapter#createGroup(java.lang.String, org.json.JSONArray, double, double, long, long, long, long)
 	 */
 	@Override
-	public String createGroup(String groupName, JSONArray sensors,
+	public String createEnergyMonitoringGroup(String groupName, JSONArray sensors,
 			double budgetTotal, double budgetUnit) {
 		logger.trace("createGroup(String groupName : {}, JSONArray sensors : {}, "
 				+ "double budgetTotal : {}, double budgetUnit : {})",
@@ -193,20 +193,20 @@ public class EnergyMonitoringAdapterImpl extends CoreObjectBehavior implements
 	 * @see appsgate.lig.energy.monitoring.EnergyMonitoringAdapter#createEmptyGroup(java.lang.String)
 	 */
 	@Override
-	public String createEmptyGroup(String groupName) {
+	public String createEnergyMonitoringEmptyGroup(String groupName) {
 		// Created a group with default values
 		// -1 budget -> no budget defined
 		// 1 budget unit -> default value
 
 		logger.trace("createEmptyGroup(String groupName : {})", groupName);
-		return createGroup(groupName, new JSONArray(), -1, 1);
+		return createEnergyMonitoringGroup(groupName, new JSONArray(), -1, 1);
 	}
 
 	/* (non-Javadoc)
 	 * @see appsgate.lig.energy.monitoring.EnergyMonitoringAdapter#removeGroup(java.lang.String)
 	 */
 	@Override
-	public void removeGroup(String groupID) {
+	public void removeEnergyMonitoringGroup(String groupID) {
 		logger.trace("removeGroup(String groupID : {})", groupID);
 		if(!dbBound()) {
 			logger.warn("No Database bound, cannot guarantee the group will be removed from the database,"

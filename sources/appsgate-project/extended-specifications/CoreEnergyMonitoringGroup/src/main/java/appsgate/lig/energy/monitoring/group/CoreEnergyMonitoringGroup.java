@@ -31,6 +31,24 @@ public interface CoreEnergyMonitoringGroup {
 	
 	
 	/**
+	 * Allow the user to add a text to the group
+	 * (explaining unusual energy consumption for instance)
+	 * The annotation will be timestamped by the service ('when' this method is called)
+	 * Warning: there could be only one single annotation for a particular timestamp 
+	 * @param annotation
+	 */
+	public void addAnnotation(String annotation);
+	
+	/**
+	 * get all the annotations attached to the group as a JSONArray of JSONObject
+	 * (the key being the timestamp and the value being the text)
+	 * [{"time1","annotation 1"},{"time2", "annotation2"},..., {{"timeN", "annotationN"}}]
+	 * @param annotation
+	 */
+	public JSONArray getAnnotations();
+	
+	
+	/**
 	 * Get the current energy sensors in this group
 	 * @return an array of objectID, each object ID (String) is an EnergySensor (for instance a SmartPlug)
 	 */
@@ -58,7 +76,7 @@ public interface CoreEnergyMonitoringGroup {
 	public void removeEnergySensor(String sensorID);
 	
 	/**
-	 * Reset the current Energy used and Budget
+	 * Reset the current Energy used and remaining Budget 
 	 * (the Total Energy and the Energy during Time periods)
 	 * @return
 	 */
@@ -76,7 +94,7 @@ public interface CoreEnergyMonitoringGroup {
 	 * Expressed according to the BudgetUnit (if budget unit = 1 this is watt/sec)
 	 * @return
 	 */
-	public double geEnergyDuringTimePeriod();
+	public double getEnergyDuringTimePeriod();
 	
 	
 	/**
@@ -90,7 +108,7 @@ public interface CoreEnergyMonitoringGroup {
 	 * Return the budget defined for the Time period
 	 * @return the remaining budget or -1 if no budget defined 
 	 */
-	public double getBudgetTotal();
+	public double getBudget();
 	
 	/**
 	 * Return the budget unit defined relative to the cost of one watt/sec
@@ -99,13 +117,19 @@ public interface CoreEnergyMonitoringGroup {
 	public double getBudgetUnit();
 	
 	/**
-	 * The the budget total and the budget unit, general formula:
-	 * Remaining = BudgetTotal - (BudgetUnit x EnergyDuringTimePeriod)
-	 * Note: Setting the budget restet the remaining budget
-	 * @param budgetTotal if -1, no budget defined
+	 * The the budget the budget unit, general formula:
+	 * Remaining = Budget - (BudgetUnit x EnergyDuringTimePeriod)
 	 * @param budgetUnit 1 is a default value (Watt/sec)
 	 */
-	public void setBudget(double budgetTotal, double budgetUnit);
+	public void setBudgetUnit(double budgetUnit);	
+	
+	/**
+	 * The the budget total and the budget unit, general formula:
+	 * Remaining = Budget - (BudgetUnit x EnergyDuringTimePeriod)
+	 * Note: Setting the budget restet the remaining budget
+	 * @param budget if -1, no budget defined
+	 */
+	public void setBudget(double budget);
 	
 	/**
 	 * Get the Monitoring Periods as a JSONArray of eventIDs (String),
