@@ -1,0 +1,53 @@
+<div class="lead">
+	
+	<button type="button" class="pull-left btn btn-default back-button">
+		<span class="glyphicon glyphicon-chevron-left"></span>
+	</button>
+	<span>
+		&nbsp;
+		<%= service.get('name') %></%>
+	</span>
+	
+	<div class="pull-right">
+		<button class="btn btn-default" data-target="#edit-device-modal" >
+			<i class="glyphicon glyphicon-edit"></i> 
+			<span data-i18n="services.energy-monitoring.edit-button"></span>
+		</button>
+	</div>
+
+
+	<!-- modal to add a new place -->
+	
+<!--
+	<div id="add-amount-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalAddAmount" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" data-i18n="services.mail.modal.title"></h4>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-xs-9">
+							<input type="text" class="form-control" name="inputValue" id="mailInput" autocomplete="off">
+							<input type="hidden" class="form-control" name="oldValue" id="oldMail">
+							<p class="hide text-danger" data-i18n="services.mail.modal.valid-mail"></p>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-default cancel-button" data-dismiss="modal" data-i18n="form.cancel-button"></button>
+					<button class="btn btn-primary valid-button disabled valid-disabled" data-i18n="form.valid-button"></button>
+				</div>
+			</div>
+		</div>
+	</div>
+-->
+
+</div>
+
+<div class="contents-list scrollable">
+	<div class="panel panel-default">
+		<div class="list-group">
+		</div>
+	</div>
+</div>

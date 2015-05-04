@@ -40,7 +40,11 @@ define([
         {"type": "JSONArray", "value": sensors, "name":"sensors"},
         {"type": "double", "value": budgetTotal, "name": "budgetTotal"},
         {"type": "double", "value": budgetUnit, "name": "budgetUnit"}]);
-    }
+    },
+	  
+  	getCoreEnergyMonitoringGroups: function() {
+		return services.getCoreEnergyMonitoringGroups();
+	}
 
   });
   return EnergyMonitoringAdapter;

@@ -3,8 +3,9 @@ define([
     "text!templates/services/list/servicesListByCategory.html",
     "text!templates/services/list/mail.html",
     "text!templates/services/details/tts/tts.html",
+	"text!templates/services/list/energyMonitoring.html",
     "models/service/weather"
-], function(App, serviceListByCategoryTemplate, mailTemplate,ttsTemplate,  Weather) {
+], function(App, serviceListByCategoryTemplate, mailTemplate,ttsTemplate, energyMonitoringTemplate, Weather) {
 
     var ServiceByTypeView = {};
     /**
@@ -14,6 +15,7 @@ define([
         tpl: _.template(serviceListByCategoryTemplate),
         mailTpl: _.template(mailTemplate),
         ttsTpl: _.template(ttsTemplate),
+		energyGrpTpl: _.template(energyMonitoringTemplate),
         events: {
             "keyup #add-weather-modal input": "validWeatherName",
             "click #add-weather-modal button.valid-button": "addWeatherName",
@@ -27,6 +29,9 @@ define([
             "click button.delete-mail-button": "onDeleteMailButton",
             "click button.cancel-delete-mail-button": "onCancelDeletePopover",
             "click button.cancel-delete-weather-button": "onCancelDeletePopover",
+			"click button.delete-amount": "onDeleteAmount",
+			"click #add-amount-modal button.valid-button": "onAddAmount",
+			"keyup #add-amount-modal input": "validAddinAmount",
             "shown.bs.modal #edit-mail-modal": "initializeMailModal",
             "shown.bs.modal #add-weather-modal": "initializeWeatherModal"
 
@@ -110,6 +115,11 @@ define([
                     this.$el.html(this.ttsTpl({
                         tts: services.getServicesByType()[this.id][0]
                     }));
+                } else if (this.id === "EnergyMonitoringAdapter") {
+                    this.$el.html(this.energyGrpTpl({
+                        energyMonitoringGroups: services.getCoreEnergyMonitoringGroups(),
+                    }));
+					this.buildDevicesChoice();
                 } else {
                     this.$el.html(this.tpl({
                         type: this.id,
@@ -286,7 +296,81 @@ define([
             // hide the modal
 
             $("#edit-mail-modal").modal("hide");
-        }
+        },
+		
+		/**
+         * Callback to delete amount
+         */
+        onDeleteAmount: function(e) {
+			e.preventDefault();
+			var id = $(e.currentTarget).attr("idGroup");
+			services.getEnergyMonitoringAdapter().removeGroup(id);
+        },
+		
+		/** Energy monitoring **/
+		
+		/**
+         * Callback to add amount
+         */
+		onAddAmount: function() {
+			var name = $("#add-amount-modal #amountNameInput").val();
+			var sensors = this.getDevicesSelected();
+			var budgetTotal = $("#add-amount-modal #amountValueInput").val();
+			var budgetUnit = $("#add-amount-modal #unitSelector").val();
+			console.log(name + " " + budgetTotal + " " + budgetUnit);
+			
+			services.getEnergyMonitoringAdapter().createGroup(name, sensors, budgetTotal, budgetUnit)
+			$("#add-amount-modal").modal("hide");
+		},
+		
+		/**
+		* Method to get the ids of the devices selected
+		*/
+		getDevicesSelected: function () {
+			var ids = [];
+			// Check All checked
+			if ($("#allDevice").is(":checked")) {
+				_.forEach($("input[type=checkbox]"), function(input) {
+					if (input.id !== "allDevice") {
+						ids.push(input.id);
+					}
+				});
+			} else {
+				_.forEach($("input[type=checkbox]:checked"), function(input) {
+					if (input.id !== "allDevice") {
+						ids.push(input.id);
+					}
+				});
+			}
+			
+			return ids;
+		}, 
+		
+		/**
+		* Method to get the devices we want to present
+		*/
+		getEnergyDevices: function () {
+			var eD = [];
+			eD = devices.getDevicesByType(6);
+			return eD;
+		},
+		
+		/**
+		* Method to build the input checkbox for all energy devices
+		*/
+		buildDevicesChoice: function() {
+			var self = this;
+			var divChoice = $('#energyDevicesContainer');
+			divChoice.append("<div class='col-md-12'><input type='checkbox' id='allDevice'>" + $.i18n.t("services.energy-monitoring.modal-add.devices.all") + "</div>");
+			_.each(self.getEnergyDevices(), function(device){
+				divChoice.append("<div class='col-md-12'><input type='checkbox' id='" + device.get("id") + "'>" + device.get('name') + "</div>");
+			});
+		},
+		
+		validAddinAmount: function () {
+		}
+		
+		/********/
 
     });
     return ServiceByTypeView;

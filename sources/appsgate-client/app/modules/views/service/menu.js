@@ -82,7 +82,7 @@ define([
                 var types = services.getServicesByType();
                 var container = document.createDocumentFragment();
                 _.forEach(_.keys(types), function(type) {
-                  if (type !== "36") {
+                  if (type !== "36" && type !== "CoreEnergyMonitoringGroup") {
                     $(container).append(self.tplServiceContainer({
                         type: type,
                         services: types[type],

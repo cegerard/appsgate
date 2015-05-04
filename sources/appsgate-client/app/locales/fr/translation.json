@@ -956,6 +956,33 @@
     },
     "device-no-name": "Equipement sans nom",
     "device-unlocated": "Non localisé",
+    "energy-monitoring" : {
+		"name" : {
+			"singular" : "Gestion d'énergie",
+			"plural" : "Gestion d'énergie"
+		},
+		"add-button" : "Ajouter un budget",
+		"remove-button" : "Supprimer budget",
+		"edit-button" : "Editer",
+		"amount" : {
+			"name" : "Budget",
+			"planed" : "Montant prévu",
+			"used" : "Montant utilisé",
+			"left" : "Montant restant"
+		},
+		"modal-add" : {
+			"title" : "Nouveau budget",	
+			"placeholder" : {
+				"name" : "Nom du budget",
+				"amount" : "Spécifier votre budget"
+			},
+			"devices" : {
+				"title" : "Pour les équipements :",
+				"all" : "Toutes les smartplugs"
+			}
+		},
+		"unit" : "Unités"
+	},
     "mail": {
       "keyboard": {
         "sendMail": "Envoyer un mail",

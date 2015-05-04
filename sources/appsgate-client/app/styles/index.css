@@ -1212,3 +1212,11 @@ button.program-incomplete{
 .subfilter-title a.collapsed:after {
     content:"\e080";
 }
+
+/** Bootstrap adding **/
+.voffset-top-05 { margin-top: 0.5em; }
+.voffset-top-10 { margin-top: 1.0em; }
+.voffset-top-15 { margin-top: 1.5em; }
+.voffset-top-20 { margin-top: 2.0em; }
+.voffset-top-25 { margin-top: 2.5em; }
+.voffset-top-30 { margin-top: 3.0em; }

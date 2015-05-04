@@ -31,12 +31,20 @@
             <% } else { %>
                 <span data-i18n="services.tts.name.plural"></span>
             <% } %>
+        <% } else if (type === "EnergyMonitoringAdapter") { %>
+            <% if (services.length === 1) { %>
+                <span data-i18n="services.energy-monitoring.name.singular"></span>
+            <% } else { %>
+                <span data-i18n="services.energy-monitoring.name.plural"></span>
+            <% } %>
         <% } %>
         <span class="pull-right badge badge-number">
             <% if (type === "102") { %>
-            <span id='mailFavCnt'><%= services[0].getNumberOfFavorites() %></span>
+            	<span id='mailFavCnt'><%= services[0].getNumberOfFavorites() %></span>
             <% } else if (type === "104") { %>
-            <%= services[0].getTTSItems().length %>
+				<%= services[0].getTTSItems().length %>
+            <% } else if (type === "EnergyMonitoringAdapter") { %>
+				<%= (services[0].getCoreEnergyMonitoringGroups() !== undefined ? services[0].getCoreEnergyMonitoringGroups().length : 0) %>
             <% } else { %>
             <%= services.length %>
             <% } %>

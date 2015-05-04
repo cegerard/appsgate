@@ -119,6 +119,20 @@ define([
         getEnergyMonitoringAdapter: function() {
             return services.findWhere({type: "EnergyMonitoringAdapter"});
         },
+		/**
+         * @return array of the CoreEnergyMonitoringGroup of the home
+         */
+        getCoreEnergyMonitoringGroups: function() {
+            return services.where({type: "CoreEnergyMonitoringGroup"});
+        },
+		/**
+         * @return array of the CoreEnergyMonitoringGroup of the home
+         */
+        getCoreEnergyMonitoringGroupById: function(paramId) {
+            return _.find(this.getCoreEnergyMonitoringGroups(), function(g) {
+				return g.id === paramId;
+			});
+        },
         /**
          * @returns the template corresponding to the device
          */
