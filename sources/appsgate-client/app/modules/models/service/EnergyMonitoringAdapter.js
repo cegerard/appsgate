@@ -29,14 +29,14 @@ define([
 
     },
 
-    createEmptyGroup: function(name) {
-      this.remoteControl("createEmptyGroup", [{"type": "String", "value": name, "name": "name"}]);
+    createEnergyMonitoringEmptyGroup: function(name) {
+      this.remoteControl("createEnergyMonitoringEmptyGroup", [{"type": "String", "value": name, "name": "name"}]);
     },
-    removeGroup: function(groupID) {
-      this.remoteControl("removeGroup", [{"type": "String", "value": groupID, "name": "groupID"}]);
+    removeEnergyMonitoringGroup: function(groupID) {
+      this.remoteControl("removeEnergyMonitoringGroup", [{"type": "String", "value": groupID, "name": "groupID"}]);
     },
-    createGroup: function(name, sensors, budgetTotal, budgetUnit) {
-      this.remoteControl("createGroup", [{"type": "String", "value": name, "name": "name"},
+    createEnergyMonitoringGroup: function(name, sensors, budgetTotal, budgetUnit) {
+      this.remoteControl("createEnergyMonitoringGroup", [{"type": "String", "value": name, "name": "name"},
         {"type": "JSONArray", "value": sensors, "name":"sensors"},
         {"type": "double", "value": budgetTotal, "name": "budgetTotal"},
         {"type": "double", "value": budgetUnit, "name": "budgetUnit"}]);

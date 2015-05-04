@@ -304,7 +304,7 @@ define([
         onDeleteAmount: function(e) {
 			e.preventDefault();
 			var id = $(e.currentTarget).attr("idGroup");
-			services.getEnergyMonitoringAdapter().removeGroup(id);
+			services.getEnergyMonitoringAdapter().removeEnergyMonitoringGroup(id);
         },
 		
 		/** Energy monitoring **/
@@ -319,7 +319,7 @@ define([
 			var budgetUnit = $("#add-amount-modal #unitSelector").val();
 			console.log(name + " " + budgetTotal + " " + budgetUnit);
 			
-			services.getEnergyMonitoringAdapter().createGroup(name, sensors, budgetTotal, budgetUnit)
+			services.getEnergyMonitoringAdapter().createEnergyMonitoringGroup(name, sensors, budgetTotal, budgetUnit)
 			$("#add-amount-modal").modal("hide");
 		},
 		
