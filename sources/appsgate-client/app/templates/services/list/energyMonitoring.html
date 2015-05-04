@@ -1,0 +1,93 @@
+<div class="lead">
+
+	<span data-i18n="services.energy-monitoring.name.singular"></span>
+	
+	<div class="pull-right">
+		<a data-toggle="modal" href="#add-amount-modal" class="btn btn-default">
+			<i class="glyphicon glyphicon-plus-sign"></i> 
+			<span data-i18n="services.energy-monitoring.add-button"></span>
+		</a>
+	</div>
+
+	<!-- modal to add a new place -->
+	
+		<div id="add-amount-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalAddAmount" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" data-i18n="services.energy-monitoring.modal-add.title"></h4>
+				</div>
+				
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-xs-offset-1 col-xs-10">
+							<input type="text" class="form-control" name="inputValue" id="amountNameInput" placeholder="<%= $.i18n.t('services.energy-monitoring.modal-add.placeholder.name') %>" autocomplete="off">
+						</div>
+						
+						<form class="form-horizontal col-xs-12  voffset-top-10">
+							  <div class="form-group">
+								<label class="col-md-2" for="amountValueInput" data-i18n="services.energy-monitoring.amount.name"></label>
+								  <div class="col-md-4">
+									  <input class="form-control" type="number" id="amountValueInput" placeholder="<%= $.i18n.t('services.energy-monitoring.modal-add.placeholder.amount') %>">
+								  </div>
+								<label class="col-md-2 col-md-offset-1" for="unitSelector" data-i18n="services.energy-monitoring.unit"></label>
+								<div class="col-md-2">
+									<select id="unitSelector" class="form-control">
+										<option>1</option>
+										<option>2</option>
+										<option>3</option>
+									</select>
+								</div>
+							  </div>
+						</form>
+						
+						<div class="col-xs-offset-1 col-xs-11">
+							<div id="energyDevicesContainer" class="row">
+								<span class="col-md-12" data-i18n="services.energy-monitoring.modal-add.devices.title"></span>
+							</div>
+						</div>
+						
+					</div>
+				</div>
+				
+				<div class="modal-footer">
+					<button class="btn btn-default cancel-button" data-dismiss="modal" data-i18n="form.cancel-button"></button>
+<!--					<button class="btn btn-primary valid-button disabled valid-disabled" data-i18n="form.valid-button"></button>-->
+					<button class="btn btn-primary valid-button" data-i18n="form.valid-button"></button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+<div class="contents-list scrollable">
+	<div class="panel panel-default">
+		<div class="list-group">
+			<% energyMonitoringGroups.forEach(function(group){%>
+				<a id="<%= group.get('id') %>" href="#services/<%= group.get('id') %>" class="list-group-item">
+					<div class="row">
+						<div class="col-md-12"><%= group.getName() %></%>
+							<div class="pull-right">
+								<button idGroup="<%= group.get('id') %>" class="btn btn-default delete-amount" data-i18n="services.energy-monitoring.remove-button" ></button>
+								<i class="glyphicon glyphicon-chevron-right"></i>
+							</div>	
+						</div>
+						<div class="row">
+							<div class="col-md-offset-1 col-md-3 col-sm-offset-1 col-sm-3">Budget planifié : </div>
+							<div class="col-md-2 col-sm-1"><%= group.get("budgetTotal") %></div>
+							<div class="col-md-offset-1 col-md-3 col-sm-3">Unités : </div>
+							<div class="col-md-2 col-sm-1"><%= group.get("budgetUnit") %></div>
+						</div>
+						<div class="row">
+							<div class="col-md-offset-1 col-md-3 col-sm-offset-1 col-sm-3">Energie utilisée : </div>
+							<div class="col-md-2 col-sm-1"><%= group.get("energy") %></div>
+							<div class="col-md-offset-1 col-md-3 col-sm-3">Unités : </div>
+							<div class="col-md-2 col-sm-1"><%= group.get("budgetUnit") %></div>
+						</div>
+					</div>
+				</a>
+			<% }) %>
+		</div>
+	</div>
+</div>

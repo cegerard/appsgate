@@ -35,6 +35,9 @@ define([
     setName: function(name) {
       this.remoteControl("setName", [{"type": "String", "value": name, "name": "name"}]);
     },
+  	getName: function() {
+		return this.get("name");
+	},
     addEnergySensor: function(sensorID) {
       this.remoteControl("addEnergySensor", [{"type": "String", "value": sensorID, "name": "sensorID"}]);
     },

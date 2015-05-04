@@ -3,8 +3,9 @@ define([
   "views/service/menu",
   "views/service/servicebytype",
   "views/service/details/tts",
+  "views/service/details/energyMonitoring",
   "views/service/details"
-  ], function(App, ServiceMenuView, ServicesByTypeView, TTSDetailsView, ServiceDetailsView) {
+  ], function(App, ServiceMenuView, ServicesByTypeView, TTSDetailsView, EnergyMonitoringView, ServiceDetailsView) {
 
     var ServiceRouter = {};
     /**
@@ -92,6 +93,9 @@ define([
         switch(service.get("type")) {
           case 104:
             appRouter.showDetailsView(new TTSDetailsView({model: service}));
+            break;
+		  case "CoreEnergyMonitoringGroup":
+            appRouter.showDetailsView(new EnergyMonitoringView({model: services.getCoreEnergyMonitoringGroupById(id)}));
             break;
           default :
             appRouter.showDetailsView(new ServiceDetailsView({model: services.get(id)}));
