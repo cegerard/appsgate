@@ -9,25 +9,25 @@ import appsgate.lig.mobile.device.adapter.spec.MobileDeviceAdapterServices;
 
 public class MobileDeviceAdapter implements MobileDeviceAdapterServices {
 
-	/**
-	 * Static class member uses to log what happened in each instances
-	 */
-	private static final Logger logger = LoggerFactory.getLogger(MobileDeviceAdapter.class);
-	
-	private ListenerService listenerService;
-	private SendWebsocketsService sendToClientService;
-	
-	/**
-	 * Called by APAM when an instance of this implementation is created
-	 */
-	public void newInst() {
-		logger.info("New color mobile device adapter");
-	}
+    /**
+     * Static class member uses to log what happened in each instances
+     */
+    private static final Logger logger = LoggerFactory.getLogger(MobileDeviceAdapter.class);
 
-	/**
-	 * Called by APAM when an instance of this implementation is removed
-	 */
-	public void deleteInst() {
-		logger.info("A color light device adapter");
-	}
+    private ListenerService listenerService;
+    private SendWebsocketsService sendToClientService;
+
+    /**
+     * Called by APAM when an instance of this implementation is created
+     */
+    public void newInst() {
+        logger.info("New color mobile device adapter");
+    }
+
+    /**
+     * Called by APAM when an instance of this implementation is removed
+     */
+    public void deleteInst() {
+        logger.info("A color light device adapter");
+    }
 }

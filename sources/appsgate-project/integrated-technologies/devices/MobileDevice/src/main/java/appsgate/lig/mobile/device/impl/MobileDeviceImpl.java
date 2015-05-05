@@ -13,133 +13,133 @@ import appsgate.lig.mobile.device.messages.MobileDeviceNotificationMsg;
 import appsgate.lig.mobile.device.spec.CoreMobileDeviceSpec;
 
 /**
- * This is the class that represent Mobile device (SamrtPhone, Tablet) implementation in ApAM.
- * 
+ * This is the class that represent Mobile device (SamrtPhone, Tablet)
+ * implementation in ApAM.
+ *
  * @author Cédric Gérard
  * @since April 12, 2014
  * @version 1.0.0
- * 
+ *
  * @see CoreObjectBehavior
  * @see CoreObjectSpec
  * @see CoreMobileDeviceSpec
  */
 public class MobileDeviceImpl extends CoreObjectBehavior implements CoreObjectSpec, CoreMobileDeviceSpec {
 
-	
-	private MobileDeviceAdapterServices mobileDeviceAdapter;
-	
-	private String deviceName;
-	private String deviceId;
-	private String deviceType;
-	private String userType;
-	private String status;
-	
-	/**
-	 * Static class member uses to log what happened in each instances
-	 */
-	private static final Logger logger = LoggerFactory.getLogger(MobileDeviceImpl.class);
-	
-	/**
-	 * Called by APAM when an instance of this implementation is created
-	 */
-	public void newInst() {
-		logger.info("New mobile device detected");
-	}
+    private MobileDeviceAdapterServices mobileDeviceAdapter;
 
-	/**
-	 * Called by APAM when an instance of this implementation is removed
-	 */
-	public void deleteInst() {
-		logger.info("A mobile device desapeared");
-	}
+    private String deviceName;
+    private String deviceId;
+    private String deviceType;
+    private String userType;
+    private String status;
 
-	/**
-	 * This method uses the ApAM message model. Each call produce a
-	 * MobileDeviceNotificationMsg object and notifies ApAM that a new message has
-	 * been released.
-	 * 
-	 * @return nothing, it just notifies ApAM that a new message has been
-	 *         posted.
-	 */
-	public NotificationMsg notifyChanges(String varName, String value) {
-		return new MobileDeviceNotificationMsg(varName, value, this.getAbstractObjectId());
-	}
-	
-	
-	@Override
-	public JSONObject getCapabilites() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    /**
+     * Static class member uses to log what happened in each instances
+     */
+    private static final Logger logger = LoggerFactory.getLogger(MobileDeviceImpl.class);
 
-	@Override
-	public JSONObject getActivatedCapabilites() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    /**
+     * Called by APAM when an instance of this implementation is created
+     */
+    public void newInst() {
+        logger.info("New mobile device detected");
+    }
 
-	@Override
-	public boolean hasCapability(String capability) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    /**
+     * Called by APAM when an instance of this implementation is removed
+     */
+    public void deleteInst() {
+        logger.info("A mobile device desapeared");
+    }
 
-	@Override
-	public boolean isCapabilityAsctivated(String capability) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    /**
+     * This method uses the ApAM message model. Each call produce a
+     * MobileDeviceNotificationMsg object and notifies ApAM that a new message
+     * has been released.
+     *
+     * @return nothing, it just notifies ApAM that a new message has been
+     * posted.
+     */
+    public NotificationMsg notifyChanges(String varName, String value) {
+        return new MobileDeviceNotificationMsg(varName, value, this.getAbstractObjectId());
+    }
 
-	@Override
-	public boolean sendNotifcation(String msg, int flag) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public JSONObject getCapabilites() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public boolean display(String message) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public JSONObject getActivatedCapabilites() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public String getAbstractObjectId() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public boolean hasCapability(String capability) {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
-	@Override
-	public String getUserType() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public boolean isCapabilityAsctivated(String capability) {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
-	@Override
-	public int getObjectStatus() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    @Override
+    public boolean sendNotifcation(String msg, int flag) {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
-	@Override
-	public JSONObject getDescription() throws JSONException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public boolean display(String message) {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
-	@Override
-	public CORE_TYPE getCoreType() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	/**
-	 * Called by ApAM when the status value changed
-	 * @param newStatus the new status value.
-	 * its a string the represent a integer value for the status code.
-	 */
-	public void statusChanged(String newStatus) {
-		logger.info("The device, "+ deviceId+" status changed to "+newStatus);
-		notifyChanges("status", newStatus);
-	}
+    @Override
+    public String getAbstractObjectId() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public String getUserType() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public int getObjectStatus() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public JSONObject getDescription() throws JSONException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public CORE_TYPE getCoreType() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * Called by ApAM when the status value changed
+     *
+     * @param newStatus the new status value. its a string the represent a
+     * integer value for the status code.
+     */
+    public void statusChanged(String newStatus) {
+        logger.info("The device, " + deviceId + " status changed to " + newStatus);
+        notifyChanges("status", newStatus);
+    }
 
 }

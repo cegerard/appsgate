@@ -488,6 +488,11 @@
                                     <artifactId>KNXAdapter</artifactId>
                                     <version>${project.version}</version>
                                 </artifactItem>
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
+                                    <artifactId>MobileDeviceAdapter</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>
                                 
                                 
                                 <artifactItem>
@@ -511,6 +516,11 @@
                                     <version>${project.version}</version>
                                 </artifactItem>   
                                 
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
+                                    <artifactId>TaskerAdapter</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>  
                                 <artifactItem>
                                     <groupId>appsgate.components</groupId>
                                     <artifactId>YakitomeTTS</artifactId>

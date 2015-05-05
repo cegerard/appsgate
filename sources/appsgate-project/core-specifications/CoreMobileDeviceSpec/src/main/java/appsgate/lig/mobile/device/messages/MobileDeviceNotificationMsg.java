@@ -1,7 +1,6 @@
 package appsgate.lig.mobile.device.messages;
 
 import appsgate.lig.core.object.messages.CoreNotificationMsg;
-import appsgate.lig.core.object.spec.CoreObjectSpec;
 
 /**
  * This class is an ApAM message for mobilde device data notifications
