@@ -28,4 +28,7 @@ public interface GoogleAdapter  {
 	
 	public boolean deleteEvent(String calendarId, String eventId);
 	
+	public GoogleEvent getEvent(String calendarId, String eventId);	
+	
+	
 }

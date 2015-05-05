@@ -4,6 +4,7 @@ package appsgate.lig.scheduler;
 import java.util.Set;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import appsgate.lig.clock.sensor.messages.ClockSetNotificationMsg;
 import appsgate.lig.clock.sensor.messages.FlowRateSetNotification;
@@ -112,6 +113,14 @@ public interface SchedulerSpec extends AlarmEventObserver{
 			Set<ScheduledInstruction> onBeginInstructions,
 			Set<ScheduledInstruction> onEndInstructions,
 			String dateStart, String dateEnd ) throws SchedulingException;
+	
+	/**
+	 * Get information about a particular event in the calendar
+	 * @param the unique Event ID 
+	 * @return A JSON Object containing , the key/value pairs and details may be relative to the underlying implementation
+	 * or null if the event ID is not found or the event not valid
+	 */
+	public JSONObject getEventInfo(String eventID);	
 	
 	/**
 	 * The method try to remove an event using its eventID
