@@ -476,7 +476,7 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 		String description="";
 		if(onBeginInstructions != null ) {
 			for(ScheduledInstruction inst : onBeginInstructions) {
-				description += GoogleEvent.ON_BEGIN
+				description += ScheduledInstruction.ON_BEGIN
 						+ ScheduledInstruction.SEPARATOR;			
 				description+=inst.toString();
 				description+="\n";
@@ -485,7 +485,7 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 
 		if(onEndInstructions != null ) {		
 			for(ScheduledInstruction inst : onEndInstructions) {
-				description += GoogleEvent.ON_END
+				description += ScheduledInstruction.ON_END
 						+ ScheduledInstruction.SEPARATOR;			
 				description+=inst.toString();
 				description+="\n";
@@ -550,7 +550,7 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 
 		String description="";
 		if(startOnBegin) {
-			description += GoogleEvent.ON_BEGIN
+			description += ScheduledInstruction.ON_BEGIN
 					+ ScheduledInstruction.SEPARATOR
 					+ ScheduledInstruction.Commands.CALL_PROGRAM.getName()
 					+ ScheduledInstruction.SEPARATOR
@@ -558,14 +558,14 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 					+ "\n";
 		}
 		if(stopOnEnd && startOnBegin) {
-			description += GoogleEvent.ON_END
+			description += ScheduledInstruction.ON_END
 					+ ScheduledInstruction.SEPARATOR
 					+ ScheduledInstruction.Commands.STOP_PROGRAM.getName()
 					+ ScheduledInstruction.SEPARATOR
 					+ programId
 					+ "\n";
 		}else if (stopOnEnd && !startOnBegin) {
-				description += GoogleEvent.ON_BEGIN
+				description += ScheduledInstruction.ON_BEGIN
 						+ ScheduledInstruction.SEPARATOR
 						+ ScheduledInstruction.Commands.STOP_PROGRAM.getName()
 						+ ScheduledInstruction.SEPARATOR
@@ -615,15 +615,6 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 			logger.debug("Cannot Parse endPeriod : "+exc.getMessage());
 			stopping = -1;
 		}
-		
-		Pattern regExp = null;
-		try {
-			regExp = Pattern.compile(pattern);
-			if (regExp == null) throw new NullPointerException("compiled regexp is null");
-		} catch (Exception e) {
-			logger.warn("listEventsMatchingPattern(...), invalid regexp pattern : ",e);
-			return null;
-		}
 
 
 		Set <GoogleEvent> bigList = getEvents(starting, stopping);
@@ -635,9 +626,7 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 		}
 
 		for(GoogleEvent event : bigList) {
-			if (event != null
-					&&event.getDescription() != null
-					&&regExp.matcher(event.getDescription()).matches()) {
+			if (event.instructionsMatchingPattern(pattern).size() >0) {
 				logger.trace("listEventsMatchingPattern(...),"
 						+ " description matching : {}, adding event :{}",
 						event.getDescription(),event.getName());
@@ -722,5 +711,15 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 	@Override
 	public boolean removeEvent(String eventID) {
 		return serviceAdapter.deleteEvent(calendarId, eventID);
+	}
+
+	@Override
+	public JSONObject getEventInfo(String eventID) {
+		GoogleEvent result = serviceAdapter.getEvent(calendarId, eventID);
+		if(result != null ) {
+			return result.toJSON();
+		} else {
+			return null;
+		}
 	}
 }

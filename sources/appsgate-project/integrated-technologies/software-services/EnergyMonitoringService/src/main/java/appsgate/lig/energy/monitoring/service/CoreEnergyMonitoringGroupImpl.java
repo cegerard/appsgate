@@ -79,6 +79,7 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	
 	private CoreClockSpec clock;
 	
+	private JSONArray annotations;
 	
 	public final static String NAME_KEY = "name";
 	public final static String SENSORS_KEY = "sensors";
@@ -90,7 +91,7 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	public final static String PERIODS_KEY="periods";	
 	public final static String ISMONITORING_KEY = "isMonitoring";
 	public final static String LASTRESET_KEY = "lastReset";
-
+	public final static String ANNOTATIONS_KEY = "annotations";
 	
 	public final static String RAW_ENERGY_KEY="rawEnergy";	
 	public final static String RAW_ENERGYDURINGPERIOD_KEY="rawEnergyDuringPeriod";	
@@ -129,6 +130,7 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		this.budgetUnit = budgetUnit;
 		
 		this.periods = new ArrayList<String>();
+		this.annotations = new JSONArray();
 		
 		lastResetTimestamp = clock.getCurrentTimeInMillis();
 	}
@@ -149,6 +151,12 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 				
 		setEnergySensorsGroup(configuration.optJSONArray(SENSORS_KEY));
 		setPeriods(configuration.optJSONArray(PERIODS_KEY));
+		
+		annotations = configuration.optJSONArray(ANNOTATIONS_KEY);
+		if(annotations == null ) {
+			// Putting a default value to avoid NEP after
+			annotations = new JSONArray();
+		}
 		
 		lastResetTimestamp = configuration.optLong(LASTRESET_KEY, clock.getCurrentTimeInMillis());
 		
@@ -389,6 +397,7 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		descr.put(PERIODS_KEY, String.valueOf(getPeriods()));
 		descr.put(ISMONITORING_KEY, isMonitoring());
 		descr.put(LASTRESET_KEY, getLastResetTimestamp());
+		descr.put(ANNOTATIONS_KEY, getAnnotations());
 
 		/**
 		 * Those raw index are mostly used for persistance
@@ -439,22 +448,22 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		
 		if (startDate > 0) {
 			logger.trace("addPeriod(...), adding instruction to start monitoring");
-			onBeginInstructions.add(formatInstruction("startMonitoring", null));
+			onBeginInstructions.add(formatInstruction("startMonitoring", null, ScheduledInstruction.ON_BEGIN));
 		}
 		
 		if (endDate > 0) {
 			logger.trace("addPeriod(...), adding instruction to stop monitoring");
-			onEndInstructions.add(formatInstruction("stopMonitoring", null));
+			onEndInstructions.add(formatInstruction("stopMonitoring", null, ScheduledInstruction.ON_END));
 		}
 		
 		if(resetOnStart) {
 			logger.trace("addPeriod(...), adding instruction to reset monitoring at start of period");
-			onBeginInstructions.add(formatInstruction("resetEnergy", null));			
+			onBeginInstructions.add(formatInstruction("resetEnergy", null, ScheduledInstruction.ON_BEGIN));			
 		}
 		
 		if(resetOnEnd) {
 			logger.trace("addPeriod(...), adding instruction to reset monitoring at stop of period");
-			onEndInstructions.add(formatInstruction("resetEnergy", null));			
+			onEndInstructions.add(formatInstruction("resetEnergy", null, ScheduledInstruction.ON_END));			
 		}
 		
 		String eventId=null;
@@ -471,14 +480,14 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 
 	}
 	
-	private ScheduledInstruction formatInstruction(String methodName, JSONArray args) {
+	private ScheduledInstruction formatInstruction(String methodName, JSONArray args, String trigger) {
 		JSONObject target = new JSONObject();
 		target.put("objectId", serviceId);
 		target.put("method", methodName);
 		target.put("args", (args==null?new JSONArray():args));
 		target.put("TARGET", "EHMI");
 		
-		return new ScheduledInstruction(Commands.GENERAL_COMMAND.getName(), target.toString());
+		return new ScheduledInstruction(Commands.GENERAL_COMMAND.getName(), target.toString(), trigger);
 	}
 
 
@@ -586,23 +595,21 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 
 	@Override
 	public void addAnnotation(String annotation) {
-		// TODO Auto-generated method stub
-		
+		logger.trace("addAnnotation(String annotation : {})", annotation);
+		annotations.put(new JSONObject().put(String.valueOf(clock.getCurrentTimeInMillis()), annotation));	
 	}
 
 
 	@Override
 	public JSONArray getAnnotations() {
-		// TODO Auto-generated method stub
-		return null;
+		return annotations;
 	}
-
 
 	@Override
 	public void setBudgetUnit(double budgetUnit) {
 		logger.trace("setBudgetUnit(double budgetUnit : {})", budgetUnit);
 		stateChanged(BUDGETUNIT_KEY, String.valueOf(this.budgetUnit), String.valueOf(budgetUnit));
-		this.budgetUnit = budgetUnit;	
+		this.budgetUnit = budgetUnit;
 	}
 
 

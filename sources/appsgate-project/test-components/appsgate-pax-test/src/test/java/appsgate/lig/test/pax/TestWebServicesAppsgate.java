@@ -22,7 +22,6 @@ import org.ops4j.pax.exam.spi.reactors.PerMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.imag.adele.apam.Component;
 import fr.imag.adele.apam.Instance;
 import appsgate.lig.clock.sensor.spec.CoreClockSpec;
 import appsgate.lig.google.scheduler.GoogleScheduler;
@@ -32,7 +31,6 @@ import appsgate.lig.mail.Mail;
 import appsgate.lig.mail.adapter.MailAdapter;
 import appsgate.lig.test.pax.helpers.ApAMHelper;
 import appsgate.lig.test.pax.helpers.PaxedDistribution;
-import appsgate.lig.weather.spec.WeatherAdapterSpec;
 import appsgate.lig.yahoo.weather.YahooWeather;
 
 /**
@@ -46,13 +44,15 @@ public class TestWebServicesAppsgate extends PaxedDistribution {
 	private static Logger logger = LoggerFactory
 			.getLogger(TestWebServicesAppsgate.class);
 	
+	String mailAccount= "smarthome.adele@gmail.com";
+	
 
 /**
  * This test is not automated as it require valid informations (refresh token) according to a connected user
  * 
  */
 	public void testGoogleAdapter() {
-		String mailAccount= "smarthome.adele@gmail.com";
+		
 		TestCoreAppsgate.testEmptyAppsgate();
 		logger.debug("This test is for the Google Adapter");
 		
@@ -90,7 +90,6 @@ public class TestWebServicesAppsgate extends PaxedDistribution {
 	}
 	
 	public void testCleanGoogleAgenda() {
-		String mailAccount= "smarthome.adele@gmail.com";
 		
 		TestCoreAppsgate.testEmptyAppsgate();
 		logger.debug("testCleanGoogleAgenda");
@@ -116,7 +115,6 @@ public class TestWebServicesAppsgate extends PaxedDistribution {
 	
 	
 	public void testGoogleScheduler() {
-		String mailAccount= "appsgate.minikitA@gmail.com";
 		
 		TestCoreAppsgate.testEmptyAppsgate();
 		
@@ -144,8 +142,7 @@ public class TestWebServicesAppsgate extends PaxedDistribution {
 	}
 
 	@Test
-	public void testAddSchedule() {
-		String mailAccount= "smarthome.adele@gmail.com";
+	public void testAddGetRemoveSchedule() {
 		
 		TestCoreAppsgate.testEmptyAppsgate();
 		
@@ -153,18 +150,23 @@ public class TestWebServicesAppsgate extends PaxedDistribution {
 		GoogleAdapter ga = (GoogleAdapter) initGoogleAdapter();
 		logger.debug("init Google Adapter OK");
 		
-		GoogleScheduler toto = (GoogleScheduler) initGoogleScheduler();
+		GoogleScheduler scheduler = (GoogleScheduler) initGoogleScheduler();
 		logger.debug("init Google Scheduler OK");
-
+ 
 		try {
-			toto.createEvent("JplanifieMonTest", "monprogramme", true, true);
-			logger.debug("Scheduler add event ok");
+			String eventID=scheduler.createEvent("JplanifieMonTest", "monprogramme", true, true);
+			logger.debug("Scheduler add event ok, event ID: "+eventID);			
+			Assert.assertNotNull("a valid event should habe been created", eventID);
+			
+			Assert.assertNotNull(" Evend should be retrieved upon its event ID",scheduler.getEventInfo(eventID) );			
+			
+			Assert.assertTrue("Event should have been removed from the agenda",scheduler.removeEvent(eventID));
+			Assert.assertNull(" Evend should be unavailable (deleted or cancelled)",scheduler.getEventInfo(eventID) );
 
 		} catch(Exception exc) {
 			exc.printStackTrace();
 		}
-		//toto.resetScheduler();
-	}	
+	}
 	
 	public static Object initGoogleScheduler() {
 		return PaxedDistribution.testApAMComponent(true, resolveFrom.IMPLEM,null,

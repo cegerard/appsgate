@@ -141,4 +141,31 @@ public class GoogleCalendarReader {
 				urlParameters);
 	}
 	
+	public static JSONObject getEvent(String apiKey,
+			String accessTokenType,
+			String accessTokenValue,
+			String calendarId,
+			String eventId) {
+
+		Map<String, String> requestProperties= new HashMap<String, String>();
+		Map<String, String> urlParameters=new HashMap<String, String>();		
+		initParameters(apiKey,accessTokenType,accessTokenValue,requestProperties,urlParameters);
+		
+		String serviceURL = URL_CALENDARS+GoogleHTTPRequest.SLASH;
+		
+		try {
+			serviceURL += URLEncoder.encode(calendarId,
+					GoogleHTTPRequest.DEFAULT_ENCODING);
+			serviceURL+=GoogleHTTPRequest.SLASH+PARAM_EVENTS;
+			serviceURL += GoogleHTTPRequest.SLASH+URLEncoder.encode(eventId,
+					GoogleHTTPRequest.DEFAULT_ENCODING);
+		} catch (UnsupportedEncodingException e) {
+			logger.error("Error encoding the URL : "+e.getMessage());
+			return null;
+		}				
+
+		return GoogleHTTPRequest.httpsGet(serviceURL,
+				requestProperties,
+				urlParameters);
+	}	
 }

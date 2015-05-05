@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,13 +14,14 @@ import org.slf4j.Logger;
 
 import appsgate.lig.google.helpers.GoogleHTTPRequest;
 import appsgate.lig.scheduler.ScheduledInstruction;
+import appsgate.lig.scheduler.SchedulerEvent;
 
 /**
  * Helper Class to build an Object from an Event of the GoogleCalendar (api v3),
  * directly for its json representation (corresponding Google Resource)
  * @author thibaud
  */
-public class GoogleEvent {
+public class GoogleEvent implements SchedulerEvent{
 		
 	private static Logger logger = LoggerFactory.getLogger(GoogleEvent.class);
 
@@ -27,6 +29,8 @@ public class GoogleEvent {
 	public static final String PARAM_SUMMARY="summary";
 	public static final String PARAM_DESCRIPTION="description";
 	public static final String PARAM_UPDATED="updated";
+	public static final String PARAM_STATUS="status";
+
 
 	public static final String PARAM_START="start";
 	public static final String PARAM_END="end";
@@ -35,46 +39,37 @@ public class GoogleEvent {
 	public static final String PARAM_DATETIME="dateTime";
 	
 	public static final String PARAM_UNPARSED="unparsedJSON";
-		
-	/**
-	 * Reserved keyword for AppsGate in the description,
-	 * to map appsgate instruction (such as appsgate schedules)
-	 * To the beginning of the event
-	 * (one instruction per line, must start with the keyword and the '=' separator
-	 * Ex: begin=start.program-5524
-	 */
-	public static final String ON_BEGIN="begin";
 	
-	/**
-	 * Reserved keyword for AppsGate in the description,
-	 * to map appsgate instruction (such as appsgate schedules)
-	 * To the end of the event
-	 * (one instruction per line, must start with the keyword and the '=' separator
-	 * Ex: end=stop.program-5524
-	 */	
-	public static final String ON_END="end";
+	public static final String PARAM_STATUS_VALUE_CANCELLED="cancelled";
+	public static final String PARAM_STATUS_VALUE_DELETED="deleted";
+
 
 	public final String SEPARATOR=".";
 
 	
 
 
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
 	public String getStartTime() {
 		return startTime;
 	}
 
+	@Override
 	public String getEndTime() {
 		return endTime;
 	}
 
+	@Override
 	public String getUpdated() {
 		return updated;
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -103,10 +98,12 @@ public class GoogleEvent {
 		this.description = description;
 	}
 	
+	@Override
 	public Set<ScheduledInstruction> getOnBeginInstructions() {
 		return onBeginInstructions;
 	}
 
+	@Override
 	public Set<ScheduledInstruction> getOnEndInstructions() {
 		return onEndInstructions;
 	}
@@ -144,6 +141,14 @@ public class GoogleEvent {
 			name=jsonEvent.getString(PARAM_SUMMARY);
 			updated=jsonEvent.getString(PARAM_UPDATED);
 			
+			String status = jsonEvent.optString(PARAM_STATUS);
+			if(status != null 
+					&& ( status.equals(PARAM_STATUS_VALUE_CANCELLED)
+							||status.equals(PARAM_STATUS_VALUE_CANCELLED))) {
+				throw new InstantiationException("Event status is cancelled : "
+						+status);
+			}
+			
 			JSONObject start = jsonEvent.getJSONObject(PARAM_START);
 			// TODO= check all day event (then add the start time, and the correct calendar
 			// TODO: if dateTime, check the TimeZone and add a default one
@@ -154,8 +159,8 @@ public class GoogleEvent {
 			endTime=hackDateTimeZone(end.getString(PARAM_DATETIME));
 			
 			description=jsonEvent.optString(PARAM_DESCRIPTION); // This one is optional
-			onBeginInstructions=parseDescription(description, ON_BEGIN);
-			onEndInstructions=parseDescription(description, ON_END);
+			onBeginInstructions=parseDescription(description, ScheduledInstruction.ON_BEGIN);
+			onEndInstructions=parseDescription(description, ScheduledInstruction.ON_END);
 			
 			
 			
@@ -202,6 +207,7 @@ public class GoogleEvent {
 	 * @return a JSON representation of the GoogleEvent.
 	 * (Please note that this is the full information about the Event coming initially from google Calendar)
 	 */
+	@Override
 	public JSONObject toJSON() {
 		return new JSONObject(unparsedJSON);
 	}
@@ -216,10 +222,10 @@ public class GoogleEvent {
 		currentEvent+=GoogleHTTPRequest.COMMA+PARAM_START+GoogleHTTPRequest.EQUAL+startTime;
 		currentEvent+=GoogleHTTPRequest.COMMA+PARAM_END+GoogleHTTPRequest.EQUAL+endTime;
 		for(ScheduledInstruction inst : onBeginInstructions) {
-			currentEvent+="\n"+ON_BEGIN+GoogleHTTPRequest.EQUAL+inst.toString();
+			currentEvent+="\n"+ScheduledInstruction.ON_BEGIN+GoogleHTTPRequest.EQUAL+inst.toString();
 		}
 		for(ScheduledInstruction inst : onEndInstructions) {
-			currentEvent+="\n"+ON_END+GoogleHTTPRequest.EQUAL+inst.toString();
+			currentEvent+="\n"+ScheduledInstruction.ON_END+GoogleHTTPRequest.EQUAL+inst.toString();
 		}		
 		currentEvent+="\n"+PARAM_UNPARSED+GoogleHTTPRequest.EQUAL+unparsedJSON;
 
@@ -244,7 +250,8 @@ public class GoogleEvent {
 				while (line!=null) {
 					if (line.startsWith(keyword)) {
 						ScheduledInstruction inst = ScheduledInstruction.parseInstruction(
-								line.substring(keyword.length()+ScheduledInstruction.SEPARATOR.length()  ));
+								line.substring(keyword.length()+ScheduledInstruction.SEPARATOR.length()),
+										keyword);
 						if(inst != null ) {
 							instructions.add(inst);
 							logger.trace("Added instruction on "+keyword+" : "+inst.toString());
@@ -262,6 +269,7 @@ public class GoogleEvent {
 	}
 	
 	
+	@Override
 	public boolean isSchedulingProgram(String programId) {
 		logger.trace("isSchedulingProgram(String programId : "+programId+")");
 		
@@ -284,6 +292,31 @@ public class GoogleEvent {
 		logger.trace("isSchedulingProgram(...), program id not found in event");
 		return false;
 		
+	}
+
+	@Override
+	public Set<ScheduledInstruction> instructionsMatchingPattern(String pattern) {
+		logger.trace("instructionsMatchesPattern(String pattern : "+pattern			
+				+")");
+		
+		Set<ScheduledInstruction> result = new HashSet<ScheduledInstruction>();
+		
+		if(pattern==null ||pattern.length()==0) {
+			logger.warn("instructionsMatchesPattern(...), no pattern specified");
+			return result ; //none by default
+		}
+	
+		for(ScheduledInstruction inst : onBeginInstructions) {
+			if (inst.matchesPattern(pattern)) {
+				result.add(inst);
+			}
+		}
+		for(ScheduledInstruction inst : onEndInstructions) {
+			if (inst.matchesPattern(pattern)) {
+				result.add(inst);
+			}
+		}		
+		return result;
 	}
 
 }

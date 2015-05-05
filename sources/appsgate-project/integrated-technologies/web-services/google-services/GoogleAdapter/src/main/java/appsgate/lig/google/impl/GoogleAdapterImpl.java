@@ -126,9 +126,6 @@ public class GoogleAdapterImpl extends GooglePropertiesHolder implements GoogleA
 			
 			nextPage = result.optString(GoogleCalendarReader.PARAM_NEXT_PAGE_TOKEN);
 		}
-
-
-		
 		return response;
 	}
 	
@@ -194,8 +191,7 @@ public class GoogleAdapterImpl extends GooglePropertiesHolder implements GoogleA
 		if(!renewAccessToken()) {
 			logger.error("Cannot get an access token for the calendar");
 			return false;
-		}		
-		
+		}
 		
 		String result = GoogleCalendarWriter.deleteEvent(
 				GooglePropertiesHolder.getProperties().getProperty(GoogleOpenAuthent.PARAM_APIKEY),
@@ -210,7 +206,36 @@ public class GoogleAdapterImpl extends GooglePropertiesHolder implements GoogleA
 		} else {
 			return true;
 		}
-		
+	}
 
+	@Override
+	public GoogleEvent getEvent(String calendarId, String eventId) {
+		logger.trace("getEvent(String calendarId="+calendarId,
+				", String eventId="+eventId+")");
+		if(!renewAccessToken()) {
+			logger.error("Cannot get an access token for the calendar");
+			return null;
+		}				
+		
+		JSONObject result = GoogleCalendarReader.getEvent(
+				GooglePropertiesHolder.getProperties().getProperty(GoogleOpenAuthent.PARAM_APIKEY),
+				GooglePropertiesHolder.getProperties().getProperty(GoogleOpenAuthent.RESP_TOKENTYPE),
+				currentAccessToken,
+				calendarId,
+				eventId);
+		
+		if(result==null |result.has(GoogleOpenAuthent.RESP_ERROR)) {
+			logger.error("getEvent(..), No result for the request");
+			return null;
+		} 
+		
+		try {
+			GoogleEvent event = new GoogleEvent(result);
+			logger.trace("getEvent(...), GoogleEvent successfully retrieved : "+event.toString());
+			return event;
+		} catch (InstantiationException e) {
+			logger.warn("Result is not a valid google event : "+result, e);
+			return null;
+		}		
 	}
 }
