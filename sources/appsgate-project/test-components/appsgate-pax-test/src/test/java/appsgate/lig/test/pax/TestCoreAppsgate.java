@@ -4,7 +4,10 @@
 package appsgate.lig.test.pax;
 
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -16,6 +19,7 @@ import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerMethod;
+import org.ops4j.pax.exam.util.PathUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,9 +49,9 @@ public class TestCoreAppsgate extends PaxedDistribution {
 	public static void testEmptyAppsgate() {
 		logger.debug("This test as a complete provisionning of Core Appsgate Bundles");
 		ApAMHelper.waitForApam(ApAMHelper.RESOLVE_TIMEOUT);
-		ApAMHelper.waitForComponentByName(null,
-				"OBRMAN-Instance", ApAMHelper.RESOLVE_TIMEOUT);
-		Assert.assertTrue(CST.componentBroker.getInst("OBRMAN-Instance")!= null);
+		//ApAMHelper.waitForComponentByName(null,
+		//		"OBRMAN-Instance", ApAMHelper.RESOLVE_TIMEOUT);
+		//Assert.assertTrue(CST.componentBroker.getInst("OBRMAN-Instance")!= null);
 	}	
 	
 	@Test
@@ -55,18 +59,19 @@ public class TestCoreAppsgate extends PaxedDistribution {
 		testEmptyAppsgate();
 	}		
 
-	@Ignore
 	@Test
 	public void testAppsgateImpl() {
 		testEmptyAppsgate();
 		
 		logger.debug("This test just load the core Appsgate Bundles (EHMIProxyImpl and dependencies)");
-		ApAMHelper.waitForComponentByName(null,
+		Implementation impl = (Implementation)ApAMHelper.waitForComponentByName(null,
 				"AppsGate-Application", ApAMHelper.RESOLVE_TIMEOUT);
-		Assert.assertTrue(CST.componentBroker.getImpls("EHMIProxyImpl")!= null);
+		impl.createInstance(null, null);
+		ApAMHelper.listInstances();
+		logger.debug(" --> "+CST.componentBroker.getImpl("EHMIProxyImpl"));
+		ApAMHelper.listComponents();
+		Assert.assertTrue(CST.componentBroker.getImpl("EHMIProxyImpl")!= null);
 
-		
-		//ApAMHelper.waitForIt(10000);
 	}	
 	
 	@Ignore
@@ -115,15 +120,25 @@ public class TestCoreAppsgate extends PaxedDistribution {
 		Map<String, String> testApps = new HashMap<String, String>();
 		fillHttpBundleList(testApps);
 		fillCoreBundleList(testApps);
-		return super.configuration(testApps, null);
+		List<File> externalBundles = new ArrayList<File>();
+		fillUbikitBundles(externalBundles);
+		TestUpnPAppsgate.fillUpnpBundleList(testApps);
+		TestWebServicesAppsgate.fillKXMLBundleList(testApps);
+
+		
+		return super.configuration(testApps, externalBundles);
 	}
 	
 	public static void fillHttpBundleList(Map<String, String> testApps) {
 		testApps.put("org.apache.felix.http.api", "org.apache.felix");
 		testApps.put("org.apache.felix.http.jetty", "org.apache.felix");
-		
 	}
 	
+	public static void fillUbikitBundles(List<File> externalBundles) {
+		externalBundles.add(new File(PathUtils.getBaseDir(), "bundle/enocean-driver-1.12.1.jar"));
+		externalBundles.add(new File(PathUtils.getBaseDir(), "bundle/rxtx4osgi-1.0.3.jar"));
+	}
+
 	
 	public static void fillCoreBundleList(Map<String, String> testApps) {
 		testApps.put("org.apache.felix.configadmin", "org.apache.felix");
@@ -132,7 +147,6 @@ public class TestCoreAppsgate extends PaxedDistribution {
 		testApps.put("json", "org.json");
 		testApps.put("mongo-java-driver", "org.mongodb");		
 		testApps.put("JavamailAndroidAdapter", "appsgate.libs");	
-		testApps.put("JavaWebSocketAdapter", "appsgate.libs");	
 		
 	}
 	

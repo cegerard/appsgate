@@ -212,7 +212,7 @@
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.framework</artifactId>
-			<version>${osgi.version}</version>
+			<version>${felix.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -362,7 +362,6 @@
 			<artifactId>pax-exam-spi</artifactId>
 			<version>${exam.version}</version>
 		</dependency>
-
 	</dependencies>
 
 	<build>

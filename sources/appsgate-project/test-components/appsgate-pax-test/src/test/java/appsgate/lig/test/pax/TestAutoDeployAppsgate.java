@@ -4,7 +4,6 @@
 package appsgate.lig.test.pax;
 
 
-import static org.ops4j.pax.exam.CoreOptions.bundle;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -13,28 +12,20 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
-import org.ops4j.pax.exam.options.CompositeOption;
-import org.ops4j.pax.exam.options.DefaultCompositeOption;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
-import org.ops4j.pax.exam.spi.reactors.PerClass;
 import org.ops4j.pax.exam.spi.reactors.PerMethod;
 import org.ops4j.pax.exam.util.PathUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.imag.adele.apam.CST;
-import fr.imag.adele.apam.Implementation;
-import fr.imag.adele.apam.Instance;
-import fr.imag.adele.apam.Specification;
 import appsgate.lig.test.pax.helpers.ApAMHelper;
 import appsgate.lig.test.pax.helpers.PaxedDistribution;
-import appsgate.lig.weather.exception.WeatherForecastException;
 
 
 /**
@@ -68,29 +59,30 @@ public class TestAutoDeployAppsgate extends PaxedDistribution {
 	}
 	
 	private void testExistingStartedByAppsGateComposite() {
-		Assert.assertNotNull(CST.componentBroker.getInst("appsgate-instance"));
-		Assert.assertNotNull(CST.componentBroker.getInst("ConfigurableClockInst"));
-		Assert.assertNotNull(CST.componentBroker.getInst("WebSocketCommunicationManagerInst"));
-		Assert.assertNotNull(CST.componentBroker.getInst("EHMIProxyImplInst"));
-		Assert.assertNotNull(CST.componentBroker.getInst("CHMIProxyImplInst"));
-		Assert.assertNotNull(CST.componentBroker.getInst("EUDEInterpreterInst"));
-		Assert.assertNotNull(CST.componentBroker.getInst("AppsGatePersistencyInst"));		
-		Assert.assertNotNull(CST.componentBroker.getInst("AppsGateGoogleServicesInst"));
-		Assert.assertNotNull(CST.componentBroker.getInst("AppsGateHUEServicesInst"));
-		Assert.assertNotNull(CST.componentBroker.getInst("UPnPMediaAdapter"));
-		Assert.assertNotNull(CST.componentBroker.getInst("WeatherAdapter"));
+		Assert.assertNotNull(ApAMHelper.waitForComponentByName(null, "appsgate-instance", 5000));
+		ApAMHelper.listInstances();
+		Assert.assertNotNull(ApAMHelper.waitForComponentByName(null, "ConfigurableClockInst",5000));
+		Assert.assertNotNull(ApAMHelper.waitForComponentByName(null, "WebSocketCommunicationManagerInst",5000));
+		Assert.assertNotNull(ApAMHelper.waitForComponentByName(null, "EHMIProxyImplInst",5000));
+		Assert.assertNotNull(ApAMHelper.waitForComponentByName(null, "CHMIProxyImplInst",5000));
+		Assert.assertNotNull(ApAMHelper.waitForComponentByName(null, "EUDEInterpreterInst",5000));
+		Assert.assertNotNull(ApAMHelper.waitForComponentByName(null, "AppsGatePersistencyInst",5000));		
+		Assert.assertNotNull(ApAMHelper.waitForComponentByName(null, "AppsGateGoogleServicesInst",5000));
+		Assert.assertNotNull(ApAMHelper.waitForComponentByName(null, "AppsGateHUEServicesInst",5000));
+		Assert.assertNotNull(ApAMHelper.waitForComponentByName(null, "UPnPMediaAdapter",5000));
+		Assert.assertNotNull(ApAMHelper.waitForComponentByName(null, "WeatherAdapter",5000));
 	}
 	
 	private void testExistingStartedByUPnPComposite() {
 		
 		Assert.assertNotNull(CST.componentBroker.getImpl("AppsgateUPnPAdapter").getInst());
-		Assert.assertNotNull(CST.componentBroker.getInst("Global-MediaPlayerFactory"));
-		Assert.assertNotNull(CST.componentBroker.getInst("Global-MediaBrowserFactory"));
+		Assert.assertNotNull(ApAMHelper.waitForComponentByName(null, "Global-MediaPlayerFactory",5000));
+		Assert.assertNotNull(ApAMHelper.waitForComponentByName(null, "Global-MediaBrowserFactory",5000));
 	}
 	
 	private void testExistingStartedByHUEComposite() {
 //		Assert.assertNotNull(CST.componentBroker.getImpl("PhilipsHUEImplFactory").getInst());
-//		Assert.assertNotNull(CST.componentBroker.getInst("AppsgatePhilipsHUEAdapter"));		
+//		Assert.assertNotNull(ApAMHelper.waitForComponentByName(null, "AppsgatePhilipsHUEAdapter"));		
 	}
 	
 	private void testExistingStartedByGoogleComposite() {
@@ -98,26 +90,17 @@ public class TestAutoDeployAppsgate extends PaxedDistribution {
 	}
 
 	private void testExistingStartedByPersistencyComposite() {
-		Assert.assertNotNull(CST.componentBroker.getInst("Global-MongoDBConfigFactory"));				
-		Assert.assertNotNull(CST.componentBroker.getInst("Global-PropertyHistoryManager"));		
-		Assert.assertNotNull(CST.componentBroker.getInst("Global-ContextHistoryManager"));		
-		Assert.assertNotNull(CST.componentBroker.getInst("Global-PlaceManager"));		
-		Assert.assertNotNull(CST.componentBroker.getInst("Global-DevicePropertiesTableManager"));		
-		Assert.assertNotNull(CST.componentBroker.getInst("Global-UserBaseManager"));		
+		Assert.assertNotNull(ApAMHelper.waitForComponentByName(null, "Global-MongoDBConfigFactory",5000));				
+		Assert.assertNotNull(ApAMHelper.waitForComponentByName(null, "Global-PropertyHistoryManager",5000));		
+		Assert.assertNotNull(ApAMHelper.waitForComponentByName(null, "Global-ContextHistoryManager",5000));		
+		Assert.assertNotNull(ApAMHelper.waitForComponentByName(null, "Global-PlaceManager",5000));		
+		Assert.assertNotNull(ApAMHelper.waitForComponentByName(null, "Global-DevicePropertiesTableManager",5000));		
+		Assert.assertNotNull(ApAMHelper.waitForComponentByName(null, "Global-UserBaseManager",5000));		
 	}
 
 	private void testExistingStartedByUbikitComposite() {
 		Assert.assertNotNull(CST.componentBroker.getImpl("UbikitAdapterImpl").getInst());		
 	}
-
-	private void testExistingStartedByWattecoComposite() {
-		Assert.assertNotNull(CST.componentBroker.getInst("WattecoAdapterInst"));		
-	}
-	
-	private void testExistingStartedBySimulatedComposite() {
-		Assert.assertNotNull(CST.componentBroker.getInst("SimulatedAdapterInst"));		
-	}	
-	
 		
 	@Configuration
 	public Option[] configuration() {

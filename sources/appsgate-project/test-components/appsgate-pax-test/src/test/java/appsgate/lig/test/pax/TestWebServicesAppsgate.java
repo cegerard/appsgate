@@ -143,7 +143,7 @@ public class TestWebServicesAppsgate extends PaxedDistribution {
 		logger.debug("Scheduler reset OK");
 	}
 
-	
+	@Test
 	public void testAddSchedule() {
 		String mailAccount= "smarthome.adele@gmail.com";
 		
