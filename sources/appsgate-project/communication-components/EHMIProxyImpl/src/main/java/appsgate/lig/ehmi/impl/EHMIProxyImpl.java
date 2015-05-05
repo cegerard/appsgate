@@ -636,8 +636,8 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
         try {
             object.put("placeId", getCoreObjectPlaceId(objectId));
             String contextName = (devicePropertiesTableBound ? devicePropertiesTable.getName(objectId, "") : "");
-            if((contextName != null && contextName.length()>0) || !object.has("name") ) {
-            	object.put("name", contextName);
+            if ((contextName != null && contextName.length() > 0) || !object.has("name")) {
+                object.put("name", contextName);
             }
         } catch (JSONException e) {
             logger.error(e.getMessage());
@@ -720,7 +720,11 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
      * @param notif the notification to transmit
      */
     public void sendToClients(JSONObject notif) {
-        sendToClientService.send(notif.toString());
+        try {
+            sendToClientService.send(notif.toString());
+        } catch (NullPointerException e) {
+            logger.warn("sendToClientService is unavailable");
+        }
     }
 
     /**
@@ -879,7 +883,12 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
 
     @Override
     public long getCurrentTimeInMillis() {
-        return systemClock.getCurrentTimeInMillis();
+        try {
+            return systemClock.getCurrentTimeInMillis();
+        } catch (NullPointerException e) {
+            logger.warn("No system clock found -1 returned");
+            return -1;
+        }
     }
 
     /**
@@ -1094,7 +1103,7 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
     public void notifyResponse(String objectId, String value, String callId, int clientId) {
         // This first version only does what was excpected from Generic Commands and EHMI Commands,
         // sends the response to the websocket 
-        if (sendToClientService != null && clientId>0) {
+        if (sendToClientService != null && clientId > 0) {
             try {
                 JSONObject msg = new JSONObject();
                 msg.put("value", value);
@@ -1172,8 +1181,8 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
     /**
      * EHMI Can be directly used to execute commands
      */
-	@Override
-	public void onReceivedCommand(JSONObject command) {
-		commandListener.onReceivedCommand(command);
-	}
+    @Override
+    public void onReceivedCommand(JSONObject command) {
+        commandListener.onReceivedCommand(command);
+    }
 }

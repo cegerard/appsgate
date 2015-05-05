@@ -813,6 +813,9 @@ public class TraceMan implements TraceManSpec {
      * @return true if this type generate traces
      */
     private boolean typeGenerateTrace(String userType) {
+        if (EHMIProxy == null) {
+            return false;
+        }
         GrammarDescription grammar = EHMIProxy.getGrammarFromType(userType);
         if (grammar == null) {
             return false;
