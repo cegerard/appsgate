@@ -22,6 +22,5 @@
 		<module>yahoo-services</module>
         <module>WeatherObserverImpl</module>
         <module>YakitomeTTS</module>
-        <module>TaskerAdapter</module>
 	</modules>
 </project>

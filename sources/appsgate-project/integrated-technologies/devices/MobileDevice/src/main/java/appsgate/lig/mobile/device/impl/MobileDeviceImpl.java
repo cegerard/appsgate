@@ -26,6 +26,8 @@ import appsgate.lig.mobile.device.spec.CoreMobileDeviceSpec;
  */
 public class MobileDeviceImpl extends CoreObjectBehavior implements CoreObjectSpec, CoreMobileDeviceSpec {
 
+    public static final String IMPL_NAME = "CoreEnergyMonitoringGroupImpl";
+
     private MobileDeviceAdapterServices mobileDeviceAdapter;
 
     private String deviceName;
@@ -140,6 +142,14 @@ public class MobileDeviceImpl extends CoreObjectBehavior implements CoreObjectSp
     public void statusChanged(String newStatus) {
         logger.info("The device, " + deviceId + " status changed to " + newStatus);
         notifyChanges("status", newStatus);
+    }
+
+    /**
+     * 
+     * @param aThis 
+     */
+    public void setAdapter(MobileDeviceAdapterServices aThis) {
+        this.mobileDeviceAdapter = aThis;
     }
 
 }
