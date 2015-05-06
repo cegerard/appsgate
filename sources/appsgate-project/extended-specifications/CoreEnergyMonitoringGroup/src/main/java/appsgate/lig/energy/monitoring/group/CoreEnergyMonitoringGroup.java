@@ -18,6 +18,32 @@ import org.json.JSONObject;
  */
 public interface CoreEnergyMonitoringGroup {
 	
+	
+	public final static String NAME_KEY = "name";
+	public final static String SENSORS_KEY = "sensors";
+	public final static String ENERGY_KEY="energy";	
+	public final static String BUDGETTOTAL_KEY="budgetTotal";
+	public final static String BUDGETUNIT_KEY="budgetUnit";
+	public final static String BUDGETREMAINING_KEY="budgetRemaining";
+	public final static String BUDGETRESETED_KEY="budgetReset";
+	public final static String PERIODS_KEY="periods";	
+	public final static String ISMONITORING_KEY = "isMonitoring";
+	public final static String LASTRESET_KEY = "lastReset";
+	public final static String ANNOTATIONS_KEY = "annotations";
+	
+	public final static String PERIOD_ID = "id";
+	public final static String PERIOD_NAME = "name";
+	public final static String PERIOD_START = "startDate";
+	public final static String PERIOD_STOP = "stopDate";
+	public final static String PERIOD_RESETSTART = "resetStart";
+	public final static String PERIOD_RESETSTOP = "resetStop";
+	public final static String PERIOD_RECURRENCE = "recurrence";
+	public final static String PERIOD_DELETABLE = "deletable";
+	
+	
+	public final static String RAW_ENERGY_KEY="rawEnergy";	
+	public final static String RAW_ENERGYDURINGPERIOD_KEY="rawEnergyDuringPeriod";		
+	
 	/**
 	 * Get the user defined name for the group
 	 * @return the user defined name for the group
