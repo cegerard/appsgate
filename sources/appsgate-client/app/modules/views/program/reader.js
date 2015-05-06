@@ -517,7 +517,8 @@ define([
 
         // render the editor with the program
         this.$el.html(this.tplEditor({
-          program: this.model
+          program: this.model,
+          timestamp : new Date(App.getWorldTimeStamp()).toLocaleString()
         }));
 
         if (this.model) {

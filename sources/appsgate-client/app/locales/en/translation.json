@@ -16,6 +16,8 @@
   },
   "dependancy": {
         "refresh-data" : "Refresh data",
+        "synchronize" : "Start sync",
+        "unsynchronize" : "Stop sync",
         "search-label" : "Search : ",
 	  	"search-button": "OK",
 	  	"search-example": "(Example : '__entity__')",

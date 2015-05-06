@@ -240,7 +240,9 @@ define(function(require, exports, module) {
     
     app.setDebugMode = function(timestamp) {
         this.modeDebug = true;
-        this.worldTimestamp = timestamp;
+        if (timestamp) {
+            this.worldTimestamp = timestamp;
+        }
         $(document.body).addClass("debugMode");
     };
     app.unsetDebugMode = function() {
@@ -250,6 +252,17 @@ define(function(require, exports, module) {
         window.programs.getPrograms();
     };
 
+    app.getWorldTimeStamp = function() {
+        if (this.worldTimestamp) {
+            return this.worldTimestamp;
+        }
+        return Date.now();
+    };
+    app.setWorldTimeStamp = function(ts) {
+        if (ts) {
+            this.worldTimestamp = ts;
+        }
+    };
     
     /**
     * Callback when the user has validated new settings

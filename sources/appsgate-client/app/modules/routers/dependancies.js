@@ -35,7 +35,7 @@ define([
 			if (App.isDebugMode()) {
 				communicator.sendMessage({
 					method: "getWorldState",
-					args: [{type:"Long", value: App.worldTimestamp}],
+					args: [{type:"Long", value: App.getWorldTimestamp()}],
 					callId: "worldState",
 					TARGET: "EHMI"
 				});
