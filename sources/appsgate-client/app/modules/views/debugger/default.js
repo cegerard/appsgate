@@ -176,7 +176,7 @@ define([
         });
         
         dashboard.on('eventline:focus:time', function(timestamp) {
-            App.setDebugMode(timestamp);
+            //App.setDebugMode(timestamp);
             communicator.sendMessage({
                         method: "getWorldState",
                         args: [{type : "Long", value : timestamp}],

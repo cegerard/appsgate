@@ -22,6 +22,7 @@ define([
 				handleGraph(self, graph);
 			});
 			dispatcher.on("loadGraphAt", function (graph) {
+				App.setWorldTimeStamp(graph.timestamp);
 				if (!App.isDebugMode()) {
 					return;
 				}
