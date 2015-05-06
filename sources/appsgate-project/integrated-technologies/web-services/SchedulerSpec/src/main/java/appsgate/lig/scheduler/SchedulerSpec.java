@@ -115,12 +115,12 @@ public interface SchedulerSpec extends AlarmEventObserver{
 			String dateStart, String dateEnd ) throws SchedulingException;
 	
 	/**
-	 * Get information about a particular event in the calendar
+	 * Get a particular event in the calendar
 	 * @param the unique Event ID 
-	 * @return A JSON Object containing , the key/value pairs and details may be relative to the underlying implementation
+	 * @return the Scheduler event, that main contains additionnal properties provided by the underlying implementation
 	 * or null if the event ID is not found or the event not valid
 	 */
-	public JSONObject getEventInfo(String eventID);	
+	public SchedulerEvent getEvent(String eventID);	
 	
 	/**
 	 * The method try to remove an event using its eventID

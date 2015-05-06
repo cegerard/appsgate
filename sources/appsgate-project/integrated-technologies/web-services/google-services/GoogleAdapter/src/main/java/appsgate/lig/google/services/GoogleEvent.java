@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.regex.Pattern;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.LoggerFactory;
@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import appsgate.lig.google.helpers.GoogleHTTPRequest;
 import appsgate.lig.scheduler.ScheduledInstruction;
 import appsgate.lig.scheduler.SchedulerEvent;
+import appsgate.lig.scheduler.SchedulerEvent.BasicRecurrencePattern;
 
 /**
  * Helper Class to build an Object from an Event of the GoogleCalendar (api v3),
@@ -30,6 +31,8 @@ public class GoogleEvent implements SchedulerEvent{
 	public static final String PARAM_DESCRIPTION="description";
 	public static final String PARAM_UPDATED="updated";
 	public static final String PARAM_STATUS="status";
+	
+	public static final String PARAM_RECURRENCE="recurrence";
 
 
 	public static final String PARAM_START="start";
@@ -42,12 +45,14 @@ public class GoogleEvent implements SchedulerEvent{
 	
 	public static final String PARAM_STATUS_VALUE_CANCELLED="cancelled";
 	public static final String PARAM_STATUS_VALUE_DELETED="deleted";
-
+	
+	public static final String RECURRENCE_EXDATE = "EXDATE";
+	public static final String RECURRENCE_EXRULE = "EXRULE";
+	public static final String RECURRENCE_RDATE = "RDATE";
+	public static final String RECURRENCE_RRULE = "RRULE";
+	public static final String RECURRENCE_FREQ = "FREQ=";
 
 	public final String SEPARATOR=".";
-
-	
-
 
 	@Override
 	public String getId() {
@@ -123,6 +128,7 @@ public class GoogleEvent implements SchedulerEvent{
 	String name=null;
 	String description=null;
 	String unparsedJSON=null;
+	BasicRecurrencePattern reccurrencePattern;
 
 	Set<ScheduledInstruction> onBeginInstructions=new HashSet<ScheduledInstruction>();
 	Set<ScheduledInstruction> onEndInstructions=new HashSet<ScheduledInstruction>();
@@ -161,9 +167,8 @@ public class GoogleEvent implements SchedulerEvent{
 			description=jsonEvent.optString(PARAM_DESCRIPTION); // This one is optional
 			onBeginInstructions=parseDescription(description, ScheduledInstruction.ON_BEGIN);
 			onEndInstructions=parseDescription(description, ScheduledInstruction.ON_END);
-			
-			
-			
+			reccurrencePattern = parseRecurrencePattern(jsonEvent.optJSONArray(PARAM_RECURRENCE));
+		
 		} catch (JSONException exc) {
 			throw new InstantiationException("Missing json parameter : "
 					+exc.getMessage());
@@ -232,6 +237,73 @@ public class GoogleEvent implements SchedulerEvent{
 		return currentEvent;
 	}
 	
+	public static BasicRecurrencePattern parseRecurrencePattern(JSONArray recurrence) {
+		logger.trace("parseRecurrencePattern(JSONArray recurrence : {}", recurrence);
+		BasicRecurrencePattern current = BasicRecurrencePattern.NONE; 
+		if(recurrence != null && recurrence.length() >  0) {
+			int nbRecurrenceRules = 0;
+			int nbExceptionsRules = 0;
+			
+			for(int i = 0; i<recurrence.length()
+					&& current != BasicRecurrencePattern.OTHER; i++) {
+				logger.trace("parseRecurrencePattern(...), parsing entry : "+recurrence.get(i));
+				try {
+					String entry = recurrence.getString(i);
+					if(entry.startsWith(RECURRENCE_RDATE)) {
+						logger.trace("parseRecurrencePattern(...), entry is a specific RDATE, "
+								+ " returning OTHER");
+						current=BasicRecurrencePattern.OTHER;
+					} else if(entry.startsWith(RECURRENCE_EXDATE) ||entry.startsWith(RECURRENCE_EXRULE)) {
+						nbExceptionsRules++;
+					} else if(entry.startsWith(RECURRENCE_RRULE) &&entry.contains(RECURRENCE_FREQ) ) {
+						logger.trace("parseRecurrencePattern(...), entry is a RRULE with a frequence");
+						nbRecurrenceRules++;
+						String frequence = entry.substring(
+								entry.indexOf(RECURRENCE_FREQ)+RECURRENCE_FREQ.length());
+						if(frequence.startsWith(BasicRecurrencePattern.DAILY.getName())) {
+							logger.trace("parseRecurrencePattern(...), this is a DAILY RULE");
+							current = BasicRecurrencePattern.DAILY;
+						} else  if(frequence.startsWith(BasicRecurrencePattern.WEEKLY.getName())){
+							logger.trace("parseRecurrencePattern(...), this is a WEEKLY RULE");
+							current = BasicRecurrencePattern.WEEKLY;							
+						} else  if(frequence.startsWith(BasicRecurrencePattern.MONTHLY.getName())){
+							logger.trace("parseRecurrencePattern(...), this is a MONTHLY RULE");
+							current = BasicRecurrencePattern.MONTHLY;							
+						} else  if(frequence.startsWith(BasicRecurrencePattern.YEARLY.getName())){
+							logger.trace("parseRecurrencePattern(...), this is a YEARLY RULE");
+							current = BasicRecurrencePattern.YEARLY;							
+						} else {
+							logger.trace("parseRecurrencePattern(...), this is not a basic frequence, returning other");
+							current = BasicRecurrencePattern.OTHER;							
+						}
+					} else {
+						logger.trace("parseRecurrencePattern(...), cannot understand Entry type of rule,"
+								+ " returning OTHER");
+						current=BasicRecurrencePattern.OTHER;
+						
+					}
+					
+					if(current != BasicRecurrencePattern.OTHER
+							&& nbExceptionsRules>0
+							&& nbRecurrenceRules >1) {
+						logger.trace("parseRecurrencePattern(...), there is more than one rule or one rule with exceptions"
+								+ " returning OTHER");						
+						current = BasicRecurrencePattern.OTHER;
+					}
+					
+				} catch (JSONException e) {
+					logger.trace("parseRecurrencePattern(...), entry is not a String cannot parse recurrence,"
+							+ " returning OTHER, exception : ",e);
+					current = BasicRecurrencePattern.OTHER;
+				}
+			}
+		} else {
+			logger.trace("parseRecurrencePattern(), no reccurence pattern returning NONE");
+			current= BasicRecurrencePattern.NONE;
+		}
+		logger.trace("parseRecurrencePattern(...), returning " +current.getName());
+		return current;		
+	}
 	
 	/**
 	 * Parse the description part of a Calendar Event to fetch specific AppsGate keywords
@@ -317,6 +389,11 @@ public class GoogleEvent implements SchedulerEvent{
 			}
 		}		
 		return result;
+	}
+
+	@Override
+	public BasicRecurrencePattern getRecurrencePattern() {
+		return reccurrencePattern;
 	}
 
 }

@@ -4,11 +4,9 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
-import java.util.regex.Pattern;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,6 +24,7 @@ import appsgate.lig.google.services.GoogleAdapter;
 import appsgate.lig.google.services.GoogleEvent;
 import appsgate.lig.manager.client.communication.service.subscribe.CommandListener;
 import appsgate.lig.scheduler.ScheduledInstruction;
+import appsgate.lig.scheduler.SchedulerEvent;
 import appsgate.lig.scheduler.SchedulerSpec;
 import appsgate.lig.scheduler.SchedulingException;
 import appsgate.lig.scheduler.utils.DateFormatter;
@@ -714,12 +713,7 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 	}
 
 	@Override
-	public JSONObject getEventInfo(String eventID) {
-		GoogleEvent result = serviceAdapter.getEvent(calendarId, eventID);
-		if(result != null ) {
-			return result.toJSON();
-		} else {
-			return null;
-		}
+	public SchedulerEvent getEvent(String eventID) {
+		return serviceAdapter.getEvent(calendarId, eventID);
 	}
 }
