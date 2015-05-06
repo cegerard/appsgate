@@ -24,6 +24,7 @@ import appsgate.lig.energy.monitoring.group.CoreEnergyMonitoringGroup;
 import appsgate.lig.energy.monitoring.service.models.ActiveEnergySensor;
 import appsgate.lig.scheduler.ScheduledInstruction;
 import appsgate.lig.scheduler.ScheduledInstruction.Commands;
+import appsgate.lig.scheduler.SchedulerEvent;
 import appsgate.lig.scheduler.SchedulerSpec;
 import appsgate.lig.scheduler.SchedulingException;
 import appsgate.lig.scheduler.utils.DateFormatter;
@@ -81,28 +82,10 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	
 	private JSONArray annotations;
 	
-	public final static String NAME_KEY = "name";
-	public final static String SENSORS_KEY = "sensors";
-	public final static String ENERGY_KEY="energy";	
-	public final static String BUDGETTOTAL_KEY="budgetTotal";
-	public final static String BUDGETUNIT_KEY="budgetUnit";
-	public final static String BUDGETREMAINING_KEY="budgetRemaining";
-	public final static String BUDGETRESETED_KEY="budgetReset";
-	public final static String PERIODS_KEY="periods";	
-	public final static String ISMONITORING_KEY = "isMonitoring";
-	public final static String LASTRESET_KEY = "lastReset";
-	public final static String ANNOTATIONS_KEY = "annotations";
-	
-	public final static String RAW_ENERGY_KEY="rawEnergy";	
-	public final static String RAW_ENERGYDURINGPERIOD_KEY="rawEnergyDuringPeriod";	
-	
-	
-	
 	public CoreEnergyMonitoringGroupImpl() {
     	userType = CoreEnergyMonitoringGroup.class.getSimpleName();
     	status = 2;
 	}
-	
 
 	/**
 	 * Callback when new apam Instance is created
@@ -422,16 +405,6 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		return new JSONArray(periods);
 	}
 
-	/**
-	 * Check if the parameter time is inside a monitoring period
-	 * @param time
-	 * @return
-	 */
-	private boolean checkPeriod(long time) {
-		// TODO check the periods in the scheduler
-		return false;
-	}	
-
 	@Override
 	public String addPeriod(long startDate, long endDate, boolean resetOnStart,
 			boolean resetOnEnd) {
@@ -506,8 +479,66 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 
 	@Override
 	public JSONObject getPeriodInfo(String eventID) {
-		// TODO we have to use the scheduler
-		return null;
+		SchedulerEvent period = scheduler.getEvent(eventID);
+		if(!periods.contains(eventID) ||period == null) {
+			logger.error("getPeriodInfo(String eventID : {}), event not found in the scheduler or in the group events");
+			return null;
+		}
+		
+		JSONObject result = new JSONObject();
+		
+		//deletable ONLY if it contains:
+		// one start monitoring instruction
+		// one stop monitoring instruction
+		// optional one if reset on start (by default considered true)
+		// optional one if reset on stop (by default considered true)
+		int expected = 2;		
+		int found = 0;
+		
+		// The 'easy' parameters direct from the scheduler 
+		result.put(PERIOD_ID, period.getId());
+		result.put(PERIOD_NAME, period.getName());
+		result.put(PERIOD_START, period.getStartTime());
+		result.put(PERIOD_STOP, period.getEndTime());
+		result.put(PERIOD_RECURRENCE, period.getRecurrencePattern());
+		
+		// The 'instructions' parameters parsed from the scheduler
+		if(period.instructionsMatchingPattern(
+				formatInstruction("resetEnergy", null, ScheduledInstruction.ON_BEGIN).toString()
+				).size()>0) {
+			result.put(PERIOD_RESETSTART, true);
+			expected++;
+			found++;
+		}
+		if(period.instructionsMatchingPattern(
+				formatInstruction("resetEnergy", null, ScheduledInstruction.ON_END).toString()
+				).size()>0) {
+			result.put(PERIOD_RESETSTOP, true);
+			expected++;
+			found++;
+		}
+		
+		// The 'computed' parameters from the scheduler
+		if(period.instructionsMatchingPattern(
+				formatInstruction("startMonitoring", null, ScheduledInstruction.ON_BEGIN).toString()
+				).size()>0) {
+			found++;
+		}
+		if(period.instructionsMatchingPattern(
+				formatInstruction("stopMonitoring", null, ScheduledInstruction.ON_END).toString()
+				).size()>0) {
+			found++;
+		}
+		
+		if(expected == found) {
+			result.put(PERIOD_DELETABLE, true);			
+		} else {
+			result.put(PERIOD_DELETABLE, false);						
+		}
+		
+		logger.trace("getPeriodInfo(String eventID : {}), returning",eventID, result);
+
+		return result;
 	}
 	
 	@Override
@@ -518,7 +549,7 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 				&& i<periods.length(); i++) {
 			String s = periods.optString(i);
 			if(s!=null
-					//TODO shoud verify the periods exists in the scheduler 
+					&& scheduler.getEvent(s)!= null
 					) {
 				this.periods.add(s);
 			}
