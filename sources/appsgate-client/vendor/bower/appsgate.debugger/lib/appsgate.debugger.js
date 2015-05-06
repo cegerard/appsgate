@@ -1579,6 +1579,13 @@
             return Math.max(Math.min((position.left + offset) / ( this._$ruler.parent().width() - this.options.theme.dashboard.sidebar.width), 1), 0);
           
         },
+        // Return the ruler coordinate
+        _getRulerTimestamp : function () {
+            var position = this._getRulerCoordinate();
+            var focusedTime = (this._domain[1] - this._domain[0] )* position + this._domain[0];
+            return Math.round(focusedTime);
+          
+        },
     
         // Update focusline.
         _update_focusline_with_frame: function(frame, options) {
@@ -1826,6 +1833,12 @@
                     var direction = (this.lastPosition.left > ui.position.left) ? 'left' : 'right';
                     self._notifyWidgetsOnRulerFocusChanged(ui.position, direction);
                     this.lastPosition = ui.position;
+                },
+                stop: function(event, ui) {
+        
+                    // Workout ruler shadow placement and focused time
+                    self.triggerMethod.apply(self, ['eventline:focus:time'].concat(self._getRulerTimestamp()));
+    
                 }
             });
         },
