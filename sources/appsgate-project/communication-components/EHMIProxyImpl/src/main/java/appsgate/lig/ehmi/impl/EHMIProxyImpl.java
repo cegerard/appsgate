@@ -1163,6 +1163,7 @@ public class EHMIProxyImpl implements EHMIProxySpec, AsynchronousCommandResponse
             msg.put("value", programList.toString());
             msg.put("objectId", "EHMI");
             msg.put("callId", "programState");
+            msg.put("timestamp", timestamp);
         } catch (JSONException ex) {
 
         }

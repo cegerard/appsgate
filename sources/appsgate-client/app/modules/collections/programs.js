@@ -39,6 +39,7 @@ define([
                     _.each(programs, function(p) {
                         self.get(p.pid).setCurrentNode(p.node);
                     });
+                    dispatcher.trigger("refreshDisplay");
                 }
             });
             // listen to the event when a program appears and add it
