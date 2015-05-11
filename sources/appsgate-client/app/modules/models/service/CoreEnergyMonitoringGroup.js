@@ -31,6 +31,10 @@ define([
     });
 
     },
+	  
+	getPercentUsed: function() {
+		return ((this.get("budgetTotal") - this.get("budgetRemaining")) / (this.get("budgetTotal"))) * 100;
+	},
 
     setName: function(name) {
       this.remoteControl("setName", [{"type": "String", "value": name, "name": "name"}]);
