@@ -212,6 +212,10 @@ body.debugMode {
 .badge-number {
   background-color: #777 !important;
 }
+.main-block-node .row {
+  margin-right: 0px;
+}
+
 ::-webkit-scrollbar {
   width: 8px;
   background-color: rgba(0, 0, 0, 0);
