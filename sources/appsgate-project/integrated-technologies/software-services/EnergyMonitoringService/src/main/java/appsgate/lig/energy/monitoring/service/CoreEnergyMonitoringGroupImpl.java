@@ -117,15 +117,14 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		// The configuration of serviceId and name MUST have already be injected during instance creation 
 		
 		setEnergySensorsGroup(sensors);
-		this.budgetTotal = budgetTotal;
-		this.budgetUnit = budgetUnit;
+		setBudget(budgetTotal); 
+		setBudgetUnit(budgetUnit);
 		
 		this.periods = new ArrayList<String>();
 		this.annotations = new HashMap<String, String>();
 		annotationsAsJSON = new JSONArray();
 		energyHistory = new JSONArray();
-		
-		lastResetTimestamp = clock.getCurrentTimeInMillis();
+		resetEnergy();		
 	}
 
 	public void configureFromJSON(JSONObject configuration) {
@@ -139,8 +138,8 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		lastTotal = remainingTotal;
 		lastEnergyDuringPeriod = remainingDuringPeriod;
 		
-		budgetTotal = configuration.optDouble(BUDGETTOTAL_KEY, -1);
-		budgetUnit = configuration.optDouble(BUDGETUNIT_KEY, 1);
+		setBudget(configuration.optDouble(BUDGETTOTAL_KEY, -1));
+		setBudgetUnit(configuration.optDouble(BUDGETUNIT_KEY, 1));
 				
 		setEnergySensorsGroup(configuration.optJSONArray(SENSORS_KEY));
 		setPeriods(configuration.optJSONArray(PERIODS_KEY));
@@ -149,6 +148,7 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		if(energyHistory == null) {
 			energyHistory = new JSONArray();
 		}
+		stateChanged(HISTORY_KEY, null, energyHistory.toString());
 		
 		
 		this.annotations = new HashMap<String, String>();
@@ -163,13 +163,16 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 							obj.getString(obj.names().getString(0)));
 					annotationsAsJSON.put(obj);
 				}
-				
-			}			
+			}
+			stateChanged(ANNOTATIONS_KEY, null, annotationsAsJSON.toString());
 		}
 		
 		lastResetTimestamp = configuration.optLong(LASTRESET_KEY, clock.getCurrentTimeInMillis());
+		stateChanged(LASTRESET_KEY, null, String.valueOf(lastResetTimestamp));
 		lastStartTimeStamp = configuration.optLong(PERIOD_START, -1);
+		stateChanged(PERIOD_START, null, String.valueOf(lastStartTimeStamp));
 		lastStopTimeStamp = configuration.optLong(PERIOD_STOP, -1);
+		stateChanged(PERIOD_STOP, null, String.valueOf(lastStopTimeStamp));
 		
 		// (beware we may have miss information and the overall total may be wrong)
 	}	
