@@ -212,6 +212,10 @@ body.debugMode {
 .badge-number {
   background-color: #777 !important;
 }
+.main-block-node .row {
+  margin-right: 0px;
+}
+
 ::-webkit-scrollbar {
   width: 8px;
   background-color: rgba(0, 0, 0, 0);
@@ -941,6 +945,30 @@ button.program-incomplete{
 .read-only .debugActivated {
   border: thin solid red !important;
   background-color: yellow !important;
+}
+
+.debugMode .sync-button {
+  display: none;
+}
+.debugMode .refresh-button {
+  display: none;
+}
+.unsync-button {
+  display:none;
+}
+.debugMode .unsync-button {
+  display: inline;
+}
+
+.sync-bar {
+  display:none;
+}
+.debugMode .sync-bar {
+  display: block;
+  text-align:center;
+}
+.debugMode .btn-toolbar {
+  display: none;
 }
 /* --------------------- Modal styles ----------------------------------*/
 

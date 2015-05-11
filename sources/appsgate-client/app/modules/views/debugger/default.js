@@ -108,6 +108,19 @@ define([
         // set date time pickers
         $('#datetimepicker-from').datetimepicker(datetimepicker_options);
         $('#datetimepicker-to').datetimepicker(datetimepicker_options);
+        
+        $("#last-hour-btn").on("click", function(e) {
+          var now = new Date();
+          var last = new Date(now - 3600000);
+        $('#datetimepicker-from').data("DateTimePicker").setDate(last);
+        //$('#datetimepicker-from').data("DateTimePicker").setMaxDate(last);
+        $('#datetimepicker-to').data("DateTimePicker").setDate(now);
+        $('#datetimepicker-to').data("DateTimePicker").setMaxDate(now);
+          dashboard.requestInitialHistoryTrace({
+            from: last.setMilliseconds(0),
+            to: now.setMilliseconds(0)
+          });
+        });
 
         $("#datetimepicker-from").on("dp.change",function (e) {
             var now = new Date();
@@ -176,7 +189,7 @@ define([
         });
         
         dashboard.on('eventline:focus:time', function(timestamp) {
-            App.setDebugMode(timestamp);
+            //App.setDebugMode(timestamp);
             communicator.sendMessage({
                         method: "getWorldState",
                         args: [{type : "Long", value : timestamp}],

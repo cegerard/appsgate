@@ -16,6 +16,8 @@
   },
   "dependancy": {
         "refresh-data" : "Actualiser les données",
+        "synchronize" : "Démarrer la synchro",
+        "unsynchronize" : "Arrêter la synchro",
         "search-label" : "Chercher : ",
 	  	"search-button": "OK",
 	  	"search-example": "(Exemple : '__entity__')",
