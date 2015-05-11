@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import appsgate.lig.clock.sensor.messages.ClockSetNotificationMsg;
 import appsgate.lig.clock.sensor.messages.FlowRateSetNotification;
 import appsgate.lig.clock.sensor.spec.AlarmEventObserver;
+import appsgate.lig.scheduler.SchedulerEvent.BasicRecurrencePattern;
 
 /**
  */
@@ -98,7 +99,7 @@ public interface SchedulerSpec extends AlarmEventObserver{
 	
 	
 	/**
-	 * Create a basic Calendar Event, with specified instructions
+	 * Create a basic and single Calendar Event, with specified instructions
 	 * @param eventName is the name as it will appear in the Calendar
 	 * @param onBeginInstructions instruction to be triggered when event start
 	 * @param onEndInstructions instruction to be triggered when event stops
@@ -113,6 +114,26 @@ public interface SchedulerSpec extends AlarmEventObserver{
 			Set<ScheduledInstruction> onBeginInstructions,
 			Set<ScheduledInstruction> onEndInstructions,
 			String dateStart, String dateEnd ) throws SchedulingException;
+	
+	/**
+	 * Create a Calendar Event (this one can handle a basic recurrence),
+	 * with specified instructions
+	 * @param eventName is the name as it will appear in the Calendar
+	 * @param onBeginInstructions instruction to be triggered when event start
+	 * @param onEndInstructions instruction to be triggered when event stops
+	 * @param dateStart the starting date of the event
+	 * (formatted according to RFC 3339 : 2014-09-16T12:45:23+0200) 
+	 * @param dateEnd the ending date of the event
+	 * (formatted according to RFC 3339 : 2014-09-16T12:45:23+0200) 
+	 * @param a reccurrence pattern for the event
+	 * @return the Event ID
+	 * @throws SchedulingException
+	 */
+	public String createEvent(String eventName,
+			Set<ScheduledInstruction> onBeginInstructions,
+			Set<ScheduledInstruction> onEndInstructions,
+			String dateStart, String dateEnd,
+			BasicRecurrencePattern recurrence ) throws SchedulingException;
 	
 	/**
 	 * Get a particular event in the calendar

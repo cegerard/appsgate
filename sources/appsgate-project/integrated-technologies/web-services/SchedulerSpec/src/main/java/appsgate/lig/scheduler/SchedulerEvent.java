@@ -53,10 +53,17 @@ public interface SchedulerEvent {
 	 */
 	public enum BasicRecurrencePattern {
 		NONE("NONE"),
-		DAILY("DAILY"),
-		WEEKLY("WEEKLY"),
-		MONTHLY("MONTHLY"),
-		YEARLY("YEARLY"),
+		EACH_DAY("FREQ=DAILY"),
+		EACH_WEEK("FREQ=WEEKLY"),
+		EACH_MONDAY("FREQ=WEEKLY;BYDAY=MO"),
+		EACH_TUESDAY("FREQ=WEEKLY;BYDAY=TU"),
+		EACH_WEDNESDAY("FREQ=WEEKLY;BYDAY=WE"),
+		EACH_THURSDAY("WEEKLY;BYDAY=TH"),
+		EACH_FRIDAY("WEEKLY;BYDAY=FR"),
+		EACH_SATURDAY("WEEKLY;BYDAY=SA"),
+		EACH_SUNDAY("WEEKLY;BYDAY=SU"),
+		EACH_MONTH("FREQ=MONTHLY"),
+		EACH_YEAR("FREQ=YEARLY"),
 		OTHER("OTHER");
 		
 		String name;
@@ -65,6 +72,19 @@ public interface SchedulerEvent {
 		}
 		public String getName() {
 			return name;
+		}
+		
+		public static BasicRecurrencePattern fromName(String name) throws IllegalArgumentException {
+			if(name != null && name.length()>0) {
+				for(BasicRecurrencePattern pattern : BasicRecurrencePattern.values()) {
+					if(name.equals(pattern.getName())) {
+						return pattern;
+					}
+				}
+				throw new IllegalArgumentException("Unrecognized name : "+name);
+			} else {
+				throw new IllegalArgumentException("Provided name is empty");
+			}
 		}
 	}
 }
