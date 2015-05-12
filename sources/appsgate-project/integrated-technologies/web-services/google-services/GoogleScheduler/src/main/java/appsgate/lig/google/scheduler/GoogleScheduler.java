@@ -459,7 +459,7 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 				+ ", Set<ScheduledInstruction> onEndInstructions : "+onEndInstructions
 				+",String dateStart : "+dateStart
 				+",String dateEnd : "+dateEnd
-				+",BasicRecurrencePattern recurrence : "+recurrence.getName()				
+				+",BasicRecurrencePattern recurrence : "+recurrence.name()				
 				+")");
 		if(serviceAdapter==null) {
 			logger.error("No GoogleAdapter service registered, unable to add events");
@@ -488,7 +488,7 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 			logger.error("Unsupported recurrence pattern ");
 			throw new SchedulingException("Unsupported recurrence pattern, unable to add events");
 		} else {
-			String rrule = GoogleEvent.RECURRENCE_RRULE+":"+recurrence.getName();
+			String rrule = GoogleEvent.RECURRENCE_RRULE+":"+recurrence.getRRuleFreq();
 			content.put(GoogleEvent.PARAM_RECURRENCE, new JSONArray().put(rrule));
 		}
 		

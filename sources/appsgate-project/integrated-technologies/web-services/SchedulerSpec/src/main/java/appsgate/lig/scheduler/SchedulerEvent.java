@@ -66,18 +66,31 @@ public interface SchedulerEvent {
 		EACH_YEAR("FREQ=YEARLY"),
 		OTHER("OTHER");
 		
-		String name;
-		BasicRecurrencePattern(String name) {
-			this.name = name;
+		String rruleFreq;
+		BasicRecurrencePattern(String rruleFreq) {
+			this.rruleFreq = rruleFreq;
 		}
-		public String getName() {
-			return name;
+		public String getRRuleFreq() {
+			return rruleFreq;
+		}
+		
+		public static BasicRecurrencePattern fromRRuleFreq(String rruleFreq) throws IllegalArgumentException {
+			if(rruleFreq != null && rruleFreq.length()>0) {
+				for(BasicRecurrencePattern pattern : BasicRecurrencePattern.values()) {
+					if(rruleFreq.equals(pattern.getRRuleFreq())) {
+						return pattern;
+					}
+				}
+				throw new IllegalArgumentException("Unrecognized rrule frequency : "+rruleFreq);
+			} else {
+				throw new IllegalArgumentException("Provided rrule frequency is empty");
+			}
 		}
 		
 		public static BasicRecurrencePattern fromName(String name) throws IllegalArgumentException {
 			if(name != null && name.length()>0) {
 				for(BasicRecurrencePattern pattern : BasicRecurrencePattern.values()) {
-					if(name.equals(pattern.getName())) {
+					if(name.equals(pattern.name())) {
 						return pattern;
 					}
 				}

@@ -1,7 +1,6 @@
 package appsgate.lig.energy.monitoring.group;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  * This Extended Service monitor energy relative to:
@@ -31,17 +30,13 @@ public interface CoreEnergyMonitoringGroup {
 	public final static String LASTRESET_KEY = "lastReset";
 	public final static String ANNOTATIONS_KEY = "annotations";
 	public final static String HISTORY_KEY = "history";
-
-	
+	public final static String AUTOMATION_KEY = "automation";
 	
 	public final static String PERIOD_ID = "id";
 	public final static String PERIOD_NAME = "name";
 	public final static String PERIOD_START = "startDate";
 	public final static String PERIOD_STOP = "stopDate";
-	public final static String PERIOD_RESETSTART = "resetStart";
-	public final static String PERIOD_RESETSTOP = "resetStop";
 	public final static String PERIOD_RECURRENCE = "recurrence";
-	public final static String PERIOD_DELETABLE = "deletable";
 	
 	
 	public final static String RAW_ENERGY_KEY="rawEnergy";	
@@ -175,48 +170,28 @@ public interface CoreEnergyMonitoringGroup {
 	 * @param budget if -1, no budget defined
 	 */
 	public void setBudget(double budget);
-	
-	/**
-	 * Get the Monitoring Periods as a JSONArray of eventIDs (String),
-	 * each one represents an Event in the scheduler
-	 * @return
-	 */
-	public JSONArray getPeriods();
-	
-	/**
-	 * set the Monitoring Periods using JSONArray of eventIDs (String),
-	 * each one represents an Event in the scheduler
-	 * The periods are added only if the found in the scheduler
-	 */
-	public void setPeriods(JSONArray periods);
 
-	
-	/**
-	 * Adds a basic single period with fixed starting and ending dates
-	 * No periodicity by default (it has to be managed using the scheduler or google agenda)
-	 * @param startDate the starting date in millisecs from the epoch (01/01/1970) 
-	 * @param endDate the ending date in millisecs from the epoch (01/01/1970)
-	 * @param resetOnStart if true, the budget remaining will be reseted each Time the period starts
-	 * @param resetOnEnd if true, the budget remaining will be reseted each Time the period ends
-	 * @param recurrence as a basic reccurence rule to the event (supported values : NONE, DAILY, WEEKLY, MONTHLY, YEARLY),
-	 *  if unrecognized, recurrence will be set to NONE
-	 * @return	the Event ID (String) as used in the Scheduler
+	 /**
+	 * Configure the starting of the monitoring, might be with a fixed date and/or a recurrence pattern
+	 * Note: that each start implies a reset
+	 * @param startDate the starting date in millisecs from the epoch (01/01/1970), if 0 or -1 is provided, assume to use the recurrence from 01/01/1970 
+	 * @param recurrence as a basic reccurence rule to the event (supported values : NONE, EACH_DAY, EACH_WEEK, EACH_MONDAY... EACH_MONTH, EACH_YEAR,
 	 */
-	public String addPeriod(long startDate, long endDate, boolean resetOnStart, boolean resetOnEnd, String recurrence);
+	public void configureStart(long startDate, String recurrence);
 	
-	/**
-	 * Remove the specified periodID
-	 * @param periodID as referenced in the scheduler
+	 /**
+	 * Configure the stopping of the monitoring, might be with a fixed date and/or a recurrence pattern
+	 * @param startDate the starting date in millisecs from the epoch (01/01/1970), if 0 or -1 is provided, assume to use the recurrence from 01/01/1970 
+	 * @param recurrence as a basic reccurence rule to the event (supported values : NONE, EACH_DAY, EACH_WEEK, EACH_MONDAY... EACH_MONTH, EACH_YEAR,
 	 */
-	public void removePeriodById(String eventID);
+	public void configureStop(long stopDate, String recurrence);
 	
-	/**
-	 * Gets informations about the specified periodfriom the scheduler
-	 * all these are summed in a JSONObject
-	 * @param eventID as referenced in the scheduler
+	 /**
+	 * Configure the reset of the monitoring, might be with a fixed date and/or a recurrence pattern
+	 * @param startDate the starting date in millisecs from the epoch (01/01/1970), if 0 or -1 is provided, assume to use the recurrence from 01/01/1970 
+	 * @param recurrence as a basic reccurence rule to the event (supported values : NONE, EACH_DAY, EACH_WEEK, EACH_MONDAY... EACH_MONTH, EACH_YEAR,
 	 */
-	public JSONObject getPeriodInfo(String eventID);		
-	
+	public void configureReset(long resetDate, String recurrence);
 	
 	/**
 	 * returns true if the group is currently monitoring Energy consumption (and decreasing budget)
