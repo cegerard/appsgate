@@ -31,6 +31,10 @@ define([
     });
 
     },
+	  
+	getPercentUsed: function() {
+		return (((this.get("energy")) / (this.get("budgetTotal"))) * 100).toFixed(2);
+	},
 
     setName: function(name) {
       this.remoteControl("setName", [{"type": "String", "value": name, "name": "name"}]);
@@ -66,7 +70,15 @@ define([
     removePeriodById: function(eventID) {
       this.remoteControl("removePeriodById", [
         {"type": "String", "value": eventID, "name": "eventID"} ]);
-    }
+    },
+	  
+	startMonitoring: function() {
+		this.remoteControl("startMonitoring", [], this.id);
+	},
+	  
+	stopMonitoring: function() {
+		this.remoteControl("stopMonitoring", [], this.id);
+	}
 
   });
   return CoreEnergyMonitoringGroup;

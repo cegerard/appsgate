@@ -960,23 +960,26 @@
     "device-unlocated": "Non localisé",
     "energy-monitoring" : {
 		"name" : {
-			"singular" : "Gestion d'énergie",
-			"plural" : "Gestion d'énergie"
+			"singular" : "Suivi d'énergie",
+			"plural" : "Suivi d'énergie"
 		},
-		"add-button" : "Ajouter un budget",
-		"remove-button" : "Supprimer budget",
+		"add-button" : "Nouveau groupe de suivi d'énergie",
+		"remove-button" : "Supprimer",
+		"start-button" : "Démarrer",
+		"stop-button" : "Arrêter",
 		"edit-button" : "Editer",
-		"amount" : {
+		"total-consumption" : "Consommation totale",
+		"budget" : {
 			"name" : "Budget",
-			"planed" : "Montant prévu",
-			"used" : "Montant utilisé",
-			"left" : "Montant restant"
+			"allocated" : "Budget alloué",
+			"used" : "Budget utilisé",
+			"left" : "Budget restant"
 		},
 		"modal-add" : {
 			"title" : "Nouveau budget",	
 			"placeholder" : {
-				"name" : "Nom du budget",
-				"amount" : "Spécifier votre budget"
+				"name" : "Nom du groupe de suivi d'énergie",
+				"budget" : "Spécifier votre budget"
 			},
 			"devices" : {
 				"title" : "Pour les équipements :",

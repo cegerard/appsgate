@@ -4,8 +4,9 @@ define([
   "views/service/servicebytype",
   "views/service/details/tts",
   "views/service/details/energyMonitoring",
+  "views/service/list/listEnergyMonitoring",
   "views/service/details"
-  ], function(App, ServiceMenuView, ServicesByTypeView, TTSDetailsView, EnergyMonitoringView, ServiceDetailsView) {
+  ], function(App, ServiceMenuView, ServicesByTypeView, TTSDetailsView, EnergyMonitoringView, ListEnergyMonitoring, ServiceDetailsView) {
 
     var ServiceRouter = {};
     /**
@@ -63,6 +64,9 @@ define([
         switch(typeId) {
           case "104":
             appRouter.showDetailsView(new TTSDetailsView({model: services.getCoreTTS()}));
+            break;
+		  case "EnergyMonitoringAdapter":
+            appRouter.showDetailsView(new ListEnergyMonitoring({id: typeId}));
             break;
           default :
             appRouter.showDetailsView(new ServicesByTypeView({id: typeId}));
