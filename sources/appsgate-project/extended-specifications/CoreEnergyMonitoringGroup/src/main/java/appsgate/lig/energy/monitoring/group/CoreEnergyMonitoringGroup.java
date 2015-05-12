@@ -20,7 +20,8 @@ public interface CoreEnergyMonitoringGroup {
 	
 	public final static String NAME_KEY = "name";
 	public final static String SENSORS_KEY = "sensors";
-	public final static String ENERGY_KEY="energy";	
+	public final static String ENERGYTOTAL_KEY="energyTotal";	
+	public final static String ENERGYDURINGPERIOD_KEY="energyDuringPeriod";	
 	public final static String BUDGETTOTAL_KEY="budgetTotal";
 	public final static String BUDGETUNIT_KEY="budgetUnit";
 	public final static String BUDGETREMAINING_KEY="budgetRemaining";

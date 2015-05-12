@@ -307,14 +307,14 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		
 		if(total != lastTotal) {
 			logger.trace("computeEnergy(), total energy as changed since last Time");
-			stateChanged(ENERGY_KEY, String.valueOf((lastTotal+remainingTotal)*budgetUnit), String.valueOf((total+remainingTotal)*budgetUnit));
+			stateChanged(ENERGYTOTAL_KEY, String.valueOf((lastTotal+remainingTotal)*budgetUnit), String.valueOf((total+remainingTotal)*budgetUnit));
 			lastTotal = total;
 		}
 		if(energyDuringPeriod != lastEnergyDuringPeriod) {
 			logger.trace("computeEnergy(), energy during period as changed since last Time");
-			stateChanged(BUDGETREMAINING_KEY, String.valueOf((lastEnergyDuringPeriod+remainingDuringPeriod)*budgetUnit), String.valueOf((energyDuringPeriod+remainingDuringPeriod)*budgetUnit));
-			
+			stateChanged(ENERGYDURINGPERIOD_KEY, String.valueOf((lastEnergyDuringPeriod+remainingDuringPeriod)*budgetUnit), String.valueOf((energyDuringPeriod+remainingDuringPeriod)*budgetUnit));
 			lastEnergyDuringPeriod = energyDuringPeriod;
+			stateChanged(BUDGETREMAINING_KEY, null, String.valueOf(getRemainingBudget()));
 		}
 	}
 
@@ -424,7 +424,8 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		
 		descr.put(NAME_KEY, getName());
 		descr.put(SENSORS_KEY, getEnergySensorsGroup());
-		descr.put(ENERGY_KEY, String.valueOf(getTotalEnergy()));
+		descr.put(ENERGYTOTAL_KEY, String.valueOf(getTotalEnergy()));
+		descr.put(ENERGYDURINGPERIOD_KEY, String.valueOf(getEnergyDuringTimePeriod()));
 		descr.put(BUDGETTOTAL_KEY, String.valueOf(getBudget()));
 		descr.put(BUDGETUNIT_KEY, String.valueOf(getBudgetUnit()));
 		descr.put(BUDGETREMAINING_KEY, String.valueOf(getRemainingBudget()));		
