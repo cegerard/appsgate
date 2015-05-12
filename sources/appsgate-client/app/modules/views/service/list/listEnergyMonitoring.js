@@ -249,7 +249,7 @@ define([
 			var self = this;
 			var divGroup = $("#" + idGroup);
 			var spanTotalConsumption = divGroup.children(".row").children("div").children(".span-total-consumption");
-			spanTotalConsumption.text(services.getCoreEnergyMonitoringGroupById(idGroup).get('energy'));
+			spanTotalConsumption.text(services.getCoreEnergyMonitoringGroupById(idGroup).get('energyDuringPeriod'));
 
 			var progressBar = divGroup.children(".row").children("div").children("div").children(".progress-bar");
 			var spanBudgetUsedPercent = progressBar.children(".budget-used-percent");

@@ -27,7 +27,7 @@ define([
       } else if(event.varName === 'periods') {
         console.log("periods changed : ", event.value);
         self.trigger("periodsGroupChanged");
-      } else if(event.varName === 'energy') {
+      } else if(event.varName === 'energyDuringPeriod') {
         console.log("energy changed : ", event.value);
         self.trigger("energyChanged");
       } else if(event.varName === 'isMonitoring') {
@@ -39,7 +39,7 @@ define([
     },
 	  
 	getPercentUsed: function() {
-		return (((this.get("energy")) / (this.get("budgetTotal"))) * 100).toFixed(2);
+		return (((this.get("energyDuringPeriod")) / (this.get("budgetTotal"))) * 100).toFixed(2);
 	},
 
     setName: function(name) {

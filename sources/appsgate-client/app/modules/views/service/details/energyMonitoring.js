@@ -93,7 +93,7 @@ define([
 			var self = this;
 			var divGroup = $("#div-summary-information");
 			var spanTotalConsumption = divGroup.children(".row").children("div").children(".span-total-consumption");
-			spanTotalConsumption.text(self.model.get('energy'));
+			spanTotalConsumption.text(self.model.get('energyDuringPeriod'));
 			
 			var spanBudgetTotal = divGroup.children(".row").children("div").children(".span-budget-allocated");
 			spanBudgetTotal.text(self.model.get('budgetTotal'));
