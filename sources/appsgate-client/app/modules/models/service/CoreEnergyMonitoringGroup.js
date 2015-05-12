@@ -27,6 +27,12 @@ define([
       } else if(event.varName === 'periods') {
         console.log("periods changed : ", event.value);
         self.trigger("periodsGroupChanged");
+      } else if(event.varName === 'energy') {
+        console.log("energy changed : ", event.value);
+        self.trigger("energyChanged");
+      } else if(event.varName === 'isMonitoring') {
+        console.log("status changed : ", event.value);
+        self.trigger("statusChanged");
       }
     });
 

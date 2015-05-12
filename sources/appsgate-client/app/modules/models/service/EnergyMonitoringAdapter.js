@@ -20,10 +20,10 @@ define([
       console.log("EnergyMonitoringAdapter Service, received : ",event);
       if(event.varName === 'energyGroupAdded') {
         console.log("Added Energy Monitoring Group : ", event.value);
-        self.trigger("energyGroupAdded");
+        self.trigger("energyGroupAdded", event);
       } else if(event.varName === 'energyGroupRemoved') {
         console.log("Removed Energy Monitoring Group : ", event.value);
-        self.trigger("energyGroupRemoved");
+        self.trigger("energyGroupRemoved", event);
       }
     });
 

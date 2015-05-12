@@ -83,13 +83,13 @@
 					<!-- Total consumption + date -->
 					<div class="row voffset-top-10">
 						<div class="col-md-1">
-							<div class="led-deployed"></div>
+							<div class="div-status"></div>
 						</div>
 						<div class="col-md-3">
 							<span data-i18n="services.energy-monitoring.total-consumption"></span>
 						</div>
 						<div class="col-md-2">
-							<span><%= group.get("energy") %></span>
+							<span class="span-total-consumption"><%= group.get("energy") %></span>
 							<span><%= group.get("budgetUnit") %></span>
 						</div>
 						<div class="col-md-6">
@@ -102,7 +102,7 @@
 							<span data-i18n="services.energy-monitoring.budget.allocated"></span>
 						</div>
 						<div class="col-md-2">
-							<span><%= group.get("budgetTotal") %></span>
+							<span class="span-budget-allocated"><%= group.get("budgetTotal") %></span>
 							<span><%= group.get("budgetUnit") %></span>
 						</div>
 						<div class="col-md-2">
@@ -110,8 +110,8 @@
 						</div>
 						<div class="col-md-4">
 							<div class="progress">
-								<div class="progress-bar progress-bar-striped" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em;width: 60%;">
-									<span><%= group.getPercentUsed() %></span>
+								<div class="progress-bar progress-bar-striped" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="min-width:2em;max-width:100%;">
+									<span class="budget-used-percent"><%= group.getPercentUsed() %></span>
 								</div>
 							</div>
 						</div>
