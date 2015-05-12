@@ -6,6 +6,7 @@ package appsgate.lig.energy.monitoring.service;
 import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -115,20 +116,27 @@ public class EnergyMonitoringAdapterImpl extends CoreObjectBehavior implements
 		return CORE_TYPE.SERVICE;
 	}
 	
-	private static final SecureRandom idGenerator= new SecureRandom();
+	private static final Random idGenerator= new Random(System.currentTimeMillis());
+	private static int counter = 0;
 	
 	/**
 	 * Helper method to generate a short and unique ID (UUID are too long to be friendly) 
 	 * These might no bee unique
 	 * @return
 	 */
-	public String  generateInstanceID() {
-		byte[] id = new byte[8];
-		idGenerator.nextBytes(id);
-		String result = DatatypeConverter.printBase64Binary(id);
+	public String  generateInstanceID(int size) {
+		int i = 0;
+		char[] tab = new char[size];
+		char[] digits = {'0', '1', '2', '3', '4','5','6','7','8','9',
+				'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
+				'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
 		
-		return result.substring(0, result.indexOf('='));
-		
+		tab[i++] = digits[counter%digits.length];
+		counter++;
+		while (i<size) {
+			tab[i++]= digits[idGenerator.nextInt(digits.length)];
+		}
+		return new String(tab);		
 	}
 
 	/* (non-Javadoc)
@@ -148,7 +156,7 @@ public class EnergyMonitoringAdapterImpl extends CoreObjectBehavior implements
 		}		
 
 		String instanceName = CoreEnergyMonitoringGroupImpl.class.getSimpleName()
-				+"-"+generateInstanceID();
+				+"-"+generateInstanceID(8);
 		CoreEnergyMonitoringGroupImpl group = createApamComponent(groupName,instanceName);
 				
 		if(group == null) {

@@ -39,13 +39,13 @@ public class EnergyMonitoringAdapterImplTest {
 	@Test
 	public void testGenerateInstanceID() {
 		Set<String> results = new HashSet<String>();
-		String result = adapter.generateInstanceID();
+		String result = adapter.generateInstanceID(8);
 
 		logger.trace("testGenerateInstanceID() example of : "+result);
 		results.add(result);
 		
 		for(int i = 0; i< 10000; i++) {
-			result = adapter.generateInstanceID();
+			result = adapter.generateInstanceID(8);
 			assertFalse("ID are not unique : ",results.contains(result));
 			results.add(result);
 		}
