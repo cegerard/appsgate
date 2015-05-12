@@ -42,6 +42,10 @@ define([
 
 		},
 
+		/**
+		 * Method to attach the listener of on energy group monitoring
+		 * @param group : group to attach
+		 */
 		attachListeners: function (group) {
 			var self = this;
 			self.listenTo(group, 'energyChanged', function (e) {
@@ -52,17 +56,29 @@ define([
 			});
 		},
 
+		/**
+		 * Method to detach the listener of on energy group monitoring
+		 * @param group : group to detach
+		 */
 		detachListeners: function (group) {
 			var self = this;
 			self.stopListening(group);
 		},
 
+		/**
+		 * Callback when new group added
+		 *@param event : event from the server (value : id new group)
+		 */
 		onAddEnergyGroup: function (event) {
 			var self = this;
 			self.render();
 			self.attachListeners(services.getCoreEnergyMonitoringGroupById(event.value))
 		},
 
+		/**
+		 * Callback when one group deleted
+		 *@param event : event from the server (value : id group deleted)
+		 */
 		onRemoveEnergyGroup: function (event) {
 			var self = this;
 			self.render();
@@ -177,6 +193,9 @@ define([
 			});
 		},
 
+		/**
+		 * Method to set all the values to their current values
+		 */
 		setValues: function () {
 			var self = this;
 			services.getCoreEnergyMonitoringGroups().forEach(function (group) {
@@ -184,6 +203,9 @@ define([
 			});
 		},
 
+		/**
+		 * Method to set all the group state
+		 */
 		setStates: function () {
 			var self = this;
 			services.getCoreEnergyMonitoringGroups().forEach(function (group) {
@@ -191,6 +213,10 @@ define([
 			});
 		},
 
+		/**
+		 * Method to update the html element for the status
+		 * These elements are : show/hide start/stop button, the status-div and if the progress bar is active
+		 */
 		updateState: function (idGroup) {
 			var self = this;
 			var divGroup = $("#" + idGroup);
@@ -199,7 +225,7 @@ define([
 			var btnStop = divGroup.children(".row").children("div").children(".pull-right").children(".btn.stop");
 			var progressBar = divGroup.children(".row").children("div").children("div").children(".progress-bar");
 			var divStatus = divGroup.children(".row").children("div").children(".div-status");
-			
+
 			if (services.getCoreEnergyMonitoringGroupById(idGroup).get('isMonitoring') === "true" || services.getCoreEnergyMonitoringGroupById(idGroup).get('isMonitoring') === true) {
 				btnStart.hide();
 				btnStop.show();
@@ -215,6 +241,10 @@ define([
 			}
 		},
 
+		/**
+		 * Method to update the html element for the value
+		 * These elements are : the text of total consumption, the percent value in the progress bar and its width
+		 */
 		updateValue: function (idGroup) {
 			var self = this;
 			var divGroup = $("#" + idGroup);
