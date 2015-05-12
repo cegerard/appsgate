@@ -373,11 +373,6 @@
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>appsgate.components</groupId>
-                                    <artifactId>CoreMobileDeviceSpec</artifactId>
-                                    <version>${project.version}</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>appsgate.components</groupId>
                                     <artifactId>CoreOccupancySpec</artifactId>
                                     <version>${project.version}</version>
                                 </artifactItem>
@@ -488,11 +483,6 @@
                                     <artifactId>KNXAdapter</artifactId>
                                     <version>${project.version}</version>
                                 </artifactItem>
-                                <artifactItem>
-                                    <groupId>appsgate.components</groupId>
-                                    <artifactId>MobileDeviceAdapter</artifactId>
-                                    <version>${project.version}</version>
-                                </artifactItem>
                                 
                                 
                                 <artifactItem>
@@ -516,11 +506,6 @@
                                     <version>${project.version}</version>
                                 </artifactItem>   
                                 
-                                <artifactItem>
-                                    <groupId>appsgate.components</groupId>
-                                    <artifactId>TaskerAdapter</artifactId>
-                                    <version>${project.version}</version>
-                                </artifactItem>  
                                 <artifactItem>
                                     <groupId>appsgate.components</groupId>
                                     <artifactId>YakitomeTTS</artifactId>
@@ -566,6 +551,21 @@
                                     <artifactId>EnergyMonitoringService</artifactId>
                                     <version>${project.version}</version>
                                 </artifactItem>  
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
+                                    <artifactId>MobileDeviceAdapterSpec</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
+                                    <artifactId>MobileDeviceAdapter</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
+                                    <artifactId>MobileDeviceImpl</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>
                                 
                                                                 
                             </artifactItems>
