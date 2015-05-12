@@ -4,9 +4,8 @@
 	 org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
     <implementation name="MobileDeviceAdapter"
-                    classname="appsgate.lig.mobile.device.adapter.impl.MobileDeviceAdapter" 
-                    specification="MobileDeviceAdapterSpec"
-                    singleton="true">	 
+                    classname="appsgate.lig.mobile.device.adapter.MobileDeviceAdapter" 
+                    specification="MobileDeviceAdapterSpec">	 
 
         
     </implementation>

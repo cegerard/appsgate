@@ -1,4 +1,4 @@
-package appsgate.lig.mobile.device.adapter.impl;
+package appsgate.lig.mobile.device.adapter;
 
 import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import appsgate.lig.mobile.device.adapter.spec.MobileDeviceAdapterServices;
-import appsgate.lig.mobile.device.impl.MobileDeviceImpl;
+import appsgate.lig.mobile.device.MobileDeviceImpl;
 import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Implementation;
 import fr.imag.adele.apam.Instance;

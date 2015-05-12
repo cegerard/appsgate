@@ -1,4 +1,4 @@
-package appsgate.lig.mobile.device.impl;
+package appsgate.lig.mobile.device;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,7 +26,7 @@ import appsgate.lig.mobile.device.spec.CoreMobileDeviceSpec;
  */
 public class MobileDeviceImpl extends CoreObjectBehavior implements CoreObjectSpec, CoreMobileDeviceSpec {
 
-    public static final String IMPL_NAME = "CoreEnergyMonitoringGroupImpl";
+    public static final String IMPL_NAME = "MobileDeviceImpl";
 
     private MobileDeviceAdapterServices mobileDeviceAdapter;
 

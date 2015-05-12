@@ -4,7 +4,7 @@
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
 	<implementation name="MobileDeviceImpl"
-		classname="appsgate.lig.mobile.device.impl.MobileDeviceImpl"
+		classname="appsgate.lig.mobile.device.MobileDeviceImpl"
 		specification="CoreMobileDeviceSpec" push="notifyChanges">
 		<callback onInit="newInst" onRemove="deleteInst" />
 
