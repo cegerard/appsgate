@@ -14,6 +14,8 @@ define([
 			"click button.delete-energy-group": "onDeleteEnergyGroup",
 			"click #add-energy-group-modal button.valid-button": "onAddEnergyGroup",
 			"keyup #add-energy-group-modal input": "validAddinAmount",
+			"click button.start": "onStart",
+			"click button.stop": "onStop",
 
 		},
 		/**
@@ -25,11 +27,13 @@ define([
 			var self = this;
 
 			services.getServicesByType()[this.id].forEach(function (service) {
-				self.listenTo(service, "change", self.render);
+				self.listenTo(service, "change", function(event){console.log("COUCOU" + event.id);});
 				self.listenTo(service, "remove", self.render);
 				self.listenTo(service, "add", self.render);
-			});
-//			self.listenTo(services.getEnergyMonitoringAdapter(), "add", self.render);
+			}); 
+			
+			
+			
 		},
 		/**
 		 * Render the list
@@ -74,6 +78,24 @@ define([
 			var id = $(e.currentTarget).attr("idGroup");
 			services.getEnergyMonitoringAdapter().removeEnergyMonitoringGroup(id);
         },
+		
+		/**
+         * Callback to start monitoring
+         */
+		onStart: function(e) {
+			e.preventDefault();
+			var id = $(e.currentTarget).attr("idGroup");
+			services.getCoreEnergyMonitoringGroupById(id).startMonitoring();
+		},
+		
+		/**
+         * Callback to start monitoring
+         */
+		onStop: function(e) {
+			e.preventDefault();
+			var id = $(e.currentTarget).attr("idGroup");
+			services.getCoreEnergyMonitoringGroupById(id).stopMonitoring();
+		},
 
 		/**
 		 * Method to get the ids of the devices selected
@@ -119,8 +141,10 @@ define([
 			});
 		},
 
-		updateVisibilityBtnStartStop: function () {
-
+		updateState: function (newStateEvent) {
+			var self = this;
+			var divGroup = $("#" + newStateEvent.objectId);
+			divGroup.children(".btn.start").hide();
 		},
 
 		validAddinAmount: function () {}
