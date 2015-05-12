@@ -490,6 +490,7 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	public synchronized void startMonitoring() {
 		logger.trace("startMonitoring()");
 		if(!isMonitoring){
+			resetEnergy();
 			logger.trace("startMonitoring(), starting monitoring status");
 			isMonitoring = true;
 			lastStartTimeStamp = clock.getCurrentTimeInMillis();
