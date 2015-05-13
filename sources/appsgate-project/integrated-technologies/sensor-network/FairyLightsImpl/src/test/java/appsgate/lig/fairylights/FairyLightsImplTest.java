@@ -13,6 +13,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import appsgate.lig.fairylights.service.FairyLightsImpl;
+
 /**
  * @author thibaud
  *
@@ -52,7 +54,7 @@ public class FairyLightsImplTest {
 	}
 
 	/**
-	 * Test method for {@link appsgate.lig.fairylights.FairyLightsImpl#getAllLights()}.
+	 * Test method for {@link appsgate.lig.fairylights.service.FairyLightsImpl#getAllLights()}.
 	 */
 	// Disabled (Device must be physically available to run the test
 	// @Test
@@ -61,7 +63,7 @@ public class FairyLightsImplTest {
 	}
 
 	/**
-	 * Test method for {@link appsgate.lig.fairylights.FairyLightsImpl#getOneLight(int)}.
+	 * Test method for {@link appsgate.lig.fairylights.service.FairyLightsImpl#getOneLight(int)}.
 	 */
 	// Disabled (Device must be physically available to run the test
 	//@Test
@@ -70,7 +72,7 @@ public class FairyLightsImplTest {
 	}
 
 	/**
-	 * Test method for {@link appsgate.lig.fairylights.FairyLightsImpl#setOneColorLight(int, java.lang.String)}.
+	 * Test method for {@link appsgate.lig.fairylights.service.FairyLightsImpl#setOneColorLight(int, java.lang.String)}.
 	 */
 	//
 	// Disabled (Device must be physically available to run the test
