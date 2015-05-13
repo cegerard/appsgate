@@ -1,6 +1,6 @@
 PG = SET
 {
-  return "ok";
+ return "ok";
 }
 
 SET = ID "setOfRules" _ "[" _ RULES _ "]"
@@ -15,12 +15,12 @@ STOP = ID "stopMyself" _ "(" _ TARGET _ ")" _ "[]"
 
 INST  = IF / ACTION / EMPTY / WAIT / SEQ / WHEN_IMP
 
-RULES  = _ (RULE _)+ / "(" RULES ")" 
+RULES  = _ (RULE _)+ / "(" RULES ")"
 
 RULE = WHEN / WHILE / SET / SEQ / EMPTY
 
 IF  = ID "if" _ "(" BOOLEAN ")" _ "(" _ BLOC _ ")" _ "(" _ BLOC _ ")"
-    / ID "if" _ "(" BOOLEAN ")" _ "(" _ BLOC _ ")"
+   / ID "if" _ "(" BOOLEAN ")" _ "(" _ BLOC _ ")"
 
 WHEN  = ID "when" _ "(" _ EVT _ ")" _ "(" _ BLOC _")"
 
@@ -31,9 +31,9 @@ WHILE  = ID "while" _ "(" _ STATE _ ")" _ "(" _ KEEP _ ")" _ "(" _ BLOC _ ")"
 BLOC_KEEP = ID "seqRules" _ "[" _ (KEEP _)+ "]"
 
 EVENTS  = ID "eventsSequence" _ "[" _ EVENTLIST _ "]"
-        / ID "eventsAnd" _ "[" _ EVENTLIST _ "]"
-        / ID "eventsOr" _ "[" _ EVENTLIST _ "]"
-        / EVT
+       / ID "eventsAnd" _ "[" _ EVENTLIST _ "]"
+       / ID "eventsOr" _ "[" _ EVENTLIST _ "]"
+       / EVT
 
 EVENTLIST = (EVENTS _)+
 
@@ -44,27 +44,27 @@ PARAM = i:ID "param"_"(" _ DEVICE_SEP l:NUMBERS DEVICE_SEP _ "," _ p:string _ ")
 ex = {'message' : 'expected param of type: ' + l.join(","), 'expected':l, 'id' : i, 'type':'param', 'param' : p};
 throw ex;
 }
- / i:ID "param"
+/ i:ID "param"
 
 WAIT = ID "wait" _ "(" _ NUMERIC_VALUE _ ")"
 
 /**
- * BOOLEAN expression can manipulate number also, which is not "logical".
- * HACK
- 
+* BOOLEAN expression can manipulate number also, which is not "logical".
+* HACK
+
 BOOLEAN_OLD  = ID "booleanExpression" _"(" _ BOOLEAN _ ")" _ "(" _ BOOLEAN _ ")"
-         / ID "comparator" _"(" _ NUMERIC_VALUE _ ")" _ "(" _ NUMERIC_VALUE _ ")"
-         / ID "booleanExpression" _"(" _ BOOLEAN _ ")"
-         / STATE
+        / ID "comparator" _"(" _ NUMERIC_VALUE _ ")" _ "(" _ NUMERIC_VALUE _ ")"
+        / ID "booleanExpression" _"(" _ BOOLEAN _ ")"
+        / STATE
 */
 BOOLEAN  =  ID "comparator" _"(" _ NUMERIC_VALUE _ ")" _ "(" _ NUMERIC_VALUE _ ")"
-         / STATE
+        / STATE
 
 NUMERIC_VALUE = ID "number"
-			/ ID "boolean"
-            / PROPERTY
-            / ID "scale"
-			
+           / ID "boolean"
+           / PROPERTY
+           / ID "scale"
+
 ARG = "String" / "number" / "boolean" / "long" / "int" / "float"
 
 ACTION = ACTION_0 / ACTION_1 / ACTION_2 / ACTION_3 / ACTION_WITH_ANY_ARGS
@@ -92,29 +92,29 @@ VALUE = ID "string" / ID "number" / ID "boolean"
 
 ID "ID" = d:[0-9]+":"
 {
- return d.join("");
+return d.join("");
 }
 
-MANDATORY_SEL =  i:ID DEVICE_SEP l:NUMBERS DEVICE_SEP
+MANDATORY_SEL =  i:ID DEVICE_SEP l:chars DEVICE_SEP
 {
-ex = {'message' : 'expected device of type: ' + l.join(","), 'expected':l, 'id' : i, 'type':'select'};
+ex = {'message' : 'expected device of type: ' + l, 'expected':[l], 'id' : i, 'type':'select'};
 throw ex;
 }
-		/ MANDATORY
+       / MANDATORY
 
-MANDATORY = i:ID DEVICE_SEP l:NUMBERS DEVICE_SEP
+MANDATORY = i:ID DEVICE_SEP l:chars DEVICE_SEP
 {
-ex = {'message' : 'expected device of type: ' + l.join(","), 'expected':l, 'id' : i, 'type':'device'};
+ex = {'message' : 'expected device of type: ' + l, 'expected':[l], 'id' : i, 'type':'device'};
 throw ex;
 }
-         / i:ID "programs"
+        / i:ID "programs"
 {
 ex = {'message' : "missing a program", 'expected':["programs"], 'id' : i};
 throw ex;
 }
-         / i:ID SERVICE_SEP l:NUMBERS SERVICE_SEP
+        / i:ID SERVICE_SEP l:chars SERVICE_SEP
 {
-ex = {'message' : 'expected device of type: ' + l.join(","), 'expected':l, 'id' : i, 'type':'service'};
+ex = {'message' : 'expected service of type: ' + l, 'expected':[l], 'id' : i, 'type':'service'};
 throw ex;
 }
 
@@ -129,42 +129,43 @@ SERVICE_SEP "separator" = "|"
 /* ===== Whitespace ===== */
 
 _ "whitespace"
-  = whitespace*
+ = whitespace*
 
 // Whitespace is undefined in the original JSON grammar, so I assume a simple
 // conventional definition consistent with ECMA-262, 5th ed.
 whitespace
-  = [ \t\n\r]
+ = [ \t\n\r]
 
 number = int_:int _
 {
-  return parseInt(int_);
+ return parseInt(int_);
 }
 
 int
-  = digit19:digit19 digits:digits     { return digit19 + digits;       }
-  / digit:digit
+ = digit19:digit19 digits:digits     { return digit19 + digits;       }
+ / digit:digit
 
 
 
 digits
-  = digits:digit+ { return digits.join(""); }
+ = digits:digit+ { return digits.join(""); }
 
 
 digit
-  = [0-9]
+ = [0-9]
 
 digit19
-  = [1-9]
-  
+ = [1-9]
+
 string "string"
-  = "'" "'" _             { return "";    }
-  / "'" chars:chars "'" _ { return chars; }
+ = "'" "'" _             { return "";    }
+ / "'" chars:chars "'" _ { return chars; }
 
 chars
-  = chars:char+ { return chars.join(""); }
+ = chars:char+ { return chars.join(""); }
 
 char
-  // In the original JSON grammar: "any-Unicode-character-except-"-or-\-or-control-character"
-  = [A-Z]
-  / [a-z]
+ // In the original JSON grammar: "any-Unicode-character-except-"-or-\-or-control-character"
+ = [A-Z]
+ / [a-z]
+ / digit

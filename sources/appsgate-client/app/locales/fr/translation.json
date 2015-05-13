@@ -959,6 +959,25 @@
     "device-no-name": "Equipement sans nom",
     "device-unlocated": "Non localisé",
     "energy-monitoring" : {
+        "keyboard": {
+          "energyChanged": "La consommation cumulée du __myVar__ change",
+          "resetMonitoring": "Réinitialiser la consommation et le budget du __myVar__",
+          "startMonitoring": "Démarrer la mesure de consommation du __myVar__",
+          "stopMonitoring": "Arrêter la mesure de consommation du __myVar__",
+          "getEnergyDuringTimePeriod": "La consommation cumulée du __myVar__",
+          "getRemainingBudget": "Le budget restant du __myVar__",
+          "group": "groupe"
+        },
+        "language": {
+          "energyChanged": "la consommation électrique cumulée du __myVar__ change",
+          "resetMonitoring": "Réinitaliser la consommation et le budget du __myVar__",
+          "startMonitoring": "Démarrer la mesure de consommation du __myVar__",
+          "stopMonitoring": "Arrêter la mesure de consommation du __myVar__",
+          "resetMonitoring": "réinitialiser la consommation et le budget du __myVar__",
+          "getEnergyDuringTimePeriod": "La consommation cumulée du __myVar__",
+          "getRemainingBudget": "Le budget restant du __myVar__",
+          "group": "groupe"
+        },
 		"name" : {
 			"singular" : "Suivi d'énergie",
 			"plural" : "Suivi d'énergie"
