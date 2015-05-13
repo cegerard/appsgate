@@ -115,6 +115,10 @@ public class CHMIProxyImpl implements CHMIProxySpec {
         try {
             //notify that a new device, service or simulated instance appeared
             CoreObjectSpec newObj = (CoreObjectSpec) inst.getServiceObject();
+            if (newObj == null) {
+                logger.error("Instance {} does not implement CoreObjectSpec", inst.getAllPropertiesString());
+                return;
+            }
             notifyAllUpdatesListeners(UPDATE_TYPE.NEW, newObj.getCoreType(), newObj.getAbstractObjectId(), newObj.getUserType(), newObj.getDescription(), newObj.getBehaviorDescription());
             
         } catch (Exception ex) {
