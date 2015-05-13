@@ -5,7 +5,6 @@ package appsgate.lig.energy.monitoring.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,13 +20,10 @@ import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.energy.monitoring.group.CoreEnergyMonitoringGroup;
+import appsgate.lig.energy.monitoring.service.MonitoringCalendarAutomation.AutomationType;
 import appsgate.lig.energy.monitoring.service.models.ActiveEnergySensor;
-import appsgate.lig.scheduler.ScheduledInstruction;
-import appsgate.lig.scheduler.ScheduledInstruction.Commands;
-import appsgate.lig.scheduler.SchedulerEvent;
+
 import appsgate.lig.scheduler.SchedulerSpec;
-import appsgate.lig.scheduler.SchedulingException;
-import appsgate.lig.scheduler.utils.DateFormatter;
 
 /**
  * @author thibaud
@@ -77,10 +73,17 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	private boolean isMonitoring = false;
 	
 	long lastResetTimestamp;
+	long lastStartTimeStamp;
+	long lastStopTimeStamp;
 	
 	private CoreClockSpec clock;
 	
-	private JSONArray annotations;
+	private Map<String, String> annotations;
+	private JSONArray annotationsAsJSON; //duplicate collection to improve performance
+	
+	private JSONArray energyHistory; // This is a write only collection
+	
+	
 	
 	public CoreEnergyMonitoringGroupImpl() {
     	userType = CoreEnergyMonitoringGroup.class.getSimpleName();
@@ -109,13 +112,16 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		// The configuration of serviceId and name MUST have already be injected during instance creation 
 		
 		setEnergySensorsGroup(sensors);
-		this.budgetTotal = budgetTotal;
-		this.budgetUnit = budgetUnit;
+		setBudget(budgetTotal); 
+		setBudgetUnit(budgetUnit);
+		
+		stateChanged(AUTOMATION_KEY, null, automation.toJSON().toString());		
 		
 		this.periods = new ArrayList<String>();
-		this.annotations = new JSONArray();
-		
-		lastResetTimestamp = clock.getCurrentTimeInMillis();
+		this.annotations = new HashMap<String, String>();
+		annotationsAsJSON = new JSONArray();
+		energyHistory = new JSONArray();
+		resetEnergy();		
 	}
 
 	public void configureFromJSON(JSONObject configuration) {
@@ -129,19 +135,47 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		lastTotal = remainingTotal;
 		lastEnergyDuringPeriod = remainingDuringPeriod;
 		
-		budgetTotal = configuration.optDouble(BUDGETTOTAL_KEY, -1);
-		budgetUnit = configuration.optDouble(BUDGETUNIT_KEY, 1);
+		setBudget(configuration.optDouble(BUDGETTOTAL_KEY, -1));
+		setBudgetUnit(configuration.optDouble(BUDGETUNIT_KEY, 1));
 				
 		setEnergySensorsGroup(configuration.optJSONArray(SENSORS_KEY));
-		setPeriods(configuration.optJSONArray(PERIODS_KEY));
 		
-		annotations = configuration.optJSONArray(ANNOTATIONS_KEY);
-		if(annotations == null ) {
-			// Putting a default value to avoid NEP after
-			annotations = new JSONArray();
+		automation = new MonitoringCalendarAutomation(configuration.optJSONObject(AUTOMATION_KEY), serviceId);
+		if(automation == null) {
+			automation = new MonitoringCalendarAutomation(serviceId);
+		}
+		stateChanged(AUTOMATION_KEY, null, automation.toJSON().toString());		
+
+		
+		energyHistory = configuration.optJSONArray(HISTORY_KEY);
+		if(energyHistory == null) {
+			energyHistory = new JSONArray();
+		}
+		stateChanged(HISTORY_KEY, null, energyHistory.toString());
+		
+		
+		this.annotations = new HashMap<String, String>();
+		annotationsAsJSON = new JSONArray();
+		if(configuration.optJSONArray(ANNOTATIONS_KEY) != null) {
+			JSONArray array = configuration.getJSONArray(ANNOTATIONS_KEY);
+			for(int i = 0; i < array.length(); i++) {
+				JSONObject obj = array.optJSONObject(i);
+				if(obj != null
+						&& obj.length()>0) {
+					this.annotations.put(obj.names().getString(0), 
+							obj.getString(obj.names().getString(0)));
+					annotationsAsJSON.put(obj);
+				}
+			}
+			stateChanged(ANNOTATIONS_KEY, null, annotationsAsJSON.toString());
 		}
 		
 		lastResetTimestamp = configuration.optLong(LASTRESET_KEY, clock.getCurrentTimeInMillis());
+		stateChanged(LASTRESET_KEY, null, String.valueOf(lastResetTimestamp));
+		lastStartTimeStamp = configuration.optLong(PERIOD_START, -1);
+		stateChanged(PERIOD_START, null, String.valueOf(lastStartTimeStamp));
+		lastStopTimeStamp = configuration.optLong(PERIOD_STOP, -1);
+		stateChanged(PERIOD_STOP, null, String.valueOf(lastStopTimeStamp));
 		
 		// (beware we may have miss information and the overall total may be wrong)
 	}	
@@ -245,6 +279,9 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	@Override
 	public void resetEnergy() {
 		logger.trace("resetEnergy()");
+		JSONObject historyLog = getCurrentDescription();
+		energyHistory.put(historyLog);
+		
 		for(ActiveEnergySensor sensor : sensors.values()) {
 			sensor.resetEnergy();
 		}
@@ -252,6 +289,8 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		remainingTotal = 0;
 		remainingDuringPeriod = 0;
 
+
+		
 		stateChanged(BUDGETRESETED_KEY, null, BUDGETRESETED_KEY);
 		computeEnergy();
 	}
@@ -268,14 +307,14 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		
 		if(total != lastTotal) {
 			logger.trace("computeEnergy(), total energy as changed since last Time");
-			stateChanged(ENERGY_KEY, String.valueOf((lastTotal+remainingTotal)*budgetUnit), String.valueOf((total+remainingTotal)*budgetUnit));
+			stateChanged(ENERGYTOTAL_KEY, String.valueOf((lastTotal+remainingTotal)/budgetUnit), String.valueOf((total+remainingTotal)/budgetUnit));
 			lastTotal = total;
 		}
 		if(energyDuringPeriod != lastEnergyDuringPeriod) {
 			logger.trace("computeEnergy(), energy during period as changed since last Time");
-			stateChanged(BUDGETREMAINING_KEY, String.valueOf((lastEnergyDuringPeriod+remainingDuringPeriod)*budgetUnit), String.valueOf((energyDuringPeriod+remainingDuringPeriod)*budgetUnit));
-			
+			stateChanged(ENERGYDURINGPERIOD_KEY, String.valueOf((lastEnergyDuringPeriod+remainingDuringPeriod)/budgetUnit), String.valueOf((energyDuringPeriod+remainingDuringPeriod)/budgetUnit));
 			lastEnergyDuringPeriod = energyDuringPeriod;
+			stateChanged(BUDGETREMAINING_KEY, null, String.valueOf(getRemainingBudget()));
 		}
 	}
 
@@ -284,8 +323,8 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	 */
 	@Override
 	public double getTotalEnergy() {
-		logger.trace("getTotalEnergy(), returning total: {} x unit : {}", (lastTotal+remainingTotal), budgetUnit);
-		return (lastTotal+remainingTotal)*budgetUnit;
+		logger.trace("getTotalEnergy(), returning total: {} / unit : {}", (lastTotal+remainingTotal), budgetUnit);
+		return (lastTotal+remainingTotal)/budgetUnit;
 	}
 
 	/* (non-Javadoc)
@@ -293,8 +332,8 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	 */
 	@Override
 	public double getEnergyDuringTimePeriod() {
-		logger.trace("getEnergyDuringPeriod(), returning energy: {} x unit : {}", lastEnergyDuringPeriod, budgetUnit);
-		return (lastEnergyDuringPeriod+remainingDuringPeriod)*budgetUnit;
+		logger.trace("getEnergyDuringPeriod(), returning energy: {} / unit : {}", lastEnergyDuringPeriod, budgetUnit);
+		return (lastEnergyDuringPeriod+remainingDuringPeriod)/budgetUnit;
 	}
 
 	/* (non-Javadoc)
@@ -321,7 +360,7 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	 */
 	@Override
 	public double getBudgetUnit() {
-		logger.trace("getBudgetUnit(), returning budgetUnit: {} ", budgetUnit);
+		logger.trace("getBudgetUnit(), returning budgetUnit : {} ", budgetUnit);
 		return budgetUnit;
 	}
 
@@ -330,7 +369,7 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	 */
 	@Override
 	public void setBudget(double budgetTotal) {
-		logger.trace("setBudget(double budgetTotal : {}, double budgetUnit : {})", budgetTotal, budgetUnit);
+		logger.trace("setBudget(double budgetTotal : {})", budgetTotal);
 		stateChanged(BUDGETTOTAL_KEY, String.valueOf(this.budgetTotal), String.valueOf(budgetTotal));
 		this.budgetTotal = budgetTotal;
 	}
@@ -365,31 +404,48 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	 */
 	@Override
 	public JSONObject getDescription() throws JSONException {
-		JSONObject descr = new JSONObject();
+		JSONObject descr = getCurrentDescription();
 		descr.put("id", getAbstractObjectId());
 		descr.put("type", getUserType());
 		descr.put("coreType", getCoreType());
 		descr.put("status", getObjectStatus());
-
+		descr.put(HISTORY_KEY, String.valueOf(getEnergyHistory()));
+		
+		return descr;
+	}
+	
+	/**
+	 * this one helps preventing recursive loop with reset energy storing all history of the service
+	 * @return
+	 * @throws JSONException
+	 */
+	private JSONObject getCurrentDescription() throws JSONException {
+		JSONObject descr = new JSONObject();
+		
 		descr.put(NAME_KEY, getName());
 		descr.put(SENSORS_KEY, getEnergySensorsGroup());
-		descr.put(ENERGY_KEY, String.valueOf(getTotalEnergy()));
+		descr.put(ENERGYTOTAL_KEY, String.valueOf(getTotalEnergy()));
+		descr.put(ENERGYDURINGPERIOD_KEY, String.valueOf(getEnergyDuringTimePeriod()));
 		descr.put(BUDGETTOTAL_KEY, String.valueOf(getBudget()));
 		descr.put(BUDGETUNIT_KEY, String.valueOf(getBudgetUnit()));
 		descr.put(BUDGETREMAINING_KEY, String.valueOf(getRemainingBudget()));		
-		descr.put(PERIODS_KEY, String.valueOf(getPeriods()));
 		descr.put(ISMONITORING_KEY, isMonitoring());
 		descr.put(LASTRESET_KEY, getLastResetTimestamp());
-		descr.put(ANNOTATIONS_KEY, getAnnotations());
+		descr.put(AUTOMATION_KEY, automation.toJSON());
+
+		descr.put(ANNOTATIONS_KEY, String.valueOf(getAnnotations()));
 
 		/**
 		 * Those raw index are mostly used for persistance
 		 */
 		descr.put(RAW_ENERGY_KEY, lastTotal+remainingTotal);
 		descr.put(RAW_ENERGYDURINGPERIOD_KEY, lastEnergyDuringPeriod+remainingDuringPeriod);
+		descr.put(PERIOD_START, getLastStartTimestamp());
+		descr.put(PERIOD_STOP, getLastStopTimestamp());
 		
 		return descr;
 	}
+	
 
 	/* (non-Javadoc)
 	 * @see appsgate.lig.core.object.spec.CoreObjectSpec#getCoreType()
@@ -400,163 +456,9 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	}
 	
 
-	@Override
-	public JSONArray getPeriods() {
-		return new JSONArray(periods);
-	}
-
-	@Override
-	public String addPeriod(long startDate, long endDate, boolean resetOnStart,
-			boolean resetOnEnd) {
-		logger.trace("addPeriod(long startDate : {}, long endDate : {}, boolean resetOnStart : {},"
-			+" boolean resetOnEnd : {})",startDate, endDate, resetOnStart, resetOnEnd);
-		
-		if(scheduler == null) {
-			logger.error("No scheduler found, won't add the period");
-			return null;
-		}
-		
-		Set<ScheduledInstruction> onBeginInstructions= new HashSet<ScheduledInstruction>();
-		Set<ScheduledInstruction> onEndInstructions= new HashSet<ScheduledInstruction>();
-		
-		if (startDate > 0) {
-			logger.trace("addPeriod(...), adding instruction to start monitoring");
-			onBeginInstructions.add(formatInstruction("startMonitoring", null, ScheduledInstruction.ON_BEGIN));
-		}
-		
-		if (endDate > 0) {
-			logger.trace("addPeriod(...), adding instruction to stop monitoring");
-			onEndInstructions.add(formatInstruction("stopMonitoring", null, ScheduledInstruction.ON_END));
-		}
-		
-		if(resetOnStart) {
-			logger.trace("addPeriod(...), adding instruction to reset monitoring at start of period");
-			onBeginInstructions.add(formatInstruction("resetEnergy", null, ScheduledInstruction.ON_BEGIN));			
-		}
-		
-		if(resetOnEnd) {
-			logger.trace("addPeriod(...), adding instruction to reset monitoring at stop of period");
-			onEndInstructions.add(formatInstruction("resetEnergy", null, ScheduledInstruction.ON_END));			
-		}
-		
-		String eventId=null;
-		try {
-			eventId = scheduler.createEvent("AppsGate Energy Monitoring", onBeginInstructions, onEndInstructions,
-					DateFormatter.format(startDate), DateFormatter.format(endDate));
-			periods.add(eventId);
-			stateChanged(PERIODS_KEY, null, new JSONArray(this.periods.toString()).toString());
-			
-		} catch (SchedulingException e) {
-			logger.error("Error when trying to add event in the scheduler : ", e);
-		}
-		return eventId;
-
-	}
-	
-	private ScheduledInstruction formatInstruction(String methodName, JSONArray args, String trigger) {
-		JSONObject target = new JSONObject();
-		target.put("objectId", serviceId);
-		target.put("method", methodName);
-		target.put("args", (args==null?new JSONArray():args));
-		target.put("TARGET", "EHMI");
-		
-		return new ScheduledInstruction(Commands.GENERAL_COMMAND.getName(), target.toString(), trigger);
-	}
 
 
-	@Override
-	public void removePeriodById(String eventID) {
-		if(scheduler == null) {
-			logger.error("No scheduler found, won't remove the period");
-			return;
-		}
-		
-		scheduler.removeEvent(eventID);
-		periods.remove(eventID);
-		stateChanged(PERIODS_KEY, null, new JSONArray(this.periods.toString()).toString());
-	}
 
-
-	@Override
-	public JSONObject getPeriodInfo(String eventID) {
-		SchedulerEvent period = scheduler.getEvent(eventID);
-		if(!periods.contains(eventID) ||period == null) {
-			logger.error("getPeriodInfo(String eventID : {}), event not found in the scheduler or in the group events");
-			return null;
-		}
-		
-		JSONObject result = new JSONObject();
-		
-		//deletable ONLY if it contains:
-		// one start monitoring instruction
-		// one stop monitoring instruction
-		// optional one if reset on start (by default considered true)
-		// optional one if reset on stop (by default considered true)
-		int expected = 2;		
-		int found = 0;
-		
-		// The 'easy' parameters direct from the scheduler 
-		result.put(PERIOD_ID, period.getId());
-		result.put(PERIOD_NAME, period.getName());
-		result.put(PERIOD_START, period.getStartTime());
-		result.put(PERIOD_STOP, period.getEndTime());
-		result.put(PERIOD_RECURRENCE, period.getRecurrencePattern());
-		
-		// The 'instructions' parameters parsed from the scheduler
-		if(period.instructionsMatchingPattern(
-				formatInstruction("resetEnergy", null, ScheduledInstruction.ON_BEGIN).toString()
-				).size()>0) {
-			result.put(PERIOD_RESETSTART, true);
-			expected++;
-			found++;
-		}
-		if(period.instructionsMatchingPattern(
-				formatInstruction("resetEnergy", null, ScheduledInstruction.ON_END).toString()
-				).size()>0) {
-			result.put(PERIOD_RESETSTOP, true);
-			expected++;
-			found++;
-		}
-		
-		// The 'computed' parameters from the scheduler
-		if(period.instructionsMatchingPattern(
-				formatInstruction("startMonitoring", null, ScheduledInstruction.ON_BEGIN).toString()
-				).size()>0) {
-			found++;
-		}
-		if(period.instructionsMatchingPattern(
-				formatInstruction("stopMonitoring", null, ScheduledInstruction.ON_END).toString()
-				).size()>0) {
-			found++;
-		}
-		
-		if(expected == found) {
-			result.put(PERIOD_DELETABLE, true);			
-		} else {
-			result.put(PERIOD_DELETABLE, false);						
-		}
-		
-		logger.trace("getPeriodInfo(String eventID : {}), returning",eventID, result);
-
-		return result;
-	}
-	
-	@Override
-	public void setPeriods(JSONArray periods) {
-		logger.trace("setPeriods(JSONArray periods : {})",periods);
-		this.periods = new ArrayList<String>();
-		for(int i = 0; periods!= null
-				&& i<periods.length(); i++) {
-			String s = periods.optString(i);
-			if(s!=null
-					&& scheduler.getEvent(s)!= null
-					) {
-				this.periods.add(s);
-			}
-		}
-		stateChanged(PERIODS_KEY, null, new JSONArray(this.periods.toString()).toString());
-	}
-	
 	
 	private synchronized void addActiveEnergyMeasure(String sensorID, double value) {
 		// Here is the core business function, 
@@ -589,9 +491,12 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	public synchronized void startMonitoring() {
 		logger.trace("startMonitoring()");
 		if(!isMonitoring){
+			resetEnergy();
 			logger.trace("startMonitoring(), starting monitoring status");
 			isMonitoring = true;
+			lastStartTimeStamp = clock.getCurrentTimeInMillis();
 			stateChanged(ISMONITORING_KEY, "false", "true");
+			
 		} else {
 			logger.trace("startMonitoring(), already monitoring, does nothing");
 		}
@@ -604,6 +509,7 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		if(isMonitoring){
 			logger.trace("stopMonitoring(), stoppping monitoring status");
 			isMonitoring = false;
+			lastStopTimeStamp = clock.getCurrentTimeInMillis();
 			stateChanged(ISMONITORING_KEY, "true","false");
 		} else {
 			logger.trace("stopMonitoring(), already stopped, does nothing");
@@ -627,14 +533,23 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	@Override
 	public void addAnnotation(String annotation) {
 		logger.trace("addAnnotation(String annotation : {})", annotation);
-		annotations.put(new JSONObject().put(String.valueOf(clock.getCurrentTimeInMillis()), annotation));	
+		String key = String.valueOf(clock.getCurrentTimeInMillis());
+		updateAnnotation(key, annotation);
 	}
 
 
 	@Override
 	public JSONArray getAnnotations() {
-		return annotations;
+		return annotationsAsJSON;
 	}
+	
+	private void computeAnnotationAsJSON() {
+		annotationsAsJSON = new JSONArray();
+		for(String ts : annotations.keySet()) {
+			annotationsAsJSON.put(new JSONObject().put(ts, annotations.get(ts)));
+		}
+	}
+	
 
 	@Override
 	public void setBudgetUnit(double budgetUnit) {
@@ -643,10 +558,69 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		this.budgetUnit = budgetUnit;
 	}
 
-
 	@Override
 	public long getLastResetTimestamp() {
 		return lastResetTimestamp;
 	}
 	
+	@Override
+	public long getLastStartTimestamp() {
+		return lastResetTimestamp;
+	}
+	
+	@Override
+	public long getLastStopTimestamp() {
+		return lastResetTimestamp;
+	}	
+
+	@Override
+	public void deleteAnnotation(String timestamp) {
+		logger.trace("deleteAnnotation(String timestamp : {})", timestamp);
+		if(timestamp!=null
+				&& timestamp.length()>0
+				&& annotations.containsKey(timestamp)) {
+			annotations.remove(timestamp);
+			computeAnnotationAsJSON();
+			stateChanged(ANNOTATIONS_KEY, null, getAnnotations().toString());			
+		}
+	}
+
+	@Override
+	public void updateAnnotation(String timestamp, String annotation) {
+		logger.trace("updateAnnotation(String timestamp : {}, String annotation : {})", timestamp, annotation);
+		annotations.put(timestamp, annotation);	
+		computeAnnotationAsJSON();
+		stateChanged(ANNOTATIONS_KEY, null, getAnnotations().toString());
+	}
+
+	@Override
+	public JSONArray getEnergyHistory() {
+		return energyHistory;
+	}
+	
+	MonitoringCalendarAutomation automation = new MonitoringCalendarAutomation(serviceId);
+;
+
+	@Override
+	public void configureStart(long startDate, String recurrence) {
+		logger.trace("configureStart(long startDate : {}, String recurrence : {})", startDate, recurrence);
+		automation.configure(AutomationType.START, startDate, recurrence, scheduler);
+		stateChanged(AUTOMATION_KEY, null, automation.toJSON().toString());
+	}
+
+	@Override
+	public void configureStop(long stopDate, String recurrence) {
+		logger.trace("configureStop(long stopDate : {}, String recurrence : {})", stopDate, recurrence);
+		automation.configure(AutomationType.STOP, stopDate, recurrence, scheduler);
+		stateChanged(AUTOMATION_KEY, null, automation.toJSON().toString());		
+	}
+
+	@Override
+	public void configureReset(long resetDate, String recurrence) {
+		logger.trace("configureReset(long resetDate : {}, String recurrence : {})", resetDate, recurrence);
+		automation.configure(AutomationType.RESET, resetDate, recurrence, scheduler);
+		stateChanged(AUTOMATION_KEY, null, automation.toJSON().toString());		
+	}
+	
 }
+

@@ -972,24 +972,46 @@
     "device-no-name": "Equipement sans nom",
     "device-unlocated": "Non localisé",
     "energy-monitoring" : {
+        "keyboard": {
+          "energyChanged": "La consommation cumulée du __myVar__ change",
+          "resetMonitoring": "Réinitialiser la consommation et le budget du __myVar__",
+          "startMonitoring": "Démarrer la mesure de consommation du __myVar__",
+          "stopMonitoring": "Arrêter la mesure de consommation du __myVar__",
+          "getEnergyDuringTimePeriod": "La consommation cumulée du __myVar__",
+          "getRemainingBudget": "Le budget restant du __myVar__",
+          "group": "groupe"
+        },
+        "language": {
+          "energyChanged": "la consommation électrique cumulée du __myVar__ change",
+          "resetMonitoring": "Réinitaliser la consommation et le budget du __myVar__",
+          "startMonitoring": "Démarrer la mesure de consommation du __myVar__",
+          "stopMonitoring": "Arrêter la mesure de consommation du __myVar__",
+          "resetMonitoring": "réinitialiser la consommation et le budget du __myVar__",
+          "getEnergyDuringTimePeriod": "La consommation cumulée du __myVar__",
+          "getRemainingBudget": "Le budget restant du __myVar__",
+          "group": "groupe"
+        },
 		"name" : {
-			"singular" : "Gestion d'énergie",
-			"plural" : "Gestion d'énergie"
+			"singular" : "Suivi d'énergie",
+			"plural" : "Suivi d'énergie"
 		},
-		"add-button" : "Ajouter un budget",
-		"remove-button" : "Supprimer budget",
+		"add-button" : "Nouveau groupe de suivi d'énergie",
+		"remove-button" : "Supprimer",
+		"start-button" : "Démarrer",
+		"stop-button" : "Arrêter",
 		"edit-button" : "Editer",
-		"amount" : {
+		"total-consumption" : "Consommation totale",
+		"budget" : {
 			"name" : "Budget",
-			"planed" : "Montant prévu",
-			"used" : "Montant utilisé",
-			"left" : "Montant restant"
+			"allocated" : "Budget alloué",
+			"used" : "Budget utilisé",
+			"left" : "Budget restant"
 		},
 		"modal-add" : {
 			"title" : "Nouveau budget",	
 			"placeholder" : {
-				"name" : "Nom du budget",
-				"amount" : "Spécifier votre budget"
+				"name" : "Nom du groupe de suivi d'énergie",
+				"budget" : "Spécifier votre budget"
 			},
 			"devices" : {
 				"title" : "Pour les équipements :",

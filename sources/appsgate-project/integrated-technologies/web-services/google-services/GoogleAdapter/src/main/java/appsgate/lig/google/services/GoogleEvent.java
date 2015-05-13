@@ -259,19 +259,43 @@ public class GoogleEvent implements SchedulerEvent{
 						logger.trace("parseRecurrencePattern(...), entry is a RRULE with a frequence");
 						nbRecurrenceRules++;
 						String frequence = entry.substring(
-								entry.indexOf(RECURRENCE_FREQ)+RECURRENCE_FREQ.length());
-						if(frequence.startsWith(BasicRecurrencePattern.DAILY.getName())) {
+								entry.indexOf(RECURRENCE_FREQ));
+						if(frequence.startsWith(BasicRecurrencePattern.EACH_DAY.getRRuleFreq())) {
 							logger.trace("parseRecurrencePattern(...), this is a DAILY RULE");
-							current = BasicRecurrencePattern.DAILY;
-						} else  if(frequence.startsWith(BasicRecurrencePattern.WEEKLY.getName())){
+							current = BasicRecurrencePattern.EACH_DAY;
+						} else  if(frequence.startsWith(BasicRecurrencePattern.EACH_WEEK.getRRuleFreq())){
 							logger.trace("parseRecurrencePattern(...), this is a WEEKLY RULE");
-							current = BasicRecurrencePattern.WEEKLY;							
-						} else  if(frequence.startsWith(BasicRecurrencePattern.MONTHLY.getName())){
+							if(frequence.startsWith(BasicRecurrencePattern.EACH_MONDAY.getRRuleFreq())) {
+								logger.trace("parseRecurrencePattern(...), this is a EACH_MONDAY RULE");
+								current = BasicRecurrencePattern.EACH_MONDAY;
+							} else if(frequence.startsWith(BasicRecurrencePattern.EACH_TUESDAY.getRRuleFreq())) {
+								logger.trace("parseRecurrencePattern(...), this is a EACH_TUESDAY RULE");
+								current = BasicRecurrencePattern.EACH_TUESDAY;
+							} else if(frequence.startsWith(BasicRecurrencePattern.EACH_WEDNESDAY.getRRuleFreq())) {
+								logger.trace("parseRecurrencePattern(...), this is a EACH_WEDNESDAY RULE");
+								current = BasicRecurrencePattern.EACH_WEDNESDAY;
+							} else if(frequence.startsWith(BasicRecurrencePattern.EACH_THURSDAY.getRRuleFreq())) {
+								logger.trace("parseRecurrencePattern(...), this is a EACH_THURSDAY RULE");
+								current = BasicRecurrencePattern.EACH_THURSDAY;
+							} else if(frequence.startsWith(BasicRecurrencePattern.EACH_FRIDAY.getRRuleFreq())) {
+								logger.trace("parseRecurrencePattern(...), this is a EACH_FRIDAY RULE");
+								current = BasicRecurrencePattern.EACH_FRIDAY;
+							} else if(frequence.startsWith(BasicRecurrencePattern.EACH_SATURDAY.getRRuleFreq())) {
+								logger.trace("parseRecurrencePattern(...), this is a EACH_SATURDAY RULE");
+								current = BasicRecurrencePattern.EACH_SATURDAY;
+							} else if(frequence.startsWith(BasicRecurrencePattern.EACH_SUNDAY.getRRuleFreq())) {
+								logger.trace("parseRecurrencePattern(...), this is a EACH_SUNDAY RULE");
+								current = BasicRecurrencePattern.EACH_SUNDAY;
+							} else {
+								logger.trace("parseRecurrencePattern(...), no specific day targeted");
+								current = BasicRecurrencePattern.EACH_WEEK;
+							}
+						} else  if(frequence.startsWith(BasicRecurrencePattern.EACH_MONTH.getRRuleFreq())){
 							logger.trace("parseRecurrencePattern(...), this is a MONTHLY RULE");
-							current = BasicRecurrencePattern.MONTHLY;							
-						} else  if(frequence.startsWith(BasicRecurrencePattern.YEARLY.getName())){
+							current = BasicRecurrencePattern.EACH_MONTH;							
+						} else  if(frequence.startsWith(BasicRecurrencePattern.EACH_YEAR.getRRuleFreq())){
 							logger.trace("parseRecurrencePattern(...), this is a YEARLY RULE");
-							current = BasicRecurrencePattern.YEARLY;							
+							current = BasicRecurrencePattern.EACH_YEAR;							
 						} else {
 							logger.trace("parseRecurrencePattern(...), this is not a basic frequence, returning other");
 							current = BasicRecurrencePattern.OTHER;							
@@ -301,7 +325,7 @@ public class GoogleEvent implements SchedulerEvent{
 			logger.trace("parseRecurrencePattern(), no reccurence pattern returning NONE");
 			current= BasicRecurrencePattern.NONE;
 		}
-		logger.trace("parseRecurrencePattern(...), returning " +current.getName());
+		logger.trace("parseRecurrencePattern(...), returning " +current.name());
 		return current;		
 	}
 	

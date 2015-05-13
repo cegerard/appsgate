@@ -29,6 +29,8 @@ import appsgate.lig.google.services.GoogleAdapter;
 import appsgate.lig.google.services.GoogleEvent;
 import appsgate.lig.mail.Mail;
 import appsgate.lig.mail.adapter.MailAdapter;
+import appsgate.lig.scheduler.SchedulerEvent.BasicRecurrencePattern;
+import appsgate.lig.scheduler.utils.DateFormatter;
 import appsgate.lig.test.pax.helpers.ApAMHelper;
 import appsgate.lig.test.pax.helpers.PaxedDistribution;
 import appsgate.lig.yahoo.weather.YahooWeather;
@@ -143,7 +145,6 @@ public class TestWebServicesAppsgate extends PaxedDistribution {
 
 	@Test
 	public void testAddGetRemoveSchedule() {
-		
 		TestCoreAppsgate.testEmptyAppsgate();
 		
 		CoreClockSpec service = (CoreClockSpec) initTestClock();
@@ -154,14 +155,19 @@ public class TestWebServicesAppsgate extends PaxedDistribution {
 		logger.debug("init Google Scheduler OK");
  
 		try {
-			scheduler.checkProgramIdScheduled("toto");
-			String eventID=scheduler.createEvent("JplanifieMonTest", "monprogramme", true, true);
+			scheduler.checkProgramsScheduled();
+			//String eventID=scheduler.createEvent("JplanifieMonTest", "monprogramme", true, true);
+			
+			long inFive = System.currentTimeMillis()+(1000*60*5);
+			long inFifty = System.currentTimeMillis()+(1000*60*55);
+			String eventID=scheduler.createEvent("test eventReccurent", null, null,
+					DateFormatter.format(inFive), DateFormatter.format(inFifty), BasicRecurrencePattern.EACH_DAY);
 			logger.debug("Scheduler add event ok, event ID: "+eventID);			
 			Assert.assertNotNull("a valid event should habe been created", eventID);
 			
-			//Assert.assertNotNull(" Evend should be retrieved upon its event ID",scheduler.getEventInfo(eventID) );			
+			Assert.assertNotNull(" Evend should be retrieved upon its event ID",scheduler.getEvent(eventID) );			
 			
-			Assert.assertTrue("Event should have been removed from the agenda",scheduler.removeEvent(eventID));
+			//Assert.assertTrue("Event should have been removed from the agenda",scheduler.removeEvent(eventID));
 			//Assert.assertNull(" Evend should be unavailable (deleted or cancelled)",scheduler.getEventInfo(eventID) );
 
 		} catch(Exception exc) {

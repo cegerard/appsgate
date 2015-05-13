@@ -1,6 +1,7 @@
 package appsgate.lig.google.scheduler;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -25,6 +26,7 @@ import appsgate.lig.google.services.GoogleEvent;
 import appsgate.lig.manager.client.communication.service.subscribe.CommandListener;
 import appsgate.lig.scheduler.ScheduledInstruction;
 import appsgate.lig.scheduler.SchedulerEvent;
+import appsgate.lig.scheduler.SchedulerEvent.BasicRecurrencePattern;
 import appsgate.lig.scheduler.SchedulerSpec;
 import appsgate.lig.scheduler.SchedulingException;
 import appsgate.lig.scheduler.utils.DateFormatter;
@@ -437,15 +439,27 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 		}
 	}
 
+	@Override
 	public String createEvent(String eventName, 
 			Set<ScheduledInstruction> onBeginInstructions,
 			Set<ScheduledInstruction> onEndInstructions,
 			String dateStart, String dateEnd ) throws SchedulingException {
+		return this.createEvent(eventName, onBeginInstructions, onEndInstructions, dateStart, dateEnd, BasicRecurrencePattern.NONE);
+	}
+	
+
+	@Override
+	public String createEvent(String eventName,
+			Set<ScheduledInstruction> onBeginInstructions,
+			Set<ScheduledInstruction> onEndInstructions, String dateStart,
+			String dateEnd, BasicRecurrencePattern recurrence)
+			throws SchedulingException {
 		logger.trace("String createEvent(String eventName : "+eventName 
 				+ ", Set<ScheduledInstruction> onBeginInstructions : "+onBeginInstructions
 				+ ", Set<ScheduledInstruction> onEndInstructions : "+onEndInstructions
 				+",String dateStart : "+dateStart
-				+",String dateEnd : "+dateEnd	
+				+",String dateEnd : "+dateEnd
+				+",BasicRecurrencePattern recurrence : "+recurrence.name()				
 				+")");
 		if(serviceAdapter==null) {
 			logger.error("No GoogleAdapter service registered, unable to add events");
@@ -464,12 +478,43 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 			throw new SchedulingException("Cannot Parse dateEnd : "+exc.getMessage());			
 		}
 
+
+		
 		String requestContent;
 
 		JSONObject content = new JSONObject();
-		content.put("start", new JSONObject().put("dateTime",  dateStart));
-		content.put("end", new JSONObject().put("dateTime",  dateEnd));
+		
+		if(recurrence==null || recurrence==BasicRecurrencePattern.OTHER || recurrence==BasicRecurrencePattern.NONE) {
+			logger.error("Unsupported recurrence pattern ");
+			throw new SchedulingException("Unsupported recurrence pattern, unable to add events");
+		} else {
+			String rrule = GoogleEvent.RECURRENCE_RRULE+":"+recurrence.getRRuleFreq();
+			content.put(GoogleEvent.PARAM_RECURRENCE, new JSONArray().put(rrule));
+		}
+		
 
+		
+		
+		JSONObject start = new JSONObject();
+		JSONObject end = new JSONObject();
+		JSONObject originalStartTime = new JSONObject();
+		
+		String tz = new SimpleDateFormat().getTimeZone().getID();
+		
+		start.put("dateTime",  dateStart);
+		start.put("timeZone",  tz); 
+		end.put("dateTime",  dateEnd);
+		end.put("timeZone",  tz);
+		
+		
+		originalStartTime.put("dateTime",  dateStart); 
+		originalStartTime.put("timeZone",  tz);
+		
+		
+		content.put("start", start);
+		content.put("end", end);
+		content.put("end", originalStartTime);
+		
 		content.put("summary", eventName);
 
 		String description="";
@@ -494,6 +539,7 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 		content.put("description", description);
 
 		requestContent=content.toString();
+		logger.trace("String createEvent(...), sending request content : "+requestContent);
 
 		cachedLastRequest = -1;
 		GoogleEvent event = serviceAdapter.addEvent(calendarId, requestContent);
@@ -504,9 +550,7 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 		logger.trace("String createEvent(...), event created successfully, returning eventId : "+event.getId());
 
 		return event.getId();
-
-
-	}
+	}	
 
 	@Override
 	public String createEvent(String eventName,
@@ -542,7 +586,12 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 
 		JSONObject content = new JSONObject();
 		content.put("start", new JSONObject().put("dateTime",  DateFormatter.format(startDate)));
+		content.put("start", new JSONObject().put("timeZone",  "Europe/Paris")); // TODO change this
 		content.put("end", new JSONObject().put("dateTime",  DateFormatter.format(endDate)));
+		content.put("end", new JSONObject().put("timeZone",  "Europe/Paris")); // TODO change this
+		content.put("originalStartTime", new JSONObject().put("dateTime",  DateFormatter.format(startDate))); // TODO change this
+		content.put("originalStartTime", new JSONObject().put("timeZone",  "Europe/Paris")); // TODO change this
+
 
 
 		content.put("summary", eventName);
@@ -575,6 +624,7 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 		content.put("description", description);
 
 		requestContent=content.toString();
+		logger.trace("String createEvent(...), sending request content : "+requestContent);
 		
 		cachedLastRequest = -1;
 		GoogleEvent event = serviceAdapter.addEvent(calendarId, requestContent);
@@ -716,4 +766,5 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 	public SchedulerEvent getEvent(String eventID) {
 		return serviceAdapter.getEvent(calendarId, eventID);
 	}
+
 }

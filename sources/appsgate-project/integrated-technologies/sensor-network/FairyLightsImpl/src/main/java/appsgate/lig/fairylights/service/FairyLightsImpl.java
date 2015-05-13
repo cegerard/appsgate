@@ -1,4 +1,4 @@
-package appsgate.lig.fairylights;
+package appsgate.lig.fairylights.service;
 
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
@@ -13,6 +13,7 @@ import appsgate.lig.core.object.messages.CoreNotificationMsg;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
+import appsgate.lig.fairylights.CoreFairyLightsSpec;
 import appsgate.lig.fairylights.utils.HttpUtils;
 
 

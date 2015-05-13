@@ -3,7 +3,7 @@
 	<span data-i18n="services.energy-monitoring.name.singular"></span>
 	
 	<div class="pull-right">
-		<a data-toggle="modal" href="#add-amount-modal" class="btn btn-default">
+		<a data-toggle="modal" href="#add-energy-group-modal" class="btn btn-default">
 			<i class="glyphicon glyphicon-plus-sign"></i> 
 			<span data-i18n="services.energy-monitoring.add-button"></span>
 		</a>
@@ -11,7 +11,7 @@
 
 	<!-- modal to add a new place -->
 	
-		<div id="add-amount-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalAddAmount" aria-hidden="true">
+		<div id="add-energy-group-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalAddGroup" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -21,21 +21,18 @@
 				<div class="modal-body">
 					<div class="row">
 						<div class="col-xs-offset-1 col-xs-10">
-							<input type="text" class="form-control" name="inputValue" id="amountNameInput" placeholder="<%= $.i18n.t('services.energy-monitoring.modal-add.placeholder.name') %>" autocomplete="off">
+							<input type="text" class="form-control" name="inputValue" id="energyGroupNameInput" placeholder="<%= $.i18n.t('services.energy-monitoring.modal-add.placeholder.name') %>" autocomplete="off">
 						</div>
 						
 						<form class="form-horizontal col-xs-12  voffset-top-10">
 							  <div class="form-group">
-								<label class="col-md-2" for="amountValueInput" data-i18n="services.energy-monitoring.amount.name"></label>
+								<label class="col-md-2" for="budgettValueInput" data-i18n="services.energy-monitoring.budget.name"></label>
 								  <div class="col-md-4">
-									  <input class="form-control" type="number" id="amountValueInput" placeholder="<%= $.i18n.t('services.energy-monitoring.modal-add.placeholder.amount') %>">
+									  <input class="form-control" type="number" id="budgetValueInput" placeholder="<%= $.i18n.t('services.energy-monitoring.modal-add.placeholder.budget') %>">
 								  </div>
 								<label class="col-md-2 col-md-offset-1" for="unitSelector" data-i18n="services.energy-monitoring.unit"></label>
 								<div class="col-md-2">
 									<select id="unitSelector" class="form-control">
-										<option>1</option>
-										<option>2</option>
-										<option>3</option>
 									</select>
 								</div>
 							  </div>
@@ -66,24 +63,54 @@
 		<div class="list-group">
 			<% energyMonitoringGroups.forEach(function(group){%>
 				<a id="<%= group.get('id') %>" href="#services/<%= group.get('id') %>" class="list-group-item">
+					<!-- Name + Buttons -->
 					<div class="row">
-						<div class="col-md-12"><%= group.getName() %></%>
+						<div class="col-md-12">
+							<span><%= group.getName() %></span>
 							<div class="pull-right">
-								<button idGroup="<%= group.get('id') %>" class="btn btn-default delete-amount" data-i18n="services.energy-monitoring.remove-button" ></button>
+								<button idGroup="<%= group.get('id') %>" class="btn btn-default start" data-i18n="services.energy-monitoring.start-button"></button>
+								<button idGroup="<%= group.get('id') %>" class="btn btn-default stop" data-i18n="services.energy-monitoring.stop-button"></button>
+								<button idGroup="<%= group.get('id') %>" class="btn btn-default delete-energy-group">
+									<i class="glyphicon glyphicon-trash"></i><span data-i18n="services.energy-monitoring.remove-button"></span>
+								</button>
 								<i class="glyphicon glyphicon-chevron-right"></i>
 							</div>	
 						</div>
-						<div class="row">
-							<div class="col-md-offset-1 col-md-3 col-sm-offset-1 col-sm-3">Budget planifié : </div>
-							<div class="col-md-2 col-sm-1"><%= group.get("budgetTotal") %></div>
-							<div class="col-md-offset-1 col-md-3 col-sm-3">Unités : </div>
-							<div class="col-md-2 col-sm-1"><%= group.get("budgetUnit") %></div>
+					</div>
+					<!-- Total consumption + date -->
+					<div class="row voffset-top-10">
+						<div class="col-md-1">
+							<div class="div-status"></div>
 						</div>
-						<div class="row">
-							<div class="col-md-offset-1 col-md-3 col-sm-offset-1 col-sm-3">Energie utilisée : </div>
-							<div class="col-md-2 col-sm-1"><%= group.get("energy") %></div>
-							<div class="col-md-offset-1 col-md-3 col-sm-3">Unités : </div>
-							<div class="col-md-2 col-sm-1"><%= group.get("budgetUnit") %></div>
+						<div class="col-md-3">
+							<span data-i18n="services.energy-monitoring.total-consumption"></span>
+						</div>
+						<div class="col-md-2">
+							<span class="span-total-consumption"></span>
+							<span class="span-budget-unit"></span>
+						</div>
+						<div class="col-md-6">
+							<span>From XX/XX - YY:YY Until : XX/XX - YY:YY</span>
+						</div>
+					</div>
+				<!-- Budget allocated + used -->
+					<div class="row">
+						<div class="col-md-offset-1 col-md-3" >
+							<span data-i18n="services.energy-monitoring.budget.allocated"></span>
+						</div>
+						<div class="col-md-2">
+							<span class="span-budget-allocated"></span>
+							<span class="span-budget-unit"></span>
+						</div>
+						<div class="col-md-2">
+							<span data-i18n="services.energy-monitoring.budget.used"></span>
+						</div>
+						<div class="col-md-4">
+							<div class="progress progress-margin-patch">
+								<div class="progress-bar progress-bar-striped" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="min-width:2em;max-width:100%;">
+									<span class="budget-used-percent"></span>
+								</div>
+							</div>
 						</div>
 					</div>
 				</a>

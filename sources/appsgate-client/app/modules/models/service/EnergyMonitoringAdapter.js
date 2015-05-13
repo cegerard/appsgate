@@ -15,15 +15,15 @@ define([
 
 
       var self = this;
-
+		
     dispatcher.on(this.get("id"), function(event) {
       console.log("EnergyMonitoringAdapter Service, received : ",event);
       if(event.varName === 'energyGroupAdded') {
         console.log("Added Energy Monitoring Group : ", event.value);
-        self.trigger("energyGroupAdded");
+        self.trigger("energyGroupAdded", event);
       } else if(event.varName === 'energyGroupRemoved') {
         console.log("Removed Energy Monitoring Group : ", event.value);
-        self.trigger("energyGroupRemoved");
+        self.trigger("energyGroupRemoved", event);
       }
     });
 
@@ -44,7 +44,29 @@ define([
 	  
   	getCoreEnergyMonitoringGroups: function() {
 		return services.getCoreEnergyMonitoringGroups();
-	}
+	},
+	  
+  	getUnits: function () {
+		var unitsMap = [];
+		unitsMap.push({
+			text: "W",
+			value: 1
+		});
+		unitsMap.push({
+			text: "Wh",
+			value: 3600
+		});
+		unitsMap.push({
+			text: "kWh",
+			value: 3600000
+		});
+		unitsMap.push({
+			text: "€",
+			value: 540000
+		});
+
+		return unitsMap;
+	},
 
   });
   return EnergyMonitoringAdapter;

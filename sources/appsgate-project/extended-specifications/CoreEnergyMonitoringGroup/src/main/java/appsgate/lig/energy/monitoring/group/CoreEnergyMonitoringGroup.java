@@ -1,7 +1,6 @@
 package appsgate.lig.energy.monitoring.group;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  * This Extended Service monitor energy relative to:
@@ -21,7 +20,12 @@ public interface CoreEnergyMonitoringGroup {
 	
 	public final static String NAME_KEY = "name";
 	public final static String SENSORS_KEY = "sensors";
+<<<<<<< HEAD
 	public final static String ENERGY_KEY="energy";	
+=======
+	public final static String ENERGYTOTAL_KEY="energyTotal";	
+	public final static String ENERGYDURINGPERIOD_KEY="energyDuringPeriod";	
+>>>>>>> c53cdf2b3f5b6171195a6c8bff29c86dd916a38d
 	public final static String BUDGETTOTAL_KEY="budgetTotal";
 	public final static String BUDGETUNIT_KEY="budgetUnit";
 	public final static String BUDGETREMAINING_KEY="budgetRemaining";
@@ -30,15 +34,24 @@ public interface CoreEnergyMonitoringGroup {
 	public final static String ISMONITORING_KEY = "isMonitoring";
 	public final static String LASTRESET_KEY = "lastReset";
 	public final static String ANNOTATIONS_KEY = "annotations";
+<<<<<<< HEAD
+=======
+	public final static String HISTORY_KEY = "history";
+	public final static String AUTOMATION_KEY = "automation";
+>>>>>>> c53cdf2b3f5b6171195a6c8bff29c86dd916a38d
 	
 	public final static String PERIOD_ID = "id";
 	public final static String PERIOD_NAME = "name";
 	public final static String PERIOD_START = "startDate";
 	public final static String PERIOD_STOP = "stopDate";
+<<<<<<< HEAD
 	public final static String PERIOD_RESETSTART = "resetStart";
 	public final static String PERIOD_RESETSTOP = "resetStop";
 	public final static String PERIOD_RECURRENCE = "recurrence";
 	public final static String PERIOD_DELETABLE = "deletable";
+=======
+	public final static String PERIOD_RECURRENCE = "recurrence";
+>>>>>>> c53cdf2b3f5b6171195a6c8bff29c86dd916a38d
 	
 	
 	public final static String RAW_ENERGY_KEY="rawEnergy";	
@@ -73,6 +86,22 @@ public interface CoreEnergyMonitoringGroup {
 	 */
 	public JSONArray getAnnotations();
 	
+	/**
+	 * Allow the user to delete an annotation using its timestamp
+	 * Warning: there could be only one single annotation for a particular timestamp 
+	 * @param timestamp if the timestamp is not found, nothing will be done
+
+	 */
+	public void deleteAnnotation(String timestamp);	
+	
+	/**
+	 * Allow the user to add/update an annotaiton upon its timestamp
+	 * (explaining unusual energy consumption for instance)
+	 * The annotation explicitly timestamped as parameter (if no annotation is found the annotation is added)
+	 * Warning: there could be only one single annotation for a particular timestamp 
+	 * @param annotation
+	 */
+	public void updateAnnotation(String timestamp, String annotation);
 	
 	/**
 	 * Get the current energy sensors in this group
@@ -156,46 +185,28 @@ public interface CoreEnergyMonitoringGroup {
 	 * @param budget if -1, no budget defined
 	 */
 	public void setBudget(double budget);
-	
-	/**
-	 * Get the Monitoring Periods as a JSONArray of eventIDs (String),
-	 * each one represents an Event in the scheduler
-	 * @return
-	 */
-	public JSONArray getPeriods();
-	
-	/**
-	 * set the Monitoring Periods using JSONArray of eventIDs (String),
-	 * each one represents an Event in the scheduler
-	 * The periods are added only if the found in the scheduler
-	 */
-	public void setPeriods(JSONArray periods);
 
-	
-	/**
-	 * Adds a basic single period with fixed starting and ending dates
-	 * No periodicity by default (it has to be managed using the scheduler or google agenda)
-	 * @param startDate the starting date in millisecs from the epoch (01/01/1970) 
-	 * @param endDate the ending date in millisecs from the epoch (01/01/1970)
-	 * @param resetOnStart if true, the budget remaining will be reseted each Time the period starts
-	 * @param resetOnEnd if true, the budget remaining will be reseted each Time the period ends
-	 * @return	the Event ID (String) as used in the Scheduler
+	 /**
+	 * Configure the starting of the monitoring, might be with a fixed date and/or a recurrence pattern
+	 * Note: that each start implies a reset
+	 * @param startDate the starting date in millisecs from the epoch (01/01/1970), if 0 or -1 is provided, assume to use the recurrence from 01/01/1970 
+	 * @param recurrence as a basic reccurence rule to the event (supported values : NONE, EACH_DAY, EACH_WEEK, EACH_MONDAY... EACH_MONTH, EACH_YEAR,
 	 */
-	public String addPeriod(long startDate, long endDate, boolean resetOnStart, boolean resetOnEnd);
+	public void configureStart(long startDate, String recurrence);
 	
-	/**
-	 * Remove the specified periodID
-	 * @param periodID as referenced in the scheduler
+	 /**
+	 * Configure the stopping of the monitoring, might be with a fixed date and/or a recurrence pattern
+	 * @param startDate the starting date in millisecs from the epoch (01/01/1970), if 0 or -1 is provided, assume to use the recurrence from 01/01/1970 
+	 * @param recurrence as a basic reccurence rule to the event (supported values : NONE, EACH_DAY, EACH_WEEK, EACH_MONDAY... EACH_MONTH, EACH_YEAR,
 	 */
-	public void removePeriodById(String eventID);
+	public void configureStop(long stopDate, String recurrence);
 	
-	/**
-	 * Gets informations about the specified periodfriom the scheduler
-	 * all these are summed in a JSONObject
-	 * @param eventID as referenced in the scheduler
+	 /**
+	 * Configure the reset of the monitoring, might be with a fixed date and/or a recurrence pattern
+	 * @param startDate the starting date in millisecs from the epoch (01/01/1970), if 0 or -1 is provided, assume to use the recurrence from 01/01/1970 
+	 * @param recurrence as a basic reccurence rule to the event (supported values : NONE, EACH_DAY, EACH_WEEK, EACH_MONDAY... EACH_MONTH, EACH_YEAR,
 	 */
-	public JSONObject getPeriodInfo(String eventID);		
-	
+	public void configureReset(long resetDate, String recurrence);
 	
 	/**
 	 * returns true if the group is currently monitoring Energy consumption (and decreasing budget)
@@ -222,4 +233,14 @@ public interface CoreEnergyMonitoringGroup {
 	 * @return a timestamp as a long value in millisecs from the epoch (01/01/1970)  
 	 */
 	public long getLastResetTimestamp();
+	public long getLastStartTimestamp();
+	public long getLastStopTimestamp();
+	
+	/**
+	 * retrieve the history of measured budget and energy consumption at each reset
+	 * @return an array of JSONObject, each one contains the starting and stop of measure, time of last reset (equal or after last stop)
+	 * the remaining budget at the end and the total consumption at the end
+	 */
+	public JSONArray getEnergyHistory();
 }
+

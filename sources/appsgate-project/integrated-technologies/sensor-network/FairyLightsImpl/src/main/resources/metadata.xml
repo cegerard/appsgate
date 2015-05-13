@@ -2,11 +2,17 @@
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
+    
+    <implementation name="FairyLightAdapterImpl"
+        classname="appsgate.lig.fairylights.adapter.FairyLightsAdapterImpl">
+    </implementation>
+    
 	<implementation name="FairyLightsImpl"
-	    classname="appsgate.lig.fairylights.FairyLightsImpl"
+	    classname="appsgate.lig.fairylights.service.FairyLightsImpl"
 	    specification="CoreFairyLightsSpec"
 	    push="stateChanged">
-	    
 	</implementation>
+	
+	
 
 </apam>

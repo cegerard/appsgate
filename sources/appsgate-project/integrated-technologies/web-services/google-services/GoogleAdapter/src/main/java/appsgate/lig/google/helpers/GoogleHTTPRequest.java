@@ -267,7 +267,7 @@ public class GoogleHTTPRequest {
 			logger.debug("Response Code : " + responseCode);
 			if(responseCode < RESP_200
 					|| responseCode>=RESP_300) {
-				logger.warn("HTPP Response not 200 OK, returning null");
+				logger.warn("HTPP Response not 200 OK, returning null, message : {}", httpsConnection.getResponseMessage());
 				return null;
 			}
 
