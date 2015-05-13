@@ -84,7 +84,120 @@ define([
 	  
 	stopMonitoring: function() {
 		this.remoteControl("stopMonitoring", [], this.id);
-	}
+	},
+
+    getEvents: function() {
+      return ["energyChanged"]; // Maybe add "monitoringReset", "monitoringStarted", "monitoringStopped"
+    },
+    /**
+     * return the keyboard code for a given event
+     */
+    getKeyboardForEvent: function(evt) {
+      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
+      var v = this.getJSONEvent("mandatory");
+      switch (evt) {
+        case "energyChanged":
+          $(btn).append("<span>" + $.i18n.t('services.energy-monitoring.keyboard.energyChanged', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('services.energy-monitoring.keyboard.group') + "</span>"
+          }));
+          v.eventName = "energyDuringPeriod";
+          v.eventValue = "*";
+
+          v.phrase = "services.energy-monitoring.language.energyChanged";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        default:
+          console.error("unexpected event found for Energy Monitoring Group: " + evt);
+          btn = null;
+          break;
+      }
+      return btn;
+    },
+    /**
+     *return the list of available actions
+     */
+    getActions: function() {
+      return ["startMonitoring", "stopMonitoring", "resetMonitoring"];
+    },
+    /**
+     * return the keyboard code for a given action
+     */
+    getKeyboardForAction: function(act) {
+      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
+      var v = this.getJSONAction("mandatory");
+
+      switch (act) {
+        case "startMonitoring":
+          $(btn).append("<span>" + $.i18n.t('services.energy-monitoring.keyboard.startMonitoring', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('services.energy-monitoring.keyboard.group') + "</span>"
+          }));
+          v.methodName = "startMonitoring";
+          v.phrase = "services.energy-monitoring.language.startMonitoring";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        case "stopMonitoring":
+          $(btn).append("<span>" + $.i18n.t('services.energy-monitoring.keyboard.stopMonitoring', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('services.energy-monitoring.keyboard.group') + "</span>"
+          }));
+          v.methodName = "stopMonitoring";
+          v.phrase = "services.energy-monitoring.language.stopMonitoring";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        case "resetMonitoring":
+          $(btn).append("<span>" + $.i18n.t('services.energy-monitoring.keyboard.resetMonitoring', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('services.energy-monitoring.keyboard.group') + "</span>"
+          }));
+          v.methodName = "resetMonitoring";
+          v.phrase = "services.energy-monitoring.language.resetMonitoring";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        default:
+          console.error("unexpected action found for Energy Monitoring Group: " + act);
+          btn = null;
+          break;
+      }
+      return btn;
+    },
+    /**
+     * return the list of available properties
+     */
+    getProperties: function() {
+      return ["energyConsumed", "budgetRemaining"];
+    },
+    /**
+     * return the keyboard code for a property
+     */
+    getKeyboardForProperty: function(property) {
+      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
+      var v = this.getJSONProperty("mandatory");
+      switch (property) {
+        case "energyConsumed":
+          $(btn).append("<span>" + $.i18n.t('services.energy-monitoring.keyboard.getEnergyDuringTimePeriod', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('services.energy-monitoring.keyboard.group') + "</span>"
+          }));
+          v.methodName = "getEnergyDuringTimePeriod";
+          v.returnType = "number";
+          v.unit = "watt";
+          v.phrase = "services.energy-monitoring.language.getEnergyDuringTimePeriod";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        case "budgetRemaining":
+          $(btn).append("<span>" + $.i18n.t('services.energy-monitoring.keyboard.getRemainingBudget', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('services.energy-monitoring.keyboard.group') + "</span>"
+          }));
+          v.methodName = "getRemainingBudget";
+          v.returnType = "number";
+          v.unit = "watt";
+          v.phrase = "services.energy-monitoring.language.getRemainingBudget";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        default:
+          console.error("unexpected device state found for group: " + property);
+          btn = null;
+          break;
+      }
+      return btn;
+    },
 
   });
   return CoreEnergyMonitoringGroup;
