@@ -26,15 +26,8 @@ define([
 		initialize: function () {
 			var self = this;
 
-			//			services.getServicesByType()[this.id].forEach(function (service) {
-			//				self.listenTo(service, "change", self.render);
-			//				self.listenTo(service, "remove", self.render);
-			//				self.listenTo(service, "add", self.render);
-			//			});
-
-			var energyGroupMonitoringAdapter = services.getEnergyMonitoringAdapter();
-			self.listenTo(energyGroupMonitoringAdapter, "energyGroupAdded", self.onAddEnergyGroup);
-			self.listenTo(energyGroupMonitoringAdapter, "energyGroupRemoved", self.onRemoveEnergyGroup);
+			self.listenTo(services, "add", self.onAddEnergyGroup);
+			self.listenTo(services, "remove", self.onAddEnergyGroup);
 
 			services.getCoreEnergyMonitoringGroups().forEach(function (group) {
 				self.attachListeners(group);
@@ -66,23 +59,29 @@ define([
 		},
 
 		/**
-		 * Callback when new group added
-		 *@param event : event from the server (value : id new group)
+		 * Callback when new service added
+		 *@param newService
 		 */
-		onAddEnergyGroup: function (event) {
-			var self = this;
-			self.render();
-			self.attachListeners(services.getCoreEnergyMonitoringGroupById(event.value))
+		onAddEnergyGroup: function (newService) {
+			// Test if the new service is an energy monitoring group
+			if (newService.get('type') === "CoreEnergyMonitoringGroup") {
+				var self = this;
+				self.render();
+				self.attachListeners(newService);
+			}
 		},
 
 		/**
-		 * Callback when one group deleted
-		 *@param event : event from the server (value : id group deleted)
+		 * Callback when one service deleted
+		 *@param deletedService
 		 */
-		onRemoveEnergyGroup: function (event) {
-			var self = this;
-			self.render();
-			self.detachListeners(services.getCoreEnergyMonitoringGroupById(event.value))
+		onRemoveEnergyGroup: function (deletedService) {
+			// Test if deleted service is an energy monitoring group
+			if (deletedService.get('type') === "CoreEnergyMonitoringGroup") {
+				var self = this;
+				self.render();
+				self.detachListeners(deletedService)
+			}
 		},
 
 		/**
@@ -265,14 +264,14 @@ define([
 			var self = this;
 			var divGroup = $("#" + idGroup);
 			var energyGroup = services.getCoreEnergyMonitoringGroupById(idGroup);
-			
+
 			var arrayUnit = services.getEnergyMonitoringAdapter().getUnits();
 			var unit = arrayUnit[_.findIndex(arrayUnit, {
 				value: parseInt(energyGroup.get('budgetUnit'))
 			})];
 
 			var spanTotalConsumption = divGroup.children(".row").children("div").children(".span-total-consumption");
-			spanTotalConsumption.text(energyGroup.get('energyDuringPeriod') / unit.value);
+			spanTotalConsumption.text((energyGroup.get('energyDuringPeriod') / unit.value).toFixed(4));
 
 			var spanBudgetTotal = divGroup.children(".row").children("div").children(".span-budget-allocated");
 			spanBudgetTotal.text(energyGroup.get('budgetTotal'));
@@ -283,7 +282,7 @@ define([
 			var progressBar = divGroup.children(".row").children("div").children("div").children(".progress-bar");
 			var spanBudgetUsedPercent = progressBar.children(".budget-used-percent");
 			var budgetUsedPercent = energyGroup.getPercentUsed();
-			spanBudgetUsedPercent.text(budgetUsedPercent);
+			spanBudgetUsedPercent.text(budgetUsedPercent + "%");
 			progressBar.css("width", budgetUsedPercent + "%");
 		},
 

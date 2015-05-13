@@ -39,7 +39,7 @@ define([
     },
 	  
 	getPercentUsed: function() {
-		return (((this.get("energyDuringPeriod")) / (this.get("budgetTotal"))) * 100).toFixed(2);
+		return (((this.get("energyDuringPeriod")) / (this.get("budgetTotal"))) * 100).toFixed(0);
 	},
 
     setName: function(name) {

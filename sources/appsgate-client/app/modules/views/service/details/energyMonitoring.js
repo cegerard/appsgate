@@ -70,7 +70,11 @@ define([
 			
 			var energyDevices = devices.getDevicesByType(6);
 			_.each(energyDevices, function (device) {
-				divChoice.append("<div class='col-md-12'><input type='checkbox' id='" + device.get("id") + "'>" + device.get('name') + "</div>");
+				if (_.contains(self.model.get("sensors"),(device.get('id')))) {
+					divChoice.append("<div class='col-md-12'><input type='checkbox' id='" + device.get("id") + "' checked >" + device.get('name') + "</div>");
+				} else {
+					divChoice.append("<div class='col-md-12'><input type='checkbox' id='" + device.get("id") + "'>" + device.get('name') + "</div>");
+				}
 			});
 		},
 
@@ -139,7 +143,7 @@ define([
 			})];
 
 			var spanTotalConsumption = divGroup.children(".row").children("div").children(".span-total-consumption");
-			spanTotalConsumption.text(self.model.get('energyDuringPeriod') / unit.value);
+			spanTotalConsumption.text((self.model.get('energyDuringPeriod') / unit.value).toFixed(4));
 
 			var spanBudgetTotal = divGroup.children(".row").children("div").children(".span-budget-allocated");
 			spanBudgetTotal.text(self.model.get('budgetTotal'));
@@ -150,7 +154,7 @@ define([
 			var progressBar = divGroup.children(".row").children("div").children("div").children(".progress-bar");
 			var spanBudgetUsedPercent = progressBar.children(".budget-used-percent");
 			var budgetUsedPercent = self.model.getPercentUsed();
-			spanBudgetUsedPercent.text(budgetUsedPercent);
+			spanBudgetUsedPercent.text(budgetUsedPercent + "%");
 			progressBar.css("width", budgetUsedPercent + "%");
 		},
 	});

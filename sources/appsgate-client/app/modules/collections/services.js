@@ -129,9 +129,7 @@ define([
          * @return array of the CoreEnergyMonitoringGroup of the home
          */
         getCoreEnergyMonitoringGroupById: function(paramId) {
-            return _.find(this.getCoreEnergyMonitoringGroups(), function(g) {
-				return g.id === paramId;
-			});
+			return services.findWhere({id:paramId});
         },
         /**
          * @returns the template corresponding to the device
