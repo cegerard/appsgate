@@ -307,12 +307,12 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		
 		if(total != lastTotal) {
 			logger.trace("computeEnergy(), total energy as changed since last Time");
-			stateChanged(ENERGYTOTAL_KEY, String.valueOf((lastTotal+remainingTotal)*budgetUnit), String.valueOf((total+remainingTotal)*budgetUnit));
+			stateChanged(ENERGYTOTAL_KEY, String.valueOf((lastTotal+remainingTotal)/budgetUnit), String.valueOf((total+remainingTotal)/budgetUnit));
 			lastTotal = total;
 		}
 		if(energyDuringPeriod != lastEnergyDuringPeriod) {
 			logger.trace("computeEnergy(), energy during period as changed since last Time");
-			stateChanged(ENERGYDURINGPERIOD_KEY, String.valueOf((lastEnergyDuringPeriod+remainingDuringPeriod)*budgetUnit), String.valueOf((energyDuringPeriod+remainingDuringPeriod)*budgetUnit));
+			stateChanged(ENERGYDURINGPERIOD_KEY, String.valueOf((lastEnergyDuringPeriod+remainingDuringPeriod)/budgetUnit), String.valueOf((energyDuringPeriod+remainingDuringPeriod)/budgetUnit));
 			lastEnergyDuringPeriod = energyDuringPeriod;
 			stateChanged(BUDGETREMAINING_KEY, null, String.valueOf(getRemainingBudget()));
 		}
@@ -323,8 +323,8 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	 */
 	@Override
 	public double getTotalEnergy() {
-		logger.trace("getTotalEnergy(), returning total: {} x unit : {}", (lastTotal+remainingTotal), budgetUnit);
-		return (lastTotal+remainingTotal)*budgetUnit;
+		logger.trace("getTotalEnergy(), returning total: {} / unit : {}", (lastTotal+remainingTotal), budgetUnit);
+		return (lastTotal+remainingTotal)/budgetUnit;
 	}
 
 	/* (non-Javadoc)
@@ -332,8 +332,8 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	 */
 	@Override
 	public double getEnergyDuringTimePeriod() {
-		logger.trace("getEnergyDuringPeriod(), returning energy: {} x unit : {}", lastEnergyDuringPeriod, budgetUnit);
-		return (lastEnergyDuringPeriod+remainingDuringPeriod)*budgetUnit;
+		logger.trace("getEnergyDuringPeriod(), returning energy: {} / unit : {}", lastEnergyDuringPeriod, budgetUnit);
+		return (lastEnergyDuringPeriod+remainingDuringPeriod)/budgetUnit;
 	}
 
 	/* (non-Javadoc)
@@ -360,7 +360,7 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	 */
 	@Override
 	public double getBudgetUnit() {
-		logger.trace("getBudgetUnit(), returning budgetUnit: {} ", budgetUnit);
+		logger.trace("getBudgetUnit(), returning budgetUnit : {} ", budgetUnit);
 		return budgetUnit;
 	}
 
@@ -369,7 +369,7 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	 */
 	@Override
 	public void setBudget(double budgetTotal) {
-		logger.trace("setBudget(double budgetTotal : {}, double budgetUnit : {})", budgetTotal, budgetUnit);
+		logger.trace("setBudget(double budgetTotal : {})", budgetTotal);
 		stateChanged(BUDGETTOTAL_KEY, String.valueOf(this.budgetTotal), String.valueOf(budgetTotal));
 		this.budgetTotal = budgetTotal;
 	}
