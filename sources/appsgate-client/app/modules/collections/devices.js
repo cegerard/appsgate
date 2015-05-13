@@ -128,7 +128,7 @@ define([
                 case "210":
                     device = new DomiCube(brick);
                     break;
-                case "MobileDeviceAdapter":
+                case "MobileDevice":
                     device = new MobileTasker(brick);
                     break;
                 default:

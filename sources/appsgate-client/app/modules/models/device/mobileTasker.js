@@ -40,13 +40,18 @@ define([
           $(btn).append("<span>" + $.i18n.t('devices.mobileTasker.keyboard.sendMessage', {
             myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.mobileTasker.keyboard.mobile') + "</span>"
           }));
-          v.methodName = "sendMessage";
+          v.methodName = "display";
+          v.type="action1";
+          v.args = [{
+            "type": "String",
+            "value": "Coucou"
+          }];
           v.phrase = "devices.mobileTasker.language.sendMessage";
           $(btn).attr("json", JSON.stringify(v));
           break;
 
         default:
-          console.error("unexpected action found for PhilipsHue: " + act);
+          console.error("unexpected action found for MobileDevice: " + act);
           btn = null;
           break;
       }

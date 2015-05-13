@@ -1,6 +1,5 @@
 package appsgate.lig.mobile.device;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,31 +105,23 @@ public class MobileDeviceImpl extends CoreObjectBehavior implements CoreObjectSp
     @Override
     public String getAbstractObjectId() {
         // TODO Auto-generated method stub
-        return null;
+        return "DEFAULT";
     }
 
     @Override
     public String getUserType() {
-        // TODO Auto-generated method stub
-        return null;
+        return "MobileDevice";
     }
 
     @Override
     public int getObjectStatus() {
-        // TODO Auto-generated method stub
         return 0;
     }
 
-    @Override
-    public JSONObject getDescription() throws JSONException {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
     @Override
     public CORE_TYPE getCoreType() {
-        // TODO Auto-generated method stub
-        return null;
+        return CORE_TYPE.DEVICE;
     }
 
     /**
