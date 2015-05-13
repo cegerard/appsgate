@@ -44,8 +44,11 @@ define([
 			if (!appRouter.isModalShown) {
 
 				this.$el.html(this.tplEnergyMonitoring({
-					service: this.model
+					model: this.model
 				}));
+
+				this.buildUnitSelector();
+				this.buildDevicesChoice();
 				
 				this.updateState(this.model.get('id'));
 				this.updateValues(this.model.get('id'));
@@ -55,6 +58,43 @@ define([
 				this.$el.i18n();
 				return this;
 			}
+		},
+
+		/**
+		 * Method to build the input checkbox for all energy devices
+		 */
+		buildDevicesChoice: function () {
+			var self = this;
+			var divChoice = $('#energyDevicesContainer');
+			divChoice.append("<div class='col-md-12'><input type='checkbox' id='allDevice'>" + $.i18n.t("services.energy-monitoring.modal-add.devices.all") + "</div>");
+			
+			var energyDevices = devices.getDevicesByType(6);
+			_.each(energyDevices, function (device) {
+				divChoice.append("<div class='col-md-12'><input type='checkbox' id='" + device.get("id") + "'>" + device.get('name') + "</div>");
+			});
+		},
+
+		/**
+		 * Method to build the unit selector with all units available
+		 */
+		buildUnitSelector: function () {
+			var self = this;
+			var selector = $('#unitSelector');
+
+			$.each(services.getEnergyMonitoringAdapter().getUnits(), function (i, unit) {
+				if (unit.value === parseInt(self.model.get('budgetUnit'))) {
+					selector.append($('<option>', {
+						value: unit.value,
+						text: unit.text,
+						selected: true
+					}));
+				} else {
+					selector.append($('<option>', {
+						value: unit.value,
+						text: unit.text
+					}));
+				}
+			});
 		},
 
 		/**
@@ -92,19 +132,24 @@ define([
 		updateValues: function (idGroup) {
 			var self = this;
 			var divGroup = $("#div-summary-information");
+
+			var arrayUnit = services.getEnergyMonitoringAdapter().getUnits();
+			var unit = arrayUnit[_.findIndex(arrayUnit, {
+				value: parseInt(self.model.get('budgetUnit'))
+			})];
+
 			var spanTotalConsumption = divGroup.children(".row").children("div").children(".span-total-consumption");
-			spanTotalConsumption.text(self.model.get('energyDuringPeriod'));
-			
+			spanTotalConsumption.text(self.model.get('energyDuringPeriod') / unit.value);
+
 			var spanBudgetTotal = divGroup.children(".row").children("div").children(".span-budget-allocated");
 			spanBudgetTotal.text(self.model.get('budgetTotal'));
-			
+
 			var spanBudgetUnit = divGroup.children(".row").children("div").children(".span-budget-unit");
-			spanBudgetUnit.text(self.model.get('budgetUnit'));
+			spanBudgetUnit.text(unit.text);
 
 			var progressBar = divGroup.children(".row").children("div").children("div").children(".progress-bar");
 			var spanBudgetUsedPercent = progressBar.children(".budget-used-percent");
 			var budgetUsedPercent = self.model.getPercentUsed();
-
 			spanBudgetUsedPercent.text(budgetUsedPercent);
 			progressBar.css("width", budgetUsedPercent + "%");
 		},

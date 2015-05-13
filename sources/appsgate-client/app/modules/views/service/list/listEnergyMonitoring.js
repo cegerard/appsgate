@@ -94,6 +94,7 @@ define([
 					energyMonitoringGroups: services.getCoreEnergyMonitoringGroups(),
 				}));
 				this.buildDevicesChoice();
+				this.buildUnitSelector();
 				this.setValues();
 				this.setStates();
 
@@ -194,6 +195,21 @@ define([
 		},
 
 		/**
+		 * Method to build the unit selector with all units available
+		 */
+		buildUnitSelector: function () {
+			var self = this;
+			var selector = $('#unitSelector');
+
+			$.each(services.getEnergyMonitoringAdapter().getUnits(), function (i, unit) {
+				selector.append($('<option>', {
+					value: unit.value,
+					text: unit.text
+				}));
+			});
+		},
+
+		/**
 		 * Method to set all the values to their current values
 		 */
 		setValues: function () {
@@ -248,13 +264,25 @@ define([
 		updateValue: function (idGroup) {
 			var self = this;
 			var divGroup = $("#" + idGroup);
+			var energyGroup = services.getCoreEnergyMonitoringGroupById(idGroup);
+			
+			var arrayUnit = services.getEnergyMonitoringAdapter().getUnits();
+			var unit = arrayUnit[_.findIndex(arrayUnit, {
+				value: parseInt(energyGroup.get('budgetUnit'))
+			})];
+
 			var spanTotalConsumption = divGroup.children(".row").children("div").children(".span-total-consumption");
-			spanTotalConsumption.text(services.getCoreEnergyMonitoringGroupById(idGroup).get('energyDuringPeriod'));
+			spanTotalConsumption.text(energyGroup.get('energyDuringPeriod') / unit.value);
+
+			var spanBudgetTotal = divGroup.children(".row").children("div").children(".span-budget-allocated");
+			spanBudgetTotal.text(energyGroup.get('budgetTotal'));
+
+			var spanBudgetUnit = divGroup.children(".row").children("div").children(".span-budget-unit");
+			spanBudgetUnit.text(unit.text);
 
 			var progressBar = divGroup.children(".row").children("div").children("div").children(".progress-bar");
 			var spanBudgetUsedPercent = progressBar.children(".budget-used-percent");
-			var budgetUsedPercent = services.getCoreEnergyMonitoringGroupById(idGroup).getPercentUsed();
-
+			var budgetUsedPercent = energyGroup.getPercentUsed();
 			spanBudgetUsedPercent.text(budgetUsedPercent);
 			progressBar.css("width", budgetUsedPercent + "%");
 		},

@@ -970,6 +970,13 @@ button.program-incomplete{
 .debugMode .btn-toolbar {
   display: none;
 }
+
+/* --------------------- Service styles ----------------------------------*/
+
+.progress-margin-patch {
+	margin-bottom: 0px;
+}
+
 /* --------------------- Modal styles ----------------------------------*/
 
 .valid-disabled.disabled {
