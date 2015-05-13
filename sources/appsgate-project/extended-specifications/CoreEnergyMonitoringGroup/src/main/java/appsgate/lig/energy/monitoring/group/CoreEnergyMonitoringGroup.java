@@ -20,12 +20,8 @@ public interface CoreEnergyMonitoringGroup {
 	
 	public final static String NAME_KEY = "name";
 	public final static String SENSORS_KEY = "sensors";
-<<<<<<< HEAD
-	public final static String ENERGY_KEY="energy";	
-=======
 	public final static String ENERGYTOTAL_KEY="energyTotal";	
 	public final static String ENERGYDURINGPERIOD_KEY="energyDuringPeriod";	
->>>>>>> c53cdf2b3f5b6171195a6c8bff29c86dd916a38d
 	public final static String BUDGETTOTAL_KEY="budgetTotal";
 	public final static String BUDGETUNIT_KEY="budgetUnit";
 	public final static String BUDGETREMAINING_KEY="budgetRemaining";
@@ -34,24 +30,13 @@ public interface CoreEnergyMonitoringGroup {
 	public final static String ISMONITORING_KEY = "isMonitoring";
 	public final static String LASTRESET_KEY = "lastReset";
 	public final static String ANNOTATIONS_KEY = "annotations";
-<<<<<<< HEAD
-=======
 	public final static String HISTORY_KEY = "history";
 	public final static String AUTOMATION_KEY = "automation";
->>>>>>> c53cdf2b3f5b6171195a6c8bff29c86dd916a38d
-	
 	public final static String PERIOD_ID = "id";
 	public final static String PERIOD_NAME = "name";
 	public final static String PERIOD_START = "startDate";
 	public final static String PERIOD_STOP = "stopDate";
-<<<<<<< HEAD
-	public final static String PERIOD_RESETSTART = "resetStart";
-	public final static String PERIOD_RESETSTOP = "resetStop";
 	public final static String PERIOD_RECURRENCE = "recurrence";
-	public final static String PERIOD_DELETABLE = "deletable";
-=======
-	public final static String PERIOD_RECURRENCE = "recurrence";
->>>>>>> c53cdf2b3f5b6171195a6c8bff29c86dd916a38d
 	
 	
 	public final static String RAW_ENERGY_KEY="rawEnergy";	
@@ -65,6 +50,7 @@ public interface CoreEnergyMonitoringGroup {
 	
 	/**
 	 * Set the user defined name for this group 
+     * @param name
 	 */
 	public void setName(String name);
 	
@@ -82,7 +68,7 @@ public interface CoreEnergyMonitoringGroup {
 	 * get all the annotations attached to the group as a JSONArray of JSONObject
 	 * (the key being the timestamp and the value being the text)
 	 * [{"time1","annotation 1"},{"time2", "annotation2"},..., {{"timeN", "annotationN"}}]
-	 * @param annotation
+         * @return 
 	 */
 	public JSONArray getAnnotations();
 	
@@ -99,6 +85,7 @@ public interface CoreEnergyMonitoringGroup {
 	 * (explaining unusual energy consumption for instance)
 	 * The annotation explicitly timestamped as parameter (if no annotation is found the annotation is added)
 	 * Warning: there could be only one single annotation for a particular timestamp 
+         * @param timestamp
 	 * @param annotation
 	 */
 	public void updateAnnotation(String timestamp, String annotation);
@@ -133,7 +120,6 @@ public interface CoreEnergyMonitoringGroup {
 	/**
 	 * Reset the current Energy used and remaining Budget 
 	 * (the Total Energy and the Energy during Time periods)
-	 * @return
 	 */
 	public void resetEnergy();
 	
@@ -196,14 +182,14 @@ public interface CoreEnergyMonitoringGroup {
 	
 	 /**
 	 * Configure the stopping of the monitoring, might be with a fixed date and/or a recurrence pattern
-	 * @param startDate the starting date in millisecs from the epoch (01/01/1970), if 0 or -1 is provided, assume to use the recurrence from 01/01/1970 
+	 * @param stopDate the starting date in millisecs from the epoch (01/01/1970), if 0 or -1 is provided, assume to use the recurrence from 01/01/1970 
 	 * @param recurrence as a basic reccurence rule to the event (supported values : NONE, EACH_DAY, EACH_WEEK, EACH_MONDAY... EACH_MONTH, EACH_YEAR,
 	 */
 	public void configureStop(long stopDate, String recurrence);
 	
 	 /**
 	 * Configure the reset of the monitoring, might be with a fixed date and/or a recurrence pattern
-	 * @param startDate the starting date in millisecs from the epoch (01/01/1970), if 0 or -1 is provided, assume to use the recurrence from 01/01/1970 
+	 * @param resetDate the starting date in millisecs from the epoch (01/01/1970), if 0 or -1 is provided, assume to use the recurrence from 01/01/1970 
 	 * @param recurrence as a basic reccurence rule to the event (supported values : NONE, EACH_DAY, EACH_WEEK, EACH_MONDAY... EACH_MONTH, EACH_YEAR,
 	 */
 	public void configureReset(long resetDate, String recurrence);
