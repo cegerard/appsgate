@@ -13,48 +13,24 @@ import appsgate.lig.core.object.messages.CoreNotificationMsg;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
+import appsgate.lig.fairylights.CoreFairyLightsSpec;
 import appsgate.lig.fairylights.utils.HttpUtils;
 
 
 /**
- * Deux fonctions pour l'adapter, Discovery (mDNS) de la guirlande (pour créer supprimer des groupes)
- * ce module s'occupe de la "réservation" des LEDs
- *
- * Implémeentation de l'API REST (bas niveau)
- * 
- * Core interface for the Fairy Lights (LumiPixel Device)
- * @author thibaud
- * 
-
-Draft specifications, portage des interfaces REST (api Amiqual v1.0)
-1. Avec son interface web:
-http://guirlande.local/ <— il faut être sur le meme réseau local
-
-2. Avec son API REST :
-tout les retour sont en JSON
-curl -X GET http://guirlande.local/lumipixel/api/v1.0/leds <— liste des leds
-curl -X GET http://guirlande.local/lumipixel/api/v1.0/leds/0 <— retourne la valeur de la premiere LED en partant du RPi
-curl -X PUT -H "Content-Type: application/json" -d '{"color": "#ffffff"}'  http://guirlande.local/lumipixel/api/v1.0/leds/3 <— change la couleur de la let no 4 en blanc
-Couleurs doivent entre en hexa avec le format #RRGGBB.
-
-Si la guirlande est lente à répondre, c’est probablement à cause de la résolution du nom par mDNS.
-Pour une réactivité optimale il faut mieux utiliser l’adresse IP directement.
-
+ * Base implementation of the FairyLightsAdapter,
+ * responsible for discovery of the FairyLightDevices and creation/update/removal of FairyLights groups
  */
-public class FairyLightsAdapterImpl implements  FairyLightsAdapterSpec {
+public class FairyLightsAdapterImpl extends CoreObjectBehavior implements CoreObjectSpec,
+FairyLightsAdapterSpec, FairyLightsDiscoveryListener {
 	
 	private static Logger logger = LoggerFactory.getLogger(FairyLightsAdapterImpl.class);
 
-
-	
-	
-	
-	
 	String host;
 	int port = -1;
 	
 	//Apsgate Properties for CoreObjectSpec
-	public static final String UserType = "12";	
+	public static final String UserType = FairyLightsAdapterSpec.class.getSimpleName();	
 	int coreObjectStatus = 0;
 	String coreObjectId;
 	
@@ -68,23 +44,7 @@ public class FairyLightsAdapterImpl implements  FairyLightsAdapterSpec {
 	public static final String KEY_ID = "id";
 	
 	public FairyLightsAdapterImpl() {
-		logger.trace("FairyLightsImpl(), default constructor");
-		if(HttpUtils.testURLTimeout(DEFAULT_PROTOCOL+DEFAULT_HOST+LUMIPIXEL_API_URL, 30*1000) ) {		
-			try {
-
-				Inet4Address address = (Inet4Address) Inet4Address.getByName(DEFAULT_HOST);
-				host=DEFAULT_PROTOCOL + address.getHostAddress();
-				coreObjectId = FairyLightsAdapterImpl.class.getSimpleName()+"-"+host;
-				logger.trace("FairyLightsImpl(), the device is available, instanciation success");
-
-			} catch (UnknownHostException e) {
-				logger.info("FairyLightsImpl(), the device is NOT available,"+ e.getMessage());
-				throw new RuntimeException("FairyLights unavailable, must destroy the instance");
-			}
-		} else {
-			logger.info("FairyLightsImpl(), timeout when calling the lumipixel device, it is NOT available");
-			throw new RuntimeException("FairyLights unavailable, must destroy the instance");
-		}
+		logger.trace("FairyLightsAdapterImpl(), default constructor");
 	}
 
 	@Override
@@ -121,6 +81,49 @@ public class FairyLightsAdapterImpl implements  FairyLightsAdapterSpec {
 	public JSONArray getAvailableLights() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public String getAbstractObjectId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public CORE_TYPE getCoreType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public JSONObject getDescription() throws JSONException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getObjectStatus() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public String getUserType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
+	@Override
+	public void deviceAvailable(String host) {
+		// Should (re)create all the configured instances
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void deviceUnavailable() {
+		// Should remove the instances
+		// TODO Auto-generated method stub
 	}
 	
 
