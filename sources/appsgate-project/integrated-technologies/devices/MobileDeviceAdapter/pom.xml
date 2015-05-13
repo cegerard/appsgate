@@ -50,11 +50,6 @@
             <artifactId>CoreObjectSpec</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>appsgate.components</groupId>
-            <artifactId>CoreSmartPlugSpec</artifactId>
-            <version>${project.version}</version>
-        </dependency>        
     </dependencies>
 
     <!-- Dependencies Instructions -->
@@ -81,6 +76,15 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
             </plugin>
         </plugins>
     </build>
