@@ -1006,7 +1006,10 @@
 				"all" : "Toutes les smartplugs"
 			}
 		},
-		"unit" : "Unités"
+		"unit" : "Unités",
+		"history" : "Historique",
+		"energy-sensors" : "Equipements de suivi d'énergie",
+		"annotations" : "Annotations"
 	},
     "mail": {
       "keyboard": {

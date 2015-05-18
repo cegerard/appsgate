@@ -47,11 +47,14 @@ define([
 					model: this.model
 				}));
 
+				// Build modal with previous values
 				this.buildUnitSelector();
 				this.buildDevicesChoice();
 				
 				this.updateState(this.model.get('id'));
 				this.updateValues(this.model.get('id'));
+				this.updateSensorsList();
+				
 				this.resize($(".scrollable"));
 
 				// translate the view
@@ -157,6 +160,25 @@ define([
 			spanBudgetUsedPercent.text(budgetUsedPercent + "%");
 			progressBar.css("width", budgetUsedPercent + "%");
 		},
+		
+		/**
+		* Method to update the list of energy sensors
+		*/
+		updateSensorsList: function() {
+			var self = this;
+			var divSensorsList = $("#sensors-list");
+			
+			var energyDevices = devices.getDevicesByType(6);
+			_.each(energyDevices, function (device) {
+				if (_.contains(self.model.get("sensors"),(device.get('id')))) {
+					divSensorsList.append("<div class='col-md-12'><input type='checkbox' id='" + device.get("id") + "' checked disabled>" + device.get('name') + "</div>");
+				} else {
+					divSensorsList.append("<div class='col-md-12'><input type='checkbox' id='" + device.get("id") + "' disabled>" + device.get('name') + "</div>");
+				}
+			});
+		},
+		
+		
 	});
 	return EnergyMonitoringDetailsView
 });
