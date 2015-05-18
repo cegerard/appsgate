@@ -62,7 +62,12 @@ define([
                 } else {
                     var serviceId = Backbone.history.fragment.split("/")[1];
                     if (services.get(serviceId)) {
-                        $("#side-" + services.get(serviceId).get("type")).addClass("active");
+						// If we are on a coreEnergyMonitoringGroup detail
+						if (services.get(serviceId).get("type") === "CoreEnergyMonitoringGroup") {
+							$("#side-EnergyMonitoringAdapter").addClass("active");
+						} else {
+							$("#side-" + services.get(serviceId).get("type")).addClass("active");
+						}
                     }
                 }
             }
