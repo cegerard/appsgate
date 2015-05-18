@@ -33,6 +33,12 @@ define([
       } else if(event.varName === 'isMonitoring') {
         console.log("status changed : ", event.value);
         self.trigger("statusChanged");
+      } else if(event.varName === 'budgetTotal') {
+        console.log("budgetTotal changed : ", event.value);
+        self.trigger("budgetTotalChanged");
+      } else if(event.varName === 'budgetUnit') {
+        console.log("budgetUnit changed : ", event.value);
+        self.trigger("budgetUnitChanged");
       }
     });
 
@@ -63,6 +69,14 @@ define([
     setBudget: function(name, sensors, budgetTotal, budgetUnit) {
       this.remoteControl("setBudget", [
         {"type": "double", "value": budgetTotal, "name": "budgetTotal"},
+        {"type": "double", "value": budgetUnit, "name": "budgetUnit"}]);
+    },
+  	setBudgetTotal: function(budgetTotal) {
+	  this.remoteControl("setBudget", [
+        {"type": "double", "value": budgetTotal, "name": "budgetTotal"}]);
+    },
+	setBudgetUnit: function(budgetUnit) {
+      this.remoteControl("setBudgetUnit", [
         {"type": "double", "value": budgetUnit, "name": "budgetUnit"}]);
     },
     addPeriod: function(startDate, endDate, resetOnStart, resetOnEnd) {

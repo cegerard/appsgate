@@ -94,8 +94,8 @@ define([
 				}));
 				this.buildDevicesChoice();
 				this.buildUnitSelector();
-				this.setValues();
-				this.setStates();
+//				this.setValues();
+//				this.setStates();
 
 				// translate the view
 				this.$el.i18n();
@@ -187,9 +187,10 @@ define([
 		buildDevicesChoice: function () {
 			var self = this;
 			var divChoice = $('#energyDevicesContainer');
-			divChoice.append("<div class='col-md-12'><input type='checkbox' id='allDevice'>" + $.i18n.t("services.energy-monitoring.modal-add.devices.all") + "</div>");
+			divChoice.append("<div class='col-md-12'><input type='checkbox' id='allDevice'><label for='allDevice'> " + $.i18n.t("services.energy-monitoring.modal-add.devices.all") + "</label></div>");
+			
 			_.each(self.getEnergyDevices(), function (device) {
-				divChoice.append("<div class='col-md-12'><input type='checkbox' id='" + device.get("id") + "'>" + device.get('name') + "</div>");
+				divChoice.append("<div class='col-md-12'><input type='checkbox' id='" + device.get("id") + "'><label for='" + device.get('id') + "'> " + device.get('name') + "</label></div>");
 			});
 		},
 

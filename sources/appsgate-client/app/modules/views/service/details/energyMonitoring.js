@@ -12,6 +12,7 @@ define([
 
 		// map the events and their callback
 		events: {
+			"click #edit-energy-group-modal button.valid-button": "onClickEditEnergyGroup",
 			"click button.back-button": "onBackButton"
 		},
 
@@ -26,6 +27,18 @@ define([
 			self.listenTo(self.model, 'statusChanged', function (e) {
 				self.updateState(self.model.get('id'));
 			});
+			self.listenTo(self.model, 'budgetTotalChanged', function (e) {
+				self.updateValues(self.model.get('id'));
+			});
+			self.listenTo(self.model, 'budgetUnitChanged', function (e) {
+				self.updateValues(self.model.get('id'));
+			});
+			self.listenTo(self.model, 'groupNameChanged', function (e) {
+				$("#energy-group-name").text(self.model.get("name"));
+			});
+			self.listenTo(self.model, 'sensorsGroupChanged', function (e) {
+				self.updateSensorsList();
+			});
 		},
 
 		/**
@@ -33,6 +46,49 @@ define([
 		 */
 		onBackButton: function () {
 			window.history.back();
+		},
+
+		/**
+		 * Callback to edit energy group
+		 */
+		onClickEditEnergyGroup: function () {
+			var self = this;
+
+			var name = $("#edit-energy-group-modal #energyGroupNameInput").val();
+			var sensors = self.getDevicesSelected();
+			var budgetTotal = $("#edit-energy-group-modal #budgetValueInput").val();
+			var budgetUnit = $("#edit-energy-group-modal #unitSelector").val();
+			console.log("Edit: " + name + " " + budgetTotal + " " + budgetUnit);
+
+			if (name !== self.model.get("name")) {
+				self.model.setName(name);
+			}
+
+			if (budgetTotal !== self.model.get("budgetTotal")) {
+				self.model.setBudgetTotal(budgetTotal);
+			}
+
+			if (parseInt(budgetUnit) !== parseInt(self.model.get("budgetUnit"))) {
+				self.model.setBudgetUnit(budgetUnit);
+			}
+
+			var sensorsChanged = function (oldSensors, newSensors) {
+				if (oldSensors.length !== newSensors.length) {
+					return true;
+				} else {
+					_.each(oldSensors, function (s) {
+						if (!_.contains(newSensors, s)) {
+							return true;
+						}
+					});
+				}
+				return false;
+			}(self.model.get("sensors"), sensors);
+			if (sensorsChanged) {
+				self.model.setEnergySensorsGroup(sensors);
+			}
+
+			$("#edit-energy-group-modal").modal("hide");
 		},
 
 		/**
@@ -50,11 +106,12 @@ define([
 				// Build modal with previous values
 				this.buildUnitSelector();
 				this.buildDevicesChoice();
-				
+
 				this.updateState(this.model.get('id'));
 				this.updateValues(this.model.get('id'));
+				this.buildSensorsList();
 				this.updateSensorsList();
-				
+
 				this.resize($(".scrollable"));
 
 				// translate the view
@@ -69,14 +126,14 @@ define([
 		buildDevicesChoice: function () {
 			var self = this;
 			var divChoice = $('#energyDevicesContainer');
-			divChoice.append("<div class='col-md-12'><input type='checkbox' id='allDevice'>" + $.i18n.t("services.energy-monitoring.modal-add.devices.all") + "</div>");
-			
+			divChoice.append("<div class='col-md-12'><input type='checkbox' id='allDevice'><label for='allDevice'> " + $.i18n.t("services.energy-monitoring.modal-add.devices.all") + "</label></div>");
+
 			var energyDevices = devices.getDevicesByType(6);
 			_.each(energyDevices, function (device) {
-				if (_.contains(self.model.get("sensors"),(device.get('id')))) {
-					divChoice.append("<div class='col-md-12'><input type='checkbox' id='" + device.get("id") + "' checked >" + device.get('name') + "</div>");
+				if (_.contains(self.model.get("sensors"), (device.get('id')))) {
+					divChoice.append("<div class='col-md-12'><input type='checkbox' id='" + device.get("id") + "' checked ><label for='" + device.get('id') + "'> " + device.get('name') + "</label></div>");
 				} else {
-					divChoice.append("<div class='col-md-12'><input type='checkbox' id='" + device.get("id") + "'>" + device.get('name') + "</div>");
+					divChoice.append("<div class='col-md-12'><input type='checkbox' id='" + device.get("id") + "'><label for='" + device.get('id') + "'> " + device.get('name') + "</label></div>");
 				}
 			});
 		},
@@ -102,6 +159,43 @@ define([
 					}));
 				}
 			});
+		},
+
+		/**
+		 * Method to build the list of energy sensors
+		 */
+		buildSensorsList: function () {
+			var self = this;
+			var divSensorsList = $("#sensors-list");
+
+			var energyDevices = devices.getDevicesByType(6);
+			_.each(energyDevices, function (device) {
+				divSensorsList.append("<div class='col-md-12'><input type='checkbox' id='sensor-" + device.get("id") + "' disabled><label for='" + device.get('id') + "'> " + device.get('name') + "</label></div>");
+			});
+			
+		},
+
+		/**
+		 * Method to get the ids of the devices selected
+		 */
+		getDevicesSelected: function () {
+			var ids = [];
+			// Check All checked
+			if ($("#allDevice").is(":checked")) {
+				_.forEach($("input[type=checkbox]"), function (input) {
+					if (input.id !== "allDevice") {
+						ids.push(input.id);
+					}
+				});
+			} else {
+				_.forEach($("input[type=checkbox]:checked"), function (input) {
+					if (input.id !== "allDevice") {
+						ids.push(input.id.split("sensor-")[0]);
+					}
+				});
+			}
+
+			return ids;
 		},
 
 		/**
@@ -160,25 +254,20 @@ define([
 			spanBudgetUsedPercent.text(budgetUsedPercent + "%");
 			progressBar.css("width", budgetUsedPercent + "%");
 		},
-		
+
 		/**
-		* Method to update the list of energy sensors
-		*/
-		updateSensorsList: function() {
+		 * Method to update the list of energy sensors
+		 */
+		updateSensorsList: function () {
 			var self = this;
-			var divSensorsList = $("#sensors-list");
-			
+
 			var energyDevices = devices.getDevicesByType(6);
 			_.each(energyDevices, function (device) {
-				if (_.contains(self.model.get("sensors"),(device.get('id')))) {
-					divSensorsList.append("<div class='col-md-12'><input type='checkbox' id='" + device.get("id") + "' checked disabled>" + device.get('name') + "</div>");
-				} else {
-					divSensorsList.append("<div class='col-md-12'><input type='checkbox' id='" + device.get("id") + "' disabled>" + device.get('name') + "</div>");
-				}
+				$("#sensor-" + device.get('id')).prop('checked', _.contains(self.model.get("sensors"), (device.get('id'))));
 			});
 		},
-		
-		
+
+
 	});
 	return EnergyMonitoringDetailsView
 });
