@@ -59,8 +59,9 @@ public class MobileDeviceImpl extends CoreObjectBehavior implements CoreObjectSp
      * MobileDeviceNotificationMsg object and notifies ApAM that a new message
      * has been released.
      *
-     * @return nothing, it just notifies ApAM that a new message has been
-     * posted.
+     * @param varName
+     * @param value
+     * @return nothing, it just notifies ApAM that a new message has been posted.
      */
     public NotificationMsg notifyChanges(String varName, String value) {
         return new MobileDeviceNotificationMsg(varName, value, this.getAbstractObjectId());
@@ -98,8 +99,7 @@ public class MobileDeviceImpl extends CoreObjectBehavior implements CoreObjectSp
 
     @Override
     public boolean display(String message) {
-        // TODO Auto-generated method stub
-        return false;
+        return mobileDeviceAdapter.sendMessage("appsgate", message);
     }
 
     @Override

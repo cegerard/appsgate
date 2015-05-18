@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import appsgate.lig.mobile.device.adapter.spec.MobileDeviceAdapterServices;
 import appsgate.lig.mobile.device.MobileDeviceImpl;
+import appsgate.lig.mobile.device.com.SocketIOHandler;
 import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Implementation;
 import fr.imag.adele.apam.Instance;
@@ -24,15 +25,17 @@ public class MobileDeviceAdapter extends CoreObjectBehavior implements MobileDev
      */
     private static final Logger logger = LoggerFactory.getLogger(MobileDeviceAdapter.class);
 
+    private final SocketIOHandler socket;
+
     /**
      * Called by APAM when an instance of this implementation is created
      */
     public MobileDeviceAdapter() {
-        logger.info("New color mobile device adapter");
+        logger.info("New mobile device adapter");
+        socket = new SocketIOHandler();
         MobileDeviceImpl mob = createApamComponent();
         mob.setAdapter(this);
     }
-
 
     /**
      * Method that creates a MobileDeviceImpl
@@ -46,7 +49,7 @@ public class MobileDeviceAdapter extends CoreObjectBehavior implements MobileDev
             return null;
         }
         logger.trace("createGroup(), implem found");
-        Map<String, String> properties = new HashMap<String, String>();
+        Map<String, String> properties = new HashMap<>();
 
         Instance inst = implem.createInstance(null, properties);
 
@@ -96,8 +99,13 @@ public class MobileDeviceAdapter extends CoreObjectBehavior implements MobileDev
 
     @Override
     public List<String> getDevicesId() {
-        ArrayList<String> l = new ArrayList<String>();
+        ArrayList<String> l = new ArrayList<>();
         l.add("test");
         return l;
+    }
+
+    @Override
+    public Boolean sendMessage(String title, String msg) {
+        return socket.sendPost(title, msg);
     }
 }
