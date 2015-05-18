@@ -20,8 +20,10 @@ define([
     "models/device/mediabrowser",
     "models/device/coretv",
     "models/device/coreclock",
-    "models/device/fairylights"
-], function(App, Device, ActionTemplate, EventTemplate, PropertyTemplate, StateTemplate, TemperatureSensor, CO2Sensor, IlluminationSensor, SwitchSensor, ContactSensor, KeyCardSensor, ARDLock, Plug, PhillipsHue, Actuator, DomiCube, MediaPlayer, MediaBrowser, CoreTV, CoreClock, FairyLights) {
+    "models/device/fairylights",
+    "models/device/mobileTasker"
+], function(App, Device, ActionTemplate, EventTemplate, PropertyTemplate, StateTemplate, TemperatureSensor, CO2Sensor, IlluminationSensor, SwitchSensor,
+            ContactSensor, KeyCardSensor, ARDLock, Plug, PhillipsHue, Actuator, DomiCube, MediaPlayer, MediaBrowser, CoreTV, CoreClock, FairyLights, MobileTasker) {
 
     var Devices = {};
 
@@ -125,6 +127,9 @@ define([
                     break;
                 case "210":
                     device = new DomiCube(brick);
+                    break;
+                case "MobileDevice":
+                    device = new MobileTasker(brick);
                     break;
                 default:
                     console.log("unknown type of DEVICE : ", brick.type, brick);

@@ -72,4 +72,15 @@ public abstract class CoreObjectBehavior implements CoreObjectSpec {
         return new JSONObject(sb.toString());
 
     }
+
+    @Override
+    public JSONObject getDescription() throws JSONException {
+        JSONObject descr = new JSONObject();
+        descr.put("id", getAbstractObjectId());
+        descr.put("type", getUserType());
+        descr.put("coreType", getCoreType());
+        descr.put("status", getObjectStatus());
+
+        return descr;
+    }
 }

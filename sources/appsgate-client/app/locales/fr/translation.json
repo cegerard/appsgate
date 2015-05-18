@@ -453,6 +453,19 @@
         "value": "telle valeur"
       }
     },
+	"mobileTasker": {
+		"name": {
+			"singular" : "mobile",
+			"plural" : "mobiles"
+		},
+		"language" : {
+			"sendMessage" : "Envoyer le message sur __myVar__"
+		},
+		"keyboard" : {
+			"mobile" : "le mobile",
+			"sendMessage" : "Envoyer le message sur __myVar__"
+		}
+	},
     "movement": {
       "name": {
         "plural": "Capteurs de mouvement",
