@@ -4,6 +4,9 @@
 	 org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
 	<specification name="MobileDeviceAdapterSpec"
-		interfaces="appsgate.lig.mobile.device.adapter.spec.MobileDeviceAdapterServices" />
+		interfaces="appsgate.lig.mobile.device.adapter.spec.MobileDeviceAdapterServices, appsgate.lig.core.object.spec.CoreObjectSpec"
+		messages="appsgate.lig.core.object.messages.NotificationMsg">
+		
+	</specification>
 
 </apam>

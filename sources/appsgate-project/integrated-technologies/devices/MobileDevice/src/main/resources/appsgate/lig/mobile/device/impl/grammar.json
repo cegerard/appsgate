@@ -1,0 +1,9 @@
+{
+    "friendlyName": "TaskerAdapter",
+    "typename": "TaskerAdapter",
+    "properties": [],
+    "states": [],
+    "commands" : {
+        "sendNotification" : {"params" : [{"name" : "sentence"}, {"name":"flag"}]}
+    }
+}

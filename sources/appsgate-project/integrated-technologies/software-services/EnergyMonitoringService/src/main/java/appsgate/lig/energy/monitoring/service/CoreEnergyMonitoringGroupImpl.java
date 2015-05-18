@@ -627,3 +627,4 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	}
 	
 }
+

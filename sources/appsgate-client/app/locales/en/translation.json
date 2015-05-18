@@ -453,6 +453,20 @@
         "value": "that value"
       }
     },
+   "mobileTasker": {
+		"name": {
+			"singular" : "mobile",
+			"plural" : "mobiles"
+         },
+		"language" : {
+			"sendMessage" : "Send message to __myVar__"
+		},
+		"keyboard" : {
+			"mobile" : "le mobile",
+			"sendMessage" : "Send message to __myVar__"
+		}
+      },
+
     "movement": {
       "name": {
         "plural": "Motion sensors",
