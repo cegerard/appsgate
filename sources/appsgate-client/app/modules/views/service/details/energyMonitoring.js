@@ -107,7 +107,7 @@ define([
 		 */
 		updateState: function (idGroup) {
 			var self = this;
-			var divGroup = $("#div-summary-information");
+			var divGroup = $("#div-summary-information").children(".panel-body");
 
 			//			var btnStart = divGroup.children(".row").children("div").children(".pull-right").children(".btn.start");
 			//			var btnStop = divGroup.children(".row").children("div").children(".pull-right").children(".btn.stop");
@@ -135,7 +135,7 @@ define([
 		 */
 		updateValues: function (idGroup) {
 			var self = this;
-			var divGroup = $("#div-summary-information");
+			var divGroup = $("#div-summary-information").children(".panel-body");
 
 			var arrayUnit = services.getEnergyMonitoringAdapter().getUnits();
 			var unit = arrayUnit[_.findIndex(arrayUnit, {

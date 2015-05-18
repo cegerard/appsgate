@@ -987,6 +987,7 @@
 		"start-button" : "Démarrer",
 		"stop-button" : "Arrêter",
 		"edit-button" : "Editer",
+		"consumption" : "Consommation",
 		"total-consumption" : "Consommation totale",
 		"budget" : {
 			"name" : "Budget",
