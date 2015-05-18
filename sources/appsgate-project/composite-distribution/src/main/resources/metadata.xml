@@ -43,6 +43,8 @@
             
             <start implementation="EnergyMonitoringAdapterImpl" name="EnergyMonitoringAdapterInst"></start>
             
+            <start implementation="MobileDeviceAdapter" name="MobileDeviceAdapterInst"></start>
+            
             <!--  start implementation="FairyLightsImpl" name="FairyLightsInst"></start -->
             
             

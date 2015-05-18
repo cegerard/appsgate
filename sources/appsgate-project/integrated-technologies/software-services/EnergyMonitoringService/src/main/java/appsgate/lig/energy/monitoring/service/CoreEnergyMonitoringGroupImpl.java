@@ -61,7 +61,7 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	 */
 	private Map<String, ActiveEnergySensor> sensors;
 	double budgetTotal;
-	double budgetUnit;
+	double budgetUnit= 1; // Default value to avoid division by 0
 	ArrayList<String> periods;
 	
 	double lastTotal = 0;
@@ -554,8 +554,12 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	@Override
 	public void setBudgetUnit(double budgetUnit) {
 		logger.trace("setBudgetUnit(double budgetUnit : {})", budgetUnit);
-		stateChanged(BUDGETUNIT_KEY, String.valueOf(this.budgetUnit), String.valueOf(budgetUnit));
-		this.budgetUnit = budgetUnit;
+		if(budgetUnit != 0) {		
+			stateChanged(BUDGETUNIT_KEY, String.valueOf(this.budgetUnit), String.valueOf(budgetUnit));
+			this.budgetUnit = budgetUnit;
+		} else {
+			logger.warn("setBudgetUnit(...), trying to set a zero value, keeping the previous value");
+		}
 	}
 
 	@Override
@@ -623,3 +627,4 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	}
 	
 }
+

@@ -173,7 +173,6 @@ public class TestWebServicesAppsgate extends PaxedDistribution {
 		} catch(Exception exc) {
 			exc.printStackTrace();
 		}
-		
 	}
 	
 	public static Object initGoogleScheduler() {

@@ -20,7 +20,6 @@ import org.osgi.service.http.NamespaceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import appsgate.lig.chmi.exceptions.ExternalComDependencyException;
 import appsgate.lig.chmi.impl.listeners.TimeObserver;
 import appsgate.lig.chmi.spec.AsynchronousCommandResponseListener;
 import appsgate.lig.chmi.spec.CHMIProxySpec;
@@ -115,6 +114,10 @@ public class CHMIProxyImpl implements CHMIProxySpec {
         try {
             //notify that a new device, service or simulated instance appeared
             CoreObjectSpec newObj = (CoreObjectSpec) inst.getServiceObject();
+            if (newObj == null) {
+                logger.error("Instance {} does not implement CoreObjectSpec", inst.getAllPropertiesString());
+                return;
+            }
             notifyAllUpdatesListeners(UPDATE_TYPE.NEW, newObj.getCoreType(), newObj.getAbstractObjectId(), newObj.getUserType(), newObj.getDescription(), newObj.getBehaviorDescription());
             
         } catch (Exception ex) {
@@ -226,7 +229,8 @@ public class CHMIProxyImpl implements CHMIProxySpec {
         }
     }
     
-	public JSONArray getDevicesId() {
+    @Override
+    public JSONArray getDevicesId() {
     	logger.trace("getDevicesId()");
         JSONArray jsonDeviceList = new JSONArray();
         if (abstractDevice != null && !abstractDevice.isEmpty()) {
@@ -240,7 +244,7 @@ public class CHMIProxyImpl implements CHMIProxySpec {
             logger.debug("No CoreObject detected.");
             return jsonDeviceList;
         }
-	}
+    }
 
     @Override
     public JSONObject getDeviceDescription(String objectId) {
