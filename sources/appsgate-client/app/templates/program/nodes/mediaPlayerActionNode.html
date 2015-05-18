@@ -29,7 +29,7 @@
 
     <% if (node.methodName == "audioNotification" ) { %>
     <button class="btn btn-default" data-target="#tts-items-modal" data-toggle="modal" target-iid="<%= node.iid %>">
-        <% if(typeof node !== 'undefined' && typeof node.args  !== 'undefined') { %>
+        <% if(typeof node !== 'undefined' && typeof node.args  !== 'undefined' && typeof node.args[0] !== 'undefined' && typeof node.args[1] !== 'undefined' && typeof node.args[2] !== 'undefined' ) { %>
         <span class="btn-tts-choice" target-iid="<%= node.iid %>"
               text="<%= node.args[0].value %>"
               voice="<%= node.args[1].value %>"
