@@ -39,6 +39,9 @@ define([
       } else if(event.varName === 'budgetUnit') {
         console.log("budgetUnit changed : ", event.value);
         self.trigger("budgetUnitChanged");
+      } else if(event.varName === 'budgetReset') {
+        console.log("budgetUnit changed : ", event.value);
+        self.trigger("budgetReset");
       }
     });
 

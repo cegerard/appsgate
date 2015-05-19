@@ -56,6 +56,9 @@ define([
 			self.listenTo(group, 'budgetTotalChanged', function (e) {
 				self.updateValue(group.get('id'));
 			});
+			self.listenTo(group, 'budgetReset', function (e) {
+				self.updateValues(group.get('id'));
+			});
 		},
 
 		/**

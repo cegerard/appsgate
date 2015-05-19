@@ -39,6 +39,9 @@ define([
 			self.listenTo(self.model, 'sensorsGroupChanged', function (e) {
 				self.updateSensorsList();
 			});
+			self.listenTo(self.model, 'budgetReset', function (e) {
+				self.updateValues(self.model.get('id'));
+			});
 		},
 
 		/**
