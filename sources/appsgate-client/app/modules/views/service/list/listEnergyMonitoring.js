@@ -41,11 +41,20 @@ define([
 		 */
 		attachListeners: function (group) {
 			var self = this;
+			self.listenTo(group, 'groupNameChanged', function (e) {
+				self.updateName(group.get('id'));
+			});
 			self.listenTo(group, 'energyChanged', function (e) {
 				self.updateValue(group.get('id'));
 			});
 			self.listenTo(group, 'statusChanged', function (e) {
 				self.updateState(group.get('id'));
+			});
+			self.listenTo(group, 'budgetUnitChanged', function (e) {
+				self.updateValue(group.get('id'));
+			});
+			self.listenTo(group, 'budgetTotalChanged', function (e) {
+				self.updateValue(group.get('id'));
 			});
 		},
 
@@ -94,8 +103,8 @@ define([
 				}));
 				this.buildDevicesChoice();
 				this.buildUnitSelector();
-//				this.setValues();
-//				this.setStates();
+				this.setValues();
+				this.setStates();
 
 				// translate the view
 				this.$el.i18n();
@@ -285,6 +294,18 @@ define([
 			var budgetUsedPercent = energyGroup.getPercentUsed();
 			spanBudgetUsedPercent.text(budgetUsedPercent + "%");
 			progressBar.css("width", budgetUsedPercent + "%");
+		},
+		
+		/**
+		 * Method to update the group name
+		 */
+		updateName: function (idGroup) {
+			var self = this;
+			var divGroup = $("#" + idGroup);
+			var energyGroup = services.getCoreEnergyMonitoringGroupById(idGroup);
+			
+			var spanName = divGroup.children(".row").children("div").children(".span-group-name");
+			spanName.text(energyGroup.get('name'));
 		},
 
 		validAddinAmount: function () {}
