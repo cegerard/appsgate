@@ -44,7 +44,7 @@ define([
 			self.listenTo(group, 'groupNameChanged', function (e) {
 				self.updateName(group.get('id'));
 			});
-			self.listenTo(group, 'energyChanged', function (e) {
+			self.listenTo(group, 'energyDuringPeriodChanged', function (e) {
 				self.updateValue(group.get('id'));
 			});
 			self.listenTo(group, 'statusChanged', function (e) {
@@ -281,7 +281,7 @@ define([
 			})];
 
 			var spanTotalConsumption = divGroup.children(".row").children("div").children(".span-total-consumption");
-			spanTotalConsumption.text((energyGroup.get('energyDuringPeriod') / unit.value).toFixed(4));
+			spanTotalConsumption.text(parseFloat(energyGroup.get('energyDuringPeriod')).toFixed(4));
 
 			var spanBudgetTotal = divGroup.children(".row").children("div").children(".span-budget-allocated");
 			spanBudgetTotal.text(energyGroup.get('budgetTotal'));

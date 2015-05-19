@@ -29,7 +29,7 @@ define([
         self.trigger("periodsGroupChanged");
       } else if(event.varName === 'energyDuringPeriod') {
         console.log("energy changed : ", event.value);
-        self.trigger("energyChanged");
+        self.trigger("energyDuringPeriodChanged");
       } else if(event.varName === 'isMonitoring') {
         console.log("status changed : ", event.value);
         self.trigger("statusChanged");

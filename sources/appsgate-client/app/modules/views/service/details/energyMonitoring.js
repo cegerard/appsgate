@@ -21,7 +21,7 @@ define([
 
 			EnergyMonitoringDetailsView.__super__.initialize.apply(this, arguments);
 
-			self.listenTo(self.model, 'energyChanged', function (e) {
+			self.listenTo(self.model, 'energyDuringPeriodChanged', function (e) {
 				self.updateValues(self.model.get('id'));
 			});
 			self.listenTo(self.model, 'statusChanged', function (e) {
@@ -240,7 +240,7 @@ define([
 			})];
 
 			var spanTotalConsumption = divGroup.children(".row").children("div").children(".span-total-consumption");
-			spanTotalConsumption.text((self.model.get('energyDuringPeriod') / unit.value).toFixed(4));
+			spanTotalConsumption.text(parseFloat(self.model.get('energyDuringPeriod')).toFixed(4));
 
 			var spanBudgetTotal = divGroup.children(".row").children("div").children(".span-budget-allocated");
 			spanBudgetTotal.text(self.model.get('budgetTotal'));
