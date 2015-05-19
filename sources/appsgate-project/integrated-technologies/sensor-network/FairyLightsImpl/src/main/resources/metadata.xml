@@ -4,7 +4,14 @@
 
     
     <implementation name="FairyLightAdapterImpl"
-        classname="appsgate.lig.fairylights.adapter.FairyLightsAdapterImpl">
+        classname="appsgate.lig.fairylights.adapter.FairyLightsAdapterImpl"
+        push="stateChanged"
+        singleton="true">
+        
+        <relation implementation="MongoDBConfiguration" field="dbConfig" resolve="exist"
+            added="dbBound" removed="dbUnbound">
+        </relation>   
+          
     </implementation>
     
 	<implementation name="FairyLightsImpl"

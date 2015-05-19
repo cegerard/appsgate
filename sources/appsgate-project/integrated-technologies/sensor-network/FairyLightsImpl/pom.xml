@@ -28,6 +28,12 @@
             <artifactId>logback-classic</artifactId>
             <version>${logback.version}</version>
         </dependency>        
+        
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>MongoDBConfigurationImpl</artifactId>
+            <version>${project.version}</version>
+        </dependency>        
     </dependencies>
 
     <!-- Build Description -->

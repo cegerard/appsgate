@@ -1,34 +1,29 @@
 package appsgate.lig.fairylights;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 
 /**
  * Core interface for the Fairy Lights (LumiPixel Device)
+ * A CoreFairyLights service manage a Subset of all the lights in the device (referenced by their absolute id/index/number),
+ * will change color if the specified light number of id/index/number is in the current group
  * @author thibaud
- * 
-
-Draft specifications, portage des interfaces REST (api Amiqual v1.0)
-1. Avec son interface web:
-http://guirlande.local/ <— il faut être sur le meme réseau local
-
-2. Avec son API REST :
-tout les retour sont en JSON
-curl -X GET http://guirlande.local/lumipixel/api/v1.0/leds <— liste des leds
-curl -X GET http://guirlande.local/lumipixel/api/v1.0/leds/0 <— retourne la valeur de la premiere LED en partant du RPi
-curl -X PUT -H "Content-Type: application/json" -d '{"color": "#ffffff"}'  http://guirlande.local/lumipixel/api/v1.0/leds/3 <— change la couleur de la let no 4 en blanc
-Couleurs doivent entre en hexa avec le format #RRGGBB.
-
-Si la guirlande est lente à répondre, c’est probablement à cause de la résolution du nom par mDNS.
-Pour une réactivité optimale il faut mieux utiliser l’adresse IP directement.
-
  */
 public interface CoreFairyLightsSpec {
+	
+	/**
+	 * Get the lights index (or number) affected to the current group
+	 * Not that the group cannot change its configuration (add or remove light because it is not responsible for the reservation policy)
+	 * to change a group configuration use the FairyLightsAdapter
+	 * @return
+	 */
+	public JSONArray getLightsIndexes();
 	
 	
 	/**
 	 * 
-	 * @return the list and states of all lights as a JSONObject
+	 * @return the list and states of the lights in the group as a JSONObject
 	  {
     "leds": [
         {
@@ -59,31 +54,31 @@ public interface CoreFairyLightsSpec {
     }       
 	 * 
 	 */
-	JSONObject getAllLights();
+	JSONObject getLightsStatus();
 	
 	/**
-	 * 
+	 * Try to get the color of one light if it is in the group (otherwise will return null)
 	 * @param lightNumber
 	 * @return
 	 * 
 	 */
-	JSONObject getOneLight(int lightNumber);
+	String getOneLight(int lightNumber);
 
 	/**
-	 * Only append one single light
+	 * Only append one single light if the number is in the group
 	 * @param lightNumber
 	 * @return
 	 */
 	JSONObject setOneColorLight(int lightNumber, String color);	
 	
 	/**
-	 * Attempt to set all lights of the same color
+	 * Attempt to set all in the group lights of the same color
 	 * @return
 	 */
 	JSONObject setAllColorLight(String color);
 	
 	/**
-	 * Attempt to set a patern (using a selected set of leds, with their colors) as a JSON Object
+	 * Attempt to set a pattern (using a selected set of leds, with their colors) as a JSON Object
     "leds": [
         {
             "color": "#c93b3b", 
