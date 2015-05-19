@@ -41,6 +41,7 @@ define([
 			});
 			self.listenTo(self.model, 'budgetReset', function (e) {
 				self.updateValues(self.model.get('id'));
+				self.updateHistory();
 			});
 		},
 
@@ -113,6 +114,7 @@ define([
 				this.updateState(this.model.get('id'));
 				this.updateValues(this.model.get('id'));
 				this.buildSensorsList();
+				this.updateHistory();
 				this.updateSensorsList();
 
 				this.resize($(".scrollable"));
@@ -175,7 +177,7 @@ define([
 			_.each(energyDevices, function (device) {
 				divSensorsList.append("<div class='col-md-12'><input type='checkbox' id='sensor-" + device.get("id") + "' disabled><label for='" + device.get('id') + "'> " + device.get('name') + "</label></div>");
 			});
-			
+
 		},
 
 		/**
@@ -199,6 +201,13 @@ define([
 			}
 
 			return ids;
+		},
+		getUnit: function (unitValue) {
+			var arrayUnit = services.getEnergyMonitoringAdapter().getUnits();
+			var unit = arrayUnit[_.findIndex(arrayUnit, {
+				value: parseInt(unitValue)
+			})];
+			return unit;
 		},
 
 		/**
@@ -237,10 +246,7 @@ define([
 			var self = this;
 			var divGroup = $("#div-summary-information").children(".panel-body");
 
-			var arrayUnit = services.getEnergyMonitoringAdapter().getUnits();
-			var unit = arrayUnit[_.findIndex(arrayUnit, {
-				value: parseInt(self.model.get('budgetUnit'))
-			})];
+			var unit = self.getUnit(self.model.get('budgetUnit'));
 
 			var spanTotalConsumption = divGroup.children(".row").children("div").children(".span-total-consumption");
 			spanTotalConsumption.text(parseFloat(self.model.get('energyDuringPeriod')).toFixed(4));
@@ -269,6 +275,36 @@ define([
 				$("#sensor-" + device.get('id')).prop('checked', _.contains(self.model.get("sensors"), (device.get('id'))));
 			});
 		},
+
+		/**
+		 * Method to update the list of history values
+		 */
+		updateHistory: function () {
+			var self = this;
+			var history = [];
+			history = $.parseJSON(self.model.get("history"));
+
+			$("#history-list").empty();
+			_.each(history, function (entry) {
+				var unit = self.getUnit(entry.budgetUnit);
+				var newEntry = "<span class='col-md-12'>";
+				newEntry += new Date(entry.startDate).toLocaleDateString();
+				newEntry += " ";
+				newEntry += new Date(entry.startDate).toLocaleTimeString();
+				newEntry += " - ";
+				newEntry += new Date(entry.stopDate).toLocaleDateString();
+				newEntry += " ";
+				newEntry += new Date(entry.stopDate).toLocaleTimeString();
+				newEntry += " : ";
+				newEntry += entry.energyDuringPeriod;
+				newEntry += unit.text;
+				newEntry += " / ";
+				newEntry += entry.budgetTotal;
+				newEntry += unit.text;
+				newEntry += "</span>";
+				$("#history-list").append(newEntry);
+			});
+		}
 
 
 	});
