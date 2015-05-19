@@ -37,6 +37,8 @@
         <relation push="apamMessageReceived" resolve="exist" multiple="true" />
         <callback onInit="start" onRemove="stop" />
     </implementation>
+    
+    <specification name="ARDController" interfaces="appsgate.ard.protocol.controller.ARDController"/>
 
     <!--
     <implementation name="ARDController" classname="appsgate.ard.protocol.controller.ARDController" singleton="true">
