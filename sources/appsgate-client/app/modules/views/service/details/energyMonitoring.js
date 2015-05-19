@@ -26,6 +26,7 @@ define([
 			});
 			self.listenTo(self.model, 'statusChanged', function (e) {
 				self.updateState(self.model.get('id'));
+				self.updateDates();
 			});
 			self.listenTo(self.model, 'budgetTotalChanged', function (e) {
 				self.updateValues(self.model.get('id'));
@@ -113,6 +114,7 @@ define([
 
 				this.updateState(this.model.get('id'));
 				this.updateValues(this.model.get('id'));
+				this.updateDates();
 				this.buildSensorsList();
 				this.updateHistory();
 				this.updateSensorsList();
@@ -288,13 +290,9 @@ define([
 			_.each(history, function (entry) {
 				var unit = self.getUnit(entry.budgetUnit);
 				var newEntry = "<span class='col-md-12'>";
-				newEntry += new Date(entry.startDate).toLocaleDateString();
-				newEntry += " ";
-				newEntry += new Date(entry.startDate).toLocaleTimeString();
+				newEntry += new Date(entry.startDate).toLocaleString();
 				newEntry += " - ";
-				newEntry += new Date(entry.stopDate).toLocaleDateString();
-				newEntry += " ";
-				newEntry += new Date(entry.stopDate).toLocaleTimeString();
+				newEntry += new Date(entry.stopDate).toLocaleString();
 				newEntry += " : ";
 				newEntry += entry.energyDuringPeriod;
 				newEntry += unit.text;
@@ -304,6 +302,27 @@ define([
 				newEntry += "</span>";
 				$("#history-list").append(newEntry);
 			});
+		},
+
+		updateDates: function () {
+			var self = this;
+
+			var spanDateFrom = $("#div-dates").children(".span-date-from");
+			var spanDateUntil = $("#div-dates").children(".span-date-until");
+
+			var dateFrom = new Date(self.model.get('startDate'));
+			var dateTokens = dateFrom.toLocaleDateString().split("/");
+			var dateFromReformatted = dateTokens[0] + "/" + dateTokens[1];
+			spanDateFrom.text(dateFromReformatted + " " + dateFrom.toLocaleTimeString());
+
+			if (self.model.get('isMonitoring') === "true" || self.model.get('isMonitoring') === true) {
+				spanDateUntil.text($.i18n.t("services.energy-monitoring.date.now"));
+			} else {
+				var dateUntil = new Date(self.model.get('stopDate'));
+				dateTokens = dateUntil.toLocaleDateString().split("/");
+				var dateUntilReformatted = dateTokens[0] + "/" + dateTokens[1];
+				spanDateUntil.text(dateUntilReformatted + " " + dateUntil.toLocaleTimeString());
+			}
 		}
 
 

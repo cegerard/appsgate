@@ -1008,6 +1008,11 @@
 			"used" : "Budget utilisé",
 			"left" : "Budget restant"
 		},
+		"date": {
+			"from" : "De",
+			"until" : "Jusqu'à",
+			"now" : "Maintenant"
+		},
 		"modal-add" : {
 			"title" : "Nouveau budget",	
 			"placeholder" : {
