@@ -49,11 +49,15 @@ define([
 			});
 			self.listenTo(group, 'statusChanged', function (e) {
 				self.updateState(group.get('id'));
+				self.updateDates(group.get('id'));
 			});
 			self.listenTo(group, 'budgetUnitChanged', function (e) {
 				self.updateValue(group.get('id'));
 			});
 			self.listenTo(group, 'budgetTotalChanged', function (e) {
+				self.updateValue(group.get('id'));
+			});
+			self.listenTo(group, 'budgetReset', function (e) {
 				self.updateValue(group.get('id'));
 			});
 		},
@@ -105,6 +109,7 @@ define([
 				this.buildUnitSelector();
 				this.setValues();
 				this.setStates();
+				this.setDates();
 
 				// translate the view
 				this.$el.i18n();
@@ -237,6 +242,16 @@ define([
 				self.updateState(group.get("id"));
 			});
 		},
+		
+		/**
+		 * Method to set all the group dates
+		 */
+		setDates: function () {
+			var self = this;
+			services.getCoreEnergyMonitoringGroups().forEach(function (group) {
+				self.updateDates(group.get("id"));
+			});
+		},
 
 		/**
 		 * Method to update the html element for the status
@@ -306,6 +321,29 @@ define([
 			
 			var spanName = divGroup.children(".row").children("div").children(".span-group-name");
 			spanName.text(energyGroup.get('name'));
+		},
+		
+		updateDates: function (idGroup) {
+			var self = this;
+			var divGroup = $("#" + idGroup);
+			var energyGroup = services.getCoreEnergyMonitoringGroupById(idGroup);
+
+			var spanDateFrom = divGroup.children(".row").children(".div-dates").children(".span-date-from");
+			var spanDateUntil = divGroup.children(".row").children(".div-dates").children(".span-date-until");
+
+			var dateFrom = new Date(energyGroup.get('startDate'));
+			var dateTokens = dateFrom.toLocaleDateString().split("/");
+			var dateFromReformatted = dateTokens[0] + "/" + dateTokens[1];
+			spanDateFrom.text(dateFromReformatted + " " + dateFrom.toLocaleTimeString());
+
+			if (energyGroup.get('isMonitoring') === "true" || energyGroup.get('isMonitoring') === true) {
+				spanDateUntil.text($.i18n.t("services.energy-monitoring.date.now"));
+			} else {
+				var dateUntil = new Date(energyGroup.get('stopDate'));
+				dateTokens = dateUntil.toLocaleDateString().split("/");
+				var dateUntilReformatted = dateTokens[0] + "/" + dateTokens[1];
+				spanDateUntil.text(dateUntilReformatted + " " + dateUntil.toLocaleTimeString());
+			}
 		},
 
 		validAddinAmount: function () {}
