@@ -2,6 +2,12 @@ package appsgate.lig.fairylights.adapter;
 
 import org.json.JSONArray;
 
+/**
+ * This adapter create/modify/remove fairylights groups
+ * It is responsible to manage the reservation policy of each light (if they can be shared by multiple groups or not) 
+ * @author thibaud
+ *
+ */
 public interface FairyLightsAdapterSpec {
 	
 	/**
@@ -18,8 +24,8 @@ public interface FairyLightsAdapterSpec {
 	public void createFreeformLightsGroup(JSONArray selectedLights);
 	
 	/**
-	 * Create a contiguous group of lights containing all light between the light with id = startingIndex
-	 * and the light with id = endingIndex
+	 * Create a contiguous group of lights containing all light between the light with id = startingIndex (included)
+	 * and the light with id = endingIndex (included)
 	 * @see FairyLightsAdapterSpec#createFreeformLightsGroup(JSONArray selectedLights)
 	 * @param startingIndex
 	 * @param endingIndex
@@ -57,5 +63,14 @@ public interface FairyLightsAdapterSpec {
 	 */
 	public JSONArray getAvailableLights();
 	
-
+	/**
+	 * The light reservation policy should be unique for one instance of Adapter, should not be changed at runtime
+	 * @author thibaud
+	 *
+	 */
+	public enum LightReservationPolicy {
+		SHARED, // One light can be shared by multiple groups  (the group: "FairyLights-All" will allways contains all the fairy lights)
+		ASSIGNED, // If a light is assigned to one group, canot be reused for another group (except the group: "FairyLights-All" that will allways contains all the fairy lights)
+		EXCLUSIVE; // If a light is assigned to one group, canot be reused for another group (even the group: "FairyLights-All" that will contains the remaining availables fairy lights)
+	}
 }

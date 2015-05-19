@@ -1,7 +1,8 @@
 package appsgate.lig.fairylights.service;
 
-import java.net.Inet4Address;
-import java.net.UnknownHostException;
+import java.util.HashSet;
+import java.util.Set;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,19 +23,6 @@ import appsgate.lig.fairylights.utils.HttpUtils;
  * @author thibaud
  * 
 
-Draft specifications, portage des interfaces REST (api Amiqual v1.0)
-1. Avec son interface web:
-http://guirlande.local/ <— il faut être sur le meme réseau local
-
-2. Avec son API REST :
-tout les retour sont en JSON
-curl -X GET http://guirlande.local/lumipixel/api/v1.0/leds <— liste des leds
-curl -X GET http://guirlande.local/lumipixel/api/v1.0/leds/0 <— retourne la valeur de la premiere LED en partant du RPi
-curl -X PUT -H "Content-Type: application/json" -d '{"color": "#ffffff"}'  http://guirlande.local/lumipixel/api/v1.0/leds/3 <— change la couleur de la let no 4 en blanc
-Couleurs doivent entre en hexa avec le format #RRGGBB.
-
-Si la guirlande est lente à répondre, c’est probablement à cause de la résolution du nom par mDNS.
-Pour une réactivité optimale il faut mieux utiliser l’adresse IP directement.
 
  */
 public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpec, CoreFairyLightsSpec{
@@ -50,85 +38,68 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 	int coreObjectStatus = 0;
 	String coreObjectId;
 	
-	public static final String DEFAULT_HOST = "guirlande.local";	
-	public static final String DEFAULT_PROTOCOL = "http://";
-	public static final String LUMIPIXEL_API_URL = "/lumipixel/api/v1.0/leds";
-	public static final String URL_SEP = "/";
-
 	public static final String KEY_COLOR = "color";
 	public static final String KEY_LEDS = "leds";
 	public static final String KEY_ID = "id";
 	
+	Set<String> currentLights;
+	
 	public FairyLightsImpl() {
 		logger.trace("FairyLightsImpl(), default constructor");
-		if(HttpUtils.testURLTimeout(DEFAULT_PROTOCOL+DEFAULT_HOST+LUMIPIXEL_API_URL, 30*1000) ) {		
-			try {
-
-				Inet4Address address = (Inet4Address) Inet4Address.getByName(DEFAULT_HOST);
-				host=DEFAULT_PROTOCOL + address.getHostAddress();
-				coreObjectId = FairyLightsImpl.class.getSimpleName()+"-"+host;
-				logger.trace("FairyLightsImpl(), the device is available, instanciation success");
-
-			} catch (UnknownHostException e) {
-				logger.info("FairyLightsImpl(), the device is NOT available,"+ e.getMessage());
-				throw new RuntimeException("FairyLights unavailable, must destroy the instance");
+		currentLights = new HashSet<String>();
+	}
+	
+	public void setAffectedLights(JSONArray lights) {
+		if(lights != null) {
+			currentLights.clear();
+			for(int i = 0 ; i < lights.length(); i++) {
+				currentLights.add(lights.optString(i));
 			}
-		} else {
-			logger.info("FairyLightsImpl(), timeout when calling the lumipixel device, it is NOT available");
-			throw new RuntimeException("FairyLights unavailable, must destroy the instance");
 		}
 	}
 	
 	@Override
-	public JSONObject getAllLights() {
+	public JSONObject getLightsStatus() {
 		logger.trace("getAllLights()");
-		JSONObject response = new JSONObject(HttpUtils.sendHttpGet(host+LUMIPIXEL_API_URL)); 
+		JSONObject response = new JSONObject(HttpUtils.sendHttpGet(host+LumiPixelImpl.LUMIPIXEL_API_URL)); 
 
 		logger.trace("getAllLights(), returning {}",response);
 		return response;
 	}
 
 	@Override
-	public JSONObject getOneLight(int lightNumber) {
+	public String getOneLight(int lightNumber) {
 		logger.trace("getOneLight(int lightNumber : {})", lightNumber);
-		JSONObject response = new JSONObject(HttpUtils.sendHttpGet(host+LUMIPIXEL_API_URL+URL_SEP+lightNumber)); 
-
-		logger.trace("getOneLight(...), returning {}",response);
-		return response;
+		// TODO test if the light is in th group
+		
+		return LumiPixelImpl.getOneLight(lightNumber);
 	}
 
 	@Override
 	public JSONObject setOneColorLight(int lightNumber, String color) {
 		logger.trace("setColorLight(int lightNumber : {}, String color : {})", lightNumber, color);
+		// TODO test if the light is in th group
 
-		JSONObject response = setOneColorLightPrivate(lightNumber, color);
+		JSONObject response = LumiPixelImpl.setOneColorLight(lightNumber, color);
 		logger.trace("setColorLight(...), returning {}",response);
 		stateChanged("ledChanged", null, color, getAbstractObjectId());
 		return response;
 	}
-	
-	private JSONObject setOneColorLightPrivate(int lightNumber, String color) {
-		JSONObject jsonColor = new JSONObject().put(KEY_COLOR, color);
 
-		JSONObject response = new JSONObject(
-				HttpUtils.sendHttpsPut(host+LUMIPIXEL_API_URL+URL_SEP+lightNumber, jsonColor.toString().getBytes())); 
-		return response;
-	}
-	
 	
 	@Override
 	public JSONObject setAllColorLight(String color) {
 		logger.trace("setAllColorLight(String color : {})", color);
 
 		
-		JSONObject response = getAllLights();
+		JSONObject response = getLightsStatus();
 		JSONArray cache = response.getJSONArray("leds");
 		int length = cache.length();
 		
 		for(int i = 0; i< length; i++) {
-			setOneColorLightPrivate(i, color);
+			LumiPixelImpl.setOneColorLight(i, color);
 		}
-		response = getAllLights();
+		response = getLightsStatus();
 
 		stateChanged(KEY_LEDS, null, response.getJSONArray(KEY_LEDS).toString(), getAbstractObjectId());
 		return response;
@@ -144,9 +115,9 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 		
 		for(int i = 0; i< length; i++) {
 			JSONObject obj = array.getJSONObject(i);
-			setOneColorLightPrivate(obj.getInt(KEY_ID), obj.getString(KEY_COLOR));
+			LumiPixelImpl.setOneColorLight(obj.getInt(KEY_ID), obj.getString(KEY_COLOR));
 		}
-		JSONObject response = getAllLights();
+		JSONObject response = getLightsStatus();
 
 		stateChanged(KEY_LEDS, null, response.getJSONArray(KEY_LEDS).toString(), getAbstractObjectId());
 		return response;
@@ -157,25 +128,25 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 	public void singleChaserAnimation(int start, int end, String color) {
 		logger.trace("singleChaserAnimation(int start : {}, int end : {}, String color : {})", start, end, color);
 		
-		JSONObject response = getAllLights();
+		JSONObject response = getLightsStatus();
 		JSONArray cache = response.getJSONArray("leds");
 		
 		if(start < end) {
 			for(int i = start; i<= end; i++) {
 				if (i> start) {
-					setOneColorLightPrivate(i-1, cache.getJSONObject(i-1).getString(KEY_COLOR));
+					LumiPixelImpl.setOneColorLight(i-1, cache.getJSONObject(i-1).getString(KEY_COLOR));
 				}
-				setOneColorLightPrivate(i, color);
+				LumiPixelImpl.setOneColorLight(i, color);
 			}
-			setOneColorLightPrivate(end, cache.getJSONObject(end).getString(KEY_COLOR));
+			LumiPixelImpl.setOneColorLight(end, cache.getJSONObject(end).getString(KEY_COLOR));
 		} else {
 			for(int i = start; i>= end; i--) {
 				if (i<start) {
-					setOneColorLightPrivate(i+1, cache.getJSONObject(i+1).getString(KEY_COLOR));
+					LumiPixelImpl.setOneColorLight(i+1, cache.getJSONObject(i+1).getString(KEY_COLOR));
 				}
-				setOneColorLightPrivate(i, color);
+				LumiPixelImpl.setOneColorLight(i, color);
 			}
-			setOneColorLightPrivate(end, cache.getJSONObject(end).getString(KEY_COLOR));
+			LumiPixelImpl.setOneColorLight(end, cache.getJSONObject(end).getString(KEY_COLOR));
 		}
 	}
 
@@ -196,7 +167,7 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 		descr.put("id", getAbstractObjectId());
 		descr.put("type", getUserType()); // 12 for fairy lights
 		descr.put("status", getObjectStatus());
-		descr.put(KEY_LEDS, getAllLights().getJSONArray(KEY_LEDS));
+		descr.put(KEY_LEDS, getLightsStatus().getJSONArray(KEY_LEDS));
 
 		return descr;
 	}
@@ -224,6 +195,13 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 	public NotificationMsg stateChanged(String varName, String oldValue, String newValue, String source) {
 		return new CoreNotificationMsg(varName, oldValue, newValue, getAbstractObjectId());
 	}
+
+	@Override
+	public JSONArray getLightsIndexes() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 	
 }
