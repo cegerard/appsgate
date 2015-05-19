@@ -569,12 +569,12 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	
 	@Override
 	public long getLastStartTimestamp() {
-		return lastResetTimestamp;
+		return lastStartTimeStamp;
 	}
 	
 	@Override
 	public long getLastStopTimestamp() {
-		return lastResetTimestamp;
+		return lastStopTimeStamp;
 	}	
 
 	@Override
