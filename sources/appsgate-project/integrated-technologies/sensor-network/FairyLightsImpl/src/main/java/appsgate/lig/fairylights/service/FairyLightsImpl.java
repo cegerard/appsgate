@@ -49,6 +49,11 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 		currentLights = new HashSet<String>();
 	}
 	
+	public void configure(String host, JSONArray lights) {
+		LumiPixelImpl.setHost(host);
+		setAffectedLights(lights);
+	}
+	
 	public void setAffectedLights(JSONArray lights) {
 		if(lights != null) {
 			currentLights.clear();
@@ -61,7 +66,7 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 	@Override
 	public JSONObject getLightsStatus() {
 		logger.trace("getAllLights()");
-		JSONObject response = new JSONObject(HttpUtils.sendHttpGet(host+LumiPixelImpl.LUMIPIXEL_API_URL)); 
+		JSONObject response = LumiPixelImpl.getAllLights(); 
 
 		logger.trace("getAllLights(), returning {}",response);
 		return response;
@@ -70,7 +75,7 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 	@Override
 	public String getOneLight(int lightNumber) {
 		logger.trace("getOneLight(int lightNumber : {})", lightNumber);
-		// TODO test if the light is in th group
+		// TODO test if the light is in the group
 		
 		return LumiPixelImpl.getOneLight(lightNumber);
 	}

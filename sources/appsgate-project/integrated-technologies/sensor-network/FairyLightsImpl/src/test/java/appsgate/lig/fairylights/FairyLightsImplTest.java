@@ -11,6 +11,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import appsgate.lig.fairylights.service.FairyLightsImpl;
@@ -20,6 +21,7 @@ import appsgate.lig.fairylights.service.LumiPixelImpl;
  * @author thibaud
  *
  */
+@Ignore //Disabled (Device must be physically available to run the test)
 public class FairyLightsImplTest {
 	
 	/**
@@ -42,9 +44,14 @@ public class FairyLightsImplTest {
 	 * @throws java.lang.Exception
 	 */
 	// Disabled (Device must be physically available to run the test
-	// @Before
+	@Before
 	public void setUp() throws Exception {
 		lights = new FairyLightsImpl();
+		JSONArray lightsArray = new JSONArray();
+		for(int i = 0; i<25; i++) {
+			lightsArray.put(String.valueOf(i));
+		}
+		lights.configure(LumiPixelImpl.DEFAULT_PROTOCOL+LumiPixelImpl.DEFAULT_HOST, lightsArray);
 	}
 
 	/**
@@ -55,29 +62,11 @@ public class FairyLightsImplTest {
 	}
 
 	/**
-	 * Test method for {@link appsgate.lig.fairylights.service.FairyLightsImpl#getAllLights()}.
-	 */
-	// Disabled (Device must be physically available to run the test
-	// @Test
-	public void testGetAllLights() {
-		assertNotNull("Fairy Ligths not responding", LumiPixelImpl.getAllLights());
-	}
-
-	/**
-	 * Test method for {@link appsgate.lig.fairylights.service.FairyLightsImpl#getOneLight(int)}.
-	 */
-	// Disabled (Device must be physically available to run the test
-	//@Test
-	public void testGetOneLight() {
-		assertNotNull("Fairy Ligths not responding",LumiPixelImpl.getOneLight(0));
-	}
-
-	/**
 	 * Test method for {@link appsgate.lig.fairylights.service.FairyLightsImpl#setOneColorLight(int, java.lang.String)}.
 	 */
 	//
 	// Disabled (Device must be physically available to run the test
-	// @Test
+	@Test
 	public void testSetAllColorLight() {
 		assertNotNull("Fairy Ligths not responding",lights.setAllColorLight("#ff0000"));
 		assertNotNull("Fairy Ligths not responding",lights.setAllColorLight("#00ff00"));
@@ -85,7 +74,7 @@ public class FairyLightsImplTest {
 	}
 	
 	// Disabled (Device must be physically available to run the test
-	// @Test
+	@Test
 	public void testSetColorPattern() {
 		JSONObject response = lights.getLightsStatus();
 		JSONArray array = response.getJSONArray("leds");
@@ -111,7 +100,7 @@ public class FairyLightsImplTest {
 	}	
 	
 	// Disabled (Device must be physically available to run the test
-	// @Test
+	@Test
 	public void testSingleChaserAnimation() {
 		assertNotNull("Fairy Ligths not responding",lights.setAllColorLight("#ffffff"));
 		
@@ -121,7 +110,7 @@ public class FairyLightsImplTest {
 	}
 	
 	// Disabled (Device must be physically available to run the test
-	// @Test
+	@Test
 	public void testRoundChaserAnimation() {
 		assertNotNull("Fairy Ligths not responding",lights.setAllColorLight("#ffffff"));
 		
@@ -130,14 +119,14 @@ public class FairyLightsImplTest {
 	}	
 	
 	// Disabled (Device must be physically available to run the test
-	// @Test
+	@Test
 	public void testSetColorLight() {
 		assertNotNull("Fairy Ligths not responding",lights.setOneColorLight(0, "#ffffff"));
 	}
 		
 	
 	// Disabled (Device must be physically available to run the test
-	// @Test
+	@Test
 	public void testK2000() {
 		JSONObject response = lights.getLightsStatus();
 		JSONArray array = response.getJSONArray("leds");
@@ -153,7 +142,7 @@ public class FairyLightsImplTest {
 			lights.setOneColorLight(i, "#000000");
 		}
 		
-		for(int j=0;j<10;j++) {
+		for(int j=0;j<4;j++) {
 			// Step two, make the red light goes from lamp to lamp
 			for(int i = 0; i< length; i++) {
 				lights.setOneColorLight(i, "#ff0000");

@@ -1,6 +1,7 @@
 package appsgate.lig.fairylights.service;
 
 import org.json.JSONObject;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,13 +40,15 @@ public class LumiPixelImpl {
 	public static final String LUMIPIXEL_API_URL = "/lumipixel/api/v1.0/leds";
 	
 	public static final String KEY_COLOR = "color";
+	public static final String KEY_LED = "led";
 	public static final String KEY_LEDS = "leds";
 	public static final String KEY_ID = "id";	
 	
 	public static void setHost(String host) {
-		LumiPixelImpl.host = host;
+		logger.trace("setHost(String host :{})",host);
+		LumiPixelImpl.host = new String(host);
+		logger.trace("setHost(...), new host : {}",LumiPixelImpl.host);
 	}
-	
 	
 	public static JSONObject getAllLights() {
 		logger.trace("getAllLights()");
@@ -58,9 +61,13 @@ public class LumiPixelImpl {
 	public static String getOneLight(int lightNumber) {
 		logger.trace("getOneLight(int lightNumber : {})", lightNumber);
 		JSONObject response = new JSONObject(HttpUtils.sendHttpGet(host+LUMIPIXEL_API_URL+URL_SEP+lightNumber)); 
-
-		logger.trace("getOneLight(...), returning {}",response);
-		return response.optString(KEY_COLOR);
+		if(response.optJSONObject(KEY_LED)!= null ) {
+			logger.trace("getOneLight(...), returning {}",response);
+			return response.getJSONObject(KEY_LED).optString(KEY_COLOR);
+		} else {
+			logger.warn("getOneLight(...), no led response");
+			return null;
+		}
 	}
 
 	
