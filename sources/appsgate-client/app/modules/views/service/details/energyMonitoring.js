@@ -14,9 +14,13 @@ define([
 		events: {
 			"click #edit-energy-group-modal button.valid-button": "onClickEditEnergyGroup",
 			"click button.back-button": "onBackButton",
+
 			"click button.delete-energy-group-button": "onDeleteEnergyGroup",
 			"click button.cancel-delete-energy-group-button": "onCancelDeleteEnergyGroup",
 			"click button.delete-popover-button": "onClickDeleteEnergyGroup",
+
+			"click button.start": "onStart",
+			"click button.stop": "onStop",
 		},
 
 		initialize: function () {
@@ -114,8 +118,10 @@ define([
 			var self = this;
 			e.preventDefault();
 			services.getEnergyMonitoringAdapter().removeEnergyMonitoringGroup(self.model.get('id'));
-			
-			appRouter.navigate("#services/types/EnergyMonitoringAdapter", {trigger: true});
+
+			appRouter.navigate("#services/types/EnergyMonitoringAdapter", {
+				trigger: true
+			});
 		},
 
 		/**
@@ -136,6 +142,20 @@ define([
 			});
 			// show the popup
 			this.$el.find("#delete-program-popover").popover('show');
+		},
+
+		/**
+		 * Callback to start monitoring
+		 */
+		onStart: function (e) {
+			services.getCoreEnergyMonitoringGroupById(this.model.get('id')).startMonitoring();
+		},
+
+		/**
+		 * Callback to start monitoring
+		 */
+		onStop: function (e) {
+			services.getCoreEnergyMonitoringGroupById(this.model.get('id')).stopMonitoring();
 		},
 
 		/**
@@ -262,20 +282,21 @@ define([
 			var self = this;
 			var divGroup = $("#div-summary-information").children(".panel-body");
 
-			//			var btnStart = divGroup.children(".row").children("div").children(".pull-right").children(".btn.start");
-			//			var btnStop = divGroup.children(".row").children("div").children(".pull-right").children(".btn.stop");
+			var btnStart = $(".btn-toolbar").children(".btn-group").children(".btn.start");
+			var btnStop = $(".btn-toolbar").children(".btn-group").children(".btn.stop");
+
 			var progressBar = divGroup.children(".row").children("div").children("div").children(".progress-bar");
 			var divStatus = divGroup.children(".row").children("div").children(".div-status");
 
 			if (self.model.get('isMonitoring') === "true" || self.model.get('isMonitoring') === true) {
-				//				btnStart.hide();
-				//				btnStop.show();
+				btnStart.hide();
+				btnStop.show();
 				progressBar.addClass("active");
 				divStatus.addClass("led-processing");
 				divStatus.removeClass("led-deployed");
 			} else {
-				//				btnStart.show();
-				//				btnStop.hide();
+				btnStart.show();
+				btnStop.hide();
 				progressBar.removeClass("active");
 				divStatus.addClass("led-deployed");
 				divStatus.removeClass("led-processing");
