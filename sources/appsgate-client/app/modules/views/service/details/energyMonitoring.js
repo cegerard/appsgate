@@ -21,6 +21,9 @@ define([
 
 			"click button.start": "onStart",
 			"click button.stop": "onStop",
+
+			"click button.btn-target-dependencies": "onShowDependencies",
+			"click button.btn-target-timelines": "onShowTimelines",
 		},
 
 		initialize: function () {
@@ -156,6 +159,24 @@ define([
 		 */
 		onStop: function (e) {
 			services.getCoreEnergyMonitoringGroupById(this.model.get('id')).stopMonitoring();
+		},
+
+		/**
+		 * Callback on click dependencies
+		 */
+		onShowDependencies: function () {
+			appRouter.navigate("#dependancies/" + this.model.get("id"), {
+				trigger: true
+			});
+		},
+
+		/**
+		 * Callback on click timelines
+		 */
+		onShowTimelines: function () {
+			appRouter.navigate("#debugger/" + this.model.get("id"), {
+				trigger: true
+			});
 		},
 
 		/**
