@@ -1000,6 +1000,7 @@
 		"start-button" : "Démarrer",
 		"stop-button" : "Arrêter",
 		"edit-button" : "Editer",
+		"reset-consumption-button" : "Remettre à zéro",
 		"consumption" : "Consommation",
 		"total-consumption" : "Consommation totale",
 		"budget" : {
