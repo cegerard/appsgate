@@ -357,7 +357,7 @@ define([
 				newEntry += " - ";
 				newEntry += new Date(entry.stopDate).toLocaleString();
 				newEntry += " : ";
-				newEntry += entry.energyDuringPeriod;
+				newEntry += parseFloat(entry.energyDuringPeriod).toFixed(4);
 				newEntry += unit.text;
 				newEntry += " / ";
 				newEntry += entry.budgetTotal;
