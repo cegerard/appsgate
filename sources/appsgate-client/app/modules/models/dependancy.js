@@ -434,7 +434,7 @@ define([
 		addDeviceTypeFilterLoaded: function (JSONTypes) {
 			this.get("subFilterDevice")["deviceType"] = _.filter(JSONTypes, function (type) {
 				// Don't add : 102/103/104 = services, 21 = clock
-                var filteredType = ["102", "103", "104", "21", "UbikitAdapterService", "PlaceManagerSpec", "EUDE_InterpreterSpec", "WeatherAdapterSpec", "DevicePropertiesTableSpec", "UserBaseSpec"];
+                var filteredType = ["102", "103", "104", "21", "UbikitAdapterService", "PlaceManagerSpec", "EUDE_InterpreterSpec", "WeatherAdapterSpec", "DevicePropertiesTableSpec", "UserBaseSpec", "CoreEnergyMonitoringGroup", "EnergyMonitoringAdapter"];
                 return filteredType.indexOf(type) < 0;
 			});
 			Array.prototype.push.apply(this.get("currentEntitiesFilters"), this.get("subFilterDevice")["deviceType"]);
@@ -767,26 +767,29 @@ define([
 		entities.forEach(function (e) {
 
 			if (e.deviceType !== undefined) {
-				var type = parseInt(e.deviceType);
-				switch (type) {
-				case 36:
+				switch (e.deviceType) {
+				case "36":
 					// Leave the media server because it does not appears in IHM
 					entities.splice(entities.indexOf(e), 1);
 					break;
-				case 102:
+				case "102":
 					// Service mail a no attribute for the name, so take this in the client
 					e.type = "service";
 					e.name = $.i18n.t("services.mail.name.singular");
 					break;
-				case 103:
+				case "103":
 					// Weather case, show the location
 					e.type = "service";
 					e.name = e.location;
 					break;
-				case 104:
+				case "104":
 					// Weather case, show the location
 					e.type = "service";
 					e.name = $.i18n.t("services.tts.name.singular");
+					break
+				case "CoreEnergyMonitoringGroup":
+					// Weather case, show the location
+					e.type = "service";
 					break
 				default:
 					break;

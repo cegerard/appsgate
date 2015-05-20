@@ -1003,9 +1003,15 @@ define([
 				});
 				break;
 			case "service":
-				appRouter.navigate("#services/types/" + d.deviceType, {
-					trigger: true
-				});
+				if (d.deviceType === "CoreEnergyMonitoringGroup") {
+					appRouter.navigate("#services/" + d.id, {
+						trigger: true
+					});
+				} else {
+					appRouter.navigate("#services/types/" + d.deviceType, {
+						trigger: true
+					});
+				}
 				break;
 			case "device":
 				appRouter.navigate("#devices/" + d.id, {
