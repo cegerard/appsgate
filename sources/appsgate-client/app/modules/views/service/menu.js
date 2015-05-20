@@ -40,7 +40,10 @@ define([
          * @param options Options given with the change event
          */
         onChangedService: function(model, options) {
-            this.render();
+			// Adding test on type to avoid blinking on each value change of energy monitoring group
+			if (model.get('type') !== "CoreEnergyMonitoringGroup") {
+				this.render();
+			}
         },
         /**
          * Update the side menu to set the correct active element
