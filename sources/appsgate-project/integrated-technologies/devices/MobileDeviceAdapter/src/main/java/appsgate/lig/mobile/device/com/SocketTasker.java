@@ -1,5 +1,6 @@
 package appsgate.lig.mobile.device.com;
 
+import appsgate.lig.mobile.device.adapter.MobileDeviceAdapter;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
@@ -26,7 +27,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created by Bidois Morgan on 23/04/15.
+ * Created by JR Courtois based on Morgan Bidois SocketIOHandler class for Tasker.
+ * 
+ * This class allow appsgate to receive message from Tasker (thacthab website)
  */
 public class SocketTasker {
 
@@ -41,14 +44,18 @@ public class SocketTasker {
     private final JSONObject socketStateCreation = new JSONObject();
     private final JSONObject socketStateConnection = new JSONObject();
     private final JSONObject socketStateDisconnection = new JSONObject();
+    
+    private MobileDeviceAdapter service;
 
     private Timer timer;
     private PingSocketTask pingSocTask;
 
     /**
      *
+     * @param adapter
      */
-    public SocketTasker() {
+    public SocketTasker(MobileDeviceAdapter adapter) {
+        this.service = adapter;
         this.trustAllCerts = new TrustManager[]{new X509TrustManager() {
             @Override
             public java.security.cert.X509Certificate[] getAcceptedIssuers() {
@@ -174,12 +181,12 @@ public class SocketTasker {
     }
 
     /**
-     * TODO A mettre dans interface
      *
      * @param msg
      */
     private void sendMsgToTasker(JSONObject msg) {
         LOGGER.trace("Message receive from Tasker: {}", msg.toString());
+        this.service.MessageReceived(msg);
         
     }
 

@@ -459,11 +459,13 @@
 			"plural" : "mobiles"
          },
 		"language" : {
-			"sendMessage" : "Send message to __myVar__"
+			"sendMessage" : "Send message to __myVar__",
+            "msgReceivedEvt" : "__myVar__ sends a message"
 		},
 		"keyboard" : {
 			"mobile" : "le mobile",
-			"sendMessage" : "Send message to __myVar__"
+			"sendMessage" : "Send message to __myVar__",
+            "msgReceivedEvt" : "__myVar__ sends a message"
 		}
       },
 

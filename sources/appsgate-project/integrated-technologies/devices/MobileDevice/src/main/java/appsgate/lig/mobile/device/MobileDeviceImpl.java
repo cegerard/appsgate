@@ -61,45 +61,22 @@ public class MobileDeviceImpl extends CoreObjectBehavior implements CoreObjectSp
      *
      * @param varName
      * @param value
-     * @return nothing, it just notifies ApAM that a new message has been posted.
+     * @return nothing, it just notifies ApAM that a new message has been
+     * posted.
      */
     public NotificationMsg notifyChanges(String varName, String value) {
         return new MobileDeviceNotificationMsg(varName, value, this.getAbstractObjectId());
     }
 
     @Override
-    public JSONObject getCapabilites() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public JSONObject getActivatedCapabilites() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public boolean hasCapability(String capability) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public boolean isCapabilityAsctivated(String capability) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public boolean sendNotifcation(String msg, int flag) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
     public boolean display(String message) {
         return mobileDeviceAdapter.sendMessage("appsgate", message);
+    }
+
+    @Override
+    public boolean emitTaskerMessage(JSONObject objMessage) {
+        this.notifyChanges(objMessage.optString("title"), objMessage.optString("message"));
+        return true;
     }
 
     @Override
@@ -118,7 +95,6 @@ public class MobileDeviceImpl extends CoreObjectBehavior implements CoreObjectSp
         return 0;
     }
 
-
     @Override
     public CORE_TYPE getCoreType() {
         return CORE_TYPE.DEVICE;
@@ -136,8 +112,8 @@ public class MobileDeviceImpl extends CoreObjectBehavior implements CoreObjectSp
     }
 
     /**
-     * 
-     * @param aThis 
+     *
+     * @param aThis
      */
     public void setAdapter(MobileDeviceAdapterServices aThis) {
         this.mobileDeviceAdapter = aThis;

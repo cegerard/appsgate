@@ -19,7 +19,7 @@ public class SocketTaskerTest {
 
     @Test
     public void testSomeMethod() {
-        SocketTasker s = new SocketTasker();
+        SocketTasker s = new SocketTasker(null);
         Assert.assertNotNull("Socket Tasker has not been created", s);
         s.connect();
         s.identifyAndSubscribe();
