@@ -30,13 +30,11 @@ import org.slf4j.LoggerFactory;
  */
 public class SocketTasker {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(SocketIOHandler.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(SendMessageSocket.class);
 
     private Socket socket;
-    private String host;
-    private String login;
-    private String pass;
 
+    private String host = Configuration.HOST;
     private String httpAddr;
     private String httpPort;
 
@@ -49,9 +47,8 @@ public class SocketTasker {
 
     /**
      *
-     * @param host
      */
-    public SocketTasker(String host) {
+    public SocketTasker() {
         this.trustAllCerts = new TrustManager[]{new X509TrustManager() {
             @Override
             public java.security.cert.X509Certificate[] getAcceptedIssuers() {
@@ -70,10 +67,12 @@ public class SocketTasker {
         }};
         try {
             // Initialize socket with the host
-            this.socket = IO.socket(host);
+            this.socket = IO.socket("http://" + Configuration.HOST);
             this.configureSocket(socket);
+            this.createSockeStateMsg();
 
         } catch (URISyntaxException e) {
+            LOGGER.error("Unable to parse URI");
 
         }
     }
@@ -152,17 +151,15 @@ public class SocketTasker {
         this.httpPort = port;
     }
 
-    public void connect(String login, String pass) {
-        this.login = login;
-        this.pass = pass;
-
+    public void connect() {
         if (!this.socket.connected()) {
             this.socket.connect();
         }
     }
 
     public void identifyAndSubscribe() {
-        this.identify(login, pass);
+        this.connect();
+        this.identify(Configuration.LOGIN, Configuration.PASSWORD);
 
         JSONObject subscribe = new JSONObject();
         JSONObject data = new JSONObject();
@@ -176,17 +173,14 @@ public class SocketTasker {
         this.socket.emit("subscribe", subscribe);
     }
 
-    public void connect() {
-        this.connect(this.login, this.pass);
-    }
-
     /**
      * TODO A mettre dans interface
      *
      * @param msg
      */
-    private void sendMsgToTasker(String msg) {
-        LOGGER.trace(msg);
+    private void sendMsgToTasker(JSONObject msg) {
+        LOGGER.trace("Message receive from Tasker: {}", msg.toString());
+        
     }
 
     public void disconnect() {
@@ -219,11 +213,7 @@ public class SocketTasker {
             @Override
             public void call(Object... args) {
                 LOGGER.debug("Socket IO " + socket.id() + " -> Connect "); //$NON-NLS-1$
-                identifyAndSubscribe();
-                // Connection Socket message
-                sendMsgToTasker(socketStateConnection.toString());
-
-                timer = new Timer();
+                identifyAndSubscribe();                timer = new Timer();
                 if (pingSocTask == null) {
                     pingSocTask = new PingSocketTask(socket);
                     timer.schedule(pingSocTask, 0, 20000);
@@ -253,7 +243,7 @@ public class SocketTasker {
                 }
 
                 LOGGER.debug("JSON reçu transféré to tasker : " + o.toString());
-                sendMsgToTasker(o.toString());
+                sendMsgToTasker(o);
             }
         }).on("ping", new Emitter.Listener() {
 
@@ -277,7 +267,6 @@ public class SocketTasker {
                 LOGGER.debug("Socket IO -> Disconnect "); //$NON-NLS-1$
                 // Disconnection Socket message
                 LOGGER.debug("JSON disconnection socket : " + socketStateDisconnection.toString());
-                sendMsgToTasker(socketStateDisconnection.toString());
 
                 if (timer != null) {
                     pingSocTask.cancel();
@@ -303,22 +292,10 @@ public class SocketTasker {
 
         // Creation Socket message
         LOGGER.debug("JSON creation socket : " + socketStateCreation.toString());
-        sendMsgToTasker(socketStateCreation.toString());
     }
 
     public void socketOff() {
         this.socket.off();
-    }
-
-    public boolean resetSocketInfo(String newAddr, String newLogin, String newPass) {
-        // If no login/pass no reset
-        if (newLogin.equals("") && newPass.equals("")) {
-            return false;
-        }
-        if (this.login == null && this.pass == null) {
-            return true;
-        }
-        return !newLogin.equals(this.login) || !newPass.equals(this.pass) || !newAddr.equals(this.host);
     }
 
     private class PingSocketTask extends TimerTask {

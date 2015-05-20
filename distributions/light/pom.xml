@@ -274,6 +274,11 @@
 								</artifactItem>
 								<artifactItem>
 									<groupId>appsgate.libs</groupId>
+									<artifactId>SocketIOHandler</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>appsgate.libs</groupId>
 									<artifactId>JavaWebSocketAdapter</artifactId>
 									<version>${project.version}</version>
 								</artifactItem>

@@ -7,7 +7,8 @@ import org.slf4j.LoggerFactory;
 
 import appsgate.lig.mobile.device.adapter.spec.MobileDeviceAdapterServices;
 import appsgate.lig.mobile.device.MobileDeviceImpl;
-import appsgate.lig.mobile.device.com.SocketIOHandler;
+import appsgate.lig.mobile.device.com.SendMessageSocket;
+import appsgate.lig.mobile.device.com.SocketTasker;
 import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Implementation;
 import fr.imag.adele.apam.Instance;
@@ -25,14 +26,18 @@ public class MobileDeviceAdapter extends CoreObjectBehavior implements MobileDev
      */
     private static final Logger logger = LoggerFactory.getLogger(MobileDeviceAdapter.class);
 
-    private final SocketIOHandler socket;
+    private final SendMessageSocket socket;
+    
+    private final SocketTasker tasker;
 
     /**
      * Called by APAM when an instance of this implementation is created
      */
     public MobileDeviceAdapter() {
         logger.info("New mobile device adapter");
-        socket = new SocketIOHandler();
+        socket = new SendMessageSocket();
+        tasker = new SocketTasker();
+        tasker.identifyAndSubscribe();
         MobileDeviceImpl mob = createApamComponent();
         mob.setAdapter(this);
     }

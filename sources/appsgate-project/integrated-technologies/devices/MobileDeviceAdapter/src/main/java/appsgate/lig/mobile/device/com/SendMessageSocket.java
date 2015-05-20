@@ -11,15 +11,13 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.HashMap;
 
-public final class SocketIOHandler {
+public final class SendMessageSocket {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(SocketIOHandler.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(SendMessageSocket.class);
 
     private final String USER_AGENT = "Mozilla/5.0";
 
-    private final String login = "appsgate-box";
-    private final String pass = "appsgate";
-    private final String url = "http://thacthab.herokuapp.com/broadcast";
+    private final String url = "http://" + Configuration.HOST + "/broadcast";
 
     // HTTP POST request
     public boolean sendPost(String title, String msg) {
@@ -43,10 +41,10 @@ public final class SocketIOHandler {
             LOGGER.debug("\nSending 'POST' request to URL : " + url);
             // Send post request
             con.setDoOutput(true);
-            DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-            wr.writeBytes(urlParameters);
-            wr.flush();
-            wr.close();
+            try (DataOutputStream wr = new DataOutputStream(con.getOutputStream())) {
+                wr.writeBytes(urlParameters);
+                wr.flush();
+            }
             int responseCode = con.getResponseCode();
             LOGGER.debug("Post parameters : " + urlParameters);
             LOGGER.debug("Response Code : " + responseCode);
@@ -67,8 +65,8 @@ public final class SocketIOHandler {
      */
     private String getMessage(String title, String msg) {
         HashMap<String, String> urlParameters = new HashMap<>();
-        urlParameters.put("login", login);
-        urlParameters.put("pass", pass);
+        urlParameters.put("login", Configuration.LOGIN);
+        urlParameters.put("pass", Configuration.PASSWORD);
         urlParameters.put("title", title);
         urlParameters.put("message", msg);
 
