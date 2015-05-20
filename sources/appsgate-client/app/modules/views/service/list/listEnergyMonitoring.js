@@ -11,7 +11,9 @@ define([
 	ListEnergyMonitoringView = Backbone.View.extend({
 		energyGrpTpl: _.template(energyMonitoringTemplate),
 		events: {
-			"click button.delete-energy-group": "onClickDeleteEnergyGroup",
+			"click button.cancel-delete-energy-group-button": "onCancelDeleteEnergyGroup",
+			"click button.delete-popover-energy-group-button": "onClickDeleteEnergyGroup",
+			"click button.delete-energy-group-button": "onDeleteEnergyGroup",
 			"click #add-energy-group-modal button.valid-button": "onClickAddEnergyGroup",
 			"keyup #add-energy-group-modal input": "validAddinAmount",
 			"click button.start": "onStart",
@@ -137,12 +139,44 @@ define([
 		},
 
 		/**
-		 * Callback to delete amount
+		 * Callback to delete energy group
 		 */
-		onClickDeleteEnergyGroup: function (e) {
+		onDeleteEnergyGroup: function (e) {
 			e.preventDefault();
 			var id = $(e.currentTarget).attr("idGroup");
 			services.getEnergyMonitoringAdapter().removeEnergyMonitoringGroup(id);
+		},
+
+		/**
+		 * Callback when the user has clicked on the button to cancel the deleting
+		 */
+		onCancelDeleteEnergyGroup: function (e) {
+			e.preventDefault();
+			var idGroup = $(e.currentTarget).attr('idGroup');
+			// destroy the popover
+			this.$el.find(".delete-popover-energy-group-button[idGroup='" + idGroup + "']").popover('destroy');
+		},
+
+		/**
+		 * Callback when the user has clicked on the button delete.
+		 */
+		onClickDeleteEnergyGroup: function (e) {
+			e.preventDefault();
+			var self = this;
+			var idGroup = $(e.currentTarget).attr('idGroup');
+			// create the popover
+			this.$el.find(".delete-popover-energy-group-button[idGroup='" + idGroup + "']").popover({
+				html: true,
+				title: $.i18n.t("services.energy-monitoring.warning-delete"),
+				content: "<div class='popover-div'><button type='button' idGroup='" + idGroup + "' class='btn btn-default cancel-delete-energy-group-button'>" + $.i18n.t("form.cancel-button") + "</button><button type='button' idGroup='" + idGroup + "' class='btn btn-danger delete-energy-group-button'>" + $.i18n.t("form.delete-button") + "</button></div>",
+				placement: "bottom"
+			});
+			// listen the hide event to destroy the popup, because it is created to every click on Delete
+			this.$el.find(".delete-popover-energy-group-button[idGroup='" + idGroup + "']").on('hidden.bs.popover', function () {
+				self.onCancelDeleteEnergyGroup(e);
+			});
+			// show the popup
+			this.$el.find(".delete-popover-energy-group-button[idGroup='" + idGroup + "']").popover('show');
 		},
 
 		/**
@@ -202,7 +236,7 @@ define([
 			var self = this;
 			var divChoice = $('#energyDevicesContainer');
 			divChoice.append("<div class='col-md-12'><input type='checkbox' id='allDevice'><label for='allDevice'> " + $.i18n.t("services.energy-monitoring.modal-add.devices.all") + "</label></div>");
-			
+
 			_.each(self.getEnergyDevices(), function (device) {
 				divChoice.append("<div class='col-md-12'><input type='checkbox' id='" + device.get("id") + "'><label for='" + device.get('id') + "'> " + device.get('name') + "</label></div>");
 			});
@@ -242,7 +276,7 @@ define([
 				self.updateState(group.get("id"));
 			});
 		},
-		
+
 		/**
 		 * Method to set all the group dates
 		 */
@@ -310,7 +344,7 @@ define([
 			spanBudgetUsedPercent.text(budgetUsedPercent + "%");
 			progressBar.css("width", budgetUsedPercent + "%");
 		},
-		
+
 		/**
 		 * Method to update the group name
 		 */
@@ -318,11 +352,11 @@ define([
 			var self = this;
 			var divGroup = $("#" + idGroup);
 			var energyGroup = services.getCoreEnergyMonitoringGroupById(idGroup);
-			
+
 			var spanName = divGroup.children(".row").children("div").children(".span-group-name");
 			spanName.text(energyGroup.get('name'));
 		},
-		
+
 		updateDates: function (idGroup) {
 			var self = this;
 			var divGroup = $("#" + idGroup);

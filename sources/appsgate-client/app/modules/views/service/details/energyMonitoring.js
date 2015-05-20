@@ -13,7 +13,10 @@ define([
 		// map the events and their callback
 		events: {
 			"click #edit-energy-group-modal button.valid-button": "onClickEditEnergyGroup",
-			"click button.back-button": "onBackButton"
+			"click button.back-button": "onBackButton",
+			"click button.delete-energy-group-button": "onDeleteEnergyGroup",
+			"click button.cancel-delete-energy-group-button": "onCancelDeleteEnergyGroup",
+			"click button.delete-popover-button": "onClickDeleteEnergyGroup",
 		},
 
 		initialize: function () {
@@ -94,6 +97,45 @@ define([
 			}
 
 			$("#edit-energy-group-modal").modal("hide");
+		},
+
+		/**
+		 * Callback when the user has clicked on the button to cancel the deleting
+		 */
+		onCancelDeleteEnergyGroup: function () {
+			// destroy the popover
+			this.$el.find("#delete-program-popover").popover('destroy');
+		},
+
+		/**
+		 * Callback to delete energy Group
+		 */
+		onDeleteEnergyGroup: function (e) {
+			var self = this;
+			e.preventDefault();
+			services.getEnergyMonitoringAdapter().removeEnergyMonitoringGroup(self.model.get('id'));
+			
+			appRouter.navigate("#services/types/EnergyMonitoringAdapter", {trigger: true});
+		},
+
+		/**
+		 * Callback when the user has clicked on the button delete.
+		 */
+		onClickDeleteEnergyGroup: function (e) {
+			var self = this;
+			// create the popover
+			this.$el.find("#delete-program-popover").popover({
+				html: true,
+				title: $.i18n.t("services.energy-monitoring.warning-delete"),
+				content: "<div class='popover-div'><button type='button' class='btn btn-default cancel-delete-energy-group-button'>" + $.i18n.t("form.cancel-button") + "</button><button type='button' class='btn btn-danger delete-energy-group-button'>" + $.i18n.t("form.delete-button") + "</button></div>",
+				placement: "bottom"
+			});
+			// listen the hide event to destroy the popup, because it is created to every click on Delete
+			this.$el.find("#delete-program-popover").on('hidden.bs.popover', function () {
+				self.onCancelDeleteEnergyGroup();
+			});
+			// show the popup
+			this.$el.find("#delete-program-popover").popover('show');
 		},
 
 		/**

@@ -997,6 +997,7 @@
 		},
 		"add-button" : "Nouveau groupe de suivi d'énergie",
 		"remove-button" : "Supprimer",
+		"warning-delete" : "Voulez-vous vraiment supprimer ce groupe de suivi d'énergie ?",
 		"start-button" : "Démarrer",
 		"stop-button" : "Arrêter",
 		"edit-button" : "Editer",
