@@ -72,9 +72,9 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	
 	private boolean isMonitoring = false;
 	
-	long lastResetTimestamp;
-	long lastStartTimeStamp;
-	long lastStopTimeStamp;
+	long lastResetTimestamp=-1;
+	long lastStartTimeStamp=-1;
+	long lastStopTimeStamp=-1;
 	
 	private CoreClockSpec clock;
 	
@@ -278,8 +278,13 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 	@Override
 	public void resetEnergy() {
 		logger.trace("resetEnergy()");
-		JSONObject historyLog = getCurrentDescription();
-		energyHistory.put(historyLog);
+		
+		if(lastStartTimeStamp>0) {
+			logger.trace("resetEnergy(), energy was reseted without being started, does not store history");
+
+			JSONObject historyLog = getCurrentDescription();
+			energyHistory.put(historyLog);
+		}
 		
 		for(ActiveEnergySensor sensor : sensors.values()) {
 			sensor.resetEnergy();
@@ -295,6 +300,8 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		stateChanged(LASTRESET_KEY, null, String.valueOf(lastResetTimestamp));
 		stateChanged(PERIOD_START, null, String.valueOf(lastStartTimeStamp));
 		stateChanged(PERIOD_STOP, null, String.valueOf(lastStopTimeStamp));
+		stateChanged(HISTORY_KEY, null, String.valueOf(getEnergyHistory()));
+
 		stateChanged(BUDGETRESETED_KEY, null, BUDGETRESETED_KEY);
 		
 		computeEnergy();
