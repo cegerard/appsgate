@@ -170,7 +170,7 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 			stateChanged(ANNOTATIONS_KEY, null, annotationsAsJSON.toString());
 		}
 		
-		lastResetTimestamp = configuration.optLong(LASTRESET_KEY, clock.getCurrentTimeInMillis());
+		lastResetTimestamp = configuration.optLong(LASTRESET_KEY, -1);
 		stateChanged(LASTRESET_KEY, null, String.valueOf(lastResetTimestamp));
 		lastStartTimeStamp = configuration.optLong(PERIOD_START, -1);
 		stateChanged(PERIOD_START, null, String.valueOf(lastStartTimeStamp));
@@ -285,13 +285,19 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		for(ActiveEnergySensor sensor : sensors.values()) {
 			sensor.resetEnergy();
 		}
-		lastResetTimestamp = clock.getCurrentTimeInMillis();		
+		lastResetTimestamp = clock.getCurrentTimeInMillis();
+		lastStartTimeStamp = -1;
+		lastStopTimeStamp = -1;
 		remainingTotal = 0;
 		remainingDuringPeriod = 0;
 
 
 		
+		stateChanged(LASTRESET_KEY, null, String.valueOf(lastResetTimestamp));
+		stateChanged(PERIOD_START, null, String.valueOf(lastStartTimeStamp));
+		stateChanged(PERIOD_STOP, null, String.valueOf(lastStopTimeStamp));
 		stateChanged(BUDGETRESETED_KEY, null, BUDGETRESETED_KEY);
+		
 		computeEnergy();
 	}
 	
@@ -495,6 +501,7 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 			logger.trace("startMonitoring(), starting monitoring status");
 			isMonitoring = true;
 			lastStartTimeStamp = clock.getCurrentTimeInMillis();
+			stateChanged(PERIOD_START, null, String.valueOf(lastStartTimeStamp));
 			stateChanged(ISMONITORING_KEY, "false", "true");
 			
 		} else {
@@ -510,6 +517,7 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 			logger.trace("stopMonitoring(), stoppping monitoring status");
 			isMonitoring = false;
 			lastStopTimeStamp = clock.getCurrentTimeInMillis();
+			stateChanged(PERIOD_STOP, null, String.valueOf(lastStopTimeStamp));			
 			stateChanged(ISMONITORING_KEY, "true","false");
 		} else {
 			logger.trace("stopMonitoring(), already stopped, does nothing");
