@@ -147,15 +147,14 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		stateChanged(AUTOMATION_KEY, null, automation.toJSON().toString());		
 
 		
-		energyHistory = configuration.optJSONArray(HISTORY_KEY);
-		if(energyHistory == null) {
-			energyHistory = new JSONArray();
-		}
+		energyHistory = new JSONArray(configuration.optString(HISTORY_KEY,"[]"));
+
 		stateChanged(HISTORY_KEY, null, energyHistory.toString());
 		
 		
 		this.annotations = new HashMap<String, String>();
-		annotationsAsJSON = new JSONArray();
+		annotationsAsJSON = new JSONArray(configuration.optString(ANNOTATIONS_KEY,"[]"));
+
 		if(configuration.optJSONArray(ANNOTATIONS_KEY) != null) {
 			JSONArray array = configuration.getJSONArray(ANNOTATIONS_KEY);
 			for(int i = 0; i < array.length(); i++) {
@@ -416,6 +415,13 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		descr.put("coreType", getCoreType());
 		descr.put("status", getObjectStatus());
 		descr.put(HISTORY_KEY, String.valueOf(getEnergyHistory()));
+		descr.put(ANNOTATIONS_KEY, String.valueOf(getAnnotations()));
+		
+		/**
+		 * Those raw index are mostly used for persistance
+		 */
+		descr.put(RAW_ENERGY_KEY, lastTotal+remainingTotal);
+		descr.put(RAW_ENERGYDURINGPERIOD_KEY, lastEnergyDuringPeriod+remainingDuringPeriod);
 		
 		return descr;
 	}
@@ -439,13 +445,6 @@ public class CoreEnergyMonitoringGroupImpl extends CoreObjectBehavior
 		descr.put(LASTRESET_KEY, getLastResetTimestamp());
 		descr.put(AUTOMATION_KEY, automation.toJSON());
 
-		descr.put(ANNOTATIONS_KEY, String.valueOf(getAnnotations()));
-
-		/**
-		 * Those raw index are mostly used for persistance
-		 */
-		descr.put(RAW_ENERGY_KEY, lastTotal+remainingTotal);
-		descr.put(RAW_ENERGYDURINGPERIOD_KEY, lastEnergyDuringPeriod+remainingDuringPeriod);
 		descr.put(PERIOD_START, getLastStartTimestamp());
 		descr.put(PERIOD_STOP, getLastStopTimestamp());
 		
