@@ -50,6 +50,18 @@
             <artifactId>CoreObjectSpec</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.nkzawa</groupId>
+            <artifactId>engine.io-client</artifactId>
+            <version>0.3.2-SNAPSHOT</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>com.github.sdnwiselab</groupId>
+            <artifactId>sdn-wise</artifactId>
+            <version>0.0.9-SNAPSHOT</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
 
     <!-- Dependencies Instructions -->

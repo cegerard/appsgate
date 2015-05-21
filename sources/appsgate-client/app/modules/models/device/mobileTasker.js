@@ -56,6 +56,35 @@ define([
           break;
       }
       return btn;
+    },
+    /**
+     * return the list of available events
+     */
+    getEvents: function() {
+      return ["valueChange"];
+    },
+    /**
+     * return the keyboard code for a given event
+     */
+    getKeyboardForEvent: function(evt) {
+      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
+      var v = this.getJSONEvent("mandatory");
+      switch (evt) {
+        case "valueChange":
+          $(btn).append("<span>" + $.i18n.t('devices.mobileTasker.keyboard.msgReceivedEvt', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.mobileTasker.keyboard.mobile') + "</span>",
+          }));
+          v.eventName = "appsgate";
+          v.eventValue = "*";
+          v.phrase = "devices.mobileTasker.language.msgReceivedEvt";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        default:
+          console.error("unexpected event found for MobileDevice: " + evt);
+          btn = null;
+          break;
+      }
+      return btn;
     }
   });
   return MobileTasker;

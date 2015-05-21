@@ -60,6 +60,7 @@
 		<module>CyberGarageAdapter</module>
 		<module>JavamailAndroidAdapter</module>
 		<module>JavaWebSocketAdapter</module>
+		<module>SocketIOHandler</module>
         <!--
          Fuchsia already provides a "bundlelized" philips sdk
 		<module>HUESdKAdapter</module>

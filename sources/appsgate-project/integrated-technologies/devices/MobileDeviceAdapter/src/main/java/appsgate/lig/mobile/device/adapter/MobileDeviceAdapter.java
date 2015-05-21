@@ -7,7 +7,9 @@ import org.slf4j.LoggerFactory;
 
 import appsgate.lig.mobile.device.adapter.spec.MobileDeviceAdapterServices;
 import appsgate.lig.mobile.device.MobileDeviceImpl;
-import appsgate.lig.mobile.device.com.SocketIOHandler;
+import appsgate.lig.mobile.device.com.SendMessageSocket;
+import appsgate.lig.mobile.device.com.SocketTasker;
+import appsgate.lig.mobile.device.spec.CoreMobileDeviceSpec;
 import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Implementation;
 import fr.imag.adele.apam.Instance;
@@ -25,28 +27,33 @@ public class MobileDeviceAdapter extends CoreObjectBehavior implements MobileDev
      */
     private static final Logger logger = LoggerFactory.getLogger(MobileDeviceAdapter.class);
 
-    private final SocketIOHandler socket;
+    private final SendMessageSocket socket;
+
+    private final SocketTasker tasker;
+
+    private List<CoreMobileDeviceSpec> mobiles;
 
     /**
      * Called by APAM when an instance of this implementation is created
      */
     public MobileDeviceAdapter() {
         logger.info("New mobile device adapter");
-        socket = new SocketIOHandler();
-        MobileDeviceImpl mob = createApamComponent();
-        mob.setAdapter(this);
+        mobiles = new ArrayList<>();
+        socket = new SendMessageSocket();
+        tasker = new SocketTasker(this);
+        tasker.identifyAndSubscribe();
+        createDefaultApamComponent();
     }
 
     /**
      * Method that creates a MobileDeviceImpl
      *
-     * @return a new ApamCompenent
      */
-    private MobileDeviceImpl createApamComponent() {
+    private void createDefaultApamComponent() {
         Implementation implem = CST.apamResolver.findImplByName(null, MobileDeviceImpl.IMPL_NAME);
         if (implem == null) {
             logger.error("createApamComponent(...) Unable to get APAM Implementation");
-            return null;
+            return;
         }
         logger.trace("createGroup(), implem found");
         Map<String, String> properties = new HashMap<>();
@@ -55,10 +62,12 @@ public class MobileDeviceAdapter extends CoreObjectBehavior implements MobileDev
 
         if (inst == null) {
             logger.error("createApamComponent(...) Unable to create APAM Instance");
-            return null;
+            return;
         }
+        MobileDeviceImpl mobile = (MobileDeviceImpl) inst.getServiceObject();
+        mobile.setAdapter(this);
+        mobiles.add(mobile);
 
-        return (MobileDeviceImpl) inst.getServiceObject();
     }
 
     @Override
@@ -107,5 +116,17 @@ public class MobileDeviceAdapter extends CoreObjectBehavior implements MobileDev
     @Override
     public Boolean sendMessage(String title, String msg) {
         return socket.sendPost(title, msg);
+    }
+
+    public void MessageReceived(JSONObject msg) {
+        if (! msg.has("title")) {
+            return;
+        }
+        if (!msg.has("message")) {
+            return;
+        }
+        for (CoreMobileDeviceSpec m : mobiles) {
+            m.emitTaskerMessage(msg);
+        }
     }
 }

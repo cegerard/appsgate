@@ -6,22 +6,25 @@
 package appsgate.lig.mobile.device.com;
 
 import org.junit.Test;
-
 import org.junit.Assert;
 
 /**
  *
  * @author jr
  */
-public class SocketIOHandlerTest {
-
-    public SocketIOHandlerTest() {
+public class SocketTaskerTest {
+    
+    public SocketTaskerTest() {
     }
 
     @Test
     public void testSomeMethod() {
-        SendMessageSocket socket = new SendMessageSocket();
-        Assert.assertTrue(socket.sendPost("Debug", "testDirect"));
+        SocketTasker s = new SocketTasker(null);
+        Assert.assertNotNull("Socket Tasker has not been created", s);
+        s.connect();
+        s.identifyAndSubscribe();
+        //Assert.assertTrue("socket is not connected", s.isConnected());
+        
     }
-
+    
 }
