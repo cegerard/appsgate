@@ -49,7 +49,7 @@ define([
   	getUnits: function () {
 		var unitsMap = [];
 		unitsMap.push({
-			text: "W",
+			text: "Ws",
 			value: 1
 		});
 		unitsMap.push({

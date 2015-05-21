@@ -338,7 +338,7 @@ define([
 			spanTotalConsumption.text(parseFloat(self.model.get('energyDuringPeriod')).toFixed(4));
 
 			var spanBudgetTotal = divGroup.children(".row").children("div").children(".span-budget-allocated");
-			spanBudgetTotal.text(self.model.get('budgetTotal'));
+			spanBudgetTotal.text(parseFloat(self.model.get('budgetTotal')).toFixed(2));
 
 			var spanBudgetUnit = divGroup.children(".row").children("div").children(".span-budget-unit");
 			spanBudgetUnit.text(unit.text);

@@ -333,7 +333,7 @@ define([
 			spanTotalConsumption.text(parseFloat(energyGroup.get('energyDuringPeriod')).toFixed(4));
 
 			var spanBudgetTotal = divGroup.children(".row").children("div").children(".span-budget-allocated");
-			spanBudgetTotal.text(energyGroup.get('budgetTotal'));
+			spanBudgetTotal.text(parseFloat(energyGroup.get('budgetTotal')).toFixed(2));
 
 			var spanBudgetUnit = divGroup.children(".row").children("div").children(".span-budget-unit");
 			spanBudgetUnit.text(unit.text);
