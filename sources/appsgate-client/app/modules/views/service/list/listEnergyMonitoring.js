@@ -365,18 +365,26 @@ define([
 			var spanDateFrom = divGroup.children(".row").children(".div-dates").children(".span-date-from");
 			var spanDateUntil = divGroup.children(".row").children(".div-dates").children(".span-date-until");
 
-			var dateFrom = new Date(energyGroup.get('startDate'));
-			var dateTokens = dateFrom.toLocaleDateString().split("/");
-			var dateFromReformatted = dateTokens[0] + "/" + dateTokens[1];
-			spanDateFrom.text(dateFromReformatted + " " + dateFrom.toLocaleTimeString());
-
-			if (energyGroup.get('isMonitoring') === "true" || energyGroup.get('isMonitoring') === true) {
-				spanDateUntil.text($.i18n.t("services.energy-monitoring.date.now"));
+			var intDateFrom = parseInt(energyGroup.get('startDate'));
+			// At group creation, dates = -1
+			if (intDateFrom < 1) {
+				spanDateFrom.text("--/-- --:--:--");
+				spanDateUntil.text("--/-- --:--:--");
 			} else {
-				var dateUntil = new Date(energyGroup.get('stopDate'));
-				dateTokens = dateUntil.toLocaleDateString().split("/");
-				var dateUntilReformatted = dateTokens[0] + "/" + dateTokens[1];
-				spanDateUntil.text(dateUntilReformatted + " " + dateUntil.toLocaleTimeString());
+
+				var dateFrom = new Date(intDateFrom);
+				var dateTokens = dateFrom.toLocaleDateString().split("/");
+				var dateFromReformatted = dateTokens[0] + "/" + dateTokens[1];
+				spanDateFrom.text(dateFromReformatted + " " + dateFrom.toLocaleTimeString());
+
+				if (energyGroup.get('isMonitoring') === "true" || energyGroup.get('isMonitoring') === true) {
+					spanDateUntil.text($.i18n.t("services.energy-monitoring.date.now"));
+				} else {
+					var dateUntil = new Date(parseInt(energyGroup.get('stopDate')));
+					dateTokens = dateUntil.toLocaleDateString().split("/");
+					var dateUntilReformatted = dateTokens[0] + "/" + dateTokens[1];
+					spanDateUntil.text(dateUntilReformatted + " " + dateUntil.toLocaleTimeString());
+				}
 			}
 		},
 

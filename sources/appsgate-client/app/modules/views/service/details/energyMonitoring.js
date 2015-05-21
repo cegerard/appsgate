@@ -394,18 +394,25 @@ define([
 			var spanDateFrom = $("#div-dates").children(".span-date-from");
 			var spanDateUntil = $("#div-dates").children(".span-date-until");
 
-			var dateFrom = new Date(self.model.get('startDate'));
-			var dateTokens = dateFrom.toLocaleDateString().split("/");
-			var dateFromReformatted = dateTokens[0] + "/" + dateTokens[1];
-			spanDateFrom.text(dateFromReformatted + " " + dateFrom.toLocaleTimeString());
-
-			if (self.model.get('isMonitoring') === "true" || self.model.get('isMonitoring') === true) {
-				spanDateUntil.text($.i18n.t("services.energy-monitoring.date.now"));
+			var intDateFrom = parseInt(self.model.get('startDate'));
+			// At group creation, dates = -1
+			if (intDateFrom < 1) {
+				spanDateFrom.text("--/-- --:--:--");
+				spanDateUntil.text("--/-- --:--:--");
 			} else {
-				var dateUntil = new Date(self.model.get('stopDate'));
-				dateTokens = dateUntil.toLocaleDateString().split("/");
-				var dateUntilReformatted = dateTokens[0] + "/" + dateTokens[1];
-				spanDateUntil.text(dateUntilReformatted + " " + dateUntil.toLocaleTimeString());
+				var dateFrom = new Date(intDateFrom);
+				var dateTokens = dateFrom.toLocaleDateString().split("/");
+				var dateFromReformatted = dateTokens[0] + "/" + dateTokens[1];
+				spanDateFrom.text(dateFromReformatted + " " + dateFrom.toLocaleTimeString());
+
+				if (self.model.get('isMonitoring') === "true" || self.model.get('isMonitoring') === true) {
+					spanDateUntil.text($.i18n.t("services.energy-monitoring.date.now"));
+				} else {
+					var dateUntil = new Date(parseInt(self.model.get('stopDate')));
+					dateTokens = dateUntil.toLocaleDateString().split("/");
+					var dateUntilReformatted = dateTokens[0] + "/" + dateTokens[1];
+					spanDateUntil.text(dateUntilReformatted + " " + dateUntil.toLocaleTimeString());
+				}
 			}
 		}
 
