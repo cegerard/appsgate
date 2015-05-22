@@ -218,8 +218,8 @@ define([
 				this.buildUnitSelector();
 				this.buildDevicesChoice();
 
-				this.updateState(this.model.get('id'));
 				this.updateValues(this.model.get('id'));
+				this.updateState(this.model.get('id'));
 				this.updateDates();
 				this.buildSensorsList();
 				this.updateHistory();
@@ -369,11 +369,47 @@ define([
 			var spanBudgetUnit = divGroup.children(".row").children("div").children(".span-budget-unit");
 			spanBudgetUnit.text(unit.text);
 
-			var progressBar = divGroup.children(".row").children("div").children("div").children(".progress-bar");
+			// Progress Bar
+			var divProgressBar = divGroup.children(".row").children("div").children("div.progress")
+			var progressBar = divProgressBar.children(".progress-bar");
 			var spanBudgetUsedPercent = progressBar.children(".budget-used-percent");
 			var budgetUsedPercent = self.model.getPercentUsed();
-			spanBudgetUsedPercent.text(budgetUsedPercent + "%");
-			progressBar.css("width", budgetUsedPercent + "%");
+			
+			// If budget exceed 100%, create new red bar
+			if (budgetUsedPercent > 100) {
+				// Reduce valid bar before add new one
+				progressBar.css("width", (200 - budgetUsedPercent) + "%");
+				// If second bar already existed, don't recreate it
+				if (divProgressBar.children(".progress-bar.progress-bar-over").length === 0) {
+					// Create bar and append it before the valid
+					progressBar.before("<div class='progress-bar progress-bar-over progress-bar-danger progress-bar-striped active' style='max-width:100%;'><span class='over-budget-used-percent'></span></div>");
+					// Change min width for the valid progress bar to make it disappear at 198-200%
+					progressBar.css("min-width", 0);
+				}
+				var overProgressBar = divProgressBar.children(".progress-bar.progress-bar-over");
+				var spanOverBudgetUsedPercent = $(overProgressBar).children(".over-budget-used-percent");
+				overProgressBar.css("width", budgetUsedPercent - 100 + "%");
+				spanOverBudgetUsedPercent.text(budgetUsedPercent + "%");
+				
+				// We change of span to show percent because 100-120 (approx) don't have place to write it in over bar
+				if (budgetUsedPercent > 125) {
+					spanBudgetUsedPercent.text("");
+					spanOverBudgetUsedPercent.text(budgetUsedPercent + "%");
+				} else {
+					spanBudgetUsedPercent.text(budgetUsedPercent + "%");
+					spanOverBudgetUsedPercent.text("");
+				}
+				
+			} else {
+				if (divProgressBar.children(".progress-bar.progress-bar-over").length > 0) {
+					// In this case, progress bar was over 100 before, so we need to remove the over-progress-bar
+					divProgressBar.children(".progress-bar.progress-bar-over").remove();
+					// And also reset min width
+					progressBar.css("min-width", "2em");
+				}
+				spanBudgetUsedPercent.text(budgetUsedPercent + "%");
+				progressBar.css("width", budgetUsedPercent + "%");
+			}
 		},
 
 		/**
