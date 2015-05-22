@@ -504,7 +504,12 @@ define([
 								var referenceString = "";
 								d.referenceData.forEach(function (ref) {
 									if (ref.referenceType !== undefined && ref.method !== undefined) {
-										referenceString += ref.referenceType + " : " + ref.method + "<br />";
+										if (ref.referenceType === "READING") {
+											referenceString += "<img src='/vendor/bower/appsgate.debugger/lib/themes/basic/pictograms/read.png' height='17' width='17'>"
+										} else {
+											referenceString += "<img src='/vendor/bower/appsgate.debugger/lib/themes/basic/pictograms/write.png' height='17' width='17'>"
+										}
+										referenceString += " : " + ref.method + "<br />";
 									}
 								});
 								return referenceString;

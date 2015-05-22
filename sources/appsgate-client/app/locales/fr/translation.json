@@ -73,7 +73,7 @@
 				}
 			},
 			"relation": {
-				"reference": "Référence",
+				"reference": "Commandes",
 				"reference-WRITING": "Ecriture",
 				"reference-READING": "Lecture",
 				"isLocatedIn": "Localisation",
