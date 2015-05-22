@@ -38,14 +38,13 @@
 			obj["ns"] = options.i18n.ns;
 			obj["program"] = decoration.programName;
 			obj["device"] = decoration.deviceName;%>
-            <div class="description"><%- i18n.t(decoration.description, obj ) %></div>
-            <div class="extra">
-				<% if (decoration.causality == "Program") { %>
-                <span class="source"><%- decoration.programName %></span>
-				<% } else { %>
-                <span class="causality"><%- decoration.causality %></span>
+            <div class="description"><%- i18n.t(decoration.description, obj ) %>
+				<% if (decoration.causality == "technical") { %>
+                <span class="causality"> (<%- i18n.t("decorations.technicalCausality", obj) %>)</span>
 				<% } %>
             </div>
+
+			</div>
         </td>
     </tr>
 <% }); %>

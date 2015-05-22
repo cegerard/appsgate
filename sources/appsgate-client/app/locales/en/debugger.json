@@ -1,15 +1,15 @@
 {
   "decorations": {
     "program" : {
-      "added" : "program __name__ has been added",
+      "added" : "program __name__ has been created by user",
       "deleted" : "program __name__ has been deleted",
       "update" : {
         "user" : "program __name__ updated",
-        "deployed" : "programm stopped",
-        "invalid" : "program is invalid",
-        "incomplete" : "missing device for the program to run correctly",
-        "limping" : "program is running not fully",
-        "processing" : "program is running"
+        "deployed" : "program __name__ is stopped and valid",
+        "invalid" : "program __name__ is stopped and invalid",
+        "incomplete" : "program __name__ is stopped and some devices are missing",
+        "limping" : "program __name__ is started and some devices are missing",
+        "processing" : "program __name__ is started and valid"
       }
     },
     "connection" : "device connected",
@@ -22,8 +22,8 @@
     "ColorLight" : {
 	  "change" : {
 		"value" : {
-          "on" : "lamp is on",
-          "off" : "lamp is off"
+          "on" : "lamp __device is turned on by __program__",
+          "off" : "lamp __device__ is turned off by __program__"
         },
 		"colorChanged" : "color changed"
 	  },
@@ -31,20 +31,20 @@
       "decreaseBrightness" : "Decrease brightness of [__device__]",
       "increaseBrightness" : "Increase brightness of [__device__]",
       "setBrightness" : "Set brightness of [__device__] to __brightness__",
-      "setRed" : "set color to red",
-      "setBlue" : "set color to blue",
-      "setGreen" : "set color to green",
-      "setYellow" : "set color to yellow",
-      "setOrange" : "set color to orange",
-      "setPurple" : "set color to purple",
-      "setPink" : "set color to pink",
-      "setWhite" : "set color to white",
+      "setRed" : "color of lamp __device__ is set to red by __program__",
+      "setBlue" : "color of lamp __device__ is set to blue by __program__",
+      "setGreen" : "color of lamp __device__ is set to green by __program__",
+      "setYellow" : "color of lamp __device__ is set to yellow by __program__",
+      "setOrange" : "color of lamp __device__ is set to orange by __program__",
+      "setPurple" : "color of lamp __device__ is set to purple by __program__",
+      "setPink" : "color of lamp __device__ is set to pink by __program__",
+      "setWhite" : "color of lamp __device__ is set to white by __program__",
 	  "setColorJson" : "change color to (H: __color.hue__, S: __color.sat__, B: __color.bri__)",
-      "off" : "$t(translation:devices.lamp.action.turnOff)",
-      "on" : "$t(translation:devices.lamp.action.turnOn)",
+      "off" : "Switch lamp __device__ on",
+      "on" : "Switch lamp __device__ off",
       "getState" : {
-        "on" : "Lamp is now on and __program__ has been ",
-        "off" : "Lamp is now off and __program__ has been "
+        "on" : "Lamp __device__ is now on and __program__ has been noticed",
+        "off" : "Lamp __device__ is now off and __program__ has been noticed"
       },
       "state": {
         "on" : "$t(decorations.ColorLight.getState.on)",
@@ -55,12 +55,12 @@
 	  "change" : {
 		"value" : "Temperature is __text__ °C"
 	  },
-      "getTemperature" : "State read by __source__ : temperature measure by __target__ is __valeur__ °C"
+      "getTemperature" : "Temperature measured by __device__ is __value__ °C and read by __program__"
     },
 	"SmartPlug" : {
 		"on" : "Switch plug [__device__] on",
 		"off" : "Switch plug [__device__] off",
-        "activePower": "State read by “__program__” : consumption indicated by __device__ indicates __conso__ W",
+        "activePower": "Consumption indicated by __device__ indicates __conso__ W and read by __program__",
         "change" : {
           "consumption" : "consumption indicates __text__ W",
           "plugState" : {
@@ -87,7 +87,7 @@
       "change" : {
         "switchNumber" : "Someone pressed button __text__"
       },
-      "switchNumber" : "Clic on button [__device__] capted by [__program__]"
+      "switchNumber" : "Click on button [__device__] capted by [__program__]"
     },
     "Contact" : {
       "change" : {
@@ -105,7 +105,8 @@
         "off" : "Not in time interval",
         "on" : "In time interval"
       }
-    }
+    },
+    "technicalCausality" : "detected by the system"
   },
   "groups": {
     "temperature": "$t(translation:devices.temperature.name.singular)",

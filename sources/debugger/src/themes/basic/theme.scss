@@ -233,13 +233,9 @@ html, body {
                 height: 50px;
                 padding: 0.8em 1.8em 0.8em 0.2em;
             }
-            .extra {
-                height: 30px;
-                text-align: right;
-                .source, .causality {
-                    line-height: 10px;
-                    font-size: x-small;
-                }
+            .causality {
+                font-size: small;
+                font-style: oblique;
             }
         }
     }

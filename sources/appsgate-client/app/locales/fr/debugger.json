@@ -1,15 +1,15 @@
 {
   "decorations": {
     "program" : {
-      "added" : "le programme __name__ a été ajouté",
+      "added" : "le programme __name__ est créé par l'utilisateur",
       "deleted" : "le programme __name__ a été supprimé",
       "update" : {
         "user" : "le programme __name__ a été modifié",
-        "deployed" : "le programme est arrêté",
-        "invalid" : "le programme est invalide",
-        "incomplete" : "il manque des équipements pour que le programme tourne correctement",
-        "limping" : "le programme tourne en mode dégradé",
-        "processing" : "le programme tourne normalement"
+        "deployed" : "le programme __name__ est désactivé et valide",
+        "invalid" : "le programme __name__ est désactivé et invalide ",
+        "incomplete" : "le programme __name__ est désactivé et des éléments sont manquants",
+        "limping" : "le programme __name__ est activé et des éléments sont manquants",
+        "processing" : "le programme __name__ est activé et valide"
       }
     },
     "connection" : "l'équipement s'est connecté",
@@ -31,20 +31,20 @@
       "decreaseBrightness" : "Baisser la luminosité de [__device__]",
       "increaseBrightness" : "Augmenter la luminosité de [__device__]",
       "setBrightness" : "Mettre la luminosité de [__device__] à __brightness__",
-      "setRed" : "allumer en rouge",
-      "setBlue" : "allumer en bleu",
-      "setGreen" : "allumer en vert",
-      "setYellow" : "allumer en jaune",
-      "setOrange" : "allumer en orange",
-      "setPurple" : "allumer en violet",
-      "setPink" : "allumer en rose",
-      "setWhite" : "allumer en blanc",
+      "setRed" : "La lampe __device__ est allumée en rouge par __program__",
+      "setBlue" : "La lampe __device__ est allumée en bleu par __program__",
+      "setGreen" : "La lampe __device__ est allumée en vert par __program__",
+      "setYellow" : "La lampe __device__ est allumée en jaune par __program__",
+      "setOrange" : "La lampe __device__ est allumée en orange par __program__",
+      "setPurple" : "La lampe __device__ est allumée en violet par __program__",
+      "setPink" : "La lampe __device__ est allumée en rose par __program__",
+      "setWhite" : "La lampe __device__ est allumée en blanc par __program__",
 	  "setColorJson" : "changer la couleur en (H: __color.hue__, S: __color.sat__, B: __color.bri__)",
-      "off" : "$t(translation:devices.lamp.action.turnOff)",
-      "on" : "$t(translation:devices.lamp.action.turnOn)",
+      "off" : "Eteindre la lampe __device__",
+      "on" : "Allumer la lampe __device__",
       "getState" : {
-        "on" : " __program__ sait que la lampe [__device__] est allumée",
-        "off" : " __program__ sait que la lampe [__device__] est éteinte"
+        "on" : " __program__ sait que la lampe __device__ est allumée",
+        "off" : " __program__ sait que la lampe __device__ est éteinte"
       },
       "state": {
         "on" : "$t(decorations.ColorLight.getState.on)",
@@ -55,7 +55,7 @@
 	  "change" : {
 		"value" : "la température est de __text__ °C"
 	  },
-      "getTemperature" : "Etat lu par __source__ : la temperature mesurée par __target__ est __valeur__ °C"
+      "getTemperature" : "La temperature relevée sur __device__ est __value__ °C, est lu par __program__"
     },
 	"SmartPlug" : {
 		"on" : "Allumer la prise [__device__]",
@@ -105,7 +105,8 @@
         "off" : "Nous ne sommes pas dans l'intervalle de temps",
         "on" : "Nous sommes dans l'intervalle de temps"
       }
-    }
+    },
+    "technicalCausality" : "détécté par le système"
   },
   "groups": {
     "temperature": "$t(translation:devices.temperature.name.singular)",
