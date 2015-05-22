@@ -54,7 +54,7 @@ public interface CoreFairyLightsSpec {
     }       
 	 * 
 	 */
-	JSONObject getLightsStatus();
+	JSONArray getLightsStatus();
 	
 	/**
 	 * Try to get the color of one light if it is in the group (otherwise will return null)
@@ -75,11 +75,11 @@ public interface CoreFairyLightsSpec {
 	 * Attempt to set all in the group lights of the same color
 	 * @return
 	 */
-	JSONObject setAllColorLight(String color);
+	JSONArray setAllColorLight(String color);
 	
 	/**
-	 * Attempt to set a pattern (using a selected set of leds, with their colors) as a JSON Object
-    "leds": [
+	 * Attempt to set a pattern (using a selected set of leds, with their colors) as a JSON array
+    [
         {
             "color": "#c93b3b", 
             "id": 3, 
@@ -100,7 +100,7 @@ public interface CoreFairyLightsSpec {
     }        
 	 * @return
 	 */
-	JSONObject setColorPattern(JSONObject pattern);	
+	JSONArray setColorPattern(JSONArray pattern);	
 	
 
 	/**

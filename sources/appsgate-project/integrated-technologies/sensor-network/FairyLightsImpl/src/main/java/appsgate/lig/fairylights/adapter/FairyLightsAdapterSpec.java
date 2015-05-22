@@ -21,7 +21,7 @@ public interface FairyLightsAdapterSpec {
 	 * it contains all the lights of the real Device
 	 * @param selectedLights is a JSONArray of absolute lights ids (from '0' to '24').
 	 */
-	public void createFreeformLightsGroup(JSONArray selectedLights);
+	public void createFreeformLightsGroup(String name, JSONArray selectedLights);
 	
 	/**
 	 * Create a contiguous group of lights containing all light between the light with id = startingIndex (included)
@@ -30,7 +30,7 @@ public interface FairyLightsAdapterSpec {
 	 * @param startingIndex
 	 * @param endingIndex
 	 */
-	public void createContiguousLightsGroup(int startingIndex, int endingIndex);
+	public void createContiguousLightsGroup(String name, int startingIndex, int endingIndex);
 	
 	/**
 	 * Update an existing group of lights

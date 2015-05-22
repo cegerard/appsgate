@@ -1,6 +1,8 @@
 package appsgate.lig.fairylights.adapter;
 
-public interface FairyLightsDiscoveryListener {
+import org.json.JSONArray;
+
+public interface FairyLightsStatusListener {
 	
 	/**
 	 * Called when the real fairy lights is available and reachable
@@ -13,5 +15,9 @@ public interface FairyLightsDiscoveryListener {
 	 */
 	public void deviceUnavailable();
 
-
+	/**
+	 * Called when the one or more lights color have been changed
+	 * @param lights full status of the FairyLights
+	 */
+	public void lightChanged(JSONArray lights);
 }

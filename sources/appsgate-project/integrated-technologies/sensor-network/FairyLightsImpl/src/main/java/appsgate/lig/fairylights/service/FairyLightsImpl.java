@@ -15,15 +15,12 @@ import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.fairylights.CoreFairyLightsSpec;
-import appsgate.lig.fairylights.utils.HttpUtils;
 
 
 /**
  * Core interface for the Fairy Lights (LumiPixel Device)
  * @author thibaud
  * 
-
-
  */
 public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpec, CoreFairyLightsSpec{
 	
@@ -34,13 +31,17 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 	int port = -1;
 	
 	//Apsgate Properties for CoreObjectSpec
-	public static final String UserType = "12";	
+	public static final String UserType = CoreFairyLightsSpec.class.getSimpleName();	
 	int coreObjectStatus = 0;
 	String coreObjectId;
+	String name;
+
 	
 	public static final String KEY_COLOR = "color";
 	public static final String KEY_LEDS = "leds";
 	public static final String KEY_ID = "id";
+	
+	public static final String IMPL_NAME = "FairyLightsImpl";
 	
 	Set<String> currentLights;
 	
@@ -64,9 +65,9 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 	}
 	
 	@Override
-	public JSONObject getLightsStatus() {
+	public JSONArray getLightsStatus() {
 		logger.trace("getAllLights()");
-		JSONObject response = LumiPixelImpl.getAllLights(); 
+		JSONArray response = LumiPixelImpl.getAllLights(); 
 
 		logger.trace("getAllLights(), returning {}",response);
 		return response;
@@ -93,38 +94,28 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 
 	
 	@Override
-	public JSONObject setAllColorLight(String color) {
+	public JSONArray setAllColorLight(String color) {
 		logger.trace("setAllColorLight(String color : {})", color);
 
 		
-		JSONObject response = getLightsStatus();
-		JSONArray cache = response.getJSONArray("leds");
+		JSONArray cache = getLightsStatus();
 		int length = cache.length();
 		
 		for(int i = 0; i< length; i++) {
 			LumiPixelImpl.setOneColorLight(i, color);
 		}
-		response = getLightsStatus();
+		JSONArray response = getLightsStatus();
 
-		stateChanged(KEY_LEDS, null, response.getJSONArray(KEY_LEDS).toString(), getAbstractObjectId());
+		stateChanged(KEY_LEDS, null, response.toString(), getAbstractObjectId());
 		return response;
 	}
 
 	@Override
-	public JSONObject setColorPattern(JSONObject pattern) {
+	public JSONArray setColorPattern(JSONArray pattern) {
 		logger.trace("setColorPattern(JSONObject pattern : {})", pattern);
+		JSONArray response = LumiPixelImpl.setColorPattern(pattern);
 
-		
-		JSONArray array = pattern.getJSONArray(KEY_LEDS);
-		int length = array.length();		
-		
-		for(int i = 0; i< length; i++) {
-			JSONObject obj = array.getJSONObject(i);
-			LumiPixelImpl.setOneColorLight(obj.getInt(KEY_ID), obj.getString(KEY_COLOR));
-		}
-		JSONObject response = getLightsStatus();
-
-		stateChanged(KEY_LEDS, null, response.getJSONArray(KEY_LEDS).toString(), getAbstractObjectId());
+		stateChanged(KEY_LEDS, null, response.toString(), getAbstractObjectId());
 		return response;
 
 	}
@@ -133,8 +124,7 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 	public void singleChaserAnimation(int start, int end, String color) {
 		logger.trace("singleChaserAnimation(int start : {}, int end : {}, String color : {})", start, end, color);
 		
-		JSONObject response = getLightsStatus();
-		JSONArray cache = response.getJSONArray("leds");
+		JSONArray cache = getLightsStatus();
 		
 		if(start < end) {
 			for(int i = start; i<= end; i++) {
@@ -170,9 +160,9 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 	public JSONObject getDescription() throws JSONException {
 		JSONObject descr = new JSONObject();
 		descr.put("id", getAbstractObjectId());
-		descr.put("type", getUserType()); // 12 for fairy lights
+		descr.put("type", getUserType()); 
 		descr.put("status", getObjectStatus());
-		descr.put(KEY_LEDS, getLightsStatus().getJSONArray(KEY_LEDS));
+		descr.put(KEY_LEDS, getLightsStatus());
 
 		return descr;
 	}

@@ -45,7 +45,7 @@
             
             <start implementation="MobileDeviceAdapter" name="MobileDeviceAdapterInst"></start>
             
-            <!--  start implementation="FairyLightsImpl" name="FairyLightsInst"></start -->
+            <start implementation="FairyLightAdapterImpl" name="FairyLightsInst"></start>
             
             
         </contentMngt>

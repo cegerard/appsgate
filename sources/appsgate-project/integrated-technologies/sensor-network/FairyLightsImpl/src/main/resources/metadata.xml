@@ -18,6 +18,11 @@
 	    classname="appsgate.lig.fairylights.service.FairyLightsImpl"
 	    specification="CoreFairyLightsSpec"
 	    push="stateChanged">
+        
+        <definition name="groupName" type="string" field="name"/>
+        <definition name="serviceId" type="string" field="coreObjectId"/>
+        <property name="serviceId" value="$this$name"/>
+	    
 	</implementation>
 	
 	

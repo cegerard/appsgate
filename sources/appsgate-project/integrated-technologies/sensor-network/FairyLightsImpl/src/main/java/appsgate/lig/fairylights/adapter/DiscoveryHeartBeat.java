@@ -22,12 +22,12 @@ public class DiscoveryHeartBeat extends TimerTask {
 
 	
 	boolean available;
-	FairyLightsDiscoveryListener listener;
+	FairyLightsStatusListener listener;
 	String protocol;
 	String hostname;
 	String apiUrl;
 	
-	public DiscoveryHeartBeat(FairyLightsDiscoveryListener listener,
+	public DiscoveryHeartBeat(FairyLightsStatusListener listener,
 			String protocol, String hostname, String apiUrl) {
 		this.listener = listener;
 		this.protocol = protocol;

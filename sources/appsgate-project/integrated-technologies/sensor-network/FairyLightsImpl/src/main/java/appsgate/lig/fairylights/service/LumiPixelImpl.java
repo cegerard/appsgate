@@ -1,10 +1,11 @@
 package appsgate.lig.fairylights.service;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import appsgate.lig.fairylights.adapter.FairyLightsStatusListener;
 import appsgate.lig.fairylights.utils.HttpUtils;
 
 /**
@@ -50,12 +51,12 @@ public class LumiPixelImpl {
 		logger.trace("setHost(...), new host : {}",LumiPixelImpl.host);
 	}
 	
-	public static JSONObject getAllLights() {
+	public static JSONArray getAllLights() {
 		logger.trace("getAllLights()");
 		JSONObject response = new JSONObject(HttpUtils.sendHttpGet(host+LUMIPIXEL_API_URL)); 
 
-		logger.trace("getAllLights(), returning {}",response);
-		return response;
+		logger.trace("getAllLights(), returning {}",response.optJSONArray(KEY_LEDS));
+		return response.optJSONArray(KEY_LEDS);
 	}
 
 	public static String getOneLight(int lightNumber) {
@@ -72,11 +73,27 @@ public class LumiPixelImpl {
 
 	
 	public static JSONObject setOneColorLight(int lightNumber, String color) {
+		logger.trace("setOneColorLight(int lightNumber : {}, String color : {})", lightNumber, color);
+		
 		JSONObject jsonColor = new JSONObject().put(KEY_COLOR, color);
 
 		JSONObject response = new JSONObject(
 				HttpUtils.sendHttpsPut(host+LUMIPIXEL_API_URL+URL_SEP+lightNumber, jsonColor.toString().getBytes())); 
 		return response;
 	}	
+	
+	
+	public static JSONArray setColorPattern(JSONArray pattern) {
+		logger.trace("setColorPattern(JSONObject pattern : {})", pattern);
+		int length = pattern.length();		
+		
+		for(int i = 0; i< length; i++) {
+			JSONObject obj = pattern.getJSONObject(i);
+			LumiPixelImpl.setOneColorLight(obj.getInt(KEY_ID), obj.getString(KEY_COLOR));
+		}
+		return getAllLights();
+
+	}
+	
 
 }

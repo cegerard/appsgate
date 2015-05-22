@@ -76,8 +76,7 @@ public class FairyLightsImplTest {
 	// Disabled (Device must be physically available to run the test
 	@Test
 	public void testSetColorPattern() {
-		JSONObject response = lights.getLightsStatus();
-		JSONArray array = response.getJSONArray("leds");
+		JSONArray array = lights.getLightsStatus();
 		int length = array.length();
 
 		
@@ -93,9 +92,9 @@ public class FairyLightsImplTest {
 			pattern2.put(obj2 );
 		}
 		assertNotNull("Fairy Ligths not responding",lights.setAllColorLight("#ffffff"));
-		assertNotNull("Fairy Ligths not responding",lights.setColorPattern(new JSONObject().put(FairyLightsImpl.KEY_LEDS, pattern1)));
+		assertNotNull("Fairy Ligths not responding",lights.setColorPattern(pattern1));
 		assertNotNull("Fairy Ligths not responding",lights.setAllColorLight("#ffffff"));
-		assertNotNull("Fairy Ligths not responding",lights.setColorPattern(new JSONObject().put(FairyLightsImpl.KEY_LEDS, pattern2)));
+		assertNotNull("Fairy Ligths not responding",lights.setColorPattern(pattern2));
 		assertNotNull("Fairy Ligths not responding",lights.setAllColorLight("#000000"));
 	}	
 	
@@ -128,8 +127,7 @@ public class FairyLightsImplTest {
 	// Disabled (Device must be physically available to run the test
 	@Test
 	public void testK2000() {
-		JSONObject response = lights.getLightsStatus();
-		JSONArray array = response.getJSONArray("leds");
+		JSONArray array = lights.getLightsStatus();
 		int length = array.length();
 		
 		// Step One, light off every lamps
