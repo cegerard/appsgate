@@ -19,6 +19,8 @@ define([
 			"click button.start": "onStart",
 			"click button.stop": "onStop",
 
+			"click input#allDevice": "onCheckAllDevice",
+			"click input.checkbox-select-device": "onCheckDevice",
 		},
 		/**
 		 * Listen to the updates
@@ -198,6 +200,26 @@ define([
 		},
 
 		/**
+		 * Callback when check all devices
+		 */
+		onCheckAllDevice: function (e) {
+			_.forEach($(".checkbox-select-device"), function(chkbxDevice) {
+				$(chkbxDevice).prop('checked', $("#allDevice").is(':checked'));
+			});
+		},
+
+		/**
+		 * Callback when check one devices
+		 */
+		onCheckDevice: function (e) {
+			if ($(".checkbox-select-device:checked").length === this.getEnergyDevices().length) {
+				$("#allDevice").prop('checked', true);
+			} else {
+				$("#allDevice").prop('checked', false);
+			}
+		},
+
+		/**
 		 * Method to get the ids of the devices selected
 		 */
 		getDevicesSelected: function () {
@@ -238,7 +260,7 @@ define([
 			divChoice.append("<div class='col-md-12'><input type='checkbox' id='allDevice'><label for='allDevice'> " + $.i18n.t("services.energy-monitoring.modal-add.devices.all") + "</label></div>");
 
 			_.each(self.getEnergyDevices(), function (device) {
-				divChoice.append("<div class='col-md-12'><input type='checkbox' id='" + device.get("id") + "'><label for='" + device.get('id') + "'> " + device.get('name') + "</label></div>");
+				divChoice.append("<div class='col-md-12'><input type='checkbox' class='checkbox-select-device' id='" + device.get("id") + "'><label for='" + device.get('id') + "'> " + device.get('name') + "</label></div>");
 			});
 		},
 

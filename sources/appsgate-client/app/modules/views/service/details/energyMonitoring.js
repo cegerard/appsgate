@@ -24,6 +24,9 @@ define([
 
 			"click button.btn-target-dependencies": "onShowDependencies",
 			"click button.btn-target-timelines": "onShowTimelines",
+
+			"click input#allDevice": "onCheckAllDevice",
+			"click input.checkbox-select-device": "onCheckDevice",
 		},
 
 		initialize: function () {
@@ -162,6 +165,26 @@ define([
 		},
 
 		/**
+		 * Callback when check all devices
+		 */
+		onCheckAllDevice: function (e) {
+			_.forEach($(".checkbox-select-device"), function (chkbxDevice) {
+				$(chkbxDevice).prop('checked', $("#allDevice").is(':checked'));
+			});
+		},
+
+		/**
+		 * Callback when check one devices
+		 */
+		onCheckDevice: function () {
+			if ($(".checkbox-select-device:checked").length === devices.getDevicesByType(6).length) {
+				$("#allDevice").prop('checked', true);
+			} else {
+				$("#allDevice").prop('checked', false);
+			}
+		},
+
+		/**
 		 * Callback on click dependencies
 		 */
 		onShowDependencies: function () {
@@ -221,11 +244,14 @@ define([
 			var energyDevices = devices.getDevicesByType(6);
 			_.each(energyDevices, function (device) {
 				if (_.contains(self.model.get("sensors"), (device.get('id')))) {
-					divChoice.append("<div class='col-md-12'><input type='checkbox' id='" + device.get("id") + "' checked ><label for='" + device.get('id') + "'> " + device.get('name') + "</label></div>");
+					divChoice.append("<div class='col-md-12'><input type='checkbox' class='checkbox-select-device' id='" + device.get("id") + "' checked ><label for='" + device.get('id') + "'> " + device.get('name') + "</label></div>");
 				} else {
-					divChoice.append("<div class='col-md-12'><input type='checkbox' id='" + device.get("id") + "'><label for='" + device.get('id') + "'> " + device.get('name') + "</label></div>");
+					divChoice.append("<div class='col-md-12'><input type='checkbox' class='checkbox-select-device' id='" + device.get("id") + "'><label for='" + device.get('id') + "'> " + device.get('name') + "</label></div>");
 				}
 			});
+			
+			// Call Method to have correct check for allDevice
+			self.onCheckDevice();
 		},
 
 		/**
