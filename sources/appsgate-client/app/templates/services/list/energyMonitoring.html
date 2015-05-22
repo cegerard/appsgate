@@ -28,7 +28,7 @@
 							  <div class="form-group">
 								<label class="col-md-2" for="budgettValueInput" data-i18n="services.energy-monitoring.budget.name"></label>
 								  <div class="col-md-4">
-									  <input class="form-control" type="number" id="budgetValueInput" placeholder="<%= $.i18n.t('services.energy-monitoring.modal-add.placeholder.budget') %>">
+									  <input class="form-control" type="number" id="budgetValueInput" placeholder="<%= $.i18n.t('services.energy-monitoring.modal-add.placeholder.budget') %>" value="0.0">
 								  </div>
 								<label class="col-md-2 col-md-offset-1" for="unitSelector" data-i18n="services.energy-monitoring.unit"></label>
 								<div class="col-md-2">
@@ -69,7 +69,7 @@
 							<span class="span-group-name"><%= group.getName() %></span>
 							<div class="pull-right">
 								<button idGroup="<%= group.get('id') %>" class="btn btn-default btn-info start" data-i18n="services.energy-monitoring.start-button"></button>
-								<button idGroup="<%= group.get('id') %>" class="btn btn-default stop" data-i18n="services.energy-monitoring.stop-button"></button>
+								<button idGroup="<%= group.get('id') %>" class="btn btn-default btn-info stop" data-i18n="services.energy-monitoring.stop-button"></button>
 								<button idGroup="<%= group.get('id') %>" class="btn btn-default delete-popover-energy-group-button" rel="popover" data-trigger="focus">
 									<i class="glyphicon glyphicon-trash"></i><span data-i18n="services.energy-monitoring.remove-button"></span>
 								</button>
