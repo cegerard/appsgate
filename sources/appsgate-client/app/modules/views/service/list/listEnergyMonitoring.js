@@ -106,8 +106,11 @@ define([
 		 */
 		render: function () {
 			if (!appRouter.isModalShown) {
+				var energyMonitoringGroupsAlphabeticOrder = _.sortBy(services.getCoreEnergyMonitoringGroups(), function(group) {
+					return group.get("name").toLowerCase();
+				});
 				this.$el.html(this.energyGrpTpl({
-					energyMonitoringGroups: services.getCoreEnergyMonitoringGroups(),
+					energyMonitoringGroups: energyMonitoringGroupsAlphabeticOrder,
 				}));
 				this.buildDevicesChoice();
 				this.buildUnitSelector();
@@ -365,12 +368,12 @@ define([
 			var progressBar = divProgressBar.children(".progress-bar.progress-bar-valid");
 			var spanBudgetUsedPercent = progressBar.children(".budget-used-percent");
 			var budgetUsedPercent = energyGroup.getPercentUsed();
-			
+
 			// If budget exceed 100%, create new red bar
 			if (budgetUsedPercent > 100) {
 				// Reduce valid bar before add new one
 				progressBar.css("width", (200 - budgetUsedPercent) + "%");
-				
+
 				// If second bar already existed, don't recreate it
 				if (divProgressBar.children(".progress-bar.progress-bar-over").length === 0) {
 					// Create bar and append it before the valid
@@ -381,7 +384,7 @@ define([
 				var overProgressBar = divProgressBar.children(".progress-bar.progress-bar-over");
 				var spanOverBudgetUsedPercent = $(overProgressBar).children(".over-budget-used-percent");
 				overProgressBar.css("width", budgetUsedPercent - 100 + "%");
-				
+
 				// We change of span to show percent because 100-120 (approx) don't have place to write it in over bar
 				if (budgetUsedPercent > 125) {
 					spanBudgetUsedPercent.text("");
@@ -390,7 +393,7 @@ define([
 					spanBudgetUsedPercent.text(budgetUsedPercent + "%");
 					spanOverBudgetUsedPercent.text("");
 				}
-				
+
 			} else {
 				if (divProgressBar.children(".progress-bar.progress-bar-over").length > 0) {
 					// In this case, progress bar was over 100 before, so we need to remove the over-progress-bar
