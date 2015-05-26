@@ -135,7 +135,7 @@
 			</div>
 
 		</div>
-		
+
 		<div id="div-sensors" class="panel panel-default">
 			<div class="panel-heading">
 				<h3 class="panel-title" data-i18n="services.energy-monitoring.energy-sensors"></h3>
@@ -167,6 +167,16 @@
 			<div class="panel-body">
 				<div class="row">
 					<div class="col-md-12">
+						<div class="input-group">
+							<input id="input-new-annotation" type="text" class="form-control" placeholder="<%= $.i18n.t('services.energy-monitoring.placeholder-new-annotation') %>">
+							<span class="input-group-btn">
+								<button class="btn btn-default add-annotation" type="button" disabled>+</button>
+							</span>
+						</div>
+					</div>
+					<div class="col-md-12">
+						<div id="div-annotations-history" class="list-group">
+						</div>
 					</div>
 				</div>
 			</div>

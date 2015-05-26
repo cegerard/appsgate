@@ -27,6 +27,10 @@ define([
 
 			"click input#allDevice": "onCheckAllDevice",
 			"click input.checkbox-select-device": "onCheckDevice",
+
+			"click button.add-annotation": "onAddAnnotation",
+			"click button.delete-annotation": "onDeleteAnnotation",
+			"keyup #input-new-annotation": "onKeyupInputAnnotation",
 		},
 
 		initialize: function () {
@@ -56,6 +60,9 @@ define([
 			self.listenTo(self.model, 'budgetReset', function (e) {
 				self.updateValues(self.model.get('id'));
 				self.updateHistory();
+			});
+			self.listenTo(self.model, 'annotationsChanged', function (e) {
+				self.updateAnnotations();
 			});
 		},
 
@@ -203,6 +210,44 @@ define([
 		},
 
 		/**
+		 * Callback on click add annotation
+		 */
+		onAddAnnotation: function () {
+			this.model.addAnnotation($("#input-new-annotation").val());
+		},
+
+		/**
+		 * Callback on click delete annotation
+		 */
+		onDeleteAnnotation: function (e) {
+			e.preventDefault();
+			var id = $(e.currentTarget).parent("span").parent("div").attr("id");
+			var timestamp = id.split("annotation-")[1];
+
+			this.model.removeAnnotation(timestamp);
+		},
+
+		/**
+		 * Callback when typing in input new annotation
+		 */
+		onKeyupInputAnnotation: function (e) {
+			var self = this;
+			// Enter
+			if (e.keyCode === 13) {
+				// If there is an annotation add it 
+				if ($("#input-new-annotation").val() !== "") {
+					self.onAddAnnotation();
+				}
+			} else {
+				if ($("#input-new-annotation").val() === "") {
+					$(".btn.add-annotation").prop("disabled", true);
+				} else {
+					$(".btn.add-annotation").prop("disabled", false);
+				}
+			}
+		},
+
+		/**
 		 * Render the detailed view of the service
 		 */
 		render: function () {
@@ -224,6 +269,7 @@ define([
 				this.buildSensorsList();
 				this.updateHistory();
 				this.updateSensorsList();
+				this.updateAnnotations();
 
 				this.resize($(".scrollable"));
 
@@ -249,7 +295,7 @@ define([
 					divChoice.append("<div class='col-md-12'><input type='checkbox' class='checkbox-select-device' id='" + device.get("id") + "'><label for='" + device.get('id') + "'> " + device.get('name') + "</label></div>");
 				}
 			});
-			
+
 			// Call Method to have correct check for allDevice
 			self.onCheckDevice();
 		},
@@ -313,6 +359,11 @@ define([
 
 			return ids;
 		},
+
+		/*
+		 * Utility method to get a unit from a value
+		 * @param unitValue : Value that we want to get the corresponding unit
+ 		 */
 		getUnit: function (unitValue) {
 			var arrayUnit = services.getEnergyMonitoringAdapter().getUnits();
 			var unit = arrayUnit[_.findIndex(arrayUnit, {
@@ -374,7 +425,7 @@ define([
 			var progressBar = divProgressBar.children(".progress-bar");
 			var spanBudgetUsedPercent = progressBar.children(".budget-used-percent");
 			var budgetUsedPercent = self.model.getPercentUsed();
-			
+
 			// If budget exceed 100%, create new red bar
 			if (budgetUsedPercent > 100) {
 				// Reduce valid bar before add new one
@@ -390,7 +441,7 @@ define([
 				var spanOverBudgetUsedPercent = $(overProgressBar).children(".over-budget-used-percent");
 				overProgressBar.css("width", budgetUsedPercent - 100 + "%");
 				spanOverBudgetUsedPercent.text(budgetUsedPercent + "%");
-				
+
 				// We change of span to show percent because 100-120 (approx) don't have place to write it in over bar
 				if (budgetUsedPercent > 125) {
 					spanBudgetUsedPercent.text("");
@@ -399,7 +450,7 @@ define([
 					spanBudgetUsedPercent.text(budgetUsedPercent + "%");
 					spanOverBudgetUsedPercent.text("");
 				}
-				
+
 			} else {
 				if (divProgressBar.children(".progress-bar.progress-bar-over").length > 0) {
 					// In this case, progress bar was over 100 before, so we need to remove the over-progress-bar
@@ -432,6 +483,7 @@ define([
 			var history = [];
 			history = $.parseJSON(self.model.get("history"));
 
+			// Clear existing history
 			$("#history-list").empty();
 			_.each(history, function (entry) {
 				var unit = self.getUnit(entry.budgetUnit);
@@ -450,6 +502,9 @@ define([
 			});
 		},
 
+		/**
+		 * Method to update the dates
+		 */
 		updateDates: function () {
 			var self = this;
 
@@ -476,6 +531,49 @@ define([
 					spanDateUntil.text(dateUntilReformatted + " " + dateUntil.toLocaleTimeString());
 				}
 			}
+		},
+
+		/*
+		 * Method to update the annotations
+		 */
+		updateAnnotations: function () {
+			var self = this;
+
+			var divAnnotations = $("#div-annotations-history");
+			// Clear existing annotations
+			divAnnotations.empty();
+			// Reset input & button as initial
+			$("#input-new-annotation").prop("value", "");
+			$(".btn.add-annotation").prop("disabled", true);
+
+			var annotationsCollection = $.parseJSON(self.model.get('annotations'));
+			var annotationSorted = _.sortBy(annotationsCollection, function (annotationObj) {
+				// "-" to get descending annotations
+				return -parseInt(_.keys(annotationObj)[0]);
+			});
+			
+			_.forEach(annotationSorted, function (annotation) {
+				divAnnotations.append(self.buildOneAnnotation(annotation));
+			});
+		},
+
+		/*
+		 * Method to build one annotation
+		 * @param annotationObj : Annotation to build
+		 */
+		buildOneAnnotation: function (annotationObj) {
+			// Get the date which is the key of the object
+			var dateInt = parseInt(_.keys(annotationObj)[0]);
+			var date = new Date(dateInt);
+			// Get the annotation which is the value of the object
+			var annotation = _.values(annotationObj)[0];
+			
+			// Build html annotation element
+			var htmlAnnotation = "<div id='annotation-" + dateInt + "' class='input-group'><input type='text' class='form-control'";
+			htmlAnnotation += "value='" + date.toLocaleString() + " : " + annotation + "' disabled>";
+			htmlAnnotation += " <span class='input-group-btn'><button class='btn btn-default delete-annotation' type='button'>-</button></span></div>";
+			
+			return htmlAnnotation;
 		}
 
 

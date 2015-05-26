@@ -1031,7 +1031,8 @@
 		"unit" : "Unités",
 		"history" : "Historique",
 		"energy-sensors" : "Equipements de suivi d'énergie",
-		"annotations" : "Commentaires"
+		"annotations" : "Commentaires",
+		"placeholder-new-annotation" : "Entrer un nouveau commentaire"
 	},
     "mail": {
       "keyboard": {
