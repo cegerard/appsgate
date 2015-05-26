@@ -1,7 +1,8 @@
 define([
   "app",
-  "models/device/device"
-], function(App, Device) {
+  "models/device/device",
+  "text!templates/program/nodes/mailMobile.html"
+], function(App, Device, ActionTemplate) {
 
   var MobileTasker = {};
 
@@ -23,10 +24,16 @@ define([
       }
     },
     /**
+     * @returns the action template specific for mail
+     */
+    getTemplateAction: function() {
+      return _.template(ActionTemplate);
+    },
+    /**
      *return the list of available actions
      */
     getActions: function() {
-      return ["sendMessage"];
+      return ["vocalMessage", "sendSMS", "whereIsMyPhone"];
     },
     /**
      * return the keyboard code for a given action
@@ -36,17 +43,45 @@ define([
       var v = this.getJSONAction("mandatory");
 
       switch (act) {
-        case "sendMessage":
-          $(btn).append("<span>" + $.i18n.t('devices.mobileTasker.keyboard.sendMessage', {
+        case "vocalMessage":
+          $(btn).append("<span>" + $.i18n.t('devices.mobileTasker.keyboard.vocalMessage', {
             myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.mobileTasker.keyboard.mobile') + "</span>"
           }));
-          v.methodName = "display";
-          v.type="action1";
-          v.args = [{
+          v.methodName = "vocalMessage";
+          v.type="action";
+          v.args = [
+          {
             "type": "String",
             "value": "Coucou"
           }];
-          v.phrase = "devices.mobileTasker.language.sendMessage";
+          v.phrase = "devices.mobileTasker.language.vocalMessage";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        case "sendSMS":
+          $(btn).append("<span>" + $.i18n.t('devices.mobileTasker.keyboard.sendSMS', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.mobileTasker.keyboard.mobile') + "</span>"
+          }));
+          v.methodName = "sendSMS";
+          v.type="action";
+          v.args = [
+          {
+            "type": "String",
+            "value": "num"
+          },
+          {
+            "type": "String",
+            "value": "Coucou"
+          }];
+          v.phrase = "devices.mobileTasker.language.sendSMS";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        case "whereIsMyPhone":
+          $(btn).append("<span>" + $.i18n.t('devices.mobileTasker.keyboard.whereIsMyPhone', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.mobileTasker.keyboard.mobile') + "</span>"
+          }));
+          v.methodName = "whereIsMyPhone";
+          v.type="action";
+          v.phrase = "devices.mobileTasker.language.whereIsMyPhone";
           $(btn).attr("json", JSON.stringify(v));
           break;
 

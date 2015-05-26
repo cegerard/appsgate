@@ -3,16 +3,16 @@ package appsgate.lig.mobile.device.spec;
 import org.json.JSONObject;
 
 /**
- * This java interface is an ApAM specification shared by all ApAM AppsGate application to handle
- * mobile device specification.
- * 
+ * This java interface is an ApAM specification shared by all ApAM AppsGate
+ * application to handle mobile device specification.
+ *
  * @author Cédric Gérard
  * @version 1.0.0
  * @since March 31, 2014
  *
  */
 public interface CoreMobileDeviceSpec {
-	
+
 //	/**
 //	 * Get all capabilities of the device
 //	 * @return capabilities as a JSONObject
@@ -58,19 +58,33 @@ public interface CoreMobileDeviceSpec {
 //	 * @return true if the notification has been received
 //	 */
 //	public boolean sendNotifcation(String msg, int flag);
-	
-	/**
-	 * Display something on the remote device
-	 * @param message the message to display on the remote screen 
-	 * @return true if the message can be displayed, false otherwise
-	 */
-	public boolean display(String message);
-        
-        /**
-         * 
-         * @param objMessage
-         * @return 
-         */
-        public boolean emitTaskerMessage(JSONObject objMessage);
-	
+    /**
+     * Display something on the remote device
+     *
+     * @param dest the phone number of the dest
+     * @param message the message to display on the remote screen
+     * @return true if the message can be displayed, false otherwise
+     */
+    public boolean sendSMS(String dest, String message);
+
+    /**
+     *
+     * @param message
+     * @return
+     */
+    public boolean vocalMessage(String message);
+    
+    /**
+     *
+     * @return
+     */
+    public boolean whereIsMyPhone();
+    
+    /**
+     *
+     * @param objMessage
+     * @return
+     */
+    public boolean emitTaskerMessage(JSONObject objMessage);
+
 }

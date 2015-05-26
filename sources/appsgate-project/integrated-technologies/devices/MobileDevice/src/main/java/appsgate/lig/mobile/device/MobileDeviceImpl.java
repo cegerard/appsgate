@@ -69,11 +69,6 @@ public class MobileDeviceImpl extends CoreObjectBehavior implements CoreObjectSp
     }
 
     @Override
-    public boolean display(String message) {
-        return mobileDeviceAdapter.sendMessage("appsgate", message);
-    }
-
-    @Override
     public boolean emitTaskerMessage(JSONObject objMessage) {
         this.notifyChanges(objMessage.optString("title"), objMessage.optString("message"));
         return true;
@@ -117,6 +112,22 @@ public class MobileDeviceImpl extends CoreObjectBehavior implements CoreObjectSp
      */
     public void setAdapter(MobileDeviceAdapterServices aThis) {
         this.mobileDeviceAdapter = aThis;
+    }
+
+    @Override
+    public boolean sendSMS(String dest, String message) {
+        return mobileDeviceAdapter.sendMessage(dest, message);
+    }
+
+    @Override
+    public boolean vocalMessage(String message) {
+        return mobileDeviceAdapter.sendMessage("vocalMessage", message);
+
+    }
+
+    @Override
+    public boolean whereIsMyPhone() {
+        return mobileDeviceAdapter.sendMessage("whereIsMyPhone", "");
     }
 
 }
