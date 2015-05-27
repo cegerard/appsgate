@@ -15,7 +15,7 @@ define([
 			"click button.delete-popover-energy-group-button": "onClickDeleteEnergyGroup",
 			"click button.delete-energy-group-button": "onDeleteEnergyGroup",
 			"click #add-energy-group-modal button.valid-button": "onClickAddEnergyGroup",
-			"keyup #add-energy-group-modal input": "validAddinAmount",
+			"keyup #add-energy-group-modal #energyGroupNameInput": "onKeyupGroupName",
 			"click button.start": "onStart",
 			"click button.stop": "onStop",
 
@@ -222,6 +222,21 @@ define([
 			}
 		},
 
+		/**
+		 * Callback when typing group name
+		 */
+		onKeyupGroupName: function(e) {
+			if ($("#energyGroupNameInput").val() !== "") {
+				$(".btn.valid-button").prop("disabled", false);
+				$(".btn.valid-button").removeClass("disabled");
+				$(".btn.valid-button").removeClass("valid-disabled");
+			} else {
+				$(".btn.valid-button").prop("disabled", true);
+				$(".btn.valid-button").addClass("disabled");
+				$(".btn.valid-button").addClass("valid-disabled");
+			}
+		},
+		
 		/**
 		 * Method to get the ids of the devices selected
 		 */
@@ -448,8 +463,6 @@ define([
 				}
 			}
 		},
-
-		validAddinAmount: function () {}
 
 
 	});

@@ -31,6 +31,7 @@ define([
 			"click button.add-annotation": "onAddAnnotation",
 			"click button.delete-annotation": "onDeleteAnnotation",
 			"keyup #input-new-annotation": "onKeyupInputAnnotation",
+			"keyup #energyGroupNameInput": "onKeyupGroupName",
 		},
 
 		initialize: function () {
@@ -248,6 +249,21 @@ define([
 		},
 
 		/**
+		 * Callback when typing group name
+		 */
+		onKeyupGroupName: function (e) {
+			if ($("#energyGroupNameInput").val() !== "") {
+				$(".btn.valid-button").prop("disabled", false);
+				$(".btn.valid-button").removeClass("disabled");
+				$(".btn.valid-button").removeClass("valid-disabled");
+			} else {
+				$(".btn.valid-button").prop("disabled", true);
+				$(".btn.valid-button").addClass("disabled");
+				$(".btn.valid-button").addClass("valid-disabled");
+			}
+		},
+
+		/**
 		 * Render the detailed view of the service
 		 */
 		render: function () {
@@ -363,7 +379,7 @@ define([
 		/*
 		 * Utility method to get a unit from a value
 		 * @param unitValue : Value that we want to get the corresponding unit
- 		 */
+		 */
 		getUnit: function (unitValue) {
 			var arrayUnit = services.getEnergyMonitoringAdapter().getUnits();
 			var unit = arrayUnit[_.findIndex(arrayUnit, {
@@ -551,7 +567,7 @@ define([
 				// "-" to get descending annotations
 				return -parseInt(_.keys(annotationObj)[0]);
 			});
-			
+
 			_.forEach(annotationSorted, function (annotation) {
 				divAnnotations.append(self.buildOneAnnotation(annotation));
 			});
@@ -567,12 +583,12 @@ define([
 			var date = new Date(dateInt);
 			// Get the annotation which is the value of the object
 			var annotation = _.values(annotationObj)[0];
-			
+
 			// Build html annotation element
 			var htmlAnnotation = "<div id='annotation-" + dateInt + "' class='input-group'><input type='text' class='form-control'";
 			htmlAnnotation += "value='" + date.toLocaleString() + " : " + annotation + "' disabled>";
 			htmlAnnotation += " <span class='input-group-btn'><button class='btn btn-default delete-annotation' type='button'>-</button></span></div>";
-			
+
 			return htmlAnnotation;
 		}
 
