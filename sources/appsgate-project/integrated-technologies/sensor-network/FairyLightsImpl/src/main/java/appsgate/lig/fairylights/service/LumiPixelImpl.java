@@ -5,7 +5,6 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import appsgate.lig.fairylights.adapter.FairyLightsStatusListener;
 import appsgate.lig.fairylights.utils.HttpUtils;
 
 /**
@@ -30,8 +29,6 @@ public class LumiPixelImpl {
 	
 	private static Logger logger = LoggerFactory.getLogger(LumiPixelImpl.class);
 	
-	private static String host;
-
 	public static final String URL_SEP = "/";
 
 	public static final String DEFAULT_PROTOCOL = "http://";
@@ -45,13 +42,7 @@ public class LumiPixelImpl {
 	public static final String KEY_LEDS = "leds";
 	public static final String KEY_ID = "id";	
 	
-	public static void setHost(String host) {
-		logger.trace("setHost(String host :{})",host);
-		LumiPixelImpl.host = new String(host);
-		logger.trace("setHost(...), new host : {}",LumiPixelImpl.host);
-	}
-	
-	public static JSONArray getAllLights() {
+	public static JSONArray getAllLights(String host) {
 		logger.trace("getAllLights()");
 		JSONObject response = new JSONObject(HttpUtils.sendHttpGet(host+LUMIPIXEL_API_URL)); 
 
@@ -59,7 +50,7 @@ public class LumiPixelImpl {
 		return response.optJSONArray(KEY_LEDS);
 	}
 
-	public static String getOneLight(int lightNumber) {
+	public static String getOneLight(String host, int lightNumber) {
 		logger.trace("getOneLight(int lightNumber : {})", lightNumber);
 		JSONObject response = new JSONObject(HttpUtils.sendHttpGet(host+LUMIPIXEL_API_URL+URL_SEP+lightNumber)); 
 		if(response.optJSONObject(KEY_LED)!= null ) {
@@ -72,7 +63,7 @@ public class LumiPixelImpl {
 	}
 
 	
-	public static JSONObject setOneColorLight(int lightNumber, String color) {
+	public static JSONObject setOneColorLight(String host, int lightNumber, String color) {
 		logger.trace("setOneColorLight(int lightNumber : {}, String color : {})", lightNumber, color);
 		
 		JSONObject jsonColor = new JSONObject().put(KEY_COLOR, color);
@@ -80,20 +71,5 @@ public class LumiPixelImpl {
 		JSONObject response = new JSONObject(
 				HttpUtils.sendHttpsPut(host+LUMIPIXEL_API_URL+URL_SEP+lightNumber, jsonColor.toString().getBytes())); 
 		return response;
-	}	
-	
-	
-	public static JSONArray setColorPattern(JSONArray pattern) {
-		logger.trace("setColorPattern(JSONObject pattern : {})", pattern);
-		int length = pattern.length();		
-		
-		for(int i = 0; i< length; i++) {
-			JSONObject obj = pattern.getJSONObject(i);
-			LumiPixelImpl.setOneColorLight(obj.getInt(KEY_ID), obj.getString(KEY_COLOR));
-		}
-		return getAllLights();
-
 	}
-	
-
 }

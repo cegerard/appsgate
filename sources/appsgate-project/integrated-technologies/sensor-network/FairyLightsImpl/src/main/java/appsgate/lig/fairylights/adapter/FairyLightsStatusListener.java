@@ -17,7 +17,7 @@ public interface FairyLightsStatusListener {
 
 	/**
 	 * Called when the one or more lights color have been changed
-	 * @param lights full status of the FairyLights
+	 * @param the lights that have changed with their new values
 	 */
 	public void lightChanged(JSONArray lights);
 }

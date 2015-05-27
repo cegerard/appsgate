@@ -3,7 +3,6 @@ package appsgate.lig.fairylights.service;
 import java.util.HashSet;
 import java.util.Set;
 
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,6 +14,7 @@ import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.fairylights.CoreFairyLightsSpec;
+import appsgate.lig.fairylights.adapter.LightManagement;
 
 
 /**
@@ -43,15 +43,17 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 	
 	public static final String IMPL_NAME = "FairyLightsImpl";
 	
-	Set<String> currentLights;
+	Set<Integer> currentLights;
 	
 	public FairyLightsImpl() {
 		logger.trace("FairyLightsImpl(), default constructor");
-		currentLights = new HashSet<String>();
+		currentLights = new HashSet<Integer>();
 	}
 	
-	public void configure(String host, JSONArray lights) {
-		LumiPixelImpl.setHost(host);
+	LightManagement lightManager;
+	
+	public void configure(LightManagement lightManager, JSONArray lights) {
+		this.lightManager = lightManager;
 		setAffectedLights(lights);
 	}
 	
@@ -59,7 +61,10 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 		if(lights != null) {
 			currentLights.clear();
 			for(int i = 0 ; i < lights.length(); i++) {
-				currentLights.add(lights.optString(i));
+				int lightNumber = lights.optInt(i, -1);
+				if(lightNumber >=0 && lightManager.affect(getAbstractObjectId(), lightNumber)) {
+					currentLights.add(lightNumber);
+				}
 			}
 		}
 	}
@@ -67,7 +72,7 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 	@Override
 	public JSONArray getLightsStatus() {
 		logger.trace("getAllLights()");
-		JSONArray response = LumiPixelImpl.getAllLights(); 
+		JSONArray response = lightManager.getAllLights(); 
 
 		logger.trace("getAllLights(), returning {}",response);
 		return response;
@@ -78,7 +83,7 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 		logger.trace("getOneLight(int lightNumber : {})", lightNumber);
 		// TODO test if the light is in the group
 		
-		return LumiPixelImpl.getOneLight(lightNumber);
+		return lightManager.getOneLight(lightNumber);
 	}
 
 	@Override
@@ -86,7 +91,7 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 		logger.trace("setColorLight(int lightNumber : {}, String color : {})", lightNumber, color);
 		// TODO test if the light is in th group
 
-		JSONObject response = LumiPixelImpl.setOneColorLight(lightNumber, color);
+		JSONObject response = lightManager.setOneColorLight(getAbstractObjectId(), lightNumber, color);
 		logger.trace("setColorLight(...), returning {}",response);
 		stateChanged("ledChanged", null, color, getAbstractObjectId());
 		return response;
@@ -96,16 +101,8 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 	@Override
 	public JSONArray setAllColorLight(String color) {
 		logger.trace("setAllColorLight(String color : {})", color);
-
+		JSONArray response = lightManager.setAllColorLight(getAbstractObjectId(), color);
 		
-		JSONArray cache = getLightsStatus();
-		int length = cache.length();
-		
-		for(int i = 0; i< length; i++) {
-			LumiPixelImpl.setOneColorLight(i, color);
-		}
-		JSONArray response = getLightsStatus();
-
 		stateChanged(KEY_LEDS, null, response.toString(), getAbstractObjectId());
 		return response;
 	}
@@ -113,7 +110,7 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 	@Override
 	public JSONArray setColorPattern(JSONArray pattern) {
 		logger.trace("setColorPattern(JSONObject pattern : {})", pattern);
-		JSONArray response = LumiPixelImpl.setColorPattern(pattern);
+		JSONArray response = lightManager.setColorPattern(getAbstractObjectId(), pattern);
 
 		stateChanged(KEY_LEDS, null, response.toString(), getAbstractObjectId());
 		return response;
@@ -123,26 +120,7 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 	@Override
 	public void singleChaserAnimation(int start, int end, String color) {
 		logger.trace("singleChaserAnimation(int start : {}, int end : {}, String color : {})", start, end, color);
-		
-		JSONArray cache = getLightsStatus();
-		
-		if(start < end) {
-			for(int i = start; i<= end; i++) {
-				if (i> start) {
-					LumiPixelImpl.setOneColorLight(i-1, cache.getJSONObject(i-1).getString(KEY_COLOR));
-				}
-				LumiPixelImpl.setOneColorLight(i, color);
-			}
-			LumiPixelImpl.setOneColorLight(end, cache.getJSONObject(end).getString(KEY_COLOR));
-		} else {
-			for(int i = start; i>= end; i--) {
-				if (i<start) {
-					LumiPixelImpl.setOneColorLight(i+1, cache.getJSONObject(i+1).getString(KEY_COLOR));
-				}
-				LumiPixelImpl.setOneColorLight(i, color);
-			}
-			LumiPixelImpl.setOneColorLight(end, cache.getJSONObject(end).getString(KEY_COLOR));
-		}
+		lightManager.singleChaserAnimation(getAbstractObjectId(), start, end, color);
 	}
 
 	@Override
