@@ -1,8 +1,9 @@
 define([
   "app",
   "models/device/device",
-  "text!templates/program/nodes/mailMobile.html"
-], function(App, Device, ActionTemplate) {
+  "text!templates/program/nodes/mobileAction.html",
+  "text!templates/program/nodes/mobileEvent.html"
+], function(App, Device, ActionTemplate, EventTemplate) {
 
   var MobileTasker = {};
 
@@ -24,10 +25,16 @@ define([
       }
     },
     /**
-     * @returns the action template specific for mail
+     * @returns the action template specific for mobile
      */
     getTemplateAction: function() {
       return _.template(ActionTemplate);
+    },
+    /**
+     * @returns the event template specific for mobile
+     */
+    getTemplateEvent: function() {
+      return _.template(EventTemplate);
     },
     /**
      *return the list of available actions
@@ -96,7 +103,7 @@ define([
      * return the list of available events
      */
     getEvents: function() {
-      return ["valueChange"];
+      return ["anyMessage", "specificMessage"];
     },
     /**
      * return the keyboard code for a given event
@@ -105,12 +112,21 @@ define([
       var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
       var v = this.getJSONEvent("mandatory");
       switch (evt) {
-        case "valueChange":
+        case "anyMessage":
           $(btn).append("<span>" + $.i18n.t('devices.mobileTasker.keyboard.msgReceivedEvt', {
             myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.mobileTasker.keyboard.mobile') + "</span>",
           }));
           v.eventName = "appsgate";
           v.eventValue = "*";
+          v.phrase = "devices.mobileTasker.language.msgReceivedEvt";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        case "specificMessage":
+          $(btn).append("<span>" + $.i18n.t('devices.mobileTasker.keyboard.specificMsgReceivedEvt', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.mobileTasker.keyboard.mobile') + "</span>",
+          }));
+          v.eventName = "specificMessage";
+          v.eventValue = "a message";
           v.phrase = "devices.mobileTasker.language.msgReceivedEvt";
           $(btn).attr("json", JSON.stringify(v));
           break;

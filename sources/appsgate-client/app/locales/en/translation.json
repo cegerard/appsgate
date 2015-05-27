@@ -463,6 +463,7 @@
 			"whereIsMyPhone" : "Locate __myVar__",
 			"vocalMessage" : "Say a message from __myVar__",
             "msgReceivedEvt" : "__myVar__ sends a message",
+            "specificMsgReceivedEvt" : "__myVar__ sends a specific message",
             "dest" : "number",
             "message": "message"
 		},
@@ -471,7 +472,8 @@
 			"sendSMS" : "Send SMS from __myVar__",
 			"whereIsMyPhone" : "Locate __myVar__",
 			"vocalMessage" : "Say a message from __myVar__",
-            "msgReceivedEvt" : "__myVar__ sends a message"
+            "msgReceivedEvt" : "__myVar__ sends a message",
+            "specificMsgReceivedEvt" : "__myVar__ sends a specific message"
 		}
       },
     "movement": {
