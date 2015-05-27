@@ -30,55 +30,54 @@
 			</a>
 		</div>
 	</div>
-</div>
 
-<!-- modal to add a new place -->
+	<!-- modal to edit a new place -->
 
-<div id="edit-energy-group-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalAddGroup" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h4 class="modal-title" data-i18n="services.energy-monitoring.modal-add.title"></h4>
-			</div>
-
-			<div class="modal-body">
-				<div class="row">
-					<div class="col-xs-offset-1 col-xs-10">
-						<input type="text" class="form-control" name="inputValue" id="energyGroupNameInput" value="<%= model.get('name') %>" autocomplete="off">
-					</div>
-
-					<form class="form-horizontal col-xs-12  voffset-top-10">
-						<div class="form-group">
-							<label class="col-md-2" for="budgettValueInput" data-i18n="services.energy-monitoring.budget.name"></label>
-							<div class="col-md-4">
-								<input class="form-control" type="number" id="budgetValueInput" value="<%= model.get('budgetTotal') %>">
-							</div>
-							<label class="col-md-2 col-md-offset-1" for="unitSelector" data-i18n="services.energy-monitoring.unit"></label>
-							<div class="col-md-2">
-								<select id="unitSelector" class="form-control">
-								</select>
-							</div>
-						</div>
-					</form>
-
-					<div class="col-xs-offset-1 col-xs-11">
-						<div id="energyDevicesContainer" class="row">
-							<span class="col-md-12" data-i18n="services.energy-monitoring.modal-add.devices.title"></span>
-						</div>
-					</div>
-
+	<div id="edit-energy-group-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalAddGroup" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" data-i18n="services.energy-monitoring.modal-edit.title"></h4>
 				</div>
-			</div>
 
-			<div class="modal-footer">
-				<button class="btn btn-default cancel-button" data-dismiss="modal" data-i18n="form.cancel-button"></button>
-				<button class="btn btn-primary valid-button" data-i18n="form.valid-button"></button>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-xs-offset-1 col-xs-10">
+							<input type="text" class="form-control" name="inputValue" id="energyGroupNameInput" value="<%= model.get('name') %>" autocomplete="off">
+						</div>
+
+						<form class="form-horizontal col-xs-12  voffset-top-10">
+							<div class="form-group">
+								<label class="col-md-2" for="budgettValueInput" data-i18n="services.energy-monitoring.budget.name"></label>
+								<div class="col-md-4">
+									<input class="form-control" type="number" id="budgetValueInput" value="<%= model.get('budgetTotal') %>">
+								</div>
+								<label class="col-md-2 col-md-offset-1" for="unitSelector" data-i18n="services.energy-monitoring.unit"></label>
+								<div class="col-md-2">
+									<select id="unitSelector" class="form-control">
+									</select>
+								</div>
+							</div>
+						</form>
+
+						<div class="col-xs-offset-1 col-xs-11">
+							<div id="energyDevicesContainer" class="row">
+								<span class="col-md-12" data-i18n="services.energy-monitoring.modal-add.devices.title"></span>
+							</div>
+						</div>
+
+					</div>
+				</div>
+
+				<div class="modal-footer">
+					<button class="btn btn-default cancel-button" data-dismiss="modal" data-i18n="form.cancel-button"></button>
+					<button class="btn btn-primary valid-button" data-i18n="form.valid-button"></button>
+				</div>
 			</div>
 		</div>
 	</div>
+
 </div>
-
-
 
 <div class="contents-list scrollable">
 	<div class="list-group">

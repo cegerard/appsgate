@@ -1018,7 +1018,7 @@
 			"now" : "Maintenant"
 		},
 		"modal-add" : {
-			"title" : "Nouveau budget",	
+			"title" : "Nouveau groupe de suivi d'énergie",	
 			"placeholder" : {
 				"name" : "Nom du groupe de suivi d'énergie",
 				"budget" : "Spécifier votre budget"
@@ -1027,6 +1027,9 @@
 				"title" : "Pour les équipements :",
 				"all" : "Toutes les smartplugs"
 			}
+		},
+		"modal-edit" : {
+			"title" : "Editer groupe de suivi d'énergie"
 		},
 		"unit" : "Unités",
 		"history" : "Historique",
