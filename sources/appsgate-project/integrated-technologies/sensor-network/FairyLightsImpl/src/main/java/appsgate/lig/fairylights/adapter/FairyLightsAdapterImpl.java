@@ -22,7 +22,6 @@ import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.fairylights.CoreFairyLightsSpec;
 import appsgate.lig.fairylights.service.FairyLightsImpl;
-import appsgate.lig.fairylights.service.LumiPixelImpl;
 import appsgate.lig.persistence.DBHelper;
 import appsgate.lig.persistence.MongoDBConfiguration;
 
