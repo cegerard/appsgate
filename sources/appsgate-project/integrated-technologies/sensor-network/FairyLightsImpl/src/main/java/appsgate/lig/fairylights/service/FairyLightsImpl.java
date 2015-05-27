@@ -45,6 +45,9 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 	
 	Set<Integer> currentLights;
 	
+	Object lock = new Object();
+	boolean configured = false;
+	
 	public FairyLightsImpl() {
 		logger.trace("FairyLightsImpl(), default constructor");
 		currentLights = new HashSet<Integer>();
@@ -55,6 +58,7 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 	public void configure(LightManagement lightManager, JSONArray lights) {
 		this.lightManager = lightManager;
 		setAffectedLights(lights);
+		configured = true;
 	}
 	
 	public void setAffectedLights(JSONArray lights) {
@@ -72,31 +76,47 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 	@Override
 	public JSONArray getLightsStatus() {
 		logger.trace("getAllLights()");
-		JSONArray response = lightManager.getAllLights(); 
+		JSONArray response = lightManager.getAllLights();
+		JSONArray results = new JSONArray();
+		if(response!= null && response.length()>0) {
+			for(int i = 0; i< response.length(); i++) {
+				if(response.optJSONObject(i) != null
+						&& response.optJSONObject(i).optInt(KEY_ID,-1)>0
+						&& currentLights.contains(response.optJSONObject(i).optInt(KEY_ID,-1))) {
+					results.put(response.optJSONObject(i));
+				}
+			}
+		}
 
-		logger.trace("getAllLights(), returning {}",response);
-		return response;
+		logger.trace("getAllLights(), returning {}",results);
+		return results;
 	}
 
 	@Override
 	public String getOneLight(int lightNumber) {
 		logger.trace("getOneLight(int lightNumber : {})", lightNumber);
-		// TODO test if the light is in the group
-		
-		return lightManager.getOneLight(lightNumber);
+		if(currentLights.contains(lightNumber)) {
+			return lightManager.getOneLight(lightNumber);			
+		} else {
+			logger.warn("getOneLight(...), light number not in the group");
+			return null;
+		}
 	}
 
 	@Override
 	public JSONObject setOneColorLight(int lightNumber, String color) {
 		logger.trace("setColorLight(int lightNumber : {}, String color : {})", lightNumber, color);
-		// TODO test if the light is in th group
+		if(currentLights.contains(lightNumber)) {
 
 		JSONObject response = lightManager.setOneColorLight(getAbstractObjectId(), lightNumber, color);
 		logger.trace("setColorLight(...), returning {}",response);
 		stateChanged("ledChanged", null, color, getAbstractObjectId());
 		return response;
+		} else {
+			logger.warn("setOneColorLight(...), light number not in the group");
+			return null;
+		}
 	}
-
 	
 	@Override
 	public JSONArray setAllColorLight(String color) {
@@ -132,6 +152,19 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 			singleChaserAnimation(end, start, color);
 		}
 	}	
+	
+	private boolean waitForConfiguration() {
+		synchronized (lock) {
+			while (!configured) {
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			return configured;
+		}
+	}
 
 
 	@Override
@@ -140,7 +173,10 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 		descr.put("id", getAbstractObjectId());
 		descr.put("type", getUserType()); 
 		descr.put("status", getObjectStatus());
-		descr.put(KEY_LEDS, getLightsStatus());
+
+		if(waitForConfiguration()) {		
+			descr.put(KEY_LEDS, getLightsStatus());
+		}
 
 		return descr;
 	}
@@ -168,13 +204,4 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 	public NotificationMsg stateChanged(String varName, String oldValue, String newValue, String source) {
 		return new CoreNotificationMsg(varName, oldValue, newValue, getAbstractObjectId());
 	}
-
-	@Override
-	public JSONArray getLightsIndexes() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	
 }
