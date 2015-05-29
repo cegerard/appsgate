@@ -56,7 +56,7 @@ define([
           $(btn).append("<span>" + $.i18n.t('devices.fairylights.keyboard.setOneColorLight', {
             myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.fairylights.name.singular') + "</span>"
           }));
-          v.methodName = "setAllColorLight";
+          v.methodName = "setOneColorLight";
           v.args = [{
             "type": "int",
             "value": "0"

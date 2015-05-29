@@ -18,6 +18,8 @@ define([
         "click #end-edit-button": "onClickEndEdit",
         "click #cancel-edit-button": "onClickCancelEdit",
         "change .lamp-color-picker": "onChangeLampColorNode",
+        "change .fairylights-color-picker": "onFairyLightsColorNode",
+
         "change .selector-place-picker": "onChangeSeletorPlaceNode",
         "change .day-forecast-picker": "onChangeDayForecastNode",
         "change .code-forecast-picker": "onChangeCodeForecastNode",
@@ -407,6 +409,15 @@ define([
         // clearing selection
         this.resetSelection();
       },
+
+      onFairyLightsColorNode: function(e) {
+        e.stopPropagation();
+        var iid = $(e.currentTarget).attr("target-id");
+        var value = e.currentTarget.selectedOptions[0].value;
+        this.Mediator.setNodeAttribute(iid, "args", [{type: "String", value: value}]);
+        console.log("Changing fairy light color : ", value);
+      },
+
       onChangeSeletorPlaceNode: function(e) {
         e.stopPropagation();
         var iid = $(e.currentTarget).attr("target-id");

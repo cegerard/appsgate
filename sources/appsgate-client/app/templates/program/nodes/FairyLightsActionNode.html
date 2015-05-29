@@ -10,24 +10,24 @@
     </tr>
   </table>
 </div>
-<!--
-<div class="btn btn-default btn-prog btn-prog-action " id="<%= node.iid %>">
-        <% if (typeof node.phrase !== 'undefined') { %>
-            <span data-i18n='<%=node.phrase%>'></span>
-        <% } else { %>
-        Uknown
-        <% } %>
 
-    <% if (typeof node.target !== 'undefined') { %>
-    <%=engine.buildInputFromNode(node.target, currentNode) %>
-    <% } %>
-
-</div>
--->
 <div class="btn btn-default btn-prog btn-prog-action " id="<%= node.iid %>">
         <% if (typeof node.phrase !== 'undefined') { %>
                 <%= $.i18n.t(node.phrase, {myVar:engine.buildInputFromNode(node.target, currentNode)}) %>
         <% } else { %>
         Uknown
         <% } %>
+
+    <% if (node.methodName == "setAllColorLight") { %>
+    <select id="fairylights-color-<%= node.idd %>" class="fairylights-color-picker" target-id="<%= node.iid %>">
+        <option <% if (node.args[0].value === "#ff0000") { %>selected<% } %> value="#ff0000" data-i18n="language.color.red"></option>
+        <option <% if (node.args[0].value === "#0000ff") { %>selected<% } %> value="#0000ff" data-i18n="language.color.blue"></option>
+        <option <% if (node.args[0].value === "#00ff00") { %>selected<% } %> value="#00ff00" data-i18n="language.color.green"></option>
+        <option <% if (node.args[0].value === "#ffff00") { %>selected<% } %> value="#ffff00" data-i18n="language.color.yellow"></option>
+        <option <% if (node.args[0].value === "#ff8000") { %>selected<% } %> value="#ff8000" data-i18n="language.color.orange"></option>
+        <option <% if (node.args[0].value === "#bf00ff") { %>selected<% } %> value="#bf00ff" data-i18n="language.color.purple"></option>
+        <option <% if (node.args[0].value === "#ff00bf") { %>selected<% } %> value="#ff00bf" data-i18n="language.color.pink"></option>
+        <option <% if (node.args[0].value === "#ffffff") { %>selected<% } %> value="#ffffff" data-i18n="language.color.white"></option>
+    </select>
+    <% }%>
 </div>
