@@ -19,6 +19,7 @@ define([
         "click #cancel-edit-button": "onClickCancelEdit",
         "change .lamp-color-picker": "onChangeLampColorNode",
         "change .fairylights-color-picker": "onFairyLightsColorNode",
+        "change .fairylights-index-picker": "onFairyLightsIndexNode",
 
         "change .selector-place-picker": "onChangeSeletorPlaceNode",
         "change .day-forecast-picker": "onChangeDayForecastNode",
@@ -413,9 +414,23 @@ define([
       onFairyLightsColorNode: function(e) {
         e.stopPropagation();
         var iid = $(e.currentTarget).attr("target-id");
-        var value = e.currentTarget.selectedOptions[0].value;
-        this.Mediator.setNodeAttribute(iid, "args", [{type: "String", value: value}]);
+        var newColor = e.currentTarget.selectedOptions[0].value;
+        var value = {"type": "String", "value": newColor};
+        var index = $(e.currentTarget).attr("color-index");
+
+        this.Mediator.setNodeArg(iid, Number(index), value);
         console.log("Changing fairy light color : ", value);
+      },
+
+      onFairyLightsIndexNode: function(e) {
+        e.stopPropagation();
+        var iid = $(e.currentTarget).attr("target-id");
+        var newIndex = e.currentTarget.selectedOptions[0].value;
+        var value = {"type": "int", "value": newIndex};
+        var index = $(e.currentTarget).attr("light-index");
+
+        this.Mediator.setNodeArg(iid, Number(index), value);
+        console.log("Changing fairy light index : ", value);
       },
 
       onChangeSeletorPlaceNode: function(e) {

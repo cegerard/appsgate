@@ -89,7 +89,7 @@ define([
             "value": "0"
           },{
             "type": "int", // end
-            "value": "0"
+            "value": "24"
           },{
             "type": "String",
             "value": "#ffffff"
@@ -107,13 +107,13 @@ define([
             "value": "0"
           },{
             "type": "int", // end
-            "value": "0"
+            "value": "24"
           },{
             "type": "String",
             "value": "#ffffff"
           },{
             "type": "int", // nb rounds
-            "value": "0"
+            "value": "1"
           }];
           v.phrase = "devices.fairylights.language.roundChaserAnimation";
           $(btn).attr("json", JSON.stringify(v));
