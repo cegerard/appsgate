@@ -1,7 +1,9 @@
 define([
   "app",
-  "models/device/device"
-], function(App, Device) {
+  "models/device/device",
+  "text!templates/program/nodes/mobileAction.html",
+  "text!templates/program/nodes/mobileEvent.html"
+], function(App, Device, ActionTemplate, EventTemplate) {
 
   var MobileTasker = {};
 
@@ -23,10 +25,22 @@ define([
       }
     },
     /**
+     * @returns the action template specific for mobile
+     */
+    getTemplateAction: function() {
+      return _.template(ActionTemplate);
+    },
+    /**
+     * @returns the event template specific for mobile
+     */
+    getTemplateEvent: function() {
+      return _.template(EventTemplate);
+    },
+    /**
      *return the list of available actions
      */
     getActions: function() {
-      return ["sendMessage"];
+      return ["vocalMessage", "sendSMS", "whereIsMyPhone"];
     },
     /**
      * return the keyboard code for a given action
@@ -36,17 +50,45 @@ define([
       var v = this.getJSONAction("mandatory");
 
       switch (act) {
-        case "sendMessage":
-          $(btn).append("<span>" + $.i18n.t('devices.mobileTasker.keyboard.sendMessage', {
+        case "vocalMessage":
+          $(btn).append("<span>" + $.i18n.t('devices.mobileTasker.keyboard.vocalMessage', {
             myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.mobileTasker.keyboard.mobile') + "</span>"
           }));
-          v.methodName = "display";
-          v.type="action1";
-          v.args = [{
+          v.methodName = "vocalMessage";
+          v.type="action";
+          v.args = [
+          {
             "type": "String",
             "value": "Coucou"
           }];
-          v.phrase = "devices.mobileTasker.language.sendMessage";
+          v.phrase = "devices.mobileTasker.language.vocalMessage";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        case "sendSMS":
+          $(btn).append("<span>" + $.i18n.t('devices.mobileTasker.keyboard.sendSMS', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.mobileTasker.keyboard.mobile') + "</span>"
+          }));
+          v.methodName = "sendSMS";
+          v.type="action";
+          v.args = [
+          {
+            "type": "String",
+            "value": "num"
+          },
+          {
+            "type": "String",
+            "value": "Coucou"
+          }];
+          v.phrase = "devices.mobileTasker.language.sendSMS";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        case "whereIsMyPhone":
+          $(btn).append("<span>" + $.i18n.t('devices.mobileTasker.keyboard.whereIsMyPhone', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.mobileTasker.keyboard.mobile') + "</span>"
+          }));
+          v.methodName = "whereIsMyPhone";
+          v.type="action";
+          v.phrase = "devices.mobileTasker.language.whereIsMyPhone";
           $(btn).attr("json", JSON.stringify(v));
           break;
 
@@ -61,7 +103,7 @@ define([
      * return the list of available events
      */
     getEvents: function() {
-      return ["valueChange"];
+      return ["anyMessage", "specificMessage"];
     },
     /**
      * return the keyboard code for a given event
@@ -70,12 +112,21 @@ define([
       var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
       var v = this.getJSONEvent("mandatory");
       switch (evt) {
-        case "valueChange":
+        case "anyMessage":
           $(btn).append("<span>" + $.i18n.t('devices.mobileTasker.keyboard.msgReceivedEvt', {
             myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.mobileTasker.keyboard.mobile') + "</span>",
           }));
           v.eventName = "appsgate";
           v.eventValue = "*";
+          v.phrase = "devices.mobileTasker.language.msgReceivedEvt";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        case "specificMessage":
+          $(btn).append("<span>" + $.i18n.t('devices.mobileTasker.keyboard.specificMsgReceivedEvt', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.mobileTasker.keyboard.mobile') + "</span>",
+          }));
+          v.eventName = "specificMessage";
+          v.eventValue = "a message";
           v.phrase = "devices.mobileTasker.language.msgReceivedEvt";
           $(btn).attr("json", JSON.stringify(v));
           break;

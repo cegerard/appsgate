@@ -434,7 +434,9 @@ define([
 		addDeviceTypeFilterLoaded: function (JSONTypes) {
 			this.get("subFilterDevice")["deviceType"] = _.filter(JSONTypes, function (type) {
 				// Don't add : 102/103/104 = services, 21 = clock
-                var filteredType = ["102", "103", "104", "21", "UbikitAdapterService", "PlaceManagerSpec", "EUDE_InterpreterSpec", "WeatherAdapterSpec", "DevicePropertiesTableSpec", "UserBaseSpec", "CoreEnergyMonitoringGroup", "EnergyMonitoringAdapter"];
+                var filteredType = ["102", "103", "104", "21", "UbikitAdapterService", "PlaceManagerSpec", "EUDE_InterpreterSpec",
+									"WeatherAdapterSpec", "DevicePropertiesTableSpec", "UserBaseSpec", "CoreEnergyMonitoringGroup", "EnergyMonitoringAdapter",
+									"FairyLightsAdapterSpec", "MobileDeviceAdapter"];
                 return filteredType.indexOf(type) < 0;
 			});
 			Array.prototype.push.apply(this.get("currentEntitiesFilters"), this.get("subFilterDevice")["deviceType"]);

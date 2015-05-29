@@ -1,0 +1,72 @@
+<div id="progress-<%= node.iid %>" class="progress-indicator-group pull-left">
+  <table>
+    <tr>
+      <td>
+        <i class="glyphicon glyphicon-flash pull-left"></i>
+      </td>
+      <td>
+        <span id="progress-counter-<%=node.iid %>" class="progress-indicator">0</span>
+      </td>
+    </tr>
+  </table>
+</div>
+<div class="btn btn-default btn-prog btn-prog-action" id="<%= node.iid %>">
+    <% if (node.methodName == "sendSMS" ) { %>
+        <table cellspacing="20" style="margin-left: 20px;" border="0">
+            <tr>
+                <td align="left" colspan="2">
+                    <% if (typeof node.phrase !== 'undefined') { %>
+                    <%= $.i18n.t(node.phrase, {myVar:engine.buildInputFromNode(node.target, currentNode)}) %>
+                    <% } else { %>
+                    Unknown
+                    <% } %>
+                </td>
+            </tr>
+            <tr>
+                <td align="right">
+                    <span data-i18n='devices.mobileTasker.language.dest'/>:&nbsp;
+                </td>
+                <td align="left">
+                    <input type="text" target-id="<%= node.iid %>" value="<%= node.args[0].value %>" size="40" class="arg-input" target-index="0"/>
+                </td>
+            </tr>
+            <tr>
+                <td align="right">
+                    <span data-i18n='devices.mobileTasker.language.message'/>:&nbsp;
+                </td>
+                <td align="left">
+                    <input type="text" target-id="<%= node.iid %>" value="<%= node.args[1].value %>" size="40" class="arg-input" target-index="1"/>
+                </td>
+            </tr>
+        </table>
+    <% } %>
+    <% if (node.methodName == "whereIsMyPhone" ) { %>
+        <% if (typeof node.phrase !== 'undefined') { %>
+                <%= $.i18n.t(node.phrase, {myVar:engine.buildInputFromNode(node.target, currentNode)}) %>
+        <% } else { %>
+        Uknown
+        <% } %>
+    <% } %>
+    <% if (node.methodName == "vocalMessage" ) { %>
+        <table cellspacing="20" style="margin-left: 20px;" border="0">
+            <tr>
+                <td align="left" colspan="2">
+                    <% if (typeof node.phrase !== 'undefined') { %>
+                    <%= $.i18n.t(node.phrase, {myVar:engine.buildInputFromNode(node.target, currentNode)}) %>
+                    <% } else { %>
+                    Unknown
+                    <% } %>
+                </td>
+            </tr>
+            <tr>
+                <td align="right">
+                    <span data-i18n='devices.mobileTasker.language.message'/>:&nbsp;
+                </td>
+                <td align="left">
+                    <input type="text" target-id="<%= node.iid %>" value="<%= node.args[0].value %>" size="40" class="arg-input" target-index="0"/>
+                </td>
+            </tr>
+        </table>
+    <% } %>
+
+</div>

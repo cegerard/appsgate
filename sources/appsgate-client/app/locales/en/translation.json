@@ -107,7 +107,8 @@
 						"32": "$t(devices.co2.name.plural)",
 						"36": "$t(devices.mediaplayer.name.plural)",
 						"124": "$t(devices.tv.name.plural)",
-						"210": "$t(devices.domicube.name.plural)"
+						"210": "$t(devices.domicube.name.plural)",
+                        "MobileDevice" :  "$t(devices.mobileTasker.name.plural)"
 					},
 					"device-state": {
 						"title": "State",
@@ -455,20 +456,27 @@
     },
    "mobileTasker": {
 		"name": {
-			"singular" : "mobile",
-			"plural" : "mobiles"
+			"singular" : "Mobile",
+			"plural" : "Mobiles"
          },
 		"language" : {
-			"sendMessage" : "Send message to __myVar__",
-            "msgReceivedEvt" : "__myVar__ sends a message"
+			"sendSMS" : "Send SMS from __myVar__",
+			"whereIsMyPhone" : "Locate __myVar__",
+			"vocalMessage" : "Say a message from __myVar__",
+            "msgReceivedEvt" : "__myVar__ sends a message",
+            "specificMsgReceivedEvt" : "__myVar__ sends a specific message",
+            "dest" : "number",
+            "message": "message"
 		},
 		"keyboard" : {
 			"mobile" : "le mobile",
-			"sendMessage" : "Send message to __myVar__",
-            "msgReceivedEvt" : "__myVar__ sends a message"
+			"sendSMS" : "Send SMS from __myVar__",
+			"whereIsMyPhone" : "Locate __myVar__",
+			"vocalMessage" : "Say a message from __myVar__",
+            "msgReceivedEvt" : "__myVar__ sends a message",
+            "specificMsgReceivedEvt" : "__myVar__ sends a specific message"
 		}
       },
-
     "movement": {
       "name": {
         "plural": "Motion sensors",

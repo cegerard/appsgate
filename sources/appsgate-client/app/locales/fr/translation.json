@@ -107,7 +107,8 @@
 						"32": "$t(devices.co2.name.plural)",
 						"36": "$t(devices.mediaplayer.name.plural)",
 						"124": "$t(devices.tv.name.plural)",
-						"210": "$t(devices.domicube.name.plural)"
+						"210": "$t(devices.domicube.name.plural)",
+                        "MobileDevice" :  "$t(devices.mobileTasker.name.plural)"
 					},
 					"device-state": {
 						"title": "Etat",
@@ -455,17 +456,25 @@
     },
 	"mobileTasker": {
 		"name": {
-			"singular" : "mobile",
-			"plural" : "mobiles"
+			"singular" : "Mobile",
+			"plural" : "Mobiles"
 		},
 		"language" : {
-			"sendMessage" : "Envoyer le message sur __myVar__",
-            "msgReceivedEvt" : "on reçoit un message de __myVar__"
+			"sendSMS" : "Envoit un SMS depuis __myVar__",
+			"whereIsMyPhone" : "Localise __myVar__",
+			"vocalMessage" : "Message vocal depuis __myVar__",
+            "dest" : "numéro",
+            "message": "message",
+            "msgReceivedEvt" : "on reçoit un message de __myVar__",
+            "specificMsgReceivedEvt" : "on reçoit un message particulier de __myVar__"
 		},
 		"keyboard" : {
-			"mobile" : "le mobile",
-			"sendMessage" : "Envoyer le message sur __myVar__",
-            "msgReceivedEvt" : "on reçoit un message de __myVar__"
+			"mobile" : "un mobile",
+			"sendSMS" : "Envoit un SMS depuis __myVar__",
+			"whereIsMyPhone" : "Localise __myVar__",
+			"vocalMessage" : "Message vocal depuis __myVar__",
+            "msgReceivedEvt" : "on reçoit un message d'__myVar__",
+            "specificMsgReceivedEvt" : "on reçoit un message particulier d'__myVar__"
 		}
 	},
     "movement": {

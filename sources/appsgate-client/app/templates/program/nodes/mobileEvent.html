@@ -1,0 +1,31 @@
+<div class="btn btn-default btn-prog btn-prog-action" id="<%= node.iid %>">
+    <% if (node.eventName == "appsgate" ) { %>
+        <% if (typeof node.phrase !== 'undefined') { %>
+                <%= $.i18n.t(node.phrase, {myVar:engine.buildInputFromNode(node.source, currentNode)}) %>
+    <% } else { %>
+        Uknown
+    <% } %>
+    <% } %>
+    <% if (node.eventName == "specificMessage" ) { %>
+        <table cellspacing="20" style="margin-left: 20px;" border="0">
+            <tr>
+                <td align="left" colspan="2">
+                    <% if (typeof node.phrase !== 'undefined') { %>
+                    <%= $.i18n.t(node.phrase, {myVar:engine.buildInputFromNode(node.source, currentNode)}) %>
+                    <% } else { %>
+                    Unknown
+                    <% } %>
+                </td>
+            </tr>
+            <tr>
+                <td align="right">
+                    <span data-i18n='devices.mobileTasker.language.message'/>:&nbsp;
+                </td>
+                <td align="left">
+                    <input type="text" target-id="<%= node.iid %>" value="<%= node.eventValue %>" size="40" class="event-input" target-index="0"/>
+                </td>
+            </tr>
+        </table>
+    <% } %>
+
+</div>
