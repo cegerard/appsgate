@@ -13,17 +13,8 @@ import org.json.JSONObject;
 public interface CoreFairyLightsSpec {
 	
 	/**
-	 * Get the lights index (or number) affected to the current group
-	 * Not that the group cannot change its configuration (add or remove light because it is not responsible for the reservation policy)
-	 * to change a group configuration use the FairyLightsAdapter
-	 * @return
-	 */
-	public JSONArray getLightsIndexes();
-	
-	
-	/**
 	 * 
-	 * @return the list and states of the lights in the group as a JSONObject
+	 * @return the list and states of the lights in the group as a JSON Array
 	  {
     "leds": [
         {
@@ -116,5 +107,11 @@ public interface CoreFairyLightsSpec {
 	 * same as the single chaser but make several round trips
 	 */
 	void roundChaserAnimation(int start, int end, String color, int rounds);
+	
+	/**
+	 * same as the single chaser but the color remains (led does not returns to their original states)
+	 * retruns the now status of the group
+	 */
+	JSONArray setColorAnimation(int start, int end, String color);
 	
 }

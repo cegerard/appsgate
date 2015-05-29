@@ -15,7 +15,7 @@ define([
 			"click button.delete-popover-energy-group-button": "onClickDeleteEnergyGroup",
 			"click button.delete-energy-group-button": "onDeleteEnergyGroup",
 			"click #add-energy-group-modal button.valid-button": "onClickAddEnergyGroup",
-			"keyup #add-energy-group-modal input": "validAddinAmount",
+			"keyup #add-energy-group-modal #energyGroupNameInput": "onKeyupGroupName",
 			"click button.start": "onStart",
 			"click button.stop": "onStop",
 
@@ -106,8 +106,11 @@ define([
 		 */
 		render: function () {
 			if (!appRouter.isModalShown) {
+				var energyMonitoringGroupsAlphabeticOrder = _.sortBy(services.getCoreEnergyMonitoringGroups(), function(group) {
+					return group.get("name").toLowerCase();
+				});
 				this.$el.html(this.energyGrpTpl({
-					energyMonitoringGroups: services.getCoreEnergyMonitoringGroups(),
+					energyMonitoringGroups: energyMonitoringGroupsAlphabeticOrder,
 				}));
 				this.buildDevicesChoice();
 				this.buildUnitSelector();
@@ -203,7 +206,7 @@ define([
 		 * Callback when check all devices
 		 */
 		onCheckAllDevice: function (e) {
-			_.forEach($(".checkbox-select-device"), function(chkbxDevice) {
+			_.forEach($(".checkbox-select-device"), function (chkbxDevice) {
 				$(chkbxDevice).prop('checked', $("#allDevice").is(':checked'));
 			});
 		},
@@ -219,6 +222,21 @@ define([
 			}
 		},
 
+		/**
+		 * Callback when typing group name
+		 */
+		onKeyupGroupName: function(e) {
+			if ($("#energyGroupNameInput").val() !== "") {
+				$(".btn.valid-button").prop("disabled", false);
+				$(".btn.valid-button").removeClass("disabled");
+				$(".btn.valid-button").removeClass("valid-disabled");
+			} else {
+				$(".btn.valid-button").prop("disabled", true);
+				$(".btn.valid-button").addClass("disabled");
+				$(".btn.valid-button").addClass("valid-disabled");
+			}
+		},
+		
 		/**
 		 * Method to get the ids of the devices selected
 		 */
@@ -360,11 +378,47 @@ define([
 			var spanBudgetUnit = divGroup.children(".row").children("div").children(".span-budget-unit");
 			spanBudgetUnit.text(unit.text);
 
-			var progressBar = divGroup.children(".row").children("div").children("div").children(".progress-bar");
+			// ProgressBar
+			var divProgressBar = divGroup.children(".row").children("div").children("div.progress")
+			var progressBar = divProgressBar.children(".progress-bar.progress-bar-valid");
 			var spanBudgetUsedPercent = progressBar.children(".budget-used-percent");
 			var budgetUsedPercent = energyGroup.getPercentUsed();
-			spanBudgetUsedPercent.text(budgetUsedPercent + "%");
-			progressBar.css("width", budgetUsedPercent + "%");
+
+			// If budget exceed 100%, create new red bar
+			if (budgetUsedPercent > 100) {
+				// Reduce valid bar before add new one
+				progressBar.css("width", (200 - budgetUsedPercent) + "%");
+
+				// If second bar already existed, don't recreate it
+				if (divProgressBar.children(".progress-bar.progress-bar-over").length === 0) {
+					// Create bar and append it before the valid
+					progressBar.before("<div class='progress-bar progress-bar-over progress-bar-danger progress-bar-striped active' style='min-width:3em;max-width:100%;'><span class='over-budget-used-percent'></span></div>");
+					// Change min width for the valid progress bar to make it disappear at 198-200%
+					progressBar.css("min-width", 0);
+				}
+				var overProgressBar = divProgressBar.children(".progress-bar.progress-bar-over");
+				var spanOverBudgetUsedPercent = $(overProgressBar).children(".over-budget-used-percent");
+				overProgressBar.css("width", budgetUsedPercent - 100 + "%");
+
+				// We change of span to show percent because 100-120 (approx) don't have place to write it in over bar
+				if (budgetUsedPercent > 125) {
+					spanBudgetUsedPercent.text("");
+					spanOverBudgetUsedPercent.text(budgetUsedPercent + "%");
+				} else {
+					spanBudgetUsedPercent.text(budgetUsedPercent + "%");
+					spanOverBudgetUsedPercent.text("");
+				}
+
+			} else {
+				if (divProgressBar.children(".progress-bar.progress-bar-over").length > 0) {
+					// In this case, progress bar was over 100 before, so we need to remove the over-progress-bar
+					divProgressBar.children(".progress-bar.progress-bar-over").remove();
+					// And also reset min width
+					progressBar.css("min-width", "2em");
+				}
+				spanBudgetUsedPercent.text(budgetUsedPercent + "%");
+				progressBar.css("width", budgetUsedPercent + "%");
+			}
 		},
 
 		/**
@@ -409,8 +463,6 @@ define([
 				}
 			}
 		},
-
-		validAddinAmount: function () {}
 
 
 	});

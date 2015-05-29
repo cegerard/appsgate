@@ -1,7 +1,7 @@
 /**
  * 
  */
-package appsgate.lig.fairylights;
+package appsgate.lig.fairylights.service;
 
 import static org.junit.Assert.*;
 
@@ -14,8 +14,8 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import appsgate.lig.fairylights.adapter.LightManagement;
 import appsgate.lig.fairylights.service.FairyLightsImpl;
-import appsgate.lig.fairylights.service.LumiPixelImpl;
 
 /**
  * @author thibaud
@@ -47,11 +47,13 @@ public class FairyLightsImplTest {
 	@Before
 	public void setUp() throws Exception {
 		lights = new FairyLightsImpl();
+		lights.coreObjectId = "Test";
 		JSONArray lightsArray = new JSONArray();
 		for(int i = 0; i<25; i++) {
 			lightsArray.put(String.valueOf(i));
 		}
-		lights.configure(LumiPixelImpl.DEFAULT_PROTOCOL+LumiPixelImpl.DEFAULT_HOST, lightsArray);
+		LightManagement lightManager = LightManagement.getInstance();
+		lights.configure(lightManager, lightsArray);
 	}
 
 	/**
@@ -68,9 +70,9 @@ public class FairyLightsImplTest {
 	// Disabled (Device must be physically available to run the test
 	@Test
 	public void testSetAllColorLight() {
-		assertNotNull("Fairy Ligths not responding",lights.setAllColorLight("#ff0000"));
-		assertNotNull("Fairy Ligths not responding",lights.setAllColorLight("#00ff00"));
-		assertNotNull("Fairy Ligths not responding",lights.setAllColorLight("#0000ff"));
+		assertNotNull("Fairy Lights not responding",lights.setAllColorLight("#ff0000"));
+		assertNotNull("Fairy Lights not responding",lights.setAllColorLight("#00ff00"));
+		assertNotNull("Fairy Lights not responding",lights.setAllColorLight("#0000ff"));
 	}
 	
 	// Disabled (Device must be physically available to run the test
@@ -91,36 +93,36 @@ public class FairyLightsImplTest {
 			obj2.put(FairyLightsImpl.KEY_COLOR, "#"+String.valueOf(i)+"f0000");
 			pattern2.put(obj2 );
 		}
-		assertNotNull("Fairy Ligths not responding",lights.setAllColorLight("#ffffff"));
-		assertNotNull("Fairy Ligths not responding",lights.setColorPattern(pattern1));
-		assertNotNull("Fairy Ligths not responding",lights.setAllColorLight("#ffffff"));
-		assertNotNull("Fairy Ligths not responding",lights.setColorPattern(pattern2));
-		assertNotNull("Fairy Ligths not responding",lights.setAllColorLight("#000000"));
+		assertNotNull("Fairy Lights not responding",lights.setAllColorLight("#ffffff"));
+		assertNotNull("Fairy Lights not responding",lights.setColorPattern(pattern1));
+		assertNotNull("Fairy Lights not responding",lights.setAllColorLight("#ffffff"));
+		assertNotNull("Fairy Lights not responding",lights.setColorPattern(pattern2));
+		assertNotNull("Fairy Lights not responding",lights.setAllColorLight("#000000"));
 	}	
 	
 	// Disabled (Device must be physically available to run the test
 	@Test
 	public void testSingleChaserAnimation() {
-		assertNotNull("Fairy Ligths not responding",lights.setAllColorLight("#ffffff"));
+		assertNotNull("Fairy Lights not responding",lights.setAllColorLight("#ffffff"));
 		
 		lights.singleChaserAnimation(10, 20, "#ff0000");
 		lights.singleChaserAnimation(20, 10, "#00ff00");
-		assertNotNull("Fairy Ligths not responding",lights.setAllColorLight("#000000"));
+		assertNotNull("Fairy Lights not responding",lights.setAllColorLight("#000000"));
 	}
 	
 	// Disabled (Device must be physically available to run the test
 	@Test
 	public void testRoundChaserAnimation() {
-		assertNotNull("Fairy Ligths not responding",lights.setAllColorLight("#ffffff"));
+		assertNotNull("Fairy Lights not responding",lights.setAllColorLight("#ffffff"));
 		
 		lights.roundChaserAnimation(0, 24, "#ff0000",3);
-		assertNotNull("Fairy Ligths not responding",lights.setAllColorLight("#000000"));
+		assertNotNull("Fairy Lights not responding",lights.setAllColorLight("#000000"));
 	}	
 	
 	// Disabled (Device must be physically available to run the test
 	@Test
 	public void testSetColorLight() {
-		assertNotNull("Fairy Ligths not responding",lights.setOneColorLight(0, "#ffffff"));
+		assertNotNull("Fairy Lights not responding",lights.setOneColorLight(0, "#ffffff"));
 	}
 		
 	

@@ -626,15 +626,26 @@
       }
     },
     "fairylights": {
-      "caption": {
-      },
       "keyboard": {
+        "setAllColorLight": "Changer la couleur de la __myVar__",
+        "setOneColorLight": "Changer une lumière de la __myVar__",
+        "setColorPattern": "Appliquer un motif sur la __myVar__",
+        "singleChaserAnimation": "Animer la __myVar__",
+        "roundChaserAnimation": "Animer la __myVar__ en aller/retour",
+        "setColorAnimation": "Colorer la __myVar__ "
+
       },
       "language": {
+        "setAllColorLight": "Changer la couleur de la __myVar__",
+        "setOneColorLight": "Changer une lumière de la __myVar__",
+        "setColorPattern": "Appliquer un motif sur la __myVar__",
+        "singleChaserAnimation": "Animer la __myVar__",
+        "roundChaserAnimation": "Animer la __myVar__ en aller/retour",
+        "setColorAnimation": "Colorer la __myVar__ "
       },
       "name": {
-        "plural": "Guirlande",
-        "singular": "Guirlandes"
+        "singular": "Guirlande",
+        "plural": "Guirlandes"
       }
     },
     "type-label": "Type",
@@ -1027,7 +1038,7 @@
 			"now" : "Maintenant"
 		},
 		"modal-add" : {
-			"title" : "Nouveau budget",	
+			"title" : "Nouveau groupe de suivi d'énergie",	
 			"placeholder" : {
 				"name" : "Nom du groupe de suivi d'énergie",
 				"budget" : "Spécifier votre budget"
@@ -1037,10 +1048,14 @@
 				"all" : "Toutes les smartplugs"
 			}
 		},
+		"modal-edit" : {
+			"title" : "Editer groupe de suivi d'énergie"
+		},
 		"unit" : "Unités",
 		"history" : "Historique",
 		"energy-sensors" : "Equipements de suivi d'énergie",
-		"annotations" : "Commentaires"
+		"annotations" : "Commentaires",
+		"placeholder-new-annotation" : "Entrer un nouveau commentaire"
 	},
     "mail": {
       "keyboard": {
