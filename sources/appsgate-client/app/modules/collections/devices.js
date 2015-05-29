@@ -107,9 +107,6 @@ define([
                 case "8":
                     device = new Actuator(brick);
                     break;
-                case "12":
-                    device = new FairyLights(brick);
-                    break;
                 case "21":
                     device = new CoreClock(brick);
                     break;
@@ -130,6 +127,9 @@ define([
                     break;
                 case "MobileDevice":
                     device = new MobileTasker(brick);
+                    break;
+                case "CoreFairyLightsSpec":
+                    device = new FairyLights(brick);
                     break;
                 default:
                     console.log("unknown type of DEVICE : ", brick.type, brick);
@@ -249,7 +249,7 @@ define([
                 i18="devices.lamp.name.";
             } else if (type == "8") {
                 i18="devices.actuator.name.";
-            } else if (type == "12") {
+            } else if (type == "CoreFairyLightsSpec") {
                 i18="devices.fairylights.name.";
             } else if (type == "31") {
                 i18="devices.mediaplayer.name.";
@@ -326,7 +326,7 @@ define([
          * @return Array of the FairyLights devices
          */
         getFairyLights: function() {
-            return devices.where({type: "12"});
+            return devices.where({type: "CoreFairyLightsSpec"});
         },
         /**
          * @return Core clock of the home - unique device

@@ -32,7 +32,7 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 	
 	//Apsgate Properties for CoreObjectSpec
 	public static final String UserType = CoreFairyLightsSpec.class.getSimpleName();	
-	int coreObjectStatus = 0;
+	int coreObjectStatus = 2;
 	String coreObjectId;
 	String name;
 
@@ -56,6 +56,8 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 	LightManagement lightManager;
 	
 	public void configure(LightManagement lightManager, JSONArray lights) {
+		logger.trace("configure(LightManagement lightManager : {}, JSONArray lights : {})", lightManager, lights);
+
 		this.lightManager = lightManager;
 		setAffectedLights(lights);
 		configured = true;
@@ -169,14 +171,17 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 
 	@Override
 	public JSONObject getDescription() throws JSONException {
+		logger.trace("getDescription()");
+
 		JSONObject descr = new JSONObject();
 		descr.put("id", getAbstractObjectId());
 		descr.put("type", getUserType()); 
-		descr.put("status", getObjectStatus());
+		descr.put("status", String.valueOf(getObjectStatus()));
 
 		if(waitForConfiguration()) {		
 			descr.put(KEY_LEDS, getLightsStatus());
 		}
+		logger.trace("getDescription(), returning "+descr);
 
 		return descr;
 	}
