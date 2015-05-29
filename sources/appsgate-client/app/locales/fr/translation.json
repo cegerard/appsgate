@@ -627,12 +627,15 @@
 
       },
       "language": {
-        "setAllColorLight": "Changer la couleur de la __myVar__",
-        "setOneColorLight": "Changer une lumière de la __myVar__",
-        "setColorPattern": "Appliquer un motif sur la __myVar__",
-        "singleChaserAnimation": "Animer la __myVar__",
-        "roundChaserAnimation": "Animer la __myVar__ en aller/retour",
-        "setColorAnimation": "Colorer la __myVar__ "
+        "setAllColorLight": "Changer la couleur de __myVar__",
+        "setOneColorLight": "Sur __myVar__ changer la couleur de la lumière",
+        "setColorPattern": "Appliquer un motif sur __myVar__",
+        "singleChaserAnimation": "Animer __myVar__",
+        "roundChaserAnimation": "Animer __myVar__ en aller/retour",
+        "setColorAnimation": "Colorer __myVar__ ",
+        "fromLight": "de la lumière",
+        "toLight": "à la lumière",
+        "times": "fois"
       },
       "name": {
         "singular": "Guirlande",

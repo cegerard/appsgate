@@ -425,7 +425,11 @@ define([
       onFairyLightsIndexNode: function(e) {
         e.stopPropagation();
         var iid = $(e.currentTarget).attr("target-id");
-        var newIndex = e.currentTarget.selectedOptions[0].value;
+        if (e.currentTarget.selectedOptions) {
+          var newIndex = e.currentTarget.selectedOptions[0].value;
+        } else {
+          var newIndex = e.currentTarget.value;
+        }
         var value = {"type": "int", "value": newIndex};
         var index = $(e.currentTarget).attr("light-index");
 
