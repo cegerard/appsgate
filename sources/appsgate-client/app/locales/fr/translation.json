@@ -107,7 +107,8 @@
 						"32": "$t(devices.co2.name.plural)",
 						"36": "$t(devices.mediaplayer.name.plural)",
 						"124": "$t(devices.tv.name.plural)",
-						"210": "$t(devices.domicube.name.plural)"
+						"210": "$t(devices.domicube.name.plural)",
+                        "MobileDevice" :  "$t(devices.mobileTasker.name.plural)"
 					},
 					"device-state": {
 						"title": "Etat",
@@ -455,8 +456,8 @@
     },
 	"mobileTasker": {
 		"name": {
-			"singular" : "mobile",
-			"plural" : "mobiles"
+			"singular" : "Mobile",
+			"plural" : "Mobiles"
 		},
 		"language" : {
 			"sendSMS" : "Envoit un SMS depuis __myVar__",
