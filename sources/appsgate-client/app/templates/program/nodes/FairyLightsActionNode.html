@@ -48,6 +48,19 @@
         </select>
     <% }%>
 
+    <% if (node.methodName == "setColorAnimation") { %>
+    <select id="fairylights-index-<%= node.iid %>" class="fairylights-index-picker"  target-id="<%= node.iid %>" light-index="0">
+        <% for(i=0; i< 25; i++) { %>
+        <option <% if (Number(node.args[0].value) === i) { %>selected<% } %> value="<%= i %>"><%= i %></option>
+        <% } %>
+    </select>
+    <select id="fairylights-index-<%= node.iid %>" class="fairylights-index-picker"  target-id="<%= node.iid %>" light-index="1">
+        <% for(i=0; i< 25; i++) { %>
+        <option <% if (Number(node.args[1].value) === i) { %>selected<% } %> value="<%= i %>"><%= i %></option>
+        <% } %>
+    </select>
+    <% }%>
+
     <% if (node.methodName == "roundChaserAnimation") { %>
         <select id="fairylights-index-<%= node.iid %>" class="fairylights-index-picker"  target-id="<%= node.iid %>" light-index="0">
             <% for(i=0; i< 25; i++) { %>

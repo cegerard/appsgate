@@ -31,7 +31,7 @@ define([
      *return the list of available actions
      */
     getActions: function() {
-      return ["setAllColorLight", "setOneColorLight", "setColorPattern", "singleChaserAnimation", "roundChaserAnimation"];
+      return ["setAllColorLight", "setOneColorLight", "setColorPattern", "singleChaserAnimation", "roundChaserAnimation", "setColorAnimation"];
     },
     /**
      * return the keyboard code for a given action
@@ -116,6 +116,24 @@ define([
             "value": "1"
           }];
           v.phrase = "devices.fairylights.language.roundChaserAnimation";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        case "setColorAnimation":
+          $(btn).append("<span>" + $.i18n.t('devices.fairylights.keyboard.setColorAnimation', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.fairylights.name.singular') + "</span>"
+          }));
+          v.methodName = "setColorAnimation";
+          v.args = [{
+            "type": "int", // start
+            "value": "0"
+          },{
+            "type": "int", // end
+            "value": "24"
+          },{
+            "type": "String",
+            "value": "#ffffff"
+          }];
+          v.phrase = "devices.fairylights.language.setColorAnimation";
           $(btn).attr("json", JSON.stringify(v));
           break;
         default:

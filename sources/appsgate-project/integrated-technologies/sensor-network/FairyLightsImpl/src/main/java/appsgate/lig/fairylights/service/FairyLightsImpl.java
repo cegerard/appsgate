@@ -128,6 +128,17 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 		stateChanged(KEY_LEDS, null, response.toString(), getAbstractObjectId());
 		return response;
 	}
+	
+	@Override
+	public JSONArray setColorAnimation(int start, int end, String color) {
+		logger.trace("setColorAnimation(int start : {}, int end : {}, String color : {})",
+				start, end, color);
+				
+		JSONArray response = lightManager.setColorAnimation(getAbstractObjectId(), start, end, color);
+		
+		stateChanged(KEY_LEDS, null, response.toString(), getAbstractObjectId());
+		return response;
+	}
 
 	@Override
 	public JSONArray setColorPattern(JSONArray pattern) {

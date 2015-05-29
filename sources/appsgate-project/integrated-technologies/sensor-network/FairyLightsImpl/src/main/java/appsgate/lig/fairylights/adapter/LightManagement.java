@@ -276,4 +276,31 @@ public class LightManagement {
 		logger.trace("singleChaserAnimation(...), chaser ended");
 	}
 	
+	/**
+	 * with this function lights will NOT return to their original states
+	 */
+	public JSONArray setColorAnimation(String groupId, int start, int end, String color) {
+		logger.trace("setColorAnimation(String groupId: {}, int start : {}, int end : {}, String color : {})",
+				groupId, start, end, color);
+				
+
+		if(start < end) {
+			for(int i = start; i<= end; i++) {
+				LumiPixelImpl.setOneColorLight(host,
+						i, color);
+			}
+		} else if(start > end) {
+			for(int i = start; i>= end; i--) {
+				LumiPixelImpl.setOneColorLight(host,
+						i, color);
+			}
+		}
+		
+
+
+		logger.trace("setColorAnimation(...), setColor ended");
+		return triggerLightsChanged();
+
+	}
+	
 }

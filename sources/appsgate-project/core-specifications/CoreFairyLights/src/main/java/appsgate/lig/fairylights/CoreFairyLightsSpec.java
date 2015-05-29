@@ -108,4 +108,10 @@ public interface CoreFairyLightsSpec {
 	 */
 	void roundChaserAnimation(int start, int end, String color, int rounds);
 	
+	/**
+	 * same as the single chaser but the color remains (led does not returns to their original states)
+	 * retruns the now status of the group
+	 */
+	JSONArray setColorAnimation(int start, int end, String color);
+	
 }
