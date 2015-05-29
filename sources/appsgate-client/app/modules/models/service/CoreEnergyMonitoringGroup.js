@@ -42,6 +42,9 @@ define([
       } else if(event.varName === 'budgetReset') {
         console.log("budgetUnit changed : ", event.value);
         self.trigger("budgetReset");
+      } else if(event.varName === 'annotations') {
+        console.log("annotatinos changed : ", event.value);
+        self.trigger("annotationsChanged");
       }
     });
 
@@ -94,6 +97,16 @@ define([
         {"type": "boolean", "value": resetOnEnd, "name": "resetOnEnd"}
       ]);
     },
+	addAnnotation: function(annotation) {
+      this.remoteControl("addAnnotation", [
+        {"type": "String", "value": annotation, "name": "annotation"}
+      ]);
+    },
+  	removeAnnotation: function(timestamp) {
+	  this.remoteControl("deleteAnnotation", [
+        {"type": "String", "value": timestamp, "name": "timestamp"}
+      ]);
+	},
     removePeriodById: function(eventID) {
       this.remoteControl("removePeriodById", [
         {"type": "String", "value": eventID, "name": "eventID"} ]);
