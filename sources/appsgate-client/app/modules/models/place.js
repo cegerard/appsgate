@@ -187,9 +187,9 @@ define([
             intType = parseInt(type);
 
             // in case of wrong type, return an empty array
-            if (isNaN(intType)) {
-                return [];
-            }
+//            if (isNaN(intType)) {
+//                return [];
+//            }
 
             // get all the devices that match the type
             var sensorsId = this.get("devices").filter(function(id) {
