@@ -42,6 +42,38 @@ public class LumiPixelImpl {
 	public static final String KEY_LEDS = "leds";
 	public static final String KEY_ID = "id";	
 	
+	/**
+	 * 
+	 * @return the whole list and states of the lights as a JSON Array
+	  [
+        {
+            "color": "#c93b3b", 
+            "id": 0, 
+            "name": "premiere", 
+            "uri": "/lumipixel/api/v1.0/leds/0"
+        }, 
+        {
+            "color": "#2134e3", 
+            "id": 1, 
+            "name": "1", 
+            "uri": "/lumipixel/api/v1.0/leds/1"
+        }, 
+        {
+            "color": "#438a4f", 
+            "id": 2, 
+            "name": "2", 
+            "uri": "/lumipixel/api/v1.0/leds/2"
+        },
+        ...
+        {
+            "color": "#438a4f", 
+            "id": n, 
+            "name": "n", 
+            "uri": "/lumipixel/api/v1.0/leds/n"
+        }
+      ]
+	 * 
+	 */
 	public static JSONArray getAllLights(String host) {
 		logger.trace("getAllLights()");
 		JSONObject response = new JSONObject(HttpUtils.sendHttpGet(host+LUMIPIXEL_API_URL)); 

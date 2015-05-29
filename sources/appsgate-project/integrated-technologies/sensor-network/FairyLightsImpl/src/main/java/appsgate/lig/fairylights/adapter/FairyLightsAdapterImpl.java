@@ -22,7 +22,6 @@ import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.fairylights.CoreFairyLightsSpec;
 import appsgate.lig.fairylights.service.FairyLightsImpl;
-import appsgate.lig.fairylights.service.LumiPixelImpl;
 import appsgate.lig.persistence.DBHelper;
 import appsgate.lig.persistence.MongoDBConfiguration;
 
@@ -92,9 +91,16 @@ FairyLightsAdapterSpec, FairyLightsStatusListener {
 					+ " Instance will not be created  (restart DB first)");
 			return null;
 		}		
+		
+		String instanceName;
+		if(LightManagement.GROUP_ALL_ID.equals(name)) {
+			// special case for the group all, the id is the same as the name
+			instanceName = LightManagement.GROUP_ALL_ID;
+		} else {
+			instanceName = FairyLightsImpl.class.getSimpleName()
+					+"-"+generateInstanceID(8);
+		}
 
-		String instanceName = FairyLightsImpl.class.getSimpleName()
-				+"-"+generateInstanceID(8);
 		FairyLightsImpl group = (FairyLightsImpl)createApamComponent(name,instanceName);
 				
 		if(group == null) {
@@ -128,18 +134,23 @@ FairyLightsAdapterSpec, FairyLightsStatusListener {
 
 	@Override
 	public void updateLightsGroup(String groupId, JSONArray selectedLights) {
+		logger.trace("updateLightsGroup(String groupId : {}, JSONArray selectedLights : {})", groupId, selectedLights);
+
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void releaseLight(int lightIndex) {
-		// TODO Auto-generated method stub
-		
+	public void releaseLight(int lightNumber) {
+		logger.trace("releaseLight(int lightIndex : {})", lightNumber);
+		lightManager.release(lightNumber);
+		// TODO: state change
 	}
 
 	@Override
 	public void removeLightsGroup(String groupId) {
+		logger.trace("removeLightsGroup(String groupId : {})", groupId);
+
 		// TODO Auto-generated method stub
 		
 	}
@@ -162,8 +173,7 @@ FairyLightsAdapterSpec, FairyLightsStatusListener {
 				
 				logger.trace("deviceAvailable(...), device was previously unavailable, restoring group FairyLights-All,"
 						+ " with default attributes (might be overloaded later by the corresponding entry in the db)");
-				instances.put(LightManagement.GROUP_ALL_ID,
-						createApamComponent(LightManagement.GROUP_ALL_ID, LightManagement.GROUP_ALL_ID));
+				createContiguousLightsGroup(LightManagement.GROUP_ALL_ID, 0, LightManagement.FAIRYLIGHT_SIZE-1);
 				
 				if(dbBound()) {
 					logger.trace("deviceAvailable(...), db available, restoring groups");
@@ -202,7 +212,7 @@ FairyLightsAdapterSpec, FairyLightsStatusListener {
 
 	@Override
 	public CORE_TYPE getCoreType() {
-		return CORE_TYPE.SERVICE;
+		return CORE_TYPE.ADAPTER;
 	}
 
 	@Override

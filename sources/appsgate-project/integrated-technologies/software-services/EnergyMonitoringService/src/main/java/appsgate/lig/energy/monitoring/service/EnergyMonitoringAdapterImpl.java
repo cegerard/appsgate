@@ -3,15 +3,12 @@
  */
 package appsgate.lig.energy.monitoring.service;
 
-import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
-import javax.xml.bind.DatatypeConverter;
 
 import org.json.JSONArray;
 import org.json.JSONException;

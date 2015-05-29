@@ -94,7 +94,9 @@ public class LightManagement {
 	 */
 	public synchronized boolean affect(String groupId, int lightNumber) {
 		logger.trace("affect(String groupId : {}, int lightNumber : {})", groupId, lightNumber);
-		if(groupId != null && affectations[lightNumber]== null ) {
+		if(groupId != null && (affectations[lightNumber]== null
+				||(GROUP_ALL_ID.equals(affectations[lightNumber]) && policy!= LightReservationPolicy.EXCLUSIVE)
+				)) {
 			logger.trace("affect(...), affectation successful");
 			affectations[lightNumber] = groupId;
 			return true;
@@ -111,7 +113,11 @@ public class LightManagement {
 	 */
 	public synchronized void release(int lightNumber) {
 		logger.trace("release(int lightNumber : {})", lightNumber);
-		affectations[lightNumber] = null;
+		if(policy == LightReservationPolicy.EXCLUSIVE) {
+			affectations[lightNumber] = GROUP_ALL_ID;
+		} else {
+			affectations[lightNumber] = null;
+		}
 	}
 	
 	/**
@@ -121,7 +127,11 @@ public class LightManagement {
 	 */
 	public synchronized String getAffectation(int lightNumber) {
 		logger.trace("getAffectation(int lightNumber : {}), returning {}", lightNumber, affectations[lightNumber]);
-		return affectations[lightNumber];
+		if(policy == LightReservationPolicy.SHARED) {
+			return GROUP_ALL_ID;
+		} else {
+			return affectations[lightNumber];
+		}
 	}
 
 	public JSONArray getAllLights() {

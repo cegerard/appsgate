@@ -13,17 +13,8 @@ import org.json.JSONObject;
 public interface CoreFairyLightsSpec {
 	
 	/**
-	 * Get the lights index (or number) affected to the current group
-	 * Not that the group cannot change its configuration (add or remove light because it is not responsible for the reservation policy)
-	 * to change a group configuration use the FairyLightsAdapter
-	 * @return
-	 */
-	public JSONArray getLightsIndexes();
-	
-	
-	/**
 	 * 
-	 * @return the list and states of the lights in the group as a JSONObject
+	 * @return the list and states of the lights in the group as a JSON Array
 	  {
     "leds": [
         {
