@@ -617,15 +617,23 @@
       }
     },
     "fairylights": {
-      "caption": {
-      },
       "keyboard": {
+        "setAllColorLight": "Changer la couleur de la __myVar__",
+        "setOneColorLight": "Changer une lumière de la __myVar__",
+        "setColorPattern": "Appliquer un motif sur la __myVar__",
+        "singleChaserAnimation": "Animer la __myVar__",
+        "roundChaserAnimation": "Animer la __myVar__ en aller/retour"
       },
       "language": {
+        "setAllColorLight": "Changer la couleur de la __myVar__",
+        "setOneColorLight": "Changer une lumière de la __myVar__",
+        "setColorPattern": "Appliquer un motif sur la __myVar__",
+        "singleChaserAnimation": "Animer la __myVar__",
+        "roundChaserAnimation": "Animer la __myVar__ en aller/retour"
       },
       "name": {
-        "plural": "Guirlande",
-        "singular": "Guirlandes"
+        "singular": "Guirlande",
+        "plural": "Guirlandes"
       }
     },
     "type-label": "Type",

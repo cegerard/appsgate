@@ -31,7 +31,7 @@ define([
      *return the list of available actions
      */
     getActions: function() {
-      return ["resume", "pause", "stop", "notify", "channelup", "channeldown"];
+      return ["setAllColorLight", "setOneColorLight", "setColorPattern", "singleChaserAnimation", "roundChaserAnimation"];
     },
     /**
      * return the keyboard code for a given action
@@ -40,121 +40,92 @@ define([
       var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
       var v = this.getJSONAction("mandatory");
       switch (act) {
-        case "notify":
-          $(btn).append("<span data-i18n='devices.tv.keyboard.notify'></span>");
-          v.methodName = "notify";
+        case "setAllColorLight":
+          $(btn).append("<span>" + $.i18n.t('devices.fairylights.keyboard.setAllColorLight', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.fairylights.name.singular') + "</span>"
+          }));
+          v.methodName = "setAllColorLight";
           v.args = [{
-            "type": "int",
-            "value": "0"
-          }, {
             "type": "String",
-            "value": "spok-sender"
-          }, {
+            "value": "#ffffff"
+          }];
+          v.phrase = "devices.fairylights.language.setAllColorLight";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        case "setOneColorLight":
+          $(btn).append("<span>" + $.i18n.t('devices.fairylights.keyboard.setOneColorLight', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.fairylights.name.singular') + "</span>"
+          }));
+          v.methodName = "setAllColorLight";
+          v.args = [{
+            "type": "int",
+            "value": "0"
+            },{
             "type": "String",
-            "value": "..."
+            "value": "#ffffff"
           }];
-          v.phrase = "devices.tv.language.notify";
+          v.phrase = "devices.fairylights.language.setOneColorLight";
           $(btn).attr("json", JSON.stringify(v));
           break;
-        case "channeldown":
-          $(btn).append("<span data-i18n='devices.tv.keyboard.channeldown'></span>");
-          v.methodName = "channelDown";
+        case "setColorPattern":
+          $(btn).append("<span>" + $.i18n.t('devices.fairylights.keyboard.setColorPattern', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.fairylights.name.singular') + "</span>"
+          }));
+          v.methodName = "setColorPattern";
           v.args = [{
-            "type": "int",
-            "value": "0"
+            "type": "JSONArray",
+            "value": []
           }];
-          v.phrase = "devices.tv.language.channeldown";
+          v.phrase = "devices.fairylights.language.setColorPattern";
           $(btn).attr("json", JSON.stringify(v));
           break;
-        case "channelup":
-          $(btn).append("<span data-i18n='devices.tv.keyboard.channelup'></span>");
-          v.methodName = "channelUp";
+        case "singleChaserAnimation":
+          $(btn).append("<span>" + $.i18n.t('devices.fairylights.keyboard.singleChaserAnimation', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.fairylights.name.singular') + "</span>"
+          }));
+          v.methodName = "singleChaserAnimation";
           v.args = [{
-            "type": "int",
+            "type": "int", // start
             "value": "0"
+          },{
+            "type": "int", // end
+            "value": "0"
+          },{
+            "type": "String",
+            "value": "#ffffff"
           }];
-          v.phrase = "devices.tv.language.channelup";
+          v.phrase = "devices.fairylights.language.singleChaserAnimation";
           $(btn).attr("json", JSON.stringify(v));
           break;
-        case "stop":
-          $(btn).append("<span data-i18n='devices.tv.keyboard.stop'></span>");
-          v.methodName = "stop";
+        case "roundChaserAnimation":
+          $(btn).append("<span>" + $.i18n.t('devices.fairylights.keyboard.roundChaserAnimation', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.fairylights.name.singular') + "</span>"
+          }));
+          v.methodName = "roundChaserAnimation";
           v.args = [{
-            "type": "int",
+            "type": "int", // start
+            "value": "0"
+          },{
+            "type": "int", // end
+            "value": "0"
+          },{
+            "type": "String",
+            "value": "#ffffff"
+          },{
+            "type": "int", // nb rounds
             "value": "0"
           }];
-          v.phrase = "devices.tv.language.stop";
-          $(btn).attr("json", JSON.stringify(v));
-          break;
-        case "pause":
-          $(btn).append("<span data-i18n='devices.tv.keyboard.pause'></span>");
-          v.methodName = "pause";
-          v.args = [{
-            "type": "int",
-            "value": "0"
-          }];
-          v.phrase = "devices.tv.language.pause";
-          $(btn).attr("json", JSON.stringify(v));
-          break;
-        case "resume":
-          $(btn).append("<span data-i18n='devices.tv.keyboard.resume'></span>");
-          v.methodName = "resume";
-          v.args = [{
-            "type": "int",
-            "value": "0"
-          }];
-          v.phrase = "devices.tv.language.resume";
+          v.phrase = "devices.fairylights.language.roundChaserAnimation";
           $(btn).attr("json", JSON.stringify(v));
           break;
         default:
-          console.error("unexpected action found for TV: " + act);
+          console.error("unexpected action found for FairyLights: " + act);
           btn = null;
           break;
       }
       return btn;
-    },
-    channelUp: function() {
-      this.remoteControl("channelUp", [{
-        "type": "int",
-        "value": "0"
-      }]);
-    },
-    channelDown: function() {
-      this.remoteControl("channelDown", [{
-        "type": "int",
-        "value": "0"
-      }]);
-    },
-    pause: function() {
-      this.remoteControl("pause", [{
-        "type": "int",
-        "value": "0"
-      }]);
-    },
-    stop: function() {
-      this.remoteControl("stop", [{
-        "type": "int",
-        "value": "0"
-      }]);
-    },
-    resume: function() {
-      this.remoteControl("resume", [{
-        "type": "int",
-        "value": "0"
-      }]);
-    },
-    notify: function() {
-      this.remoteControl("notify", [{
-        "type": "int",
-        "value": "0"
-      }, {
-        "type": "String",
-        "value": "spok-sender"
-      }, {
-        "type": "String",
-        "value": "test message"
-      }]);
     }
+
   });
   return FairyLights;
 });
