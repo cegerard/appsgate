@@ -292,7 +292,7 @@ public class LightManagement {
 	
 	
 	public void roundChaserAnimation(String groupId, int start, int end, String color, int tail, int rounds) {
-		logger.trace("singleChaserAnimation(String groupId: {}, int start : {}, int end : {}, String color : {}, int tail : {}, int rounds : {})",
+		logger.trace("roundChaserAnimation(String groupId: {}, int start : {}, int end : {}, String color : {}, int tail : {}, int rounds : {})",
 				groupId, start, end, color, tail, rounds);
 		
 		JSONArray cache = getAllLights();
@@ -332,7 +332,7 @@ public class LightManagement {
 			}
 		}
 		
-		logger.trace("singleChaserAnimation(...), chaser ended");
+		logger.trace("roundChaserAnimation(...), chaser ended");
 	}	
 	
 	/**

@@ -115,10 +115,10 @@ define([
             "type": "String",
             "value": "#ffffff"
           },{
-            "type": "int", // nb rounds
+            "type": "int", // tail
             "value": "1"
           },{
-            "type": "int", // tail
+            "type": "int", // nb rounds
             "value": "1"
         }];
           v.phrase = "devices.fairylights.language.roundChaserAnimation";
