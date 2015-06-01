@@ -22,7 +22,7 @@ import appsgate.lig.fairylights.service.FairyLightsImpl;
  * @author thibaud
  *
  */
-@Ignore //  Disabled (Device must be physically available to run the test)
+@Ignore//  Disabled (Device must be physically available to run the test)
 public class FairyLightsImplTest {
 	
 	/**
@@ -50,7 +50,9 @@ public class FairyLightsImplTest {
 		lights.coreObjectId = "Test";
 		JSONArray lightsArray = new JSONArray();
 		for(int i = 0; i<25; i++) {
-			lightsArray.put(i);
+			JSONObject obj = new JSONObject();
+			obj.put(FairyLightsImpl.KEY_ID, i);
+			lightsArray.put(obj);
 		}
 		JSONObject config = new JSONObject();
 		config.put(FairyLightsImpl.KEY_LEDS, lightsArray);
@@ -132,6 +134,15 @@ public class FairyLightsImplTest {
 		assertNotNull("Fairy Lights not responding",lights.setAllColorLight("#000000"));
 
 		lights.roundChaserAnimation(24, 0, "#ff0000", 2, 5);
+	}
+	
+	@Test
+	public void testContiguous() {
+		assertNotNull("Fairy Lights not responding",lights.setAllColorLight("#000000"));
+		
+		lights.setCurrentLightNumber(10);
+
+		lights.changeContiguousLights(-1,  "#00ff00");
 	}
 
 }

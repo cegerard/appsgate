@@ -88,7 +88,7 @@ public interface CoreFairyLightsSpec {
 	 * change the currentLightNumber accordingly (for example current+2 or current -1)
 	 * @param nb
 	 */
-	void changeNextPreviousLights(int nb);
+	void changeContiguousLights(int nb,String color);
 	
 	/**
 	 * Only append one single light if the number is in the group

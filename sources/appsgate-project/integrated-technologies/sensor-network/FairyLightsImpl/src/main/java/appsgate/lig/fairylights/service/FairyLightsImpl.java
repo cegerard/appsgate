@@ -76,7 +76,7 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 			currentLights.clear();
 			for(int i = 0 ; i < lights.length(); i++) {
 				if(lights.getJSONObject(i) != null
-						&& lights.getJSONObject(i).optInt(KEY_ID,-1)>0) {
+						&& lights.getJSONObject(i).optInt(KEY_ID,-1)>=0) {
 					int lightNumber = lights.getJSONObject(i).getInt(KEY_ID);
 					if(lightNumber >=0 && lightManager.affect(getAbstractObjectId(), lightNumber)) {
 						currentLights.add(lightNumber);
@@ -285,8 +285,27 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 	}
 
 	@Override
-	public void changeNextPreviousLights(int nb) {
-		// TODO Auto-generated method stub
-		
+	public void changeContiguousLights(int nb, String color) {
+		logger.trace("changeNextPreviousLights(int nb : {}, String color : {})", nb, color);
+		currentColor= color;
+		synchronized (lock) {
+			int i = 0;
+			while(i < Math.abs(nb)) {
+				logger.trace("changeNextPreviousLights(...), i : {}, Math.abs(nb): {}", i, Math.abs(nb));
+				setOneColorLight(currentLight, color);
+				if(nb > 0 && (currentLight+1) >= LightManagement.FAIRYLIGHT_SIZE) {
+					currentLight = LightManagement.FAIRYLIGHT_SIZE;
+					i = nb;
+				} else if (nb < 0 && currentLight <= 0 ) {
+					currentLight = 0;
+					i = Math.abs(nb);				
+				} else if (nb > 0) {
+					currentLight++;
+				} else {
+					currentLight--;
+				}
+				i++;
+			}	
+		}
 	}
 }
