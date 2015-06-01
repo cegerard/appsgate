@@ -14,6 +14,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import appsgate.lig.fairylights.adapter.FairyLightsAdapterSpec.LightReservationPolicy;
 import appsgate.lig.fairylights.adapter.LightManagement;
 import appsgate.lig.fairylights.service.FairyLightsImpl;
 
@@ -21,7 +22,7 @@ import appsgate.lig.fairylights.service.FairyLightsImpl;
  * @author thibaud
  *
  */
-@Ignore //Disabled (Device must be physically available to run the test)
+@Ignore //  Disabled (Device must be physically available to run the test)
 public class FairyLightsImplTest {
 	
 	/**
@@ -43,16 +44,16 @@ public class FairyLightsImplTest {
 	/**
 	 * @throws java.lang.Exception
 	 */
-	// Disabled (Device must be physically available to run the test
 	@Before
 	public void setUp() throws Exception {
 		lights = new FairyLightsImpl();
 		lights.coreObjectId = "Test";
 		JSONArray lightsArray = new JSONArray();
 		for(int i = 0; i<25; i++) {
-			lightsArray.put(String.valueOf(i));
+			lightsArray.put(i);
 		}
 		LightManagement lightManager = LightManagement.getInstance();
+		lightManager.setPolicy(LightReservationPolicy.ASSIGNED);
 		lights.configure(lightManager, lightsArray);
 	}
 
@@ -67,7 +68,6 @@ public class FairyLightsImplTest {
 	 * Test method for {@link appsgate.lig.fairylights.service.FairyLightsImpl#setOneColorLight(int, java.lang.String)}.
 	 */
 	//
-	// Disabled (Device must be physically available to run the test
 	@Test
 	public void testSetAllColorLight() {
 		assertNotNull("Fairy Lights not responding",lights.setAllColorLight("#ff0000"));
@@ -75,7 +75,6 @@ public class FairyLightsImplTest {
 		assertNotNull("Fairy Lights not responding",lights.setAllColorLight("#0000ff"));
 	}
 	
-	// Disabled (Device must be physically available to run the test
 	@Test
 	public void testSetColorPattern() {
 		JSONArray array = lights.getLightsStatus();
@@ -103,10 +102,10 @@ public class FairyLightsImplTest {
 	// Disabled (Device must be physically available to run the test
 	@Test
 	public void testSingleChaserAnimation() {
-		assertNotNull("Fairy Lights not responding",lights.setAllColorLight("#ffffff"));
+		assertNotNull("Fairy Lights not responding",lights.setAllColorLight("#000000"));
 		
-		lights.singleChaserAnimation(10, 20, "#ff0000");
-		lights.singleChaserAnimation(20, 10, "#00ff00");
+		lights.singleChaserAnimation(5, 20, "#ff0000", 0);
+		lights.singleChaserAnimation(20, 5, "#ff0000", 4);
 		assertNotNull("Fairy Lights not responding",lights.setAllColorLight("#000000"));
 	}
 	
@@ -115,7 +114,6 @@ public class FairyLightsImplTest {
 	public void testRoundChaserAnimation() {
 		assertNotNull("Fairy Lights not responding",lights.setAllColorLight("#ffffff"));
 		
-		lights.roundChaserAnimation(0, 24, "#ff0000",3);
 		assertNotNull("Fairy Lights not responding",lights.setAllColorLight("#000000"));
 	}	
 	
@@ -129,35 +127,9 @@ public class FairyLightsImplTest {
 	// Disabled (Device must be physically available to run the test
 	@Test
 	public void testK2000() {
-		JSONArray array = lights.getLightsStatus();
-		int length = array.length();
-		
-		// Step One, light off every lamps
-		for(int i = 0; i< length; i++) {
-			lights.setOneColorLight(i, "#0000ff");
-		}		
-		
-		// Step One, light off every lamps
-		for(int i = 0; i< length; i++) {
-			lights.setOneColorLight(i, "#000000");
-		}
-		
-		for(int j=0;j<4;j++) {
-			// Step two, make the red light goes from lamp to lamp
-			for(int i = 0; i< length; i++) {
-				lights.setOneColorLight(i, "#ff0000");
-				if(i>0) {
-					lights.setOneColorLight(i-1, "#000000");
-				}
-			}		
-			
-			for(int i = length-1; i>=0; i--) {
-				lights.setOneColorLight(i, "#ff0000");
-				if(i<length-1) {
-					lights.setOneColorLight(i+1, "#000000");
-				}
-			}
-		}
+		assertNotNull("Fairy Lights not responding",lights.setAllColorLight("#000000"));
+
+		lights.roundChaserAnimation(24, 0, "#ff0000", 2, 5);
 	}
 
 }

@@ -151,19 +151,16 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 	}
 
 	@Override
-	public void singleChaserAnimation(int start, int end, String color) {
-		logger.trace("singleChaserAnimation(int start : {}, int end : {}, String color : {})", start, end, color);
-		lightManager.singleChaserAnimation(getAbstractObjectId(), start, end, color);
+	public void singleChaserAnimation(int start, int end, String color, int tail) {
+		logger.trace("singleChaserAnimation(int start : {}, int end : {}, String color : {}, int tail: {})", start, end, color, tail);
+		lightManager.singleChaserAnimation(getAbstractObjectId(), start, end, color, tail);
 	}
 
 	@Override
-	public void roundChaserAnimation(int start, int end, String color, int rounds) {
-		logger.trace("roundChaserAnimation(int start, int end, String color, int rounds : {})", start, end, color, rounds);
-
-		for (int i = 0; i< rounds; i+=2) {
-			singleChaserAnimation(start, end, color);
-			singleChaserAnimation(end, start, color);
-		}
+	public void roundChaserAnimation(int start, int end, String color, int tail, int rounds) {
+		logger.trace("roundChaserAnimation(int start, int end, String color, int tail : {},  int rounds : {})", start, end, color, tail, rounds);
+		
+		lightManager.roundChaserAnimation(getAbstractObjectId(), start, end, color, tail, rounds);
 	}	
 	
 	private boolean waitForConfiguration() {
@@ -219,5 +216,35 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 	
 	public NotificationMsg stateChanged(String varName, String oldValue, String newValue, String source) {
 		return new CoreNotificationMsg(varName, oldValue, newValue, getAbstractObjectId());
+	}
+
+	@Override
+	public int getCurrentLightNumber() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public String getCurrentColor() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setCurrentLightNumber(int lightNumber) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setCurrentColor(String color) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void changeNextPreviousLights(int nb) {
+		// TODO Auto-generated method stub
+		
 	}
 }

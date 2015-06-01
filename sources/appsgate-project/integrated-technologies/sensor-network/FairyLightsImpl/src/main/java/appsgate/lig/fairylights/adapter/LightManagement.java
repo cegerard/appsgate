@@ -48,6 +48,9 @@ public class LightManagement {
 	 */
 	public void setPolicy(LightReservationPolicy policy) {
 		this.policy = policy;
+		for(int i = 0; i< FAIRYLIGHT_SIZE; i++) {
+			affectations[i] = null;
+		}
 	}
 	
 	
@@ -102,7 +105,7 @@ public class LightManagement {
 			return true;
 		} else {
 			logger.warn("affect(...), affectation unsuccessful"
-					+ " (groupId is null or lightNumber already affected)");
+					+ " (groupId is null or lightNumber already affected), affectations[lightNumber] : {}, policy : {}", affectations[lightNumber], policy);
 			return false;			
 		}
 	}
@@ -244,37 +247,93 @@ public class LightManagement {
 	 * @param end
 	 * @param color
 	 */
-	public void singleChaserAnimation(String groupId, int start, int end, String color) {
-		logger.trace("singleChaserAnimation(String groupId: {}, int start : {}, int end : {}, String color : {})",
-				groupId, start, end, color);
+	public void singleChaserAnimation(String groupId, int start, int end, String color, int tail) {
+		logger.trace("singleChaserAnimation(String groupId: {}, int start : {}, int end : {}, String color : {}, int tail : {})",
+				groupId, start, end, color, tail);
 		
 		JSONArray cache = getAllLights();
+		singleChaserAnimation( groupId,  start,  end,  color,  tail, cache);
 		
+		logger.trace("singleChaserAnimation(...), chaser ended");
+	}
+	
+	private void singleChaserAnimation(String groupId, int start, int end, String color, int tail, JSONArray cache) {
+		logger.trace("singleChaserAnimation(String groupId: {}, int start : {}, int end : {}, String color : {}, int tail : {})",
+				groupId, start, end, color, tail);
+				
 		if(start < end) {
-			for(int i = start; i<= end; i++) {
-				if (i> start) {
+			for(int i = start; i<= end+tail; i++) {
+				if (i> start+tail) {
 					LumiPixelImpl.setOneColorLight(host,
-							i-1, cache.getJSONObject(i-1).getString(LumiPixelImpl.KEY_COLOR));
+							i-tail-1, cache.getJSONObject(i-tail-1).getString(LumiPixelImpl.KEY_COLOR));
+				} 
+				if(i <= end) {
+					LumiPixelImpl.setOneColorLight(host,
+							i, color);
 				}
-				LumiPixelImpl.setOneColorLight(host,
-						i, color);
 			}
 			LumiPixelImpl.setOneColorLight(host,
 					end, cache.getJSONObject(end).getString(LumiPixelImpl.KEY_COLOR));
 		} else {
-			for(int i = start; i>= end; i--) {
-				if (i<start) {
+			for(int i = start; i>= end-tail-1; i--) {
+				if (i<start-tail) {
 					LumiPixelImpl.setOneColorLight(host,
-							i+1, cache.getJSONObject(i+1).getString(LumiPixelImpl.KEY_COLOR));
+							i+tail+1, cache.getJSONObject(i+tail+1).getString(LumiPixelImpl.KEY_COLOR));
 				}
-				LumiPixelImpl.setOneColorLight(host,
-						i, color);
+				if(i >=end) {
+					LumiPixelImpl.setOneColorLight(host,
+							i, color);
+				}
+
 			}
-			LumiPixelImpl.setOneColorLight(host,
-					end, cache.getJSONObject(end).getString(LumiPixelImpl.KEY_COLOR));
 		}
 		logger.trace("singleChaserAnimation(...), chaser ended");
 	}
+	
+	
+	public void roundChaserAnimation(String groupId, int start, int end, String color, int tail, int rounds) {
+		logger.trace("singleChaserAnimation(String groupId: {}, int start : {}, int end : {}, String color : {}, int tail : {}, int rounds : {})",
+				groupId, start, end, color, tail, rounds);
+		
+		JSONArray cache = getAllLights();
+		
+		for (int i = 0; i< rounds; i++) {
+			
+			if(start < end) {			
+				singleChaserAnimation(host, start, end-tail, color, tail, cache);
+				for(int j = end-tail+1; j <= end; j++) {
+					LumiPixelImpl.setOneColorLight(host,
+							j, color);
+				}
+			}else {
+				singleChaserAnimation(host, start, end+tail, color, tail, cache);
+				for(int j = end+tail-1; j <= end; j--) {
+					LumiPixelImpl.setOneColorLight(host,
+							j, color);
+				}				
+			}
+			
+			if (i < rounds-1) {				
+				if(start < end) {			
+					singleChaserAnimation(host, end, start+tail, color, tail, cache);
+					for(int j = start+tail-1; j >= end; j--) {
+						LumiPixelImpl.setOneColorLight(host,
+								j, color);
+					}
+				} else {
+					singleChaserAnimation(host, end, start-tail, color, tail, cache);
+					for(int j = start-tail+1; j <= end; j++) {
+						LumiPixelImpl.setOneColorLight(host,
+								j, color);
+					}					
+				}
+			} else {
+				singleChaserAnimation(host, end, start, color, tail, cache);
+			}
+		}
+		
+		logger.trace("singleChaserAnimation(...), chaser ended");
+	}	
 	
 	/**
 	 * with this function lights will NOT return to their original states
