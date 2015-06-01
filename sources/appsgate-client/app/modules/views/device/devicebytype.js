@@ -316,20 +316,28 @@ define([
 			var circleWidthAvailable = widthDiv / (nbCircle + spacement);
 			var circleWidthFinal = (circleWidthAvailable < circleWidthDefault) ? circleWidthAvailable : circleWidthDefault;
 
-			var nodesLED = svg.selectAll(".nodeLed")
-				.data(device.get("leds"))
-				.enter()
+			var arrayLed = device.get("leds");
+			if (!Array.isArray(arrayLed)) {
+				arrayLed = $.parseJSON(arrayLed);
+			}
+
+			nodesLED = svg.selectAll(".nodeLed")
+				.data(arrayLed);
+
+			nodesLED.enter()
 				.append("circle")
 				.attr("class", "nodeLed")
 				.attr("cx", function (n) {
-					var index = _.indexOf(device.get("leds"), n);
+					var index = _.indexOf(arrayLed, n);
 					return (spacement / 2) + (circleWidthFinal / 2) + ((spacement / 2) + circleWidthFinal) * index;
 				})
 				.attr("cy", height / 2)
-				.attr("r", circleWidthFinal / 2)
-				.attr("fill", function (led) {
-					return led.color;
-				});
+				.attr("r", circleWidthFinal / 2);
+
+			nodesLED.each(function (led) {
+				d3.select(this)
+					.attr("fill", led.color);
+			});
 		},
 		
       /**
@@ -357,6 +365,11 @@ define([
           this.$el.html(
               this.createTemplate(this.id)
           );
+			
+		  // In fairylight case, need to build special widget
+		  if (this.id === "CoreFairyLightsSpec") {
+			this.buildFairylightWidget(devices.getDevicesByType(this.id)[0]);
+		  }
 
           this.updateGroupOnOff(this.id);
 

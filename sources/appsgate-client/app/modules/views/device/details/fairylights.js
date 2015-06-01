@@ -27,9 +27,13 @@ define([
 			$.extend(self.__proto__.events, FairyLightsView.__super__.events);
 
 			dispatcher.on(this.model.get("id"), function (updatedVariableJSON) {
+				console.log("toto");
 				if (updatedVariableJSON.varName == "colorChanged") {
 					hexcolor = JSON.parse(updatedVariableJSON.value).rgbcolor;
 					moveColorByHex(expandHex(hexcolor));
+				}
+				if (updatedVariableJSON == "leds") {
+					self.buildFairylightWidget("div-fairylight-widget", false);
 				}
 
 			});
@@ -90,6 +94,8 @@ define([
 				lampButton = "<span data-i18n='devices.lamp.action.turnOn'></span>";
 			}
 			this.$el.find("#lamp-button").html(lampButton);
+
+			this.buildFairylightWidget("div-fairylight-widget", false);
 
 			// translate the view
 			this.$el.i18n();
@@ -185,7 +191,7 @@ define([
 
 			var widthDiv = $("#" + idElementToBuild).width();
 			var height = 25;
-			
+
 			var svg = d3.select("#" + idElementToBuild).select("svg")
 				.attr("width", widthDiv)
 				.attr("height", height);
@@ -196,20 +202,29 @@ define([
 			var circleWidthAvailable = widthDiv / (nbCircle + spacement);
 			var circleWidthFinal = (circleWidthAvailable < circleWidthDefault) ? circleWidthAvailable : circleWidthDefault;
 
-			var nodesLED = svg.selectAll(".nodeLed")
-				.data(self.model.get("leds"))
-				.enter()
+			var arrayLed = self.model.get("leds");
+			if (!Array.isArray(arrayLed)) {
+				arrayLed = $.parseJSON(arrayLed);
+			}
+
+			nodesLED = svg.selectAll(".nodeLed")
+				.data(arrayLed);
+
+			nodesLED.enter()
 				.append("circle")
 				.attr("class", "nodeLed")
 				.attr("cx", function (n) {
-					var index = _.indexOf(self.model.get("leds"), n);
+					var index = _.indexOf(arrayLed, n);
 					return (spacement / 2) + (circleWidthFinal / 2) + ((spacement / 2) + circleWidthFinal) * index;
 				})
 				.attr("cy", height / 2)
-				.attr("r", circleWidthFinal / 2)
-				.attr("fill", function (led) {
-					return led.color;
-				});
+				.attr("r", circleWidthFinal / 2);
+
+			nodesLED.each(function (led) {
+				d3.select(this)
+					.attr("fill", led.color);
+			});
+
 		},
 	});
 	return FairyLightsView

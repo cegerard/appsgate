@@ -649,7 +649,8 @@
       "name": {
         "singular": "Guirlande",
         "plural": "Guirlandes"
-      }
+      },
+	  "composition": "Composition de la guirlande"
     },
     "type-label": "Type",
     "name-label": "Nom",
