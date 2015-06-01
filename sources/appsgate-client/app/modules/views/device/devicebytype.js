@@ -235,6 +235,9 @@ define([
             }
             this.$el.find("#device-" + device.cid + "-value").replaceWith(activeFace);
             break;
+		  	case "CoreFairyLightsSpec":
+			this.buildFairylightWidget(device);
+		  	break;
           }
           if (device.get("status") === "0") {
             $("#device-" + device.cid + "-status").attr("class","label label-danger");
@@ -293,7 +296,50 @@ define([
         $(".group-off-button").prop("disabled", allOff);
 
       },
+		
+		/**
+		* Method to build the widget of fairylights
+		*/
+		buildFairylightWidget: function (device) {
+			var self = this;
 
+			var widthDiv = $("#div-fairylights-widget").width();
+			var height = 25;
+			
+			var svg = d3.select("#div-fairylights-widget").select("svg")
+				.attr("width", widthDiv)
+				.attr("height", height);
+
+			var nbCircle = 25;
+			var spacement = 8;
+			var circleWidthDefault = 18;
+			var circleWidthAvailable = widthDiv / (nbCircle + spacement);
+			var circleWidthFinal = (circleWidthAvailable < circleWidthDefault) ? circleWidthAvailable : circleWidthDefault;
+
+			var arrayLed = device.get("leds");
+			if (!Array.isArray(arrayLed)) {
+				arrayLed = $.parseJSON(arrayLed);
+			}
+
+			nodesLED = svg.selectAll(".nodeLed")
+				.data(arrayLed);
+
+			nodesLED.enter()
+				.append("circle")
+				.attr("class", "nodeLed")
+				.attr("cx", function (n) {
+					var index = _.indexOf(arrayLed, n);
+					return (spacement / 2) + (circleWidthFinal / 2) + ((spacement / 2) + circleWidthFinal) * index;
+				})
+				.attr("cy", height / 2)
+				.attr("r", circleWidthFinal / 2);
+
+			nodesLED.each(function (led) {
+				d3.select(this)
+					.attr("fill", led.color);
+			});
+		},
+		
       /**
        * Using this function to get additionnal details about a device in other views
        *
@@ -319,6 +365,11 @@ define([
           this.$el.html(
               this.createTemplate(this.id)
           );
+			
+		  // In fairylight case, need to build special widget
+		  if (this.id === "CoreFairyLightsSpec") {
+			this.buildFairylightWidget(devices.getDevicesByType(this.id)[0]);
+		  }
 
           this.updateGroupOnOff(this.id);
 

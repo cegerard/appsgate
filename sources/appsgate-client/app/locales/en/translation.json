@@ -649,7 +649,8 @@
       "name": {
         "plural": "Fairy Lights",
         "singular": "Fairy Lights"
-      }
+      },
+	  "composition": "Fairy lights composition"
     },
     "type-label": "Type",
     "name-label": "Name",
