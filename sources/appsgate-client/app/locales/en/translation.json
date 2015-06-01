@@ -632,8 +632,9 @@
         "setColorPattern": "Apply a color pattern on __myVar__",
         "singleChaserAnimation": "Simple chaser animation of __myVar__",
         "roundChaserAnimation": "Return chaser animation on __myVar__ ",
-        "setColorAnimation": "Colorize __myVar__ "
-
+        "setColorAnimation": "Color __myVar__ ",
+        "colorNextLight": "Color next light on __myVar__ ",
+        "colorPreviousLight": "Color previous light on __myVar__ "
       },
       "language": {
         "setAllColorLight": "Change color of __myVar__",
@@ -641,10 +642,12 @@
         "setColorPattern": "Apply a color pattern on __myVar__",
         "singleChaserAnimation": "Simple chaser animation __myVar__",
         "roundChaserAnimation": "Return chaser animation on __myVar__ ",
-        "setColorAnimation": "Colorize __myVar__ ",
+        "setColorAnimation": "Color __myVar__ ",
         "fromLight": "from light",
         "toLight": "to light",
-        "times": "times"
+        "times": "times",
+        "colorNextLight": "Color next light on __myVar__ ",
+        "colorPreviousLight": "Color previous light on __myVar__ "
       },
       "name": {
         "plural": "Fairy Lights",

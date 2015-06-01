@@ -31,7 +31,7 @@ define([
      *return the list of available actions
      */
     getActions: function() {
-      return ["setAllColorLight", "setOneColorLight", "setColorPattern", "singleChaserAnimation", "roundChaserAnimation", "setColorAnimation"];
+      return ["setAllColorLight", "setOneColorLight", "setColorPattern", "singleChaserAnimation", "roundChaserAnimation", "setColorAnimation", "colorNextLight", "colorPreviousLight"];
     },
     /**
      * return the keyboard code for a given action
@@ -140,6 +140,36 @@ define([
             "value": "#ffffff"
           }];
           v.phrase = "devices.fairylights.language.setColorAnimation";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        case "colorNextLight":
+          $(btn).append("<span>" + $.i18n.t('devices.fairylights.keyboard.colorNextLight', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.fairylights.name.singular') + "</span>"
+          }));
+          v.methodName = "changeContiguousLights";
+          v.args = [{
+            "type": "int", // nb
+            "value": "1"
+          },{
+            "type": "String",
+            "value": "#ffffff"
+          }];
+          v.phrase = "devices.fairylights.language.colorNextLight";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        case "colorPreviousLight":
+          $(btn).append("<span>" + $.i18n.t('devices.fairylights.keyboard.colorPreviousLight', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.fairylights.name.singular') + "</span>"
+          }));
+          v.methodName = "changeContiguousLights";
+          v.args = [{
+            "type": "int", // nb
+            "value": "-1"
+          },{
+            "type": "String",
+            "value": "#ffffff"
+          }];
+          v.phrase = "devices.fairylights.language.colorPreviousLight";
           $(btn).attr("json", JSON.stringify(v));
           break;
         default:
