@@ -112,7 +112,7 @@ define([
 
 				this.$el.html(this.template({
 					device: lamp,
-					sensorImg: ["app/img/sensors/philips-hue.jpg"],
+					sensorImg: ["app/img/fairylights.jpg"],
 					sensorType: $.i18n.t("devices.fairylights.name.singular"),
 					places: places,
 					deviceDetails: this.tplFairyLights
