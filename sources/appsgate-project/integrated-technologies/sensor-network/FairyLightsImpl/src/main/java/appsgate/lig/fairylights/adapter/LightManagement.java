@@ -21,7 +21,7 @@ import appsgate.lig.fairylights.service.LumiPixelImpl;
 public class LightManagement {
 	
 	String[] affectations;
-	final static int FAIRYLIGHT_SIZE = 25;
+	public final static int FAIRYLIGHT_SIZE = 25;
 	public static final String GROUP_ALL_ID = "FairyLights-All";
 
 	

@@ -108,7 +108,11 @@ FairyLightsAdapterSpec, FairyLightsStatusListener {
 			return null;
 		}
 		
-		group.configure(lightManager, selectedLights);
+		JSONObject config = new JSONObject();
+		config.put(FairyLightsImpl.KEY_LEDS, selectedLights);
+		// Handle to retrieve the current light Number and current Color
+		
+		group.configure(lightManager, config);
 		storeInstanceConfiguration(group.getDescription());
 		instances.put(instanceName, group);
 

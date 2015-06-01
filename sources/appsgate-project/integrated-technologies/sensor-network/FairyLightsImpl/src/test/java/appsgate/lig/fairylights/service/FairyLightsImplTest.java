@@ -52,9 +52,11 @@ public class FairyLightsImplTest {
 		for(int i = 0; i<25; i++) {
 			lightsArray.put(i);
 		}
+		JSONObject config = new JSONObject();
+		config.put(FairyLightsImpl.KEY_LEDS, lightsArray);
 		LightManagement lightManager = LightManagement.getInstance();
 		lightManager.setPolicy(LightReservationPolicy.ASSIGNED);
-		lights.configure(lightManager, lightsArray);
+		lights.configure(lightManager, config);
 	}
 
 	/**

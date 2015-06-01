@@ -40,6 +40,8 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 	public static final String KEY_COLOR = "color";
 	public static final String KEY_LEDS = "leds";
 	public static final String KEY_ID = "id";
+	public static final String KEY_CURRENT_LIGHT = "currentLight";
+	public static final String KEY_CURRENT_COLOR = "currentColor";
 	
 	public static final String IMPL_NAME = "FairyLightsImpl";
 	
@@ -48,6 +50,10 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 	Object lock = new Object();
 	boolean configured = false;
 	
+	int currentLight = 0;
+	String currentColor = "#000000";
+	
+	
 	public FairyLightsImpl() {
 		logger.trace("FairyLightsImpl(), default constructor");
 		currentLights = new HashSet<Integer>();
@@ -55,11 +61,13 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 	
 	LightManagement lightManager;
 	
-	public void configure(LightManagement lightManager, JSONArray lights) {
-		logger.trace("configure(LightManagement lightManager : {}, JSONArray lights : {})", lightManager, lights);
+	public void configure(LightManagement lightManager, JSONObject configuration) {
+		logger.trace("configure(LightManagement lightManager : {}, JSONObject configuration : {})", lightManager, configuration);
 
 		this.lightManager = lightManager;
-		setAffectedLights(lights);
+		setAffectedLights(configuration.getJSONArray(KEY_LEDS));
+		this.currentColor = configuration.optString(KEY_CURRENT_COLOR, "#000000");
+		this.currentLight = configuration.optInt(KEY_CURRENT_LIGHT, 0);
 		configured = true;
 	}
 	
@@ -67,9 +75,12 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 		if(lights != null) {
 			currentLights.clear();
 			for(int i = 0 ; i < lights.length(); i++) {
-				int lightNumber = lights.optInt(i, -1);
-				if(lightNumber >=0 && lightManager.affect(getAbstractObjectId(), lightNumber)) {
-					currentLights.add(lightNumber);
+				if(lights.getJSONObject(i) != null
+						&& lights.getJSONObject(i).optInt(KEY_ID,-1)>0) {
+					int lightNumber = lights.getJSONObject(i).getInt(KEY_ID);
+					if(lightNumber >=0 && lightManager.affect(getAbstractObjectId(), lightNumber)) {
+						currentLights.add(lightNumber);
+					}
 				}
 			}
 		}
@@ -126,6 +137,8 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 		JSONArray response = lightManager.setAllColorLight(getAbstractObjectId(), color);
 		
 		stateChanged(KEY_LEDS, null, response.toString(), getAbstractObjectId());
+		setCurrentColor(color);
+		setCurrentLightNumber(LightManagement.FAIRYLIGHT_SIZE-1);
 		return response;
 	}
 	
@@ -137,6 +150,8 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 		JSONArray response = lightManager.setColorAnimation(getAbstractObjectId(), start, end, color);
 		
 		stateChanged(KEY_LEDS, null, response.toString(), getAbstractObjectId());
+		setCurrentColor(color);
+		setCurrentLightNumber(end);		
 		return response;
 	}
 
@@ -144,9 +159,22 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 	public JSONArray setColorPattern(JSONArray pattern) {
 		logger.trace("setColorPattern(JSONObject pattern : {})", pattern);
 		JSONArray response = lightManager.setColorPattern(getAbstractObjectId(), pattern);
+		
+		if(response != null
+				&& response.length()>0
+				&& response.getJSONObject(response.length()-1) != null
+				&& response.getJSONObject(response.length()-1).optString(KEY_COLOR) != null
+				&& response.getJSONObject(response.length()-1).optInt(KEY_ID, -1) >= 0) {
 
-		stateChanged(KEY_LEDS, null, response.toString(), getAbstractObjectId());
-		return response;
+			logger.trace("setColorPattern(....), pattern successfully applied");
+			stateChanged(KEY_LEDS, null, response.toString(), getAbstractObjectId());
+			setCurrentColor(response.getJSONObject(response.length()-1).getString(KEY_COLOR));
+			setCurrentLightNumber(response.getJSONObject(response.length()-1).getInt(KEY_ID));	
+			return response; 
+		} else {
+			logger.warn("setColorPattern(....), problem applying pattern");
+			return null;
+		}
 
 	}
 
@@ -154,13 +182,16 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 	public void singleChaserAnimation(int start, int end, String color, int tail) {
 		logger.trace("singleChaserAnimation(int start : {}, int end : {}, String color : {}, int tail: {})", start, end, color, tail);
 		lightManager.singleChaserAnimation(getAbstractObjectId(), start, end, color, tail);
+		setCurrentColor(color);
+		setCurrentLightNumber(end);	
 	}
 
 	@Override
 	public void roundChaserAnimation(int start, int end, String color, int tail, int rounds) {
 		logger.trace("roundChaserAnimation(int start, int end, String color, int tail : {},  int rounds : {})", start, end, color, tail, rounds);
-		
 		lightManager.roundChaserAnimation(getAbstractObjectId(), start, end, color, tail, rounds);
+		setCurrentColor(color);
+		setCurrentLightNumber(start);	
 	}	
 	
 	private boolean waitForConfiguration() {
@@ -188,6 +219,8 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 
 		if(waitForConfiguration()) {		
 			descr.put(KEY_LEDS, getLightsStatus());
+			descr.put(KEY_CURRENT_LIGHT, getCurrentLightNumber());
+			descr.put(KEY_CURRENT_COLOR, getCurrentColor());	
 		}
 		logger.trace("getDescription(), returning "+descr);
 
@@ -220,26 +253,35 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 
 	@Override
 	public int getCurrentLightNumber() {
-		// TODO Auto-generated method stub
-		return 0;
+		return currentLight;
 	}
 
 	@Override
 	public String getCurrentColor() {
-		// TODO Auto-generated method stub
-		return null;
+		return currentColor;
 	}
 
 	@Override
 	public void setCurrentLightNumber(int lightNumber) {
-		// TODO Auto-generated method stub
-		
+		logger.trace("setCurrentLightNumber(int lightNumber : {})", lightNumber);
+		int oldValue = this.currentLight;
+		if(lightNumber < 0) {
+			this.currentLight= 0;
+		} else if (lightNumber>= LightManagement.FAIRYLIGHT_SIZE) {
+			this.currentLight= LightManagement.FAIRYLIGHT_SIZE-1;			
+		} else {
+			this.currentLight = lightNumber;
+		}
+		stateChanged(KEY_CURRENT_LIGHT, String.valueOf(oldValue), String.valueOf(currentLight), getAbstractObjectId());
 	}
 
 	@Override
 	public void setCurrentColor(String color) {
-		// TODO Auto-generated method stub
+		logger.trace("setCurrentColor(String color : {})", color);
 		
+		String oldValue = this.currentColor;
+		this.currentColor = color;
+		stateChanged(KEY_CURRENT_LIGHT, oldValue, currentColor, getAbstractObjectId());
 	}
 
 	@Override
