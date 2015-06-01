@@ -112,6 +112,8 @@ define([
 					deviceDetails: this.tplFairyLights
 				}));
 
+				this.buildFairylightWidget("div-fairylight-widget", false);
+
 				// if the lamp is on, we allow the user to pick a color
 				this.renderColorWheel();
 
@@ -173,10 +175,42 @@ define([
 
 			$(document).ready(function () {
 				var lamp = self.model;
-				moveColorByHex(expandHex(lamp.getCurrentColor()));
+				//				moveColorByHex(expandHex(lamp.getCurrentColor()));
 			});
 
-		}
+		},
+
+		buildFairylightWidget: function (idElementToBuild, isEditable) {
+			var self = this;
+
+			var widthDiv = $("#" + idElementToBuild).width();
+			var height = 25;
+			var svg = d3.select("#" + idElementToBuild).select("svg")
+				.attr("width", widthDiv)
+				.attr("height", height);
+
+
+			var nbCircle = 25;
+			var spacement = 8;
+			var circleWidthDefault = 18;
+			var circleWidthAvailable = widthDiv / (nbCircle + spacement);
+			var circleWidthFinal = (circleWidthAvailable < circleWidthDefault) ? circleWidthAvailable : circleWidthDefault;
+
+			var nodesLED = svg.selectAll(".nodeLed")
+				.data(self.model.get("leds"))
+				.enter()
+				.append("circle")
+				.attr("class", "nodeLed")
+				.attr("cx", function (n) {
+					var index = _.indexOf(self.model.get("leds"), n);
+					return (spacement / 2) + (circleWidthFinal / 2) + ((spacement / 2) + circleWidthFinal) * index;
+				})
+				.attr("cy", height / 2)
+				.attr("r", circleWidthFinal / 2)
+				.attr("fill", function (n) {
+					return n.color;
+				});
+		},
 	});
 	return FairyLightsView
 });
