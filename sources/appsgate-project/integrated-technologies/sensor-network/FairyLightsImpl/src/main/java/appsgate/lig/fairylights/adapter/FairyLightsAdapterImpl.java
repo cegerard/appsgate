@@ -131,7 +131,7 @@ FairyLightsAdapterSpec, FairyLightsStatusListener {
 		
 		JSONArray selected= new JSONArray();
 		for(int i=startingIndex; i<=endingIndex; i++) {
-			selected.put(i);
+			selected.put(new JSONObject().put(FairyLightsImpl.KEY_ID, i));
 		}
 		return createFreeformLightsGroup(name, selected);
 	}

@@ -93,6 +93,9 @@ define([
           },{
             "type": "String",
             "value": "#ffffff"
+          },{
+            "type": "int", // tail
+            "value": "1"
           }];
           v.phrase = "devices.fairylights.language.singleChaserAnimation";
           $(btn).attr("json", JSON.stringify(v));
@@ -114,7 +117,10 @@ define([
           },{
             "type": "int", // nb rounds
             "value": "1"
-          }];
+          },{
+            "type": "int", // tail
+            "value": "1"
+        }];
           v.phrase = "devices.fairylights.language.roundChaserAnimation";
           $(btn).attr("json", JSON.stringify(v));
           break;
