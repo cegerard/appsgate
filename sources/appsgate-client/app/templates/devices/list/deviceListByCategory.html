@@ -267,19 +267,8 @@
                     <% } %>
                     
 					<% } else if (type === "CoreFairyLightsSpec") { %>
-						<% if (s.get("status") === "true" || s.get("status") === true) { %>
-							<span id="device-<%= s.cid %>-value" class="label label-yellow" data-i18n="devices.lamp.status.turnedOn"></span>
-							<div class="label label-color-information">
-								<span id="device-<%= s.cid %>-color-information" data-i18n="devices.lamp.color-information.currentColor"></span>
-								<span id="device-<%= s.cid %>-color" class="label lamp-color-led">ph</span>
-							</div>
-						<% } else { %>
-							<span id="device-<%= s.cid %>-value" class="label label-default" data-i18n="devices.lamp.status.turnedOff"></span>
-							<div class="label label-color-information">
-								<span id="device-<%= s.cid %>-color-information" data-i18n="devices.lamp.color-information.lastColor"></span>
-								<span id="device-<%= s.cid %>-color" class="label lamp-color-led">ph</span>
-							</div>
-						<% } %>
+						<div id="div-fairylights-widget">
+						</div>
                     <% } %>
 						
                 </a>
@@ -433,20 +422,9 @@
                     <% } %>
 						
 				 	<% } else if (type === "CoreFairyLightsSpec") { %>
-						<% if (s.get("status") === "true" || s.get("status") === true) { %>
-							<span id="device-<%= s.cid %>-value" class="label label-yellow" data-i18n="devices.lamp.status.turnedOn"></span>
-							<div class="label label-color-information">
-								<span id="device-<%= s.cid %>-color-information" data-i18n="devices.lamp.color-information.currentColor"></span>
-								<span id="device-<%= s.cid %>-color" class="label lamp-color-led">ph</span>
-							</div>
-						<% } else { %>
-							<span id="device-<%= s.cid %>-value" class="label label-default" data-i18n="devices.lamp.status.turnedOff"></span>
-							<div class="label label-color-information">
-								<span id="device-<%= s.cid %>-color-information" data-i18n="devices.lamp.color-information.lastColor"></span>
-								<span id="device-<%= s.cid %>-color" class="label lamp-color-led">ph</span>
-							</div>
-						<% } %>
-                    <% } %>
+                  		<div id="div-fairylights-widget">
+						</div>
+					<% } %>
 						
                 </a>
                 <% }) %>

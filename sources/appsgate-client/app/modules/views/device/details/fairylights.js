@@ -185,10 +185,10 @@ define([
 
 			var widthDiv = $("#" + idElementToBuild).width();
 			var height = 25;
+			
 			var svg = d3.select("#" + idElementToBuild).select("svg")
 				.attr("width", widthDiv)
 				.attr("height", height);
-
 
 			var nbCircle = 25;
 			var spacement = 8;
@@ -207,8 +207,8 @@ define([
 				})
 				.attr("cy", height / 2)
 				.attr("r", circleWidthFinal / 2)
-				.attr("fill", function (n) {
-					return n.color;
+				.attr("fill", function (led) {
+					return led.color;
 				});
 		},
 	});

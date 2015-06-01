@@ -235,6 +235,9 @@ define([
             }
             this.$el.find("#device-" + device.cid + "-value").replaceWith(activeFace);
             break;
+		  	case "CoreFairyLightsSpec":
+			this.buildFairylightWidget(device);
+		  	break;
           }
           if (device.get("status") === "0") {
             $("#device-" + device.cid + "-status").attr("class","label label-danger");
@@ -293,7 +296,42 @@ define([
         $(".group-off-button").prop("disabled", allOff);
 
       },
+		
+		/**
+		* Method to build the widget of fairylights
+		*/
+		buildFairylightWidget: function (device) {
+			var self = this;
 
+			var widthDiv = $("#div-fairylights-widget").width();
+			var height = 25;
+			
+			var svg = d3.select("#div-fairylights-widget").select("svg")
+				.attr("width", widthDiv)
+				.attr("height", height);
+
+			var nbCircle = 25;
+			var spacement = 8;
+			var circleWidthDefault = 18;
+			var circleWidthAvailable = widthDiv / (nbCircle + spacement);
+			var circleWidthFinal = (circleWidthAvailable < circleWidthDefault) ? circleWidthAvailable : circleWidthDefault;
+
+			var nodesLED = svg.selectAll(".nodeLed")
+				.data(device.get("leds"))
+				.enter()
+				.append("circle")
+				.attr("class", "nodeLed")
+				.attr("cx", function (n) {
+					var index = _.indexOf(device.get("leds"), n);
+					return (spacement / 2) + (circleWidthFinal / 2) + ((spacement / 2) + circleWidthFinal) * index;
+				})
+				.attr("cy", height / 2)
+				.attr("r", circleWidthFinal / 2)
+				.attr("fill", function (led) {
+					return led.color;
+				});
+		},
+		
       /**
        * Using this function to get additionnal details about a device in other views
        *
