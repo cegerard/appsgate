@@ -75,8 +75,8 @@ define([
         this.$el.i18n();
       },
 
-        onDeleteTTSUI: function() {
-            var tts = $(".select-tts").val();
+        onDeleteTTSUI: function(event) {
+            var tts = event.currentTarget.getAttribute("book_id");
             this.model.deleteTTSItem(tts);
         },
 
