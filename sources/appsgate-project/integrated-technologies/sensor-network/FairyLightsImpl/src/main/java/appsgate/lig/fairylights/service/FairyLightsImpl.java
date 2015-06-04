@@ -123,7 +123,12 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 
 		JSONObject response = lightManager.setOneColorLight(getAbstractObjectId(), lightNumber, color);
 		logger.trace("setColorLight(...), returning {}",response);
-		stateChanged("ledChanged", null, color, getAbstractObjectId());
+		setCurrentColor(color);
+		setCurrentLightNumber(lightNumber);
+		stateChanged(KEY_LEDS, null, getLightsStatus().toString(), getAbstractObjectId());
+		
+		stateChanged("ledChanged", null, String.valueOf(currentLight), getAbstractObjectId());
+		
 		return response;
 		} else {
 			logger.warn("setOneColorLight(...), light number not in the group");
