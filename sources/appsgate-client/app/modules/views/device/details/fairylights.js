@@ -18,6 +18,8 @@ define([
 		initialize: function () {
 			var self = this;
 
+			self.currentSelectedLED = [];
+
 			$.ajaxSetup({
 				cache: false
 			});
@@ -27,15 +29,10 @@ define([
 			$.extend(self.__proto__.events, FairyLightsView.__super__.events);
 
 			dispatcher.on(this.model.get("id"), function (updatedVariableJSON) {
-				console.log("toto");
 				if (updatedVariableJSON.varName == "colorChanged") {
 					hexcolor = JSON.parse(updatedVariableJSON.value).rgbcolor;
 					moveColorByHex(expandHex(hexcolor));
 				}
-				if (updatedVariableJSON == "leds") {
-					self.buildFairylightWidget("div-fairylight-widget", false);
-				}
-
 			});
 
 		},
@@ -63,18 +60,9 @@ define([
 			return false;
 		},
 		colorchanged: function () {
-			var lamp = this.model;
 			var rgb = $("#colorbg").css("background-color");
-			var hsl = Raphael.rgb2hsb(rgb);
-			var hH = Math.round(hsl.h * 65535);
-			var hS = Math.round(hsl.s * 255);
-			var hB = Math.round(hsl.b * 255);
-			lamp.set({
-				"color": hH,
-				"saturation": hS,
-				"brightness": hB
-			});
-			lamp.sendFullColor();
+			this.changeColorLEDs(this.currentSelectedLED, Raphael.getRGB(rgb).hex);
+
 		},
 		autoupdate: function () {
 			FairyLightsView.__super__.autoupdate.apply(this);
@@ -96,6 +84,7 @@ define([
 			this.$el.find("#lamp-button").html(lampButton);
 
 			this.buildFairylightWidget("div-fairylight-widget", false);
+			//			this.updateFairylightWidget
 
 			// translate the view
 			this.$el.i18n();
@@ -180,8 +169,11 @@ define([
 			});
 
 			$(document).ready(function () {
-				var lamp = self.model;
-				//				moveColorByHex(expandHex(lamp.getCurrentColor()));
+				arrayLed = self.model.get("leds");
+				if (!Array.isArray(arrayLed)) {
+					arrayLed = $.parseJSON(arrayLed);
+				}
+				moveColorByHex(expandHex(arrayLed[0].color));
 			});
 
 		},
@@ -189,20 +181,22 @@ define([
 		buildFairylightWidget: function (idElementToBuild, isEditable) {
 			var self = this;
 
-			var widthDiv = $("#" + idElementToBuild).width();
-			var height = 25;
+			var widthDiv, height, nbCircle, spacement, circleWidthDefault, circleWidthAvailable, circleWidthFinal, arrayLed;
 
-			var svg = d3.select("#" + idElementToBuild).select("svg")
+			widthDiv = $("#" + idElementToBuild).width();
+			height = 25;
+
+			svg = d3.select("#" + idElementToBuild).select("svg")
 				.attr("width", widthDiv)
 				.attr("height", height);
 
-			var nbCircle = 25;
-			var spacement = 8;
-			var circleWidthDefault = 18;
-			var circleWidthAvailable = widthDiv / (nbCircle + spacement);
-			var circleWidthFinal = (circleWidthAvailable < circleWidthDefault) ? circleWidthAvailable : circleWidthDefault;
+			nbCircle = 25;
+			spacement = 8;
+			circleWidthDefault = 18;
+			circleWidthAvailable = widthDiv / (nbCircle + spacement);
+			circleWidthFinal = (circleWidthAvailable < circleWidthDefault) ? circleWidthAvailable : circleWidthDefault;
 
-			var arrayLed = self.model.get("leds");
+			arrayLed = self.model.get("leds");
 			if (!Array.isArray(arrayLed)) {
 				arrayLed = $.parseJSON(arrayLed);
 			}
@@ -218,13 +212,47 @@ define([
 					return (spacement / 2) + (circleWidthFinal / 2) + ((spacement / 2) + circleWidthFinal) * index;
 				})
 				.attr("cy", height / 2)
-				.attr("r", circleWidthFinal / 2);
+				.attr("r", circleWidthFinal / 2)
+				.on("click", function (led) {
+					//					self.model.setOneColorLight(led.id, "#ffffff");
+					if (_.contains(self.currentSelectedLED, led)) {
+						self.currentSelectedLED.splice(_.indexOf(self.currentSelectedLED, led), 1);
+					} else {
+						self.currentSelectedLED.push(led);
+					}
+					console.log(self.currentSelectedLED.length);
+					self.updateFairylightWidget();
+				});
 
+			self.updateFairylightWidget();
+		},
+
+		updateFairylightWidget: function () {
+			var self = this;
 			nodesLED.each(function (led) {
 				d3.select(this)
-					.attr("fill", led.color);
+					.attr("fill", led.color)
+					.attr("stroke-width", function (led) {
+						if (_.contains(self.currentSelectedLED, led)) {
+							return 3;
+						} else {
+							return 1;
+						}
+					})
+					.attr("stroke", "black");
 			});
+		},
 
+		/**
+		 *
+		 * @param LEDsChanged : JSONArray of the Led changed
+		 */
+		changeColorLEDs: function (LEDsChanged, color) {
+			var self = this;
+
+			_.each(LEDsChanged, function (led) {
+				self.model.setOneColorLight(led.id, color);
+			});
 		},
 	});
 	return FairyLightsView

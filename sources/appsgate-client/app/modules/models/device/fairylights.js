@@ -14,6 +14,8 @@ define([
 		 * @constructor
 		 */
 		initialize: function () {
+			var self = this;
+
 			FairyLights.__super__.initialize.apply(this, arguments);
 
 			// setting default friendly name if none exists
@@ -48,7 +50,7 @@ define([
 				v.args = [{
 					"type": "String",
 					"value": "#ffffff"
-          }];
+          	}];
 				v.phrase = "devices.fairylights.language.setAllColorLight";
 				$(btn).attr("json", JSON.stringify(v));
 				break;

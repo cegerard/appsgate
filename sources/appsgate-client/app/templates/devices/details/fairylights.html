@@ -1,3 +1,4 @@
+<!--
 <li class="list-group-item">
 	<strong data-i18n="devices.fairylights.composition"></strong>
 	<div id="div-fairylight-widget">
@@ -5,8 +6,9 @@
 	</div>
 	
 </li>
+-->
 
-<!--
+
 <li class="list-group-item">
 	<strong data-i18n="devices.state-label"></strong>
 	<div id="lamp-status" class="pull-right">
@@ -32,6 +34,8 @@
 		</button>
 	</div>
 </li>
+
+<!--
 <li class="list-group-item" style="padding-top:10px;height:50px;">
 	<strong data-i18n="devices.lamp.action.brightness"></strong>
 	<div class="pull-right">
@@ -40,13 +44,20 @@
 		<span data-i18n="devices.lamp.complement.maximum"></span>
 	</div>
 </li>
-<li id="colorPickerLi" class="list-group-item" style="height:450px;">
+-->
+
+<li class="list-group-item" style="height:450px;">
 	<span data-i18n="devices.lamp.complement.color"></span>
+
+	<div id="div-fairylight-widget">
+		<svg></svg>
+	</div>
+
 	<div style="position: relative; width: 60%; margin-left: auto;margin-right: auto;">
 		<style scoped>
 			@import "./vendor/colorwidget/style.css";
 		</style>
-		<div style="margin-top:30px;">
+		<div id="colorPickerLi" style="margin-top:30px;">
 			<div class="picker-colors" style="background-color: rgb(0, 238, 255);">
 				<div class="picker-colorPicker" style="left: -5px; top: 354px;"></div>
 			</div>
@@ -56,4 +67,4 @@
 			<div class="picker_h" id="colorbg" style="background-color: rgb(0, 0, 0);"></div>
 		</div>
 	</div>
-</li>-->
+</li>
