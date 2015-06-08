@@ -12,24 +12,18 @@ define([
 		initialize: function () {
 			var self = this;
 
-			// Initialize types
+			// Initialize data structures
 			self.set({
 				rootNode: "",
 				height: 800,
 				width: 960,
 				mapDepthNeighbors: {},
-				//				entitiesTypes: ["time", "place", "device", "service", "program", "selector"],
-				//				relationsTypes: ["isPlanified", "isLocatedIn", "READING", "WRITING", "denotes"],
-				//				currentEntitiesTypes: ["place", "program", "service", "time", "device", "selector"],
-				//				currentRelationsTypes: ["isPlanified", "isLocatedIn", "READING", "WRITING", "denotes"]
-
 				filterEntities: [],
 				subFilterDevice: {},
 				subFilterProgram: {},
 				currentEntitiesFilters: [],
 				filterRelations: [],
 				currentRelationsFilters: []
-
 			});
 
 			self.intializeFilters();
@@ -49,85 +43,6 @@ define([
 					});
 				}
 			});
-
-			/**** Event binding to have dynamic update ****/
-			//self.listenTo(dispatcher, "updatePlace", function (place) {
-			//	console.log("updatePlace");
-			//	dispatcher.trigger("UpdateGraph", {
-			//		buildGraph: false
-			//	});
-			//});
-			//
-			//self.listenTo(dispatcher, "newPlace", function (place) {
-			//	console.log("newPlace");
-			//	dispatcher.trigger("UpdateGraph", {
-			//		buildGraph: true
-			//	});
-			//});
-			//
-			//self.listenTo(dispatcher, "removePlace", function (place) {
-			//	console.log("removePlace");
-			//	dispatcher.trigger("UpdateGraph", {
-			//		buildGraph: true
-			//	});
-			//});
-			//
-			//self.listenTo(dispatcher, "moveDevice", function (messageData) {
-			//	console.log("moveDevice");
-			//	dispatcher.trigger("UpdateGraph", {
-			//		buildGraph: true
-			//	});
-			//});
-			//
-			//self.listenTo(dispatcher, "newDevice", function (messageData) {
-			//	console.log("newDevice");
-			//	dispatcher.trigger("UpdateGraph", {
-			//		buildGraph: true
-			//	});
-			//});
-			//
-			//self.listenTo(dispatcher, "removeDevice", function (messageData) {
-			//	console.log("removeDevice");
-			//	dispatcher.trigger("UpdateGraph", {
-			//		buildGraph: true
-			//	});
-			//});
-			//
-			//self.listenTo(dispatcher, "newProgram", function (program) {
-			//	console.log("newProgram");
-			//	dispatcher.trigger("UpdateGraph", {
-			//		buildGraph: true
-			//	});
-			//});
-			//
-			//self.listenTo(dispatcher, "removeProgram", function (program) {
-			//	console.log("removeProgram");
-			//	dispatcher.trigger("UpdateGraph", {
-			//		buildGraph: true
-			//	});
-			//});
-			//
-			//self.listenTo(dispatcher, "updateProgram", function (program) {
-			//	console.log("updateProgram");
-			//	dispatcher.trigger("UpdateGraph", {
-			//		buildGraph: true
-			//	});
-			//});
-			//
-			//self.listenTo(dispatcher, "newService", function (service) {
-			//	console.log("newService");
-			//	dispatcher.trigger("UpdateGraph", {
-			//		buildGraph: true
-			//	});
-			//});
-			//
-			//self.listenTo(dispatcher, "removeService", function (serviceId) {
-			//	console.log("removeService");
-			//	dispatcher.trigger("UpdateGraph", {
-			//		buildGraph: true
-			//	});
-			//});
-
 		},
 
 		/*
@@ -152,6 +67,10 @@ define([
 			});
 		},
 
+		/**
+		 * Method that will create all the data structure from the received json
+		 * @param jsonData : JSON of data received from server
+		 **/
 		loadData: function (jsonData) {
 			var self = this;
 
@@ -174,18 +93,6 @@ define([
 			});
 
 			self.addDeviceTypeFilterLoaded(jsonData.types);
-
-			// Bind event ID
-			//_.each(this.get("currentEntities"), function (e) {
-			//	self.listenTo(dispatcher, e.id, function (arg) {
-			//		// Before trigger check is it is an event we really want to process
-			//		if (self.checkFireEvent(arg)) {
-			//			dispatcher.trigger("UpdateGraph", {
-			//				buildGraph: false
-			//			});
-			//		}
-			//	});
-			//});
 		},
 
 		/**
@@ -276,6 +183,7 @@ define([
 				});
 			}
 
+			// Recreate data structures
 			var relations = processRelationsID(jsonData.links, oldEntities),
 				neighbors = buildNeighborsMap(relations);
 
@@ -285,15 +193,19 @@ define([
 			});
 
 			self.updateEntitiesShown();
-
 		},
 
+		/**
+		 * Method to check if an entity is filtered or not
+		 * @param entity to check
+		 * @return boolean true if entity is shown
+		 **/
 		checkEntityFilter: function (entity) {
 			var self = this;
 			var isShown = false;
 
+			// According to the type of entity we have to check different attributs
 			if (entity.type === "device") {
-
 				var stateFilter = function (e) {
 					var stateFilter = true;
 					if (e.isGhost) {
@@ -323,6 +235,9 @@ define([
 			return isShown;
 		},
 
+		/**
+		 * Method to get all the filtered entities
+		 **/
 		getFilteredEntities: function () {
 			var self = this;
 			return this.get("entities").filter(function (e) {
@@ -330,6 +245,9 @@ define([
 			});
 		},
 
+		/**
+		 * Method to get all the filtered relations
+		 **/
 		getFilteredRelations: function () {
 			var self = this;
 			var filteredEntities = self.getFilteredEntities();
@@ -375,22 +293,25 @@ define([
 			});
 		},
 
+		/**
+		 * Method to intialize the filters
+		 **/
 		intializeFilters: function () {
 			this.initEntitiesFilter();
 			this.initCurrentEntitiesFilter();
 			this.initRelationsFilter();
 		},
 
+		/**
+		 * Method to initalize the entities filter
+		 **/
 		initEntitiesFilter: function () {
 			var filterEntitiesType = [];
 			var subFilterDevice = {};
 			var subFilterProgram = {};
 
 			filterEntitiesType = ["time", "place", "service", "device", "program", "selector"];
-
-			//			subFilterDevice["deviceType"] = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "32", "36", "124", "210"];
 			subFilterDevice["deviceState"] = ["true", "false", "isGhostDevice", "isMultipleTargeted"];
-
 			subFilterProgram["state"] = ["PROCESSING", "LIMPING", "DEPLOYED", "INCOMPLETE", "INVALID", "isGhostProgram"];
 
 			this.set({
@@ -401,6 +322,9 @@ define([
 
 		},
 
+		/**
+		 * Method to initialize the current entities filter
+		 **/
 		initCurrentEntitiesFilter: function () {
 			var self = this;
 			var currentFilters = [];
@@ -420,6 +344,9 @@ define([
 			});
 		},
 
+		/**
+		 * Method to initialize the relations filter
+		 **/
 		initRelationsFilter: function () {
 			this.set({
 				filterRelations: ["isPlanified", "isLocatedIn", "READING", "WRITING", "denotes"],
@@ -428,20 +355,21 @@ define([
 		},
 
 		/**
-		 * Function to add the device type to the current entities filters. Because we get the available type after the load of data, we can make it in the init function
+		 * Function to add the device type to the current entities filters. Because we get the available type after the load of data, we can't make it in the init function
 		 * @param JSONTypes : Device Types from the JSON loaded
 		 **/
 		addDeviceTypeFilterLoaded: function (JSONTypes) {
 			this.get("subFilterDevice")["deviceType"] = _.filter(JSONTypes, function (type) {
-				// Don't add : 102/103/104 = services, 21 = clock
-                var filteredType = ["102", "103", "104", "21", "UbikitAdapterService", "PlaceManagerSpec", "EUDE_InterpreterSpec",
-									"WeatherAdapterSpec", "DevicePropertiesTableSpec", "UserBaseSpec", "CoreEnergyMonitoringGroup", "EnergyMonitoringAdapter",
-									"FairyLightsAdapterSpec", "MobileDeviceAdapter"];
-                return filteredType.indexOf(type) < 0;
+				// Don't add some entity (ie: 102/103/104 = services, 21 = clock)
+				var filteredType = ["102", "103", "104", "21", "UbikitAdapterService", "PlaceManagerSpec", "EUDE_InterpreterSpec", "WeatherAdapterSpec", "DevicePropertiesTableSpec", "UserBaseSpec", "CoreEnergyMonitoringGroup", "EnergyMonitoringAdapter", "FairyLightsAdapterSpec", "MobileDeviceAdapter"];
+				return filteredType.indexOf(type) < 0;
 			});
 			Array.prototype.push.apply(this.get("currentEntitiesFilters"), this.get("subFilterDevice")["deviceType"]);
 		},
 
+		/**
+		 * Method to check all device type
+		 **/
 		checkAllDeviceType: function () {
 			var self = this;
 			var currentFilter = self.get("currentEntitiesFilters");
@@ -457,6 +385,9 @@ define([
 			this.trigger("change:currentEntitiesFilters");
 		},
 
+		/**
+		 * Method to uncheck all device type
+		 **/
 		uncheckAllDeviceType: function () {
 			var self = this;
 			var subFilterDeviceType = self.get("subFilterDevice")["deviceType"];
@@ -589,6 +520,9 @@ define([
 			}
 		},
 
+		/**
+		 * Method to update entities shown according to filters
+		 **/
 		updateEntitiesShown: function () {
 			var self = this;
 
@@ -606,17 +540,25 @@ define([
 
 		},
 
+		/**
+		 * Method to update relations shown according to filters
+		 **/
 		updateRelationsShown: function ()  {
 			var newLinks = buildLinksFromNodesShown.bind(this)();
 			this.set({
 				currentRelations: newLinks,
-				//                neighbors: buildNeighborsMap(newLinks)
 			});
 		},
 
+		/**
+		 * Method to update an array
+		 * @param array : array to update
+		 * @param type : type of array : entity or relation
+		 * @param checked : boolean checked
+		 **/
 		updateArrayTypes: function (array, type, checked) {
 			var self = this;
-			//			var arrayUpdated = (array === "entities") ? this.get("currentEntitiesTypes") : this.get("currentRelationsTypes");
+
 			var arrayUpdated = function (arrayParam) {
 				if (arrayParam === "entities") {
 					return self.get("currentEntitiesTypes");
@@ -632,8 +574,13 @@ define([
 					arrayUpdated.splice(arrayUpdated.indexOf(type), 1);
 			}
 		},
-		
-		getEntityName: function(index) {
+
+		/**
+		 * Method to get an entity name
+		 * @param : index of the entity
+		 * @return String name if it existed or ""
+		 **/
+		getEntityName: function (index) {
 			if (this.get("entities")[0]) {
 				return this.get("entities")[0].name;
 			}
@@ -643,6 +590,7 @@ define([
 		/**
 		 * Method to know if a target is targeted more than one time by executing program
 		 * @param: target to search
+		 * @return : boolean, true if @target is targeted more than one time
 		 */
 		isMultipleTargeted: function (target) {
 			var self = this;
@@ -693,6 +641,7 @@ define([
 		/**
 		 * Method to know if all reference to selector are 'Writing'
 		 * @param: link denotes of one selector
+		 * @return : boolean, true if all the @linkDenote are writing type
 		 */
 		isWritingDenote: function (linkDenote) {
 			var self = this;
@@ -720,6 +669,7 @@ define([
 		/**
 		 * Method to know the number of writing reference to a selector
 		 * @param: selector entity
+		 * @return : int, number of writing reference to @selector
 		 */
 		getNbWritingSelector: function (selector) {
 			var self = this;
@@ -755,6 +705,7 @@ define([
 	/**
 	 * Method to build the map of the neighbor, ie : [id1:id2] -> 1, means entity id1 & id2 neighbors
 	 * @param: relations - The array of relation on which we base to make the map
+	 * @return : map of neighbors calculated from @relations
 	 */
 	function buildNeighborsMap(relations) {
 		var neighbors = {};
@@ -765,6 +716,11 @@ define([
 		return neighbors;
 	}
 
+	/**
+	 * Method to transform some entities into service entities.
+	 * @param entities : array of raw entities
+	 * @return array of entities with correct type for each ones
+	 **/
 	function identifyService(entities) {
 		entities.forEach(function (e) {
 
@@ -884,6 +840,7 @@ define([
 
 	/*
 	 * Reset the check mark for all the node array (marks used to set the deepth of the nodes)
+	 * @param entities : array of entities
 	 */
 	function resetCheckMark(entities) {
 		entities.forEach(function (node) {
@@ -947,7 +904,6 @@ define([
 				}
 			}();
 
-			//			if (typeof sourceNode !== 'undefined' && typeof targetNode !== 'undefined' && _.contains(self.get("currentRelationsTypes"), e.type)) {
 			if (areSourceAndTargetDefined && (isTypeShown || isReferenceShown)) {
 				if (e.referenceData) {
 					newLinks.push({
@@ -995,17 +951,13 @@ define([
 			};
 		};
 
-		// Mise à jour de la map qui nous donne les voisins
-		//        self.set({
-		//            neighbors: buildNeighborsMap(newLinks)
-		//        });
-
 		return newLinks;
 	};
 
 	/**
 	 * Method to get the reference data according to the filter on the references
 	 * It is used for the special case of the reference with the 2 types of reference.
+	 * @param refData : reference to check
 	 */
 	function checkFilterReferenceData(refData) {
 		var self = this;
