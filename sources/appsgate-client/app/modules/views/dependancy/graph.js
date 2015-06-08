@@ -60,9 +60,12 @@ define([
 				force.start();
 			});
 
+
+			/***** Global variables ****/
 			// Zoom variables
 			savedScale = 1;
 			savedTranslate = [0, 0];
+			// Used in click event 
 			onMouseDownNode = false;
 			// Used to hide the popups relations
 			onCircleRelation = false;
@@ -71,6 +74,9 @@ define([
 			ENTITY_FOCUS_WIDTH = ENTITY_WIDTH * 1.5;
 		},
 
+		/**
+		 * Callback method of click refresh button
+		 **/
 		onRefreshButton: function () {
 			// Notify collection we want the new data
 			dependancies.refresh();
@@ -78,6 +84,9 @@ define([
 			appRouter.dependancies();
 		},
 
+		/**
+		 * Callback method of click search button
+		 **/
 		onSearchButton: function (e) {
 			e.preventDefault();
 
@@ -119,6 +128,9 @@ define([
 			}
 		},
 
+		/**
+		 * Callback method of click unfix button
+		 **/
 		onUnfixButton: function (e) {
 			var self = this;
 			force.nodes().forEach(function (d) {
@@ -131,6 +143,9 @@ define([
 			}
 		},
 
+		/**
+		 * Rendering method
+		 **/
 		render: function () {
 			this.$el.html(this.template({
 				dependancy: this.model
@@ -145,14 +160,10 @@ define([
 				height: height
 			});
 
-
-			//			this.createFilters(this.model);
-			//			this.updateCheckAllEntities();
-			//			this.updateCheckAllRelations();
 			// update model, if we have an entity disable by default (ie selector)
 			this.model.updateEntitiesShown();
 
-			// Zoom d3 object
+			// Zoom Handler, d3 object
 			pan = d3.behavior.zoom()
 				.on("zoom", rescale)
 				.on("zoomstart", function () {
@@ -160,7 +171,7 @@ define([
 					if (!onMouseDownNode) {
 						$("body").css("cursor", "move");
 					}
-					// Temporaire : Hide all popovers if pan ...
+					// Hide all popovers if pan
 					if (!onCircleRelation) {
 						$('.popover').each(function (pop) {
 							if ($(this).is(":visible")) {
@@ -233,9 +244,8 @@ define([
 		update: function (model) {
 			var self = this;
 
-			//			force.nodes(model.get("currentEntities"));
+			// Update nodes/links
 			force.nodes(model.getFilteredEntities());
-			//			force.links(model.get("currentRelations"));
 			force.links(model.getFilteredRelations());
 
 			/******* NODES (=Entities) *******/
@@ -245,10 +255,7 @@ define([
 				return d.id;
 			});
 
-			// Text node modified - TODO : check 
-			//			var nModified = svg.select("#groupNode").selectAll(".nodeGroup").select("text").data(model.get("currentEntities"), function (d) {
-			//				return d.id;
-			//			});
+			// Text node modified
 			var nModified = svg.select("#groupNode").selectAll(".nodeGroup").select("text").data(model.getFilteredEntities(), function (d) {
 				return d.id;
 			});
@@ -331,6 +338,7 @@ define([
 			var nEnter = nodeEntity.enter().append("svg:g")
 				.attr("class", "nodeGroup")
 				.call(force.drag)
+				// Mouse event on nodes
 				.on("dblclick", this.dblclick.bind(this))
 				.on("mouseover", function (d) {
 					nodeEntity.classed("nodeOver", function (d2) {
@@ -352,6 +360,7 @@ define([
 				.on("mouseup", function (d) {
 					mouseup(d, this, model.get("rootNode"));
 				})
+				// Add all drawing elements : circle, image, text, decoration
 				.each(function (a) {
 					// CIRCLE
 					d3.select(this).append("circle")
@@ -446,6 +455,7 @@ define([
 					}
 				});
 
+			// Transitions for new nodes
 			nEnter.select("circle").transition().duration(800).attr("r", 14);
 			nEnter.select("image").transition().duration(1000).style("opacity", 1);
 			nEnter.select(".shape-program").transition().duration(800).style("opacity", 1);
@@ -453,6 +463,7 @@ define([
 			nEnter.select("text").transition().duration(800).style("opacity", 1);
 			nEnter.selectAll(".ghost-decoration").transition().duration(800).style("opacity", 1);
 
+			// Transitions for remove nodes
 			nodeEntity.exit().select("image").transition().duration(600).style("opacity", 0);
 			nodeEntity.exit().select("text").transition().duration(700).style("opacity", 0);
 			nodeEntity.exit().select("circle").transition().duration(700).attr("r", 0);
@@ -497,6 +508,7 @@ define([
 						.attr("class", "circle-information")
 						.attr("r", 2)
 						.attr("fill", "red")
+						// Popover link information
 						.attr("data-container", "#graph")
 						.attr("data-toggle", "popover")
 						.attr("data-content", function (d) {
@@ -567,11 +579,14 @@ define([
 
 		},
 
-
+		/**
+		 * Method tick is the method which is call by the d3 object force at every force tick
+		 **/
 		tick: function (e) {
 			var self = this;
 
 			nodeEntity
+			// Moving nodes
 				.attr("transform", function (d) {
 					var transf = "";
 					transf += "translate(" + (d.x) + "," + (d.y) + ")";
@@ -582,6 +597,7 @@ define([
 					}
 					return transf;
 				})
+				// node-0 to node-more used for transparency
 				.classed("node-0", function (d) {
 					return d === self.model.get("rootNode");
 				})
@@ -595,18 +611,22 @@ define([
 					// Transparence nodes if no depth 0/1/2 and if there is a focus
 					return self.model.get("rootNode") !== "" && (self.model.getDepthNeighbor(d) > 2 || self.model.getDepthNeighbor(d) === -1);
 				})
+				// Fixed node used to fix them : root and manual fix
 				.classed("fixedNode", function (d) {
 					return d !== self.model.get("rootNode") && d.fixed && !$(this).hasClass("nodeOver");
 				})
+				// Visible for node actually visible
 				.classed("visible", function (d) {
 					var maxR = ENTITY_FOCUS_WIDTH / 2;
 					return (0 < d.x + maxR) && (d.x - maxR < self.model.get("width")) && (0 < d.y + maxR) && (d.y - maxR < self.model.get("height"));
 				});
 
 			nodeEntity.selectAll("circle")
+				// Multiple reference = red
 				.classed("program-multiple-writing-reference", function (d) {
 					return !d.isGhost && self.model.isMultipleTargeted(d);
 				})
+				// Ghost circle = blue
 				.classed("ghost-decoration", function (d) {
 					return d.isGhost;
 				})
@@ -615,6 +635,7 @@ define([
 				.attr("transform", function (d) {
 					return "translate(5,10)";
 				})
+				// Device state for device like lamp, prise etc
 				.classed("circle-device-state-true", function (d) {
 					return d.deviceState === "true";
 				})
@@ -664,6 +685,7 @@ define([
 					// don't look about the orientation, this is the link showed
 					return arcPath(false, d);
 				})
+				// node-1 to node-more used for transparency
 				.classed("node-1", function (d) {
 					return (d.source === self.model.get("rootNode") || d.target === self.model.get("rootNode"));
 				})
@@ -675,6 +697,7 @@ define([
 					var isNode2 = (self.model.getDepthNeighbor(d.source) === 2 && self.model.getDepthNeighbor(d.target) === 1) || (self.model.getDepthNeighbor(d.target) === 2 && self.model.getDepthNeighbor(d.source) === 1);
 					return self.model.get("rootNode") !== "" & !isNode1 && !isNode2;
 				})
+				// Don't forget to change the marker color
 				.attr("marker-end", function (d) {
 					var isWritingReference = function (link) {
 						if (link.referenceData) {
@@ -742,21 +765,11 @@ define([
 					return self.model.get("rootNode") !== "" & !isNode1 && !isNode2;
 				});
 
-
-			//			filterNodes.select("input")
-			//				.property("checked", function (d) {
-			//					return _.contains(self.model.get("currentEntitiesTypes"), d);
-			//				});
-			//
-			//			filterLinks.select("input")
-			//				.property("checked", function (d) {
-			//					return _.contains(self.model.get("currentRelationsTypes"), d);
-			//				});
-
 		},
 
 		/**
 		 * Change root node and move it to the center
+		 * @param d : node to select & move
 		 */
 		selectAndMoveRootNode: function (d) {
 			// Unselect & unfix the current nodeRoot
@@ -796,6 +809,9 @@ define([
 			}
 		},
 
+		/**
+		 * Callback method call when double click on node
+		 **/
 		dblclick: function (d) {
 			// Stop the force to control manually the actions
 			force.stop();
@@ -820,6 +836,7 @@ define([
 
 		/*
 		 * Method to create the filters and add them to the html
+		 * @param model : model used to create filters
 		 */
 		createFilters: function (model) {
 			var self = this;
@@ -907,17 +924,18 @@ define([
 
 		},
 
+		/**
+		 * Method applying filter on the model
+		 * @param arrayUpdated : array to update
+		 * @param type : type of array
+		 * @param checked : state of filter
+		 **/
 		applyFilter: function (arrayUpdated, type, checked) {
 			force.stop();
 			this.model.updateArrayTypes(arrayUpdated, type, checked);
 			this.model.updateEntitiesShown();
 			if (arrayUpdated === "entities") {
 				if (this.model.get("rootNode") !== "" && !_.contains(this.model.get("currentEntities"), this.model.get("rootNode"))) {
-					// Vu que si on a plus rien d'afficher, on ne fait pas le move, on a toujours l'ancienne valeur pour la root node. Risque de Bug.
-					//					if(this.model.get("currentEntities").length > 0) {
-					//						this.selectAndMoveRootNode(this.model.get("currentEntities")[0]);
-					//					}
-					// Mis en com' car mtn on peut ne pas avoir de focus sans que ce soit gênant
 
 					// unfix the root and set null to the root
 					this.model.get("rootNode").fixed = false;
@@ -957,6 +975,9 @@ define([
 		},
 	});
 
+	/**
+	 * Callback method used for zooming
+	 **/
 	function rescale() {
 		// savedScale no null move a node
 		if (savedScale !== null) {
@@ -988,7 +1009,7 @@ define([
 
 	/*
 	 * Call when click on a node. Move or "zoomIn" the node
-	 * param d: Node clicked
+	 * @param d: Node clicked
 	 */
 	function mousedown(d) {
 		// Flag to avoid the rescale
@@ -1040,9 +1061,9 @@ define([
 
 	/*
 	 * Call when mouseup on a node. After a move of a node, fix it
-	 * param d: Node moved HTML
-	 * param nodeElement : Node moved D3
-	 * param nodeRoot : Node root D3
+	 * @param d: Node moved HTML
+	 * @param nodeElement : Node moved D3
+	 * @param nodeRoot : Node root D3
 	 */
 	function mouseup(d, nodeElement, nodeRoot) {
 		// don't defix the nodeRoot
@@ -1064,6 +1085,11 @@ define([
 		onMouseDownNode = false;
 	};
 
+	/**
+	 * Method used to build the link beetwen node. Can change the direction with parameter. Changing direction used for the text label.
+	 * @param turned : boolean true if have to change direction
+	 * @param d : link
+	 **/
 	function arcPath(turned, d) {
 		var dx = d.target.x - d.source.x,
 			dy = d.target.y - d.source.y,
