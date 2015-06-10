@@ -35,7 +35,7 @@
         <select id="fairylights-index-<%= node.iid %>" class="fairylights-index-picker"  target-id="<%= node.iid %>" light-index="0">
             <% for(i=0; i< 25; i++) { %>
                 <option <% if (Number(node.args[0].value) === i) { %>selected<% } %> value="<%= i %>"><%= i %></option>
-            <% console.log("i :",i, "node value: ", node.args[0].value) } %>
+            <%  } %>
         </select>
     <% }%>
 
