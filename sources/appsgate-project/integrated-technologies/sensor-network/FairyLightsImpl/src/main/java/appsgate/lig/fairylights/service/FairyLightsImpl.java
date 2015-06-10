@@ -94,7 +94,7 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 		if(response!= null && response.length()>0) {
 			for(int i = 0; i< response.length(); i++) {
 				if(response.optJSONObject(i) != null
-						&& response.optJSONObject(i).optInt(KEY_ID,-1)>0
+						&& response.optJSONObject(i).optInt(KEY_ID,-1)>=0
 						&& currentLights.contains(response.optJSONObject(i).optInt(KEY_ID,-1))) {
 					results.put(response.optJSONObject(i));
 				}
