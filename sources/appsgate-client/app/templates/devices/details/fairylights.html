@@ -1,22 +1,6 @@
-<!--
-<li class="list-group-item">
-	<strong data-i18n="devices.fairylights.composition"></strong>
-	<div id="div-fairylight-widget">
-		<svg></svg>
-	</div>
-	
-</li>
--->
-
-
 <li class="list-group-item">
 	<strong data-i18n="devices.state-label"></strong>
-	<div id="lamp-status" class="pull-right">
-		<% if (device.get( "status")==="true" || device.get( "status")===true) { %>
-			<span class="label label-yellow" data-i18n="devices.lamp.status.turnedOn"></span>
-			<% } else { %>
-				<span class="label label-default" data-i18n="devices.lamp.status.turnedOff"></span>
-				<% } %>
+	<div id="div-fairylight-state" class="pull-right">
 	</div>
 </li>
 
@@ -49,15 +33,15 @@
 <li class="list-group-item" style="height:450px;">
 	<span data-i18n="devices.lamp.complement.color"></span>
 
-	<div id="div-fairylight-widget">
+	<div id="div-fairylight-widget" class="col-md-12">
 		<svg></svg>
 	</div>
 
-	<div style="position: relative; width: 60%; margin-left: auto;margin-right: auto;">
+	<div class="col-md-12" style="position: relative; width: 60%; margin-left:25%; margin-top: 15px">
 		<style scoped>
 			@import "./vendor/colorwidget/style.css";
 		</style>
-		<div id="colorPickerLi" style="margin-top:30px;">
+		<div id="colorPickerLi">
 			<div class="picker-colors" style="background-color: rgb(0, 238, 255);">
 				<div class="picker-colorPicker" style="left: -5px; top: 354px;"></div>
 			</div>

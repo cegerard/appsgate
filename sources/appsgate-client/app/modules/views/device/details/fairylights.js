@@ -67,13 +67,6 @@ define([
 		autoupdate: function () {
 			FairyLightsView.__super__.autoupdate.apply(this);
 
-			var lampState = ""
-			if (this.model.get("state") === "true" || this.model.get("state") === true) {
-				lampState = "<span class='label label-yellow' data-i18n='devices.lamp.status.turnedOn'></span>";
-			} else {
-				lampState = "<span class='label label-default' data-i18n='devices.lamp.status.turnedOff'></span>";
-			}
-			this.$el.find("#lamp-status").html(lampState);
 
 			var lampButton = "";
 			if (this.model.get("state") === "true" || this.model.get("state") === true) {
@@ -83,8 +76,8 @@ define([
 			}
 			this.$el.find("#lamp-button").html(lampButton);
 
+			this.buildFairylightState();
 			this.buildFairylightWidget("div-fairylight-widget", false);
-			//			this.updateFairylightWidget
 
 			// translate the view
 			this.$el.i18n();
@@ -108,6 +101,7 @@ define([
 				}));
 
 				this.buildFairylightWidget("div-fairylight-widget", false);
+				this.buildFairylightState();
 
 				// if the lamp is on, we allow the user to pick a color
 				this.renderColorWheel();
@@ -169,13 +163,37 @@ define([
 			});
 
 			$(document).ready(function () {
-				arrayLed = self.model.get("leds");
+				var arrayLed = self.model.get("leds");
 				if (!Array.isArray(arrayLed)) {
 					arrayLed = $.parseJSON(arrayLed);
 				}
 				moveColorByHex(expandHex(arrayLed[0].color));
 			});
 
+		},
+
+		/**
+		 * Method to add the state html element.
+		 **/
+		buildFairylightState: function () {
+			var self = this;
+
+			var arrayLed = self.model.get("leds");
+			if (!Array.isArray(arrayLed)) {
+				arrayLed = $.parseJSON(arrayLed);
+			}
+
+			var functionIsLEDOn = function (led) {
+				return led.color != "#000000";
+			};
+
+			var state = ""
+			if (_.find(arrayLed, functionIsLEDOn)) {
+				state = "<span class='label label-yellow' data-i18n='devices.lamp.status.turnedOn'></span>";
+			} else {
+				state = "<span class='label label-default' data-i18n='devices.lamp.status.turnedOff'></span>";
+			}
+			this.$el.find("#div-fairylight-state").html(state);
 		},
 
 		buildFairylightWidget: function (idElementToBuild, isEditable) {
@@ -215,12 +233,15 @@ define([
 				.attr("r", circleWidthFinal / 2)
 				.on("click", function (led) {
 					//					self.model.setOneColorLight(led.id, "#ffffff");
-					if (_.contains(self.currentSelectedLED, led)) {
-						self.currentSelectedLED.splice(_.indexOf(self.currentSelectedLED, led), 1);
+					var ledInCurrentSelected = _.findWhere(self.currentSelectedLED, {
+						id: led.id
+					});
+					if (ledInCurrentSelected) {
+						self.currentSelectedLED.splice(_.indexOf(self.currentSelectedLED, ledInCurrentSelected), 1);
 					} else {
 						self.currentSelectedLED.push(led);
 					}
-					console.log(self.currentSelectedLED.length);
+					console.log(self.currentSelectedLED);
 					self.updateFairylightWidget();
 				});
 
@@ -233,7 +254,9 @@ define([
 				d3.select(this)
 					.attr("fill", led.color)
 					.attr("stroke-width", function (led) {
-						if (_.contains(self.currentSelectedLED, led)) {
+						if (_.findWhere(self.currentSelectedLED, {
+								id: led.id
+							})) {
 							return 3;
 						} else {
 							return 1;
