@@ -108,7 +108,8 @@
 						"36": "$t(devices.mediaplayer.name.plural)",
 						"124": "$t(devices.tv.name.plural)",
 						"210": "$t(devices.domicube.name.plural)",
-                        "MobileDevice" :  "$t(devices.mobileTasker.name.plural)"
+                        "MobileDevice" :  "$t(devices.mobileTasker.name.plural)",
+                        "CoreFairyLightsSpec" : "$t(devices.fairylights.name.plural)"
 					},
 					"device-state": {
 						"title": "Etat",
