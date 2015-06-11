@@ -111,6 +111,7 @@ define([
 				});
 				this.$el.html(this.energyGrpTpl({
 					energyMonitoringGroups: energyMonitoringGroupsAlphabeticOrder,
+					model: services.getEnergyMonitoringAdapter()
 				}));
 				this.buildDevicesChoice();
 				this.buildUnitSelector();

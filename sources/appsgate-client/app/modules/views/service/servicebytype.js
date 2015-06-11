@@ -3,8 +3,9 @@ define([
     "text!templates/services/list/servicesListByCategory.html",
     "text!templates/services/list/mail.html",
     "text!templates/services/details/tts/tts.html",
+    "views/service/list/listEnergyMonitoring",
     "models/service/weather"
-], function(App, serviceListByCategoryTemplate, mailTemplate,ttsTemplate, Weather) {
+], function(App, serviceListByCategoryTemplate, mailTemplate,ttsTemplate, ListEnergyMonitoring, Weather) {
 
     var ServiceByTypeView = {};
     /**
@@ -14,6 +15,7 @@ define([
         tpl: _.template(serviceListByCategoryTemplate),
         mailTpl: _.template(mailTemplate),
         ttsTpl: _.template(ttsTemplate),
+
         events: {
             "keyup #add-weather-modal input": "validWeatherName",
             "click #add-weather-modal button.valid-button": "addWeatherName",
@@ -111,10 +113,7 @@ define([
                         tts: services.getServicesByType()[this.id][0]
                     }));
                 } else if (this.id === "EnergyMonitoringAdapter") {
-                    this.$el.html(this.energyGrpTpl({
-                        energyMonitoringGroups: services.getCoreEnergyMonitoringGroups(),
-                    }));
-					this.buildDevicesChoice();
+                    appRouter.showDetailsView(new ListEnergyMonitoring({id: this.id}));
                 } else {
                     this.$el.html(this.tpl({
                         type: this.id,
