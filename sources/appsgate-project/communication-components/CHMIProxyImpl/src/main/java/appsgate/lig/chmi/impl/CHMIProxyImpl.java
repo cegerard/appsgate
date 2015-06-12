@@ -3,8 +3,10 @@ package appsgate.lig.chmi.impl;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import org.json.JSONArray;
@@ -30,6 +32,7 @@ import appsgate.lig.chmi.spec.listeners.CoreUpdatesListener.UPDATE_TYPE;
 import appsgate.lig.clock.sensor.spec.CoreClockSpec;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
+import appsgate.lig.core.object.spec.CoreObjectSpec.CORE_STATUS;
 import appsgate.lig.core.object.spec.CoreObjectSpec.CORE_TYPE;
 import fr.imag.adele.apam.Instance;
 
@@ -50,9 +53,9 @@ public class CHMIProxyImpl implements CHMIProxySpec {
     private final static Logger logger = LoggerFactory.getLogger(CHMIProxyImpl.class);
 
     /**
-     * Undefined sensors list, resolved by ApAM
+     * Core Object list, resolved by ApAM
      */
-    Set<CoreObjectSpec> abstractDevice;
+    Map<String, CoreObjectSpec> abstractDevice;
     
     /**
      * Array list for updates listener
@@ -74,6 +77,7 @@ public class CHMIProxyImpl implements CHMIProxySpec {
      * Called by APAM when an instance of this implementation is created
      */
     public void newInst() {
+    	abstractDevice = new HashMap<String, CoreObjectSpec>();
 
         updatesListenerList = new ArrayList<CoreUpdatesListener>();
         eventsListenerList = new ArrayList<CoreEventsListener>();
@@ -118,7 +122,14 @@ public class CHMIProxyImpl implements CHMIProxySpec {
                 logger.error("Instance {} does not implement CoreObjectSpec", inst.getAllPropertiesString());
                 return;
             }
-            notifyAllUpdatesListeners(UPDATE_TYPE.NEW, newObj.getCoreType(), newObj.getAbstractObjectId(), newObj.getUserType(), newObj.getDescription(), newObj.getBehaviorDescription());
+            abstractDevice.put(newObj.getAbstractObjectId(), newObj);
+            
+            if(newObj.getObjectStatus() != 2 ) {
+            	logger.info("Instance {} is not ready (status != 2)", inst.getAllPropertiesString());
+            } else {
+            	logger.trace("new core Object : {}, notifying listeners", newObj.getAbstractObjectId());
+            	notifyAllUpdatesListeners(UPDATE_TYPE.NEW, newObj.getCoreType(), newObj.getAbstractObjectId(), newObj.getUserType(), newObj.getDescription(), newObj.getBehaviorDescription());
+            }
             
         } catch (Exception ex) {
             logger.error("If getCoreType method error trace appeare below it is because the service or the device doesn't implement all methode in"
@@ -137,7 +148,13 @@ public class CHMIProxyImpl implements CHMIProxySpec {
 
         synchronized(this){ 
             CoreObjectSpec rmObj = (CoreObjectSpec) inst.getServiceObject();
+            if (rmObj == null) {
+                logger.error("Instance {} does not implement CoreObjectSpec", inst.getAllPropertiesString());
+                return;
+            }
             String deviceId = rmObj.getAbstractObjectId();
+            abstractDevice.remove(deviceId);
+            
             
             try {
                 obj.put("objectId", deviceId);
@@ -164,8 +181,9 @@ public class CHMIProxyImpl implements CHMIProxySpec {
     		return null;
     	}
     	
-        for (CoreObjectSpec adev : abstractDevice) {
-        	if (objectId.equalsIgnoreCase(adev.getAbstractObjectId())) {
+        for (CoreObjectSpec adev : abstractDevice.values()) {
+        	if (objectId.equalsIgnoreCase(adev.getAbstractObjectId())
+        			&& CoreObjectSpec.CORE_STATUS.isAvailable(adev.getObjectStatus())) {
         		logger.trace("getCoreDevice(...); device found");
                 return adev;
             }
@@ -200,8 +218,32 @@ public class CHMIProxyImpl implements CHMIProxySpec {
      * @param notif the notification message from ApAM
      */
     public void gotNotification(NotificationMsg notif) {
-        logger.debug("Notification message received, " + notif.JSONize());
-        notifyAllEventsListeners(notif);
+        logger.debug("gotNotification(NotificationMsg notif : {}) ", notif.JSONize());
+        if(notif == null || notif.getSource() == null || !abstractDevice.containsKey(notif.getSource())) {
+        	logger.error("gotNotification(...), core object unknown");
+            return;
+        }
+                
+        if(CoreObjectSpec.KEY_STATUS.equals(notif.getVarName())) {
+    		CoreObjectSpec obj = abstractDevice.get(notif.getSource());
+        	if (CORE_STATUS.isAvailable(notif.getNewValue())) {
+                logger.debug("gotNotification(...), device is available or become available");
+            	notifyAllUpdatesListeners(UPDATE_TYPE.NEW,
+            			obj.getCoreType(),
+            			obj.getAbstractObjectId(),
+            			obj.getUserType(),
+            			obj.getDescription(),
+            			obj.getBehaviorDescription());
+        	} else {
+                logger.debug("gotNotification(...), device is no more available");
+                notifyAllUpdatesListeners(UPDATE_TYPE.REMOVE, obj.getCoreType(),
+                		obj.getAbstractObjectId(), obj.getUserType(), null, null);
+        	}
+        	
+        } else {
+            logger.debug("gotNotification(...), event does not concern availability status");
+        	notifyAllEventsListeners(notif);
+        }
     }
 
     /**
@@ -214,10 +256,12 @@ public class CHMIProxyImpl implements CHMIProxySpec {
         if (abstractDevice != null && !abstractDevice.isEmpty()) {
             JSONArray jsonDeviceList = new JSONArray();
 
-            for (CoreObjectSpec adev : abstractDevice) {
-            	logger.debug("getDevicesDescription(), getting description for object id : "+adev.getAbstractObjectId());
-            	JSONObject obj = getObjectDescription(adev);
-                jsonDeviceList.put(obj);
+            for (CoreObjectSpec adev : abstractDevice.values()) {
+            	if(CoreObjectSpec.CORE_STATUS.isAvailable(adev.getObjectStatus())) {
+	            	logger.debug("getDevicesDescription(), getting description for object id : "+adev.getAbstractObjectId());
+	            	JSONObject obj = getObjectDescription(adev);
+	                jsonDeviceList.put(obj);
+            	}
             }
             logger.debug("getDevicesDescription(), returning "+jsonDeviceList);
 
@@ -235,8 +279,10 @@ public class CHMIProxyImpl implements CHMIProxySpec {
         JSONArray jsonDeviceList = new JSONArray();
         if (abstractDevice != null && !abstractDevice.isEmpty()) {
 
-            for (CoreObjectSpec adev : abstractDevice) {
-                jsonDeviceList.put(adev.getAbstractObjectId());
+            for (CoreObjectSpec dev : abstractDevice.values()) {
+            	if(CoreObjectSpec.CORE_STATUS.isAvailable(dev.getObjectStatus())) {            	
+            		jsonDeviceList.put(dev.getAbstractObjectId());
+            	}
             }
             logger.debug("getDevicesId(), returning "+jsonDeviceList);
             return jsonDeviceList;
@@ -252,7 +298,7 @@ public class CHMIProxyImpl implements CHMIProxySpec {
 
     	CoreObjectSpec obj = getCoreDevice(objectId);
 
-        if (obj != null) {
+        if (obj != null && CoreObjectSpec.CORE_STATUS.isAvailable(obj.getObjectStatus())) {
             return obj.getDescription();
         }
 
@@ -264,14 +310,15 @@ public class CHMIProxyImpl implements CHMIProxySpec {
     public JSONArray getDevicesDescriptionFromType(String type) {
     	logger.trace("getDevicesDescriptionFromType(String type : {})",type);
 
-        Iterator<CoreObjectSpec> devices = abstractDevice.iterator();
+        Iterator<CoreObjectSpec> devices = abstractDevice.values().iterator();
 
         if (devices != null) {
             JSONArray jsonDeviceList = new JSONArray();
 
             while (devices.hasNext()) {
                 CoreObjectSpec adev = devices.next();
-                if (type.contentEquals(adev.getUserType())) {
+                if (type.contentEquals(adev.getUserType())
+                		&& CoreObjectSpec.CORE_STATUS.isAvailable(adev.getObjectStatus())) {
                     jsonDeviceList.put(getObjectDescription(adev));
                 }
             }
@@ -288,14 +335,15 @@ public class CHMIProxyImpl implements CHMIProxySpec {
     public JSONArray getDevicesIdFromType(String type) {
     	logger.trace("getDevicesDescriptionFromType(String type : {})",type);
 
-        Iterator<CoreObjectSpec> devices = abstractDevice.iterator();
+        Iterator<CoreObjectSpec> devices = abstractDevice.values().iterator();
 
         if (devices != null) {
             JSONArray jsonDeviceList = new JSONArray();
 
             while (devices.hasNext()) {
                 CoreObjectSpec adev = devices.next();
-                if (type.contentEquals(adev.getUserType())) {
+                if (type.contentEquals(adev.getUserType())
+                		&& CoreObjectSpec.CORE_STATUS.isAvailable(adev.getObjectStatus())) {
                     jsonDeviceList.put(adev.getAbstractObjectId());
                 }
             }
@@ -309,14 +357,15 @@ public class CHMIProxyImpl implements CHMIProxySpec {
 
     @Override
     public JSONObject getDeviceBehaviorFromType(String type) {
-        Iterator<CoreObjectSpec> devices = abstractDevice.iterator();
+        Iterator<CoreObjectSpec> devices = abstractDevice.values().iterator();
 
         if (devices != null) {
             // Find the first device of the corresponding type (they all share the same description)
 
             while (devices.hasNext()) {
                 CoreObjectSpec adev = devices.next();
-                if (type.contentEquals(adev.getUserType())) {
+                if (type.contentEquals(adev.getUserType())
+                		&& CoreObjectSpec.CORE_STATUS.isAvailable(adev.getObjectStatus())) {
                     return adev.getBehaviorDescription();
                 }
             }
@@ -354,6 +403,10 @@ public class CHMIProxyImpl implements CHMIProxySpec {
      * @return the complete contextual description of an object
      */
     private JSONObject getObjectDescription(CoreObjectSpec obj) {
+    	if(obj == null
+    			|| !CoreObjectSpec.CORE_STATUS.isAvailable(obj.getObjectStatus())) {
+    		return null;
+    	}
     	
         JSONObject JSONDescription = null;
         try {

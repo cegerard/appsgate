@@ -8,7 +8,7 @@
 		
 		<callback onInit="newInst" onRemove="deleteInst" />
 		
-		<relation field="abstractDevice" added="addAbstractObject" removed="removedAbstractObject" resolve="exist"/>
+		<relation interface="appsgate.lig.core.object.spec.CoreObjectSpec" added="addAbstractObject" removed="removedAbstractObject" resolve="exist" multiple="true" creation="eager"/>
 				
 		<relation push="gotNotification" multiple="true" resolve="exist" />
 
