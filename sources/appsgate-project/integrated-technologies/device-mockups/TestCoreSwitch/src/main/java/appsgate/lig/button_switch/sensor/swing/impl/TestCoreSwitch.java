@@ -216,11 +216,11 @@ CoreObjectSpec, ActionListener {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
-					configured = true;
+					configured = false;
 					buttonBlockDescription.setText("getDescription blocked");
 				} else {
 					buttonBlockDescription.setText("getDescription not blocked");
-					configured = false;
+					configured = true;
 				}
 			}
 		});
