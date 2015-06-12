@@ -32,7 +32,7 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 	
 	//Apsgate Properties for CoreObjectSpec
 	public static final String UserType = CoreFairyLightsSpec.class.getSimpleName();	
-	int coreObjectStatus = 2;
+	int coreObjectStatus = 0;
 	String coreObjectId;
 	String name;
 
@@ -69,6 +69,9 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 		this.currentColor = configuration.optString(KEY_CURRENT_COLOR, "#000000");
 		this.currentLight = configuration.optInt(KEY_CURRENT_LIGHT, 0);
 		configured = true;
+		coreObjectStatus = 2;
+		
+		stateChanged("status", null, String.valueOf(getObjectStatus()), getAbstractObjectId());		
 	}
 	
 	public void setAffectedLights(JSONArray lights) {
@@ -198,20 +201,6 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 		setCurrentColor(color);
 		setCurrentLightNumber(start);	
 	}	
-	
-	private boolean waitForConfiguration() {
-		synchronized (lock) {
-			while (!configured) {
-				try {
-					Thread.sleep(500);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-			return configured;
-		}
-	}
-
 
 	@Override
 	public JSONObject getDescription() throws JSONException {
@@ -222,11 +211,9 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 		descr.put("type", getUserType()); 
 		descr.put("status", String.valueOf(getObjectStatus()));
 
-		if(waitForConfiguration()) {		
-			descr.put(KEY_LEDS, getLightsStatus());
-			descr.put(KEY_CURRENT_LIGHT, getCurrentLightNumber());
-			descr.put(KEY_CURRENT_COLOR, getCurrentColor());	
-		}
+		descr.put(KEY_LEDS, getLightsStatus());
+		descr.put(KEY_CURRENT_LIGHT, getCurrentLightNumber());
+		descr.put(KEY_CURRENT_COLOR, getCurrentColor());	
 		logger.trace("getDescription(), returning "+descr);
 
 		return descr;
