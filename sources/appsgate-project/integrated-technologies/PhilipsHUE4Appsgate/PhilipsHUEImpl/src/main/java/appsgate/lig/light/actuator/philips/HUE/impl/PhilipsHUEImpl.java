@@ -76,20 +76,20 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
      * 0 = Off line or out of range 1 = In validation mode (test range for
      * sensor for instance) 2 = In line or connected
      */
-    private String status;
+    private int status;
 
     @Override
     public JSONObject getLightStatus() {
         try {
 
             JSONObject obj = PhilipsBridge.getLightState(lightBridgeIP, lightBridgeId);
-            status = "2";
+            status = 2;
 
             return obj;
         } catch (Exception exc) {
             logger.error("PhilipsBridge.getLightState(....), not available : " + exc);
             logger.error("Ip: {}, Id: {}", lightBridgeIP, lightBridgeId);
-            status = "1";
+            status = 1;
 
             return null;
         }
@@ -583,7 +583,7 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 
     @Override
     public int getObjectStatus() {
-        return Integer.valueOf(status);
+        return status;
     }
 
     @Override
@@ -626,10 +626,9 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
      * @param newStatus the new status value. its a string the represent a
      * integer value for the status code.
      */
-    public void statusChanged(String newStatus) {
+    public void statusChanged(int newStatus) {
         logger.info("The actuator, " + actuatorId + " status changed to " + newStatus);
-        notifyChanges("status", status, newStatus);
-        status = newStatus;
+        notifyChanges("status", String.valueOf(status), String.valueOf(newStatus));
     }
 
     /**
@@ -706,6 +705,7 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
      */
     public void newInst() {
         logger.info("New color light actuator detected, " + actuatorId);
+        getLightStatus();
     }
 
     /**

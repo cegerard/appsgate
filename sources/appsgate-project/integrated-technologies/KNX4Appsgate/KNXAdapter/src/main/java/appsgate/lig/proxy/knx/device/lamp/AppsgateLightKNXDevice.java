@@ -21,7 +21,7 @@ public class AppsgateLightKNXDevice extends CoreObjectBehavior implements CoreCo
     protected String deviceType;
 
     protected String userType;
-    protected String status;
+    protected int status;
 
     protected String lightBridgeId;
     protected String lightBridgeIP;
@@ -39,11 +39,11 @@ public class AppsgateLightKNXDevice extends CoreObjectBehavior implements CoreCo
         this.reachable=newReachable;
     }
 
-    public void statusChanged(String newStatus) {
+    public void statusChanged(int newStatus) {
 
         status = newStatus;
 
-        notifyChanges("status", status, newStatus);
+        notifyChanges("status", String.valueOf(status), String.valueOf(newStatus));
 
     }
 
