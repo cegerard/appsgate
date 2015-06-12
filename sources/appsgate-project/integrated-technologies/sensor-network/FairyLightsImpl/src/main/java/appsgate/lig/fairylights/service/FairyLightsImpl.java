@@ -338,6 +338,7 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 				&& pattern != null
 				&& pattern.length() >0){
 			patterns.put(patternName, pattern);
+			stateChanged(KEY_PATTERNS, null, getColorPatterns().toString(), getAbstractObjectId());
 		} else {
 			logger.warn("addUpdateColorPattern(), cannot add or oupdate patterns");
 		}			
@@ -350,6 +351,7 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 				&& !patternName.isEmpty()
 				&& patterns.optJSONArray(patternName) != null) {
 			patterns.remove(patternName);
+			stateChanged(KEY_PATTERNS, null, getColorPatterns().toString(), getAbstractObjectId());
 		} else {
 			logger.warn("removeColorPattern(), patternName not found or incorrect");
 		}		
