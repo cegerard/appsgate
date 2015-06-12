@@ -16,6 +16,8 @@
 	
 	<modules>
         <module>CoreTVMockup</module>
+        <module>TestCoreSwitch</module>
+        
 	    <!-- The following modules seems obsolete, deactivated by default
 	     <module>SwingSwitchSensor</module>
 		<module>SwingClock</module>

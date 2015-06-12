@@ -3,8 +3,8 @@
  	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
-    <implementation name="SwingSwitchSensorImpl"
-        classname="appsgate.lig.button_switch.sensor.swing.impl.SwingSwitchSensorImpl"
+    <implementation name="TestCoreSwitch"
+        classname="appsgate.lig.button_switch.sensor.swing.impl.TestCoreSwitch"
         specification="CoreSwitchSensorSpec" push="notifyChanges">
         <callback onInit="show" onRemove="hide" />
 

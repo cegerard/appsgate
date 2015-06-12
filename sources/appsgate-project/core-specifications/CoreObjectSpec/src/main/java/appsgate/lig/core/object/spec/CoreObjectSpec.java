@@ -44,8 +44,8 @@ public interface CoreObjectSpec {
 	 * 
 	 * 0 = Off line or out of range
 	 * 1 = In validation mode (test range for sensor for instance)
-	 * 2 = In line or connected
-	 * 
+	 * 2 = In line or connected, the core Object is available and usable
+	 * @seee CORE_STATUS for predefined statuses
 	 * @return an integer that represent the current status
 	 */
 	public int getObjectStatus();
@@ -90,6 +90,48 @@ public interface CoreObjectSpec {
 		}
     	public String getName() {
     		return name;
+    	}
+	}
+        
+        public String KEY_STATUS = "status";
+        
+        /**
+         * Constants to get predefined status
+         * Developers may specify their own status (for instance to represent a pairing mode or an error status)
+         * But if a device if available, it can be used getDescription() and methods 
+         * @author thibaud
+         */
+        public enum CORE_STATUS{
+		UNAVAILABLE(0),
+		AVAILABLE(2);
+		
+    	private int status;
+    	private CORE_STATUS(int status) {
+			this.status = status;
+		}
+    	
+    	public int getStatus() {
+    		return status;
+    	}
+    	
+    	/**
+    	 * Heper methods
+    	 * @param status
+    	 * @return
+    	 */
+    	public static boolean isAvailable(int status) {
+    		if (status == AVAILABLE.getStatus()) {
+    			return true;
+    		} else {
+    			return false;
+    		}
+    	}
+    	public static boolean isAvailable(String status) {
+    		if (String.valueOf(AVAILABLE.getStatus()).equals(status)) {
+    			return true;
+    		} else {
+    			return false;
+    		}
     	}
 	}
         
