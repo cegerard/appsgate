@@ -654,6 +654,14 @@
         "singular": "Guirlande",
         "plural": "Guirlandes"
       },
+	  "commands" : {
+		"turn-on-color" : "Allumer avec une couleur",
+	  	"turn-on-pattern" : "Allumer avec un motif",
+	  	"turn-off" : "Eteindre",
+		"pattern-set" : "Appliquer un motif",
+	  	"pattern-create" : "Créer un motif",
+	  	"pattern-manage" : "Gérer les motifs"
+	  },
 	  "composition": "Composition de la guirlande"
     },
     "type-label": "Type",

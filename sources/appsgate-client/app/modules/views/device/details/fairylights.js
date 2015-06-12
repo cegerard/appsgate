@@ -10,30 +10,27 @@ define([
 	// detailled view of a device
 	FairyLightsView = DeviceDetailsView.extend({
 		tplFairyLights: _.template(fairyLightsDetailTemplate),
+
 		events: {
-			"click button.toggle-lamp-button": "onToggleLampButton",
-			"click button.blink-lamp-button": "onBlinkLampButton",
-			"click button.toggle-actuator-button": "onToggleActuatorButton"
+			"click #dpd-colors a": "onClickDropdownColors",
+			"click #dpd-patterns a": "onClickDropdownPattenrs",
 		},
+
 		initialize: function () {
 			var self = this;
 
 			self.currentSelectedLED = [];
 
-			$.ajaxSetup({
-				cache: false
-			});
-
 			FairyLightsView.__super__.initialize.apply(self, arguments);
-
 			$.extend(self.__proto__.events, FairyLightsView.__super__.events);
 
-			dispatcher.on(this.model.get("id"), function (updatedVariableJSON) {
-				if (updatedVariableJSON.varName == "colorChanged") {
-					hexcolor = JSON.parse(updatedVariableJSON.value).rgbcolor;
-					moveColorByHex(expandHex(hexcolor));
-				}
-			});
+			// Voir si on bind cet event pour les fairy..
+			//			dispatcher.on(this.model.get("id"), function (updatedVariableJSON) {
+			//				if (updatedVariableJSON.varName == "colorChanged") {
+			//					hexcolor = JSON.parse(updatedVariableJSON.value).rgbcolor;
+			//					moveColorByHex(expandHex(hexcolor));
+			//				}
+			//			});
 
 		},
 		/**
@@ -46,24 +43,26 @@ define([
 				this.model.switchOn();
 			}
 		},
-		/**
-		 * Callback to blink a lamp
-		 *
-		 * @param e JS mouse event
-		 */
-		onBlinkLampButton: function (e) {
-			e.preventDefault();
-			var lamp = devices.get($(e.currentTarget).attr("id"));
-			// send the message to the backend
-			lamp.remoteControl("blink30", []);
-
-			return false;
-		},
 		colorchanged: function () {
 			var rgb = $("#colorbg").css("background-color");
 			this.changeColorLEDs(this.currentSelectedLED, Raphael.getRGB(rgb).hex);
 
 		},
+
+		/**
+		 * Callback on click colors in dropdown TurnOn with Color
+		 **/
+		onClickDropdownColors: function (e) {
+			e.preventDefault();
+		},
+
+		/**
+		 * Callback on click colors in dropdown TurnOn with Pattern
+		 **/
+		onClickDropdownPattenrs: function (e) {
+			e.preventDefault();
+		},
+
 		autoupdate: function () {
 			FairyLightsView.__super__.autoupdate.apply(this);
 
@@ -78,6 +77,7 @@ define([
 
 			this.buildFairylightState();
 			this.buildFairylightWidget("div-fairylight-widget", false);
+			this.updateCmdButtonVisibilty();
 
 			// translate the view
 			this.$el.i18n();
@@ -102,6 +102,7 @@ define([
 
 				this.buildFairylightWidget("div-fairylight-widget", false);
 				this.buildFairylightState();
+				this.updateCmdButtonVisibilty();
 
 				// if the lamp is on, we allow the user to pick a color
 				this.renderColorWheel();
@@ -167,9 +168,35 @@ define([
 				if (!Array.isArray(arrayLed)) {
 					arrayLed = $.parseJSON(arrayLed);
 				}
-				moveColorByHex(expandHex(arrayLed[0].color));
+				// Initialize widget to the color of the first LED 
+				if (arrayLed[0].color) {
+					// Check if first led has color before
+					moveColorByHex(expandHex(arrayLed[0].color));
+				} else {
+					moveColorByHex(expandHex("#ffffff"));
+				}
 			});
 
+		},
+
+		/**
+		 * Method to check if the fairylight is ON. It is if one LED is not in black
+		 * @return the first LED which is not in black if there is one, undefined otherwise
+		 **/
+		isFairyLightOn: function () {
+			// Get the Led array
+			var arrayLed = this.model.get("leds");
+			if (!Array.isArray(arrayLed)) {
+				arrayLed = $.parseJSON(arrayLed);
+			}
+
+			// Function to check one led
+			var functionIsLEDOn = function (led) {
+				return led.color != "#000000";
+			};
+
+			// If find one led not in black return it
+			return _.find(arrayLed, functionIsLEDOn);
 		},
 
 		/**
@@ -178,22 +205,38 @@ define([
 		buildFairylightState: function () {
 			var self = this;
 
-			var arrayLed = self.model.get("leds");
-			if (!Array.isArray(arrayLed)) {
-				arrayLed = $.parseJSON(arrayLed);
-			}
-
-			var functionIsLEDOn = function (led) {
-				return led.color != "#000000";
-			};
-
 			var state = ""
-			if (_.find(arrayLed, functionIsLEDOn)) {
+
+			if (self.isFairyLightOn()) {
 				state = "<span class='label label-yellow' data-i18n='devices.lamp.status.turnedOn'></span>";
 			} else {
 				state = "<span class='label label-default' data-i18n='devices.lamp.status.turnedOff'></span>";
 			}
 			this.$el.find("#div-fairylight-state").html(state);
+		},
+
+		/**
+		 * Method to update the state of the command buttons
+		 **/
+		updateCmdButtonVisibilty: function () {
+			var self = this;
+			if (self.isFairyLightOn()) {
+				$("#btn-cmd-turnon-color").hide();
+				$("#btn-cmd-turnon-pattern").hide();
+				$("#btn-cmd-pattern-set").show();
+				$("#btn-cmd-turnoff").show();
+
+				// Disabled button 'Set pattern' if no pattern available
+				$("#btn-cmd-pattern-set").prop("disabled", function () {
+					return false;
+				})
+			} else {
+				$("#btn-cmd-turnon-color").show();
+				$("#btn-cmd-turnon-pattern").show();
+				$("#btn-cmd-pattern-set").hide();
+				$("#btn-cmd-turnoff").hide();
+			}
+
 		},
 
 		buildFairylightWidget: function (idElementToBuild, isEditable) {
@@ -232,7 +275,6 @@ define([
 				.attr("cy", height / 2)
 				.attr("r", circleWidthFinal / 2)
 				.on("click", function (led) {
-					//					self.model.setOneColorLight(led.id, "#ffffff");
 					var ledInCurrentSelected = _.findWhere(self.currentSelectedLED, {
 						id: led.id
 					});

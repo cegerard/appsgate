@@ -654,6 +654,14 @@
         "plural": "Fairy Lights",
         "singular": "Fairy Lights"
       },
+	  "commands" : {
+		"turn-on-color" : "Turn On with color",
+	  	"turn-on-pattern" : "Turn On with pattern",
+	  	"turn-off" : "Turn Off",
+		"pattern-set" : "Apply pattern",
+	  	"pattern-create" : "Create pattern",
+	  	"pattern-manage" : "Manage patterns"
+	  },
 	  "composition": "Fairy lights composition"
     },
     "type-label": "Type",
