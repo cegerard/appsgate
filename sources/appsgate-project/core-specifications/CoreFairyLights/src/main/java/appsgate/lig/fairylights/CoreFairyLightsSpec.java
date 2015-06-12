@@ -131,6 +131,26 @@ public interface CoreFairyLightsSpec {
 	 */
 	JSONArray setColorPattern(JSONArray pattern);	
 	
+	/**
+	 * Apply a previously added color pattern upon its name
+	 * @param patternName
+	 * @return
+	 */
+	JSONArray setColorPattern(String patternName);	
+
+
+	/**
+	 * Add or update an existing pattern (patternName cannot be null)
+	 */
+	void addUpdateColorPattern(String patternName, JSONArray pattern);	
+	void removeColorPattern(String patternName);	
+	
+	/**
+	 * gets All the color patten currently saved
+	 * @return
+	 */
+	JSONObject getColorPatterns();	
+
 
 	/**
 	 * Small animation, beginning with starting led number to ending led number

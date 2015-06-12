@@ -42,6 +42,8 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 	public static final String KEY_ID = "id";
 	public static final String KEY_CURRENT_LIGHT = "currentLight";
 	public static final String KEY_CURRENT_COLOR = "currentColor";
+	public static final String KEY_PATTERNS = "patterns";
+
 	
 	public static final String IMPL_NAME = "FairyLightsImpl";
 	
@@ -57,6 +59,7 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 	public FairyLightsImpl() {
 		logger.trace("FairyLightsImpl(), default constructor");
 		currentLights = new HashSet<Integer>();
+		patterns = new JSONObject();
 	}
 	
 	LightManagement lightManager;
@@ -70,6 +73,14 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 		this.currentLight = configuration.optInt(KEY_CURRENT_LIGHT, 0);
 		configured = true;
 		coreObjectStatus = 2;
+		
+		if (configuration.getJSONObject(KEY_PATTERNS) != null) {
+			for(Object patternName : configuration.getJSONObject(KEY_PATTERNS).keySet()) {
+				if(configuration.optJSONArray(patternName.toString()) != null) {
+					patterns.put(patternName.toString(), configuration.getJSONArray(patternName.toString()));
+				}
+			}
+		}
 		
 		stateChanged("status", null, String.valueOf(getObjectStatus()), getAbstractObjectId());		
 	}
@@ -164,29 +175,6 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 	}
 
 	@Override
-	public JSONArray setColorPattern(JSONArray pattern) {
-		logger.trace("setColorPattern(JSONObject pattern : {})", pattern);
-		JSONArray response = lightManager.setColorPattern(getAbstractObjectId(), pattern);
-		
-		if(response != null
-				&& response.length()>0
-				&& response.getJSONObject(response.length()-1) != null
-				&& response.getJSONObject(response.length()-1).optString(KEY_COLOR) != null
-				&& response.getJSONObject(response.length()-1).optInt(KEY_ID, -1) >= 0) {
-
-			logger.trace("setColorPattern(....), pattern successfully applied");
-			stateChanged(KEY_LEDS, null, response.toString(), getAbstractObjectId());
-			setCurrentColor(response.getJSONObject(response.length()-1).getString(KEY_COLOR));
-			setCurrentLightNumber(response.getJSONObject(response.length()-1).getInt(KEY_ID));	
-			return response; 
-		} else {
-			logger.warn("setColorPattern(....), problem applying pattern");
-			return null;
-		}
-
-	}
-
-	@Override
 	public void singleChaserAnimation(int start, int end, String color, int tail) {
 		logger.trace("singleChaserAnimation(int start : {}, int end : {}, String color : {}, int tail: {})", start, end, color, tail);
 		lightManager.singleChaserAnimation(getAbstractObjectId(), start, end, color, tail);
@@ -214,6 +202,8 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 		descr.put(KEY_LEDS, getLightsStatus());
 		descr.put(KEY_CURRENT_LIGHT, getCurrentLightNumber());
 		descr.put(KEY_CURRENT_COLOR, getCurrentColor());	
+		descr.put(KEY_PATTERNS, getColorPatterns());	
+
 		logger.trace("getDescription(), returning "+descr);
 
 		return descr;
@@ -299,5 +289,74 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 				i++;
 			}	
 		}
+	}
+	
+	@Override
+	public JSONArray setColorPattern(JSONArray pattern) {
+		logger.trace("setColorPattern(JSONObject pattern : {})", pattern);
+		JSONArray response = lightManager.setColorPattern(getAbstractObjectId(), pattern);
+		
+		if(response != null
+				&& response.length()>0
+				&& response.getJSONObject(response.length()-1) != null
+				&& response.getJSONObject(response.length()-1).optString(KEY_COLOR) != null
+				&& response.getJSONObject(response.length()-1).optInt(KEY_ID, -1) >= 0) {
+
+			logger.trace("setColorPattern(....), pattern successfully applied");
+			stateChanged(KEY_LEDS, null, response.toString(), getAbstractObjectId());
+			setCurrentColor(response.getJSONObject(response.length()-1).getString(KEY_COLOR));
+			setCurrentLightNumber(response.getJSONObject(response.length()-1).getInt(KEY_ID));	
+			return response; 
+		} else {
+			logger.warn("setColorPattern(....), problem applying pattern");
+			return null;
+		}
+
+	}
+	
+	JSONObject patterns;
+
+	@Override
+	public JSONArray setColorPattern(String patternName) {
+		logger.trace("setColorPattern(String patternName : {})", patternName);
+		if(patternName != null
+				&& !patternName.isEmpty()
+				&& patterns.optJSONArray(patternName) != null) {
+			return setColorPattern(patterns.getJSONArray(patternName));
+		} else {
+			logger.warn("setColorPattern(), patternName not found or incorrect");
+			return null;
+		}	
+	}
+
+	@Override
+	public void addUpdateColorPattern(String patternName, JSONArray pattern) {
+		logger.trace("addUpdateColorPattern(String patternName : {}, JSONArray pattern : {})",
+				patternName, pattern);
+		if(patternName != null
+				&& !patternName.isEmpty()
+				&& pattern != null
+				&& pattern.length() >0){
+			patterns.put(patternName, pattern);
+		} else {
+			logger.warn("addUpdateColorPattern(), cannot add or oupdate patterns");
+		}			
+	}
+
+	@Override
+	public void removeColorPattern(String patternName) {
+		logger.trace("removeColorPattern(String patternName : {})", patternName);
+		if(patternName != null
+				&& !patternName.isEmpty()
+				&& patterns.optJSONArray(patternName) != null) {
+			patterns.remove(patternName);
+		} else {
+			logger.warn("removeColorPattern(), patternName not found or incorrect");
+		}		
+	}
+
+	@Override
+	public JSONObject getColorPatterns() {
+		return patterns;
 	}
 }
