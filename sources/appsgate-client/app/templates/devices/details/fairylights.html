@@ -6,16 +6,29 @@
 
 <li class="list-group-item" style="padding-top:10px;height:50px;">
 	<strong data-i18n="devices.controls-label"></strong>
-	<div class="pull-right">
-		<button type="button" id="<%= device.get('id') %>" class="btn btn-info btn-sm blink-lamp-button" data-i18n="devices.lamp.action.blink"></button>
 
-		<button id="lamp-button" type="button" class="btn btn-info btn-sm toggle-lamp-button">
-			<% if (device.get( "state")==="true" || device.get( "state")===true) { %>
-				<span data-i18n="devices.lamp.action.turnOff"></span>
-				<% } else { %>
-					<span data-i18n="devices.lamp.action.turnOn"></span>
-					<% } %>
-		</button>
+	<div class="pull-right">
+
+		<div class="btn-group">
+			<button id="btn-cmd-turnon-color" type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown"><span data-i18n="devices.fairylights.commands.turn-on-color"></span> <span class="caret"></span>
+			</button>
+			<ul id="dpd-colors" class="dropdown-menu" role="menu">
+				<li><a href="#">Color 1</a>
+				</li>
+			</ul>
+		</div>
+		<div class="btn-group">
+			<button id="btn-cmd-turnon-pattern" type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown"><span data-i18n="devices.fairylights.commands.turn-on-pattern"></span> <span class="caret"></span>
+			</button>
+			<ul id="dpd-patterns" class="dropdown-menu" role="menu">
+				<li><a href="#">Pattern 1</a>
+				</li>
+			</ul>
+		</div>
+		<button id="btn-cmd-turnoff" type="button" class="btn btn-info btn-sm" data-i18n="devices.fairylights.commands.turn-off"></button>
+		<button id="btn-cmd-pattern-set" type="button" class="btn btn-info btn-sm" data-i18n="devices.fairylights.commands.pattern-set"></button>
+		<button id="btn-cmd-pattern-create" type="button" class="btn btn-info btn-sm" data-i18n="devices.fairylights.commands.pattern-create"></button>
+		<button id="btn-cmd-pattern-manage" type="button" class="btn btn-info btn-sm" data-i18n="devices.fairylights.commands.pattern-manage"></button>
 	</div>
 </li>
 

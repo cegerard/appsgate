@@ -327,6 +327,8 @@ define([
 			nodesLED.enter()
 				.append("circle")
 				.attr("class", "nodeLed")
+				.attr("stroke-width", 1)
+				.attr("stroke", "black")
 				.attr("cx", function (n) {
 					var index = _.indexOf(arrayLed, n);
 					return (spacement / 2) + (circleWidthFinal / 2) + ((spacement / 2) + circleWidthFinal) * index;
