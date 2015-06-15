@@ -457,8 +457,8 @@ define([
         var counterSet = $.map(this.model.get("nodesCounter"), function(value,index){return [[index, value]];});
         if(counterSet.length > 0){
           counterSet.forEach(function(nodeCounter) {
-            $(input).find("#progress-counter-" + nodeCounter[0]).text(getTimestamps(nodeCounter[1]));
-            $(input).find("#progress-" + nodeCounter[0]).attr("ts", nodeCounter[1]);
+            $(input).find("#progress-counter-" + nodeCounter[0]).text(nodeCounter[1].c);
+            $(input).find("#progress-" + nodeCounter[0]).attr("ts", nodeCounter[1].t);
           });
         }
 
@@ -498,7 +498,7 @@ define([
       showTimestamps : function(e) {
         self = this;
         var ts = $(e.currentTarget).attr("ts");
-        $("#bubbleModal").find(".modal-body").html(this.tplTimestamps({times : ts.split(",")}));
+        $("#bubbleModal").find(".modal-body").html(this.tplTimestamps({times : ts}));
         $("#bubbleModal").modal("show");
 
       },
@@ -552,6 +552,3 @@ define([
     });
     return ProgramReaderView;
   });
-function getTimestamps(array) {
-  return array.length;
-}

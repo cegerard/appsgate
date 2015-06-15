@@ -13,7 +13,7 @@
 		
 		<!-- device client meta data -->
 		<definition name="userType" 		  type="string" />
-		<definition name="status" 			  type="string" />
+		<definition name="status" 			  type="int" />
 		
 		<!-- device meta data -->
 		<definition name="lightBridgeId" 	   type="string"  />

@@ -1,7 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.components;
 
 import appsgate.lig.ehmi.spec.SpokObject;
-import java.util.ArrayList;
 import java.util.HashMap;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,7 +12,7 @@ import org.json.JSONObject;
  */
 public final class NodeCounter implements SpokObject {
 
-    private HashMap<String, ArrayList<Long>> map;
+    private HashMap<String, Pair> map;
 
     /**
      * Constructor
@@ -27,7 +26,8 @@ public final class NodeCounter implements SpokObject {
      * Method that reinit the map
      */
     public void reinit() {
-        map = new HashMap<String, ArrayList<Long>>();
+        map = new HashMap<>();
+
     }
 
     @Override
@@ -36,7 +36,7 @@ public final class NodeCounter implements SpokObject {
 
         for (String k : map.keySet()) {
             try {
-                ret.put(k, new JSONArray(map.get(k)));
+                ret.put(k, map.get(k).getJSONDescription());
             } catch (JSONException ex) {
             }
         }
@@ -58,11 +58,7 @@ public final class NodeCounter implements SpokObject {
      * @return
      */
     public Integer getCount() {
-        Integer total = 0;
-        for (ArrayList<Long> l : map.values()) {
-            total += l.size();
-        }
-        return total;
+        return map.size();
     }
 
     /**
@@ -72,7 +68,7 @@ public final class NodeCounter implements SpokObject {
      */
     public Integer getCount(String nodeid) {
         if (map.containsKey(nodeid)) {
-            return map.get(nodeid).size();
+            return map.get(nodeid).getCount();
         }
         return 0;
     }
@@ -86,14 +82,61 @@ public final class NodeCounter implements SpokObject {
         if (nodeId == null) {
             return;
         }
-        ArrayList<Long> array;
+        Pair array;
         if (map.containsKey(nodeId)) {
             array = map.get(nodeId);
+            array.increment(timestamp);
         } else {
-            array = new ArrayList<Long>();
+            array = new Pair(timestamp);
         }
-        array.add(timestamp);
         map.put(nodeId, array);
     }
 
+    private class Pair {
+
+        private int count = 0;
+        private Long timestamp;
+
+        /**
+         * Constructor
+         * @param t 
+         */
+        private Pair(Long t) {
+            count = 1;
+            timestamp = t;
+        }
+        
+        /**
+         * increment the pair with a new timestamp
+         * @param t 
+         */
+        private void increment(Long t) {
+            timestamp = t;
+            count++;
+        }
+        
+        /**
+         *
+         * @return the count of this node
+         */
+        private Integer getCount() {
+            return count;
+        }
+
+        /**
+         *
+         * @return
+         */
+        private JSONObject getJSONDescription() {
+            JSONObject o = new JSONObject();
+            try {
+                o.put("c", count);
+                o.put("t", timestamp);
+            } catch (JSONException ex) {
+                // never thrown
+            }
+            return o;
+        }
+
+    }
 }

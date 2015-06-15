@@ -27,7 +27,7 @@
         <!-- device client meta data -->
         <definition name="userType" type="string" default="7"
                     field="userType" />
-        <definition name="status" type="string" default="2" field="status"
+        <definition name="status" type="int" default="2" field="status"
                     method="statusChanged" />
 
     </implementation>
