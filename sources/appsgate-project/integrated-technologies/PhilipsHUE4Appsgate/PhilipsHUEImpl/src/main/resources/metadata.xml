@@ -9,7 +9,7 @@
 		<callback onInit="newInst" onRemove="deleteInst" />
 
 
- 		<relation field="PhilipsBridge" specification="AppsgatePhilipsHUEAdapterSpec" resolve="external" />
+ 		<relation field="PhilipsBridge" specification="AppsgatePhilipsHUEAdapterSpec" resolve="external" fail="wait" />
 
 		<!-- device kernel meta data -->
 		<definition name="deviceName" type="string" default="Unknown"

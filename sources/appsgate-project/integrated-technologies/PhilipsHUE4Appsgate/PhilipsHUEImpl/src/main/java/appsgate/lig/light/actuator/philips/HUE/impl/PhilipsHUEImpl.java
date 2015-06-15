@@ -83,14 +83,20 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
         try {
 
             JSONObject obj = PhilipsBridge.getLightState(lightBridgeIP, lightBridgeId);
-            status = 2;
-
+            if(status != 2 ) {
+            	int old = status;
+	            status = 2;
+	            notifyChanges("status", String.valueOf(old), String.valueOf(status));
+            }
             return obj;
         } catch (Exception exc) {
             logger.error("PhilipsBridge.getLightState(....), not available : " + exc);
             logger.error("Ip: {}, Id: {}", lightBridgeIP, lightBridgeId);
-            status = 1;
-
+            if(status != 1 ) {
+            	int old = status;            	
+	            status = 1;
+	            notifyChanges("status", String.valueOf(old), String.valueOf(status));
+            }
             return null;
         }
     }
@@ -628,7 +634,6 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
      */
     public void statusChanged(int newStatus) {
         logger.info("The actuator, " + actuatorId + " status changed to " + newStatus);
-        notifyChanges("status", String.valueOf(status), String.valueOf(newStatus));
     }
 
     /**
@@ -820,6 +825,14 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
      * @param bridge 
      */
     protected void setBridge(PhilipsHUEServices bridge) {
-        PhilipsBridge = bridge;
+    	logger.trace("setBridge(PhilipsHUEServices bridge : {}", bridge);
+    	PhilipsBridge = bridge;
+    	getLightStatus();
+    }
+    
+    private void unsetBridge() {
+    	logger.trace("unsetBridge()");
+    	PhilipsBridge = null;
+    	getLightStatus();
     }
 }

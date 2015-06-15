@@ -153,6 +153,7 @@ public class CHMIProxyImpl implements CHMIProxySpec {
                 return;
             }
             String deviceId = rmObj.getAbstractObjectId();
+            logger.debug("removedAbstractObject(), device Id : " + deviceId);
             abstractDevice.remove(deviceId);
             
             
@@ -161,7 +162,7 @@ public class CHMIProxyImpl implements CHMIProxySpec {
             } catch (JSONException e) {
                 logger.error(e.getMessage());
             }
-
+            logger.debug("removedAbstractObject(), coreType: {}, user Type: {} ",rmObj.getCoreType(), rmObj.getUserType());
             notifyAllUpdatesListeners(UPDATE_TYPE.REMOVE, rmObj.getCoreType(), deviceId, rmObj.getUserType(), null, null);
         }
     }
