@@ -662,6 +662,15 @@
 	  	"pattern-create" : "Créer un motif",
 	  	"pattern-manage" : "Gérer les motifs"
 	  },
+	  "modal" : {
+	  	"new" : {
+		  "title" : "Nouveau motif",
+		  "input-name" : "Entrez le nom du nouveau motif"   
+		},
+		"manage" : {
+		  "title" : "Gestion des motifs"
+		}
+	  },
 	  "composition": "Composition de la guirlande"
     },
     "type-label": "Type",

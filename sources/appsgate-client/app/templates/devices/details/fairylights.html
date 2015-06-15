@@ -27,8 +27,12 @@
 		</div>
 		<button id="btn-cmd-turnoff" type="button" class="btn btn-info btn-sm" data-i18n="devices.fairylights.commands.turn-off"></button>
 		<button id="btn-cmd-pattern-set" type="button" class="btn btn-info btn-sm" data-i18n="devices.fairylights.commands.pattern-set"></button>
-		<button id="btn-cmd-pattern-create" type="button" class="btn btn-info btn-sm" data-i18n="devices.fairylights.commands.pattern-create"></button>
-		<button id="btn-cmd-pattern-manage" type="button" class="btn btn-info btn-sm" data-i18n="devices.fairylights.commands.pattern-manage"></button>
+		<a data-toggle="modal" href="#modal-create-pattern" class="btn btn-info btn-sm">
+			<span data-i18n="devices.fairylights.commands.pattern-create"></span>
+		</a>
+		<a data-toggle="modal" href="#modal-manage-pattern" class="btn btn-info btn-sm">
+			<span data-i18n="devices.fairylights.commands.pattern-manage"></span>
+		</a>
 	</div>
 </li>
 
@@ -65,3 +69,58 @@
 		</div>
 	</div>
 </li>
+
+
+<!-- MODALS Create/Manage Pattern-->
+
+<div id="modal-create-pattern" class="modal fade" tabindex="-1" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" data-i18n="devices.fairylights.modal.new.title"></h4>
+			</div>
+
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-xs-offset-1 col-xs-10">
+						<input type="text" class="form-control" name="inputValue" id="input-new-pattern" placeholder="<%= $.i18n.t('devices.fairylights.modal.new.input-name') %>" autocomplete="off">
+					</div>
+
+					<div class="col-xs-12  voffset-top-10">
+					</div>
+				</div>
+			</div>
+
+			<div class="modal-footer">
+				<button class="btn btn-default cancel-button" data-dismiss="modal" data-i18n="form.cancel-button"></button>
+				<button class="btn btn-primary valid-button" data-i18n="form.valid-button"></button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="modal-maange-pattern" class="modal fade" tabindex="-1" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" data-i18n="devices.fairylights.modal.new.title"></h4>
+			</div>
+
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-xs-offset-1 col-xs-10">
+						<input type="text" class="form-control" name="inputValue" id="input-new-pattern" placeholder="<%= $.i18n.t('devices.fairylights.modal.new.input-name') %>" autocomplete="off">
+					</div>
+
+					<div class="col-xs-12  voffset-top-10">
+					</div>
+				</div>
+			</div>
+
+			<div class="modal-footer">
+				<button class="btn btn-default cancel-button" data-dismiss="modal" data-i18n="form.cancel-button"></button>
+				<button class="btn btn-primary valid-button" data-i18n="form.valid-button"></button>
+			</div>
+		</div>
+	</div>
+</div>
