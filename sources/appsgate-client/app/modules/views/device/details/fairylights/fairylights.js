@@ -2,9 +2,11 @@ define([
   "app",
   "raphael",
   "views/device/details/details",
-  "text!templates/devices/details/fairylights.html",
+  "views/device/details/fairylights/fairylightsModalCreation",
+  "views/device/details/fairylights/fairylightsModalManage",
+  "text!templates/devices/details/fairylights/fairylights.html",
   "colorwidget"
-  ], function (App, Raphael, DeviceDetailsView, fairyLightsDetailTemplate, colorWidgetJs) {
+  ], function (App, Raphael, DeviceDetailsView, ModalCreationView, ModalManageView, fairyLightsDetailTemplate, colorWidgetJs) {
 
 	var FairyLightsView = {};
 	// detailled view of a device
@@ -14,6 +16,10 @@ define([
 		events: {
 			"click #dpd-colors a": "onClickDropdownColors",
 			"click #dpd-patterns a": "onClickDropdownPattenrs",
+			"show.bs.modal #modal-create-pattern": "onShowCreateModal",
+			"shown.bs.modal #modal-create-pattern": "onCreateModalShown",
+			"hidden.bs.modal #modal-create-pattern": "onCreateModalHidden",
+			"show.bs.modal #modal-manage-pattern": "onShowManageModal",
 		},
 
 		initialize: function () {
@@ -62,6 +68,57 @@ define([
 		onClickDropdownPattenrs: function (e) {
 			e.preventDefault();
 		},
+
+		/**
+		 * Callback when the create modal is shown. Build it before show. Do not build the fairylights widget now, because elements width are not known.
+		 **/
+		onShowCreateModal: function () {
+			var self = this;
+			
+			self.currentModal = new ModalCreationView({
+				el: "#modal-create-pattern",
+				model: self.model
+			});
+			
+			self.currentModal.render();
+		},
+
+		/**
+		 * Callback when the create modal has been shown. Build the fairylights widget at this moment because elements width have been calculated.
+		 **/
+		onCreateModalShown: function () {
+			this.currentModal.buildFairylightWidget("div-fairylight-widget-creation");
+		},
+
+		/**
+		 * Callback when the create modal has been hidden. We destroy the modal contents.
+		 **/
+		onCreateModalHidden: function () {
+			$("#modal-create-pattern").empty();
+			this.buildFairylightWidget("div-fairylight-widget", false);
+		},
+
+		/**
+		 * Callback when the manage modal is shown. Build it before show.
+		 **/
+		onShowManageModal: function () {
+
+		},
+
+		/**
+		 * Callback when the manage modal has been shown. Build the fairylights widget at this moment because elements width have been calculated.
+		 **/
+		onManageModalShown: function () {
+			this.currentModal.buildFairylightWidget("div-fairylight-widget-manage", false);
+		},
+
+		/**
+		 * Callback when the manage modal has been hidden. We destroy the modal contents.
+		 **/
+		onManageModalHidden: function () {
+			$("#modal-manage-pattern").empty();
+		},
+
 
 		autoupdate: function () {
 			FairyLightsView.__super__.autoupdate.apply(this);
@@ -134,14 +191,14 @@ define([
 					//a.preventDefault();
 					$mousebutton = 1;
 					$moving = "colors";
-					moveColor(a);
+					moveColor(a, "");
 					self.colorchanged();
 				}
 				if ($(a.target).parents().andSelf().hasClass("picker-hues")) {
 					//a.preventDefault();
 					$mousebutton = 1;
 					$moving = "hues";
-					moveHue(a);
+					moveHue(a, "");
 					self.colorchanged();
 				}
 			}).bind("mouseup", function (a) {
@@ -154,9 +211,9 @@ define([
 				//a.preventDefault();
 				if ($mousebutton == 1) {
 					if ($moving == "colors") {
-						moveColor(a);
+						moveColor(a, "");
 					} else if ($moving == "hues") {
-						moveHue(a);
+						moveHue(a, "");
 					}
 					self.colorchanged();
 				}
@@ -171,9 +228,9 @@ define([
 				// Initialize widget to the color of the first LED 
 				if (arrayLed[0].color) {
 					// Check if first led has color before
-					moveColorByHex(expandHex(arrayLed[0].color));
+					moveColorByHex(expandHex(arrayLed[0].color, ""));
 				} else {
-					moveColorByHex(expandHex("#ffffff"));
+					moveColorByHex(expandHex("#ffffff"), "");
 				}
 			});
 
@@ -225,6 +282,7 @@ define([
 				$("#btn-cmd-turnon-pattern").hide();
 				$("#btn-cmd-pattern-set").show();
 				$("#btn-cmd-turnoff").show();
+
 
 				// Disabled button 'Set pattern' if no pattern available
 				$("#btn-cmd-pattern-set").prop("disabled", function () {

@@ -668,8 +668,9 @@
 		  "input-name" : "Entrez le nom du nouveau motif"   
 		},
 		"manage" : {
-		  "title" : "Gestion des motifs"
-		}
+		  "title" : "Gestion des motifs",
+		  "label-select" : "Choisissez un motif"
+ 		}
 	  },
 	  "composition": "Composition de la guirlande"
     },

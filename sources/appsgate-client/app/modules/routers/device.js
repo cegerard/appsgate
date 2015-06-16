@@ -14,7 +14,7 @@ define([
   "views/device/details/temperature",
   "views/device/details/co2",
   "views/device/details/mediaplayer",
-  "views/device/details/fairylights",
+  "views/device/details/fairylights/fairylights",
     "views/device/details/coretv"
   ], function(App, DeviceMenuView, DevicesByTypeView, ActuatorView, ArdView, ContactSensorView,
     DomiCubeView, LightSensorView, CardSwitchView, PhillipsHueView, SmartPlugView, SwitchView, TemperatureSensorView, CO2SensorView, MediaPlayerView, FairyLightsView, CoreTVView) {

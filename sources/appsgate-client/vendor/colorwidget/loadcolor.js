@@ -16,14 +16,16 @@ function insertColorByHex(c) {
         })
     }
 }
-function moveColor(e) {
+function moveColor(e, optClassSelector) {
     var c = {x: e.pageX, y: e.pageY};
+	var classSelector = optClassSelector || "";
+	
     if (e.originalEvent.changedTouches) {
         c.x = e.originalEvent.changedTouches[0].pageX;
         c.y = e.originalEvent.changedTouches[0].pageY
     }
-    c.x = c.x - $(".picker-colors").offset().left - 5;
-    c.y = c.y - $(".picker-colors").offset().top - 5;
+    c.x = c.x - $(".picker-colors" + classSelector).offset().left - 5;
+    c.y = c.y - $(".picker-colors" + classSelector).offset().top - 5;
     if (c.x <= -5) {
         c.x = -5
     }
@@ -36,7 +38,7 @@ function moveColor(e) {
     if (c.y >= 354) {
         c.y = 354
     }
-    $(".picker-colorPicker").css("left", c.x).css("top", c.y).show();
+    $(".picker-colorPicker" + classSelector).css("left", c.x).css("top", c.y).show();
     var d = Math.round((c.x + 5) * 0.279167);
     if (d < 0) {
         d = 0
@@ -53,21 +55,23 @@ function moveColor(e) {
     }
     colorHSB.s = d;
     colorHSB.b = a;
-    setColor(colorHSB, true)
+    setColor(colorHSB, true, null, classSelector)
 }
-function moveHue(d) {
+function moveHue(d, optClassSelector) {
     var a = {y: d.pageY};
+	var classSelector = optClassSelector || "";
+	
     if (d.originalEvent.changedTouches) {
         a.y = d.originalEvent.changedTouches[0].pageY
     }
-    a.y = a.y - $(".picker-colors").offset().top - 1;
+    a.y = a.y - $(".picker-colors" + classSelector).offset().top - 1;
     if (a.y <= -1) {
         a.y = -1
     }
     if (a.y >= 359) {
         a.y = 359
     }
-    $(".picker-huePicker").css("top", a.y).show();
+    $(".picker-huePicker" + classSelector).css("top", a.y).show();
     var c = Math.round((360 - a.y - 1) * 1);
     if (c < 0) {
         c = 0
@@ -76,14 +80,16 @@ function moveHue(d) {
         c = 360
     }
     colorHSB.h = c;
-    setColor(colorHSB, true)
+    setColor(colorHSB, true, null, classSelector)
 }
-var setColor = function (a, j, c) {
+var setColor = function (a, j, c, optClassSelector) {
     var i = hsb2hex(a);
     var e = hsb2rgb(a);
     var f = rgb2cmyk(e.r, e.g, e.b);
     var d = rgb2hsv(e.r, e.g, e.b);
-    $("#colorbg").css("backgroundColor", "#" + i);
+	var classSelector = optClassSelector || "";
+	
+    $("#colorbg" + classSelector).css("backgroundColor", "#" + i);
     switch (c) {
         case"HEX":
             $("#colorR").val(e.r);
@@ -140,7 +146,7 @@ var setColor = function (a, j, c) {
             $("#colorV").val(Math.round(d.v));
             break
     }
-    $(".picker-colors").css("backgroundColor", "#" + hsb2hex({h: a.h, s: 100, b: 100}));
+    $(".picker-colors" + classSelector).css("backgroundColor", "#" + hsb2hex({h: a.h, s: 100, b: 100}));
     colorHSB = a;
 };
 var numeralHEX = function (a) {
@@ -224,15 +230,17 @@ var numeral = function (c, a, d) {
         }
     })
 };
-var moveColorByHex = function (f, e) {
+var moveColorByHex = function (f, e, optClassSelector) {
     var c = hex2hsb(expandHex(f));
     var a = Math.round((c.s) / 0.279167) - 5;
     var i = Math.round((100 - c.b) / 0.279167) - 5;
     var d = 360 - 1 - Math.round(c.h / 1);
-    $(".picker-colorPicker").css("left", a).css("top", i).show();
-    $(".picker-huePicker").css("top", d).show();
-    $(".picker-colors").css("backgroundColor", "#" + hsb2hex({h: c.h, s: 100, b: 100}));
-    setColor(c, true, e)
+	var classSelector = optClassSelector || "";
+	
+    $(".picker-colorPicker" + classSelector).css("left", a).css("top", i).show();
+    $(".picker-huePicker" + classSelector).css("top", d).show();
+    $(".picker-colors" + classSelector).css("backgroundColor", "#" + hsb2hex({h: c.h, s: 100, b: 100}));
+    setColor(c, true, e, classSelector)
 };
 var cleanHex = function (a) {
     return a.replace(/[^A-F0-9]/ig, "")
