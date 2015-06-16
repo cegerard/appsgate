@@ -48,9 +48,9 @@ define([
           name: name
         }).length > 0);
 
-      this.set("name", name);
+      this.set("name", name, {silent : true});
       this.set("hidden", false);
-      this.sendName();
+      //this.sendName();
     },
     /**
      * Send the name of the device to the server

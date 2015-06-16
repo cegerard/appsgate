@@ -8,6 +8,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -77,7 +78,7 @@ public class CHMIProxyImpl implements CHMIProxySpec {
      * Called by APAM when an instance of this implementation is created
      */
     public void newInst() {
-    	abstractDevice = new HashMap<String, CoreObjectSpec>();
+    	abstractDevice = new ConcurrentHashMap<String, CoreObjectSpec>();
 
         updatesListenerList = new ArrayList<CoreUpdatesListener>();
         eventsListenerList = new ArrayList<CoreEventsListener>();
@@ -448,7 +449,7 @@ public class CHMIProxyImpl implements CHMIProxySpec {
 	public boolean CoreEventsUnsubscribe(CoreEventsListener coreEventsListener) {
 		logger.trace("CoreEventsUnsubscribe(CoreEventsListener coreEventsListener : "
 				+coreEventsListener+")");
-		return eventsListenerList.add(coreEventsListener);
+		return eventsListenerList.remove(coreEventsListener);
 	}
 	
 	/**
