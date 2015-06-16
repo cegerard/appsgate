@@ -153,7 +153,7 @@ define([
 				led.color = self.initialColor;
 			});
 		},
-
+		
 		buildFairylightWidget: function (idElementToBuild) {
 			var self = this;
 

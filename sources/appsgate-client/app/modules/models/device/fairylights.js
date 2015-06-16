@@ -182,6 +182,14 @@ define([
 			return btn;
 		},
 
+		setAllColorLight: function (color) {
+			this.remoteControl("setAllColorLight", [{
+				"type": "String",
+				"value": color,
+				"name": "color"
+			}]);
+		},
+
 		setOneColorLight: function (lightNumber, color) {
 			this.remoteControl("setOneColorLight", [{
 				"type": "int",
@@ -208,6 +216,14 @@ define([
 
 		removePattern: function (patternName) {
 			this.remoteControl("removeColorPattern", [{
+				"type": "String",
+				"value": patternName,
+				"name": "patternName"
+			}]);
+		},
+
+		setPattern: function (patternName) {
+			this.remoteControl("setColorPattern", [{
 				"type": "String",
 				"value": patternName,
 				"name": "patternName"

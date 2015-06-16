@@ -20,6 +20,8 @@ define([
 			"shown.bs.modal #modal-create-pattern": "onCreateModalShown",
 			"hidden.bs.modal #modal-create-pattern": "onCreateModalHidden",
 			"show.bs.modal #modal-manage-pattern": "onShowManageModal",
+
+			"click #btn-cmd-turnoff": "onClickTurnOff"
 		},
 
 		initialize: function () {
@@ -39,16 +41,7 @@ define([
 			//			});
 
 		},
-		/**
-		 * Callback to toggle a lamp - used when the displayed device is a lamp (!)
-		 */
-		onToggleLampButton: function () {
-			if (this.model.get("state") === "true" || this.model.get("state") === true) {
-				this.model.switchOff();
-			} else {
-				this.model.switchOn();
-			}
-		},
+		
 		colorchanged: function () {
 			var rgb = $("#colorbg").css("background-color");
 			this.changeColorLEDs(this.currentSelectedLED, Raphael.getRGB(rgb).hex);
@@ -59,6 +52,7 @@ define([
 		 * Callback on click colors in dropdown TurnOn with Color
 		 **/
 		onClickDropdownColors: function (e) {
+			// Prevent the redirection of <a>
 			e.preventDefault();
 		},
 
@@ -66,7 +60,18 @@ define([
 		 * Callback on click colors in dropdown TurnOn with Pattern
 		 **/
 		onClickDropdownPattenrs: function (e) {
+			// Prevent the redirection of <a>
 			e.preventDefault();
+
+			var patterNameClicked = $(e.currentTarget).text();
+			this.model.setPattern(patterNameClicked);
+		},
+
+		/**
+		 * Callback on click turn off
+		 **/
+		onClickTurnOff: function () {
+			this.model.setAllColorLight("#000000");
 		},
 
 		/**
@@ -74,12 +79,12 @@ define([
 		 **/
 		onShowCreateModal: function () {
 			var self = this;
-			
+
 			self.currentModal = new ModalCreationView({
 				el: "#modal-create-pattern",
 				model: self.model
 			});
-			
+
 			self.currentModal.render();
 		},
 
@@ -134,6 +139,7 @@ define([
 
 			this.buildFairylightState();
 			this.buildFairylightWidget("div-fairylight-widget", false);
+			this.buildDropdownPatterns();
 			this.updateCmdButtonVisibilty();
 
 			// translate the view
@@ -159,6 +165,7 @@ define([
 
 				this.buildFairylightWidget("div-fairylight-widget", false);
 				this.buildFairylightState();
+				this.buildDropdownPatterns();
 				this.updateCmdButtonVisibilty();
 
 				// if the lamp is on, we allow the user to pick a color
@@ -375,6 +382,26 @@ define([
 
 			_.each(LEDsChanged, function (led) {
 				self.model.setOneColorLight(led.id, color);
+			});
+		},
+
+		/**
+		 * Method to build the dropdown of patterns
+		 */
+		buildDropdownPatterns: function () {
+			var self = this;
+			var listPattern = $('#dpd-patterns');
+
+			// Always clear dpd before reappend all patterns
+			$('#dpd-patterns').empty();
+
+			var objPatterns = self.model.get("patterns");
+			if (typeof objPatterns === 'string') {
+				objPatterns = $.parseJSON(objPatterns);
+			}
+
+			$.each(objPatterns, function (keyPattern) {
+				listPattern.append("<li><a href='#'>" + keyPattern + "</a></li>");
 			});
 		},
 	});
