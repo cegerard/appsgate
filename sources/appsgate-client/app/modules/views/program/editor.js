@@ -18,6 +18,7 @@ define([
         "click #end-edit-button": "onClickEndEdit",
         "click #cancel-edit-button": "onClickCancelEdit",
         "change .lamp-color-picker": "onChangeLampColorNode",
+        "change .fairylights-pattern-picker": "onFairyLightsPatternNode",
         "change .fairylights-color-picker": "onFairyLightsColorNode",
         "change .fairylights-index-picker": "onFairyLightsIndexNode",
 
@@ -420,6 +421,15 @@ define([
 
         this.Mediator.setNodeArg(iid, Number(index), value);
         console.log("Changing fairy light color : ", value);
+      },
+      
+      onFairyLightsPatternNode: function(e) {
+        e.stopPropagation();
+        var iid = $(e.currentTarget).attr("target-id");
+        var pattern = e.currentTarget.selectedOptions[0].value;
+        var value = {"type": "String", "value": pattern};
+        this.Mediator.setNodeArg(iid, 0, value);
+        console.log("Changing pattern : ", value);
       },
 
       onFairyLightsIndexNode: function(e) {

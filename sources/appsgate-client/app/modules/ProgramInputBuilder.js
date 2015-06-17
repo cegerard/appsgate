@@ -362,6 +362,18 @@ define([
                 return "incomplete";
             }
             return "";
+        },
+        
+        getVariableFromDevice: function(deviceId, varname) {
+            var objPatterns = devices.get(deviceId).get(varname);
+			if (typeof objPatterns === 'string') {
+				objPatterns = $.parseJSON(objPatterns);
+			}
+            listPattern = [];
+			$.each(objPatterns, function (keyPattern) {
+				listPattern.push( keyPattern );
+			});
+            return listPattern;
         }
 
     });

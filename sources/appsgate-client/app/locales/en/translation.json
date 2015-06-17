@@ -640,7 +640,7 @@
       "language": {
         "setAllColorLight": "Change color of __myVar__",
         "setOneColorLight": "Change color of one light of __myVar__",
-        "setColorPattern": "Apply a color pattern on __myVar__",
+        "setColorPattern": "Light __myVar__ with color pattern ",
         "singleChaserAnimation": "Simple chaser animation __myVar__",
         "roundChaserAnimation": "Return chaser animation on __myVar__ ",
         "setColorAnimation": "Color __myVar__ ",
@@ -658,10 +658,21 @@
 		"turn-on-color" : "Turn On with color",
 	  	"turn-on-pattern" : "Turn On with pattern",
 	  	"turn-off" : "Turn Off",
+	    "color-set": "Apply color",
 		"pattern-set" : "Apply pattern",
 	  	"pattern-create" : "Create pattern",
 	  	"pattern-manage" : "Manage patterns"
 	  },
+	  "modal" : {
+	  	"new" : {
+		  "title" : "New pattern",
+		  "input-name" : "Name of the new pattern"   
+		},
+		"manage" : {
+		  "title" : "Manage pattern",
+		  "label-select" : "Choose a pattern"
+ 		}
+      },
 	  "composition": "Fairy lights composition"
     },
     "type-label": "Type",

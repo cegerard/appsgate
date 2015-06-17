@@ -75,8 +75,8 @@ define([
 				}));
 				v.methodName = "setColorPattern";
 				v.args = [{
-					"type": "JSONArray",
-					"value": []
+					"type": "String",
+					"value": ""
           		}];
 				v.phrase = "devices.fairylights.language.setColorPattern";
 				$(btn).attr("json", JSON.stringify(v));
