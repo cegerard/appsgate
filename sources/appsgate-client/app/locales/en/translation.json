@@ -673,6 +673,11 @@
 		  "label-select" : "Choose a pattern"
  		}
       },
+	  "color-widget": {
+	  	"select-all": "Select all LEDs",
+		"deselect-all": "Deselect all LEDs",
+		"apply": "Apply current color"
+	  },
 	  "composition": "Fairy lights composition"
     },
     "type-label": "Type",

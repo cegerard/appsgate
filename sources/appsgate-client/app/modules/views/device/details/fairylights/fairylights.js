@@ -16,16 +16,20 @@ define([
 		events: {
 			"click #dpd-colors a": "onClickDropdownColors",
 			"click #dpd-patterns a": "onClickDropdownPattenrs",
-			
+
 			"show.bs.modal #modal-create-pattern": "onShowCreateModal",
 			"shown.bs.modal #modal-create-pattern": "onCreateModalShown",
 			"hidden.bs.modal #modal-create-pattern": "onCreateModalHidden",
-			
+
 			"show.bs.modal #modal-manage-pattern": "onShowManageModal",
 			"shown.bs.modal #modal-manage-pattern": "onManageModalShown",
 			"hidden.bs.modal #modal-manage-pattern": "onManageModalHidden",
 
-			"click #btn-cmd-turnoff": "onClickTurnOff"
+			"click #btn-cmd-turnoff": "onClickTurnOff",
+
+			"click #btn-widget-select-all": "onClickSelectAll",
+			"click #btn-widget-deselect-all": "onClickDeselectAll",
+			"click #btn-widget-apply": "onClickApply",
 		},
 
 		initialize: function () {
@@ -45,7 +49,7 @@ define([
 			//			});
 
 		},
-		
+
 		colorchanged: function () {
 			var rgb = $("#colorbg").css("background-color");
 			this.changeColorLEDs(this.currentSelectedLED, Raphael.getRGB(rgb).hex);
@@ -58,7 +62,7 @@ define([
 		onClickDropdownColors: function (e) {
 			// Prevent the redirection of <a>
 			e.preventDefault();
-			
+
 			var colorSelected = $(e.currentTarget).attr("color-value");
 			this.model.setAllColorLight(colorSelected);
 		},
@@ -138,6 +142,29 @@ define([
 			$("#modal-manage-pattern").empty();
 		},
 
+		/**
+		 * Callback on click select all leds
+		 **/
+		onClickSelectAll: function () {
+			this.currentSelectedLED = this.getJSONArrayLeds();
+			this.updateFairylightWidget();
+		},
+		
+		/**
+		 * Callback on click deselect all leds
+		 **/
+		onClickDeselectAll: function () {
+			this.currentSelectedLED = [];
+			this.updateFairylightWidget();
+		},
+		
+		/**
+		 * Callback on click apply color
+		 **/
+		onClickApply: function () {
+			this.colorchanged();
+		},
+
 
 		autoupdate: function () {
 			FairyLightsView.__super__.autoupdate.apply(this);
@@ -213,20 +240,17 @@ define([
 					$mousebutton = 1;
 					$moving = "colors";
 					moveColor(a, "");
-					self.colorchanged();
 				}
 				if ($(a.target).parents().andSelf().hasClass("picker-hues")) {
 					//a.preventDefault();
 					$mousebutton = 1;
 					$moving = "hues";
 					moveHue(a, "");
-					self.colorchanged();
 				}
 			}).bind("mouseup", function (a) {
 				//a.preventDefault();
 				$mousebutton = 0;
 				$moving = "";
-				self.colorchanged();
 
 			}).bind("mousemove", function (a) {
 				//a.preventDefault();
@@ -236,7 +260,6 @@ define([
 					} else if ($moving == "hues") {
 						moveHue(a, "");
 					}
-					self.colorchanged();
 				}
 
 			});
@@ -371,7 +394,6 @@ define([
 					} else {
 						self.currentSelectedLED.push(led);
 					}
-					console.log(self.currentSelectedLED);
 					self.updateFairylightWidget();
 				});
 
@@ -427,6 +449,14 @@ define([
 				listPattern.append("<li><a href='#'>" + keyPattern + "</a></li>");
 			});
 		},
+			
+		getJSONArrayLeds: function () {
+			var arrayLed = this.model.get("leds");
+			if (!Array.isArray(arrayLed)) {
+				arrayLed = $.parseJSON(arrayLed);
+			}
+			return arrayLed;
+		}
 	});
 	return FairyLightsView
 });

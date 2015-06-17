@@ -673,6 +673,11 @@
 		  "label-select" : "Choisissez un motif"
  		}
 	  },
+	  "color-widget": {
+	  	"select-all": "Séléctionner toutes les LEDs",
+		"deselect-all": "Déséléctionner toutes les LEDs",
+		"apply": "Appliquer la couleur"
+	  },
 	  "composition": "Composition de la guirlande"
     },
     "type-label": "Type",
