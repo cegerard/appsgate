@@ -10,7 +10,11 @@
         
         <relation implementation="MongoDBConfiguration" field="dbConfig" resolve="exist"
             added="dbBound" removed="dbUnbound">
-        </relation>   
+        </relation>  
+        
+        <relation specification="CoreFairyLightsSpec"  multiple="true" resolve="exist">
+            <message push="fairyLightsChangedEvent"/>
+        </relation>           
           
     </implementation>
     

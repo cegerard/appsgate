@@ -116,7 +116,7 @@ FairyLightsAdapterSpec, FairyLightsStatusListener {
 		storeInstanceConfiguration(group.getDescription());
 		instances.put(instanceName, group);
 
-		return group.getAbstractObjectId();		
+		return group.getAbstractObjectId();
 	}
 
 	@Override
@@ -292,11 +292,10 @@ FairyLightsAdapterSpec, FairyLightsStatusListener {
 				logger.trace("restoreGroups(), no running instance with same id : {}, creating one with description : {}",
 						id,
 						entry);
-				// TODO
-
-//				FairyLightsImpl group = createApamComponent(entry.getString("name"),id);
-//				group.configureFromJSON(entry);
-//				instances.put(id, group);						
+				
+				FairyLightsImpl group = createApamComponent(entry.getString("name"),id);
+				group.configure(lightManager, entry);
+				instances.put(id, group);						
 			} else {
 				logger.trace("restoreGroups(), already an instance with id : {}, keeping the existing one", entry.getString("id"));						
 			}	
@@ -317,7 +316,7 @@ FairyLightsAdapterSpec, FairyLightsStatusListener {
 	 * @param groupName
 	 * @return
 	 */
-	private CoreFairyLightsSpec createApamComponent(String groupName, String InstanceName) {
+	private FairyLightsImpl createApamComponent(String groupName, String InstanceName) {
 		Implementation implem = CST.apamResolver.findImplByName(null,FairyLightsImpl.IMPL_NAME);
 		if(implem == null) {
 			logger.error("createApamComponent(...) Unable to get APAM Implementation"); 
@@ -335,7 +334,7 @@ FairyLightsAdapterSpec, FairyLightsStatusListener {
 			return null;
 		}
 		
-		return (CoreFairyLightsSpec)inst.getServiceObject();
+		return (FairyLightsImpl)inst.getServiceObject();
 	}
 	
 	
@@ -345,7 +344,8 @@ FairyLightsAdapterSpec, FairyLightsStatusListener {
 
 	@Override
 	public void lightChanged(JSONArray lights) {
-		// TODO implémenter la persistence
+		logger.info("lightChanged(JSONArray lights : {}), not implemented right now", lights);
+				// TODO implémenter la persistence
 		if(dbBound()) {
 			
 		}
@@ -401,6 +401,36 @@ FairyLightsAdapterSpec, FairyLightsStatusListener {
 				logger.error("storeInstanceConfiguration(...), group not removed from the database");
 			}			
 		}
+	}
+	
+	/**
+	 * This one allows to keep tracks of whats going on with the groups
+	 * And therefore save modifications
+	 * @param msg
+	 */
+	private void fairyLightsChangedEvent(NotificationMsg msg) {
+		logger.trace("fairyLightsChangedEvent(NotificationMsg msg : {})", msg);
+		if(msg != null
+				&& msg.getSource() != null
+				&& instances.containsKey(msg.getSource())
+				&& instances.get(msg.getSource()) != null) {
+			// Findig those events that requires to be persisted
+			if( FairyLightsImpl.KEY_LEDS.equals(msg.getVarName())) {
+				logger.trace("fairyLightsChangedEvent(...), one or more light changed, saving the whole fairy lights");
+				lightChanged(lightManager.getAllLights());
+
+				// TODO : Delete this one when lightChanged will be implemented ? 
+				CoreObjectSpec instance = (CoreObjectSpec)instances.get(msg.getSource());
+				storeInstanceConfiguration(instance.getDescription());
+			} else if(FairyLightsImpl.KEY_PATTERNS.equals(msg.getVarName()) ) {
+				logger.trace("fairyLightsChangedEvent(...), patterns changed for one group, saving this group description");
+				CoreObjectSpec instance = (CoreObjectSpec)instances.get(msg.getSource());
+				storeInstanceConfiguration(instance.getDescription());
+			}
+		} else {
+			logger.warn("fairyLightsChangedEvent(...), unable to find the FairyLightsGroup that sent the message");;
+		}
+		
 	}
 
 	
