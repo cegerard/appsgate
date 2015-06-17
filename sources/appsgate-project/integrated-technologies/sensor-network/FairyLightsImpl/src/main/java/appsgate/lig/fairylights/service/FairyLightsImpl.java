@@ -198,6 +198,8 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 		descr.put("id", getAbstractObjectId());
 		descr.put("type", getUserType()); 
 		descr.put("status", String.valueOf(getObjectStatus()));
+		
+		descr.put("name", name);
 
 		descr.put(KEY_LEDS, getLightsStatus());
 		descr.put(KEY_CURRENT_LIGHT, getCurrentLightNumber());

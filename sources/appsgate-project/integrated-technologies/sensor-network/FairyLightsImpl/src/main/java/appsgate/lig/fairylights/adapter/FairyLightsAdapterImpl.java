@@ -293,7 +293,7 @@ FairyLightsAdapterSpec, FairyLightsStatusListener {
 						id,
 						entry);
 				
-				FairyLightsImpl group = createApamComponent(entry.getString("name"),id);
+				FairyLightsImpl group = createApamComponent(entry.optString("name", id),id);
 				group.configure(lightManager, entry);
 				instances.put(id, group);						
 			} else {
