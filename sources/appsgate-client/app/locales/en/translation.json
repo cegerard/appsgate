@@ -658,6 +658,7 @@
 		"turn-on-color" : "Turn On with color",
 	  	"turn-on-pattern" : "Turn On with pattern",
 	  	"turn-off" : "Turn Off",
+	    "color-set": "Apply color",
 		"pattern-set" : "Apply pattern",
 	  	"pattern-create" : "Create pattern",
 	  	"pattern-manage" : "Manage patterns"
