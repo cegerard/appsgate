@@ -114,7 +114,6 @@ FairyLightsAdapterSpec, FairyLightsStatusListener {
 		
 		group.configure(lightManager, config);
 		storeInstanceConfiguration(group.getDescription());
-		instances.put(instanceName, group);
 
 		return group.getAbstractObjectId();
 	}
@@ -170,21 +169,19 @@ FairyLightsAdapterSpec, FairyLightsStatusListener {
 	public void deviceAvailable(String host) {
 		logger.trace("deviceAvailable(String host : {})", host);
 		synchronized (this) {
-			if(this.host == null && host != null) {
+			if(this.host == null && host != null &&dbBound()) {
 				logger.trace("deviceAvailable(...), device was previously unavailable, restoring previous status");
 				lightManager.setHost(host);
+
+				logger.trace("deviceAvailable(...), availables instances : {}", instances.keySet());
+				if(instances.isEmpty()
+						|| !instances.containsKey(LightManagement.GROUP_ALL_ID)) {
+					logger.trace("deviceAvailable(...), group FairyLights-All was not found, creating a new one"
+							+ " with default attributes (might be overloaded later by the corresponding entry in the db)");
+					createContiguousLightsGroup(LightManagement.GROUP_ALL_ID, 0, LightManagement.FAIRYLIGHT_SIZE-1);
+				}
 				currentPattern = lightManager.setColorPattern(LightManagement.GROUP_ALL_ID, currentPattern);
-				
-				logger.trace("deviceAvailable(...), device was previously unavailable, restoring group FairyLights-All,"
-						+ " with default attributes (might be overloaded later by the corresponding entry in the db)");
-				createContiguousLightsGroup(LightManagement.GROUP_ALL_ID, 0, LightManagement.FAIRYLIGHT_SIZE-1);
-				
-				if(dbBound()) {
-					logger.trace("deviceAvailable(...), db available, restoring groups");
-					restoreGroups();					
-				} else {
-					logger.trace("deviceAvailable(...), db not available will not restore groups");
-				}	
+
 			} else {
 				logger.trace("deviceAvailable(...), device was previously available, do nothing");
 			}
@@ -316,7 +313,7 @@ FairyLightsAdapterSpec, FairyLightsStatusListener {
 	 * @param groupName
 	 * @return
 	 */
-	private FairyLightsImpl createApamComponent(String groupName, String InstanceName) {
+	private FairyLightsImpl createApamComponent(String groupName, String instanceName) {
 		Implementation implem = CST.apamResolver.findImplByName(null,FairyLightsImpl.IMPL_NAME);
 		if(implem == null) {
 			logger.error("createApamComponent(...) Unable to get APAM Implementation"); 
@@ -325,16 +322,20 @@ FairyLightsAdapterSpec, FairyLightsStatusListener {
 		logger.trace("createGroup(), implem found");
 		Map<String, String> properties = new HashMap<String, String>();
 		properties.put("groupName", groupName);
-		properties.put("instance.name",InstanceName);
-		
+		properties.put("instance.name",instanceName);
+
+		// To be sure that ApAM won't try to recreate another instance with the same id
+		instances.put(instanceName, null);
 		Instance inst = implem.createInstance(null, properties);
 
+
 		if(inst == null) {
-			logger.error("createApamComponent(...) Unable to create APAM Instance"); 			
+			logger.error("createApamComponent(...) Unable to create APAM Instance"); 		
 			return null;
 		}
-		
-		return (FairyLightsImpl)inst.getServiceObject();
+		FairyLightsImpl impl = (FairyLightsImpl)inst.getServiceObject();
+		instances.put(instanceName, impl);
+		return impl;
 	}
 	
 	
@@ -409,7 +410,7 @@ FairyLightsAdapterSpec, FairyLightsStatusListener {
 	 * @param msg
 	 */
 	private void fairyLightsChangedEvent(NotificationMsg msg) {
-		logger.trace("fairyLightsChangedEvent(NotificationMsg msg : {})", msg);
+		logger.trace("fairyLightsChangedEvent(NotificationMsg msg : {})", msg.JSONize());
 		if(msg != null
 				&& msg.getSource() != null
 				&& instances.containsKey(msg.getSource())

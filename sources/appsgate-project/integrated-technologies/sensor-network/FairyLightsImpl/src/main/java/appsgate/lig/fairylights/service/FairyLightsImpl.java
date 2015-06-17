@@ -76,12 +76,12 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 		
 		if (configuration.getJSONObject(KEY_PATTERNS) != null) {
 			for(Object patternName : configuration.getJSONObject(KEY_PATTERNS).keySet()) {
-				if(configuration.optJSONArray(patternName.toString()) != null) {
-					patterns.put(patternName.toString(), configuration.getJSONArray(patternName.toString()));
+				if(configuration.getJSONObject(KEY_PATTERNS).optJSONArray(patternName.toString()) != null) {
+					patterns.put(patternName.toString(), configuration.getJSONObject(KEY_PATTERNS).getJSONArray(patternName.toString()));
 				}
 			}
 		}
-		
+		logger.trace("configure(...), group properly configured");
 		stateChanged("status", null, String.valueOf(getObjectStatus()), getAbstractObjectId());		
 	}
 	
