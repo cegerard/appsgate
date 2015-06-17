@@ -640,7 +640,7 @@
       "language": {
         "setAllColorLight": "Change color of __myVar__",
         "setOneColorLight": "Change color of one light of __myVar__",
-        "setColorPattern": "Apply a color pattern on __myVar__",
+        "setColorPattern": "Light __myVar__ with color pattern ",
         "singleChaserAnimation": "Simple chaser animation __myVar__",
         "roundChaserAnimation": "Return chaser animation on __myVar__ ",
         "setColorAnimation": "Color __myVar__ ",
