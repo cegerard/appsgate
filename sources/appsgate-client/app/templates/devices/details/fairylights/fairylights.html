@@ -9,12 +9,20 @@
 
 	<div class="pull-right">
 
+		<button id="btn-cmd-turnoff" type="button" class="btn btn-info btn-sm" data-i18n="devices.fairylights.commands.turn-off"></button>
 		<div class="btn-group">
 			<button id="btn-cmd-turnon-color" type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown"><span data-i18n="devices.fairylights.commands.turn-on-color"></span> <span class="caret"></span>
 			</button>
+			<button id="btn-cmd-color-set" type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown"><span data-i18n="devices.fairylights.commands.color-set"></span> <span class="caret"></span></button>
 			<ul id="dpd-colors" class="dropdown-menu" role="menu">
-				<li><a href="#">Color 1</a>
-				</li>
+				<li><a data-i18n="language.color.red" color-value="#ff0000" href="#"></a></li>
+				<li><a data-i18n="language.color.blue" color-value="#0000ff" href="#"></a></li>
+				<li><a data-i18n="language.color.green" color-value="#00ff00" href="#"></a></li>
+				<li><a data-i18n="language.color.yellow" color-value="#ffff00" href="#"></a></li>
+				<li><a data-i18n="language.color.orange" color-value="#ff8000" href="#"></a></li>
+				<li><a data-i18n="language.color.purple" color-value="#bf00ff" href="#"></a></li>
+				<li><a data-i18n="language.color.pink" color-value="#ff00bf" href="#"></a></li>
+				<li><a data-i18n="language.color.white" color-value="#ffffff" href="#"></a></li>
 			</ul>
 		</div>
 		<div class="btn-group">
@@ -24,7 +32,6 @@
 			<ul id="dpd-patterns" class="dropdown-menu" role="menu">
 			</ul>
 		</div>
-		<button id="btn-cmd-turnoff" type="button" class="btn btn-info btn-sm" data-i18n="devices.fairylights.commands.turn-off"></button>
 		<a data-toggle="modal" href="#modal-create-pattern" class="btn btn-info btn-sm">
 			<span data-i18n="devices.fairylights.commands.pattern-create"></span>
 		</a>

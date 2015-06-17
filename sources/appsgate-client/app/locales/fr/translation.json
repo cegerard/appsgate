@@ -658,6 +658,7 @@
 		"turn-on-color" : "Allumer avec une couleur",
 	  	"turn-on-pattern" : "Allumer avec un motif",
 	  	"turn-off" : "Eteindre",
+		"color-set": "Appliquer une couleur",
 		"pattern-set" : "Appliquer un motif",
 	  	"pattern-create" : "Créer un motif",
 	  	"pattern-manage" : "Gérer les motifs"

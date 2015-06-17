@@ -58,6 +58,9 @@ define([
 		onClickDropdownColors: function (e) {
 			// Prevent the redirection of <a>
 			e.preventDefault();
+			
+			var colorSelected = $(e.currentTarget).attr("color-value");
+			this.model.setAllColorLight(colorSelected);
 		},
 
 		/**
@@ -300,7 +303,7 @@ define([
 				$("#btn-cmd-turnon-pattern").hide();
 				$("#btn-cmd-pattern-set").show();
 				$("#btn-cmd-turnoff").show();
-
+				$("#btn-cmd-color-set").show();
 
 				// Disabled button 'Set pattern' if no pattern available
 				$("#btn-cmd-pattern-set").prop("disabled", function () {
@@ -311,6 +314,7 @@ define([
 				$("#btn-cmd-turnon-pattern").show();
 				$("#btn-cmd-pattern-set").hide();
 				$("#btn-cmd-turnoff").hide();
+				$("#btn-cmd-color-set").hide();
 			}
 
 		},
