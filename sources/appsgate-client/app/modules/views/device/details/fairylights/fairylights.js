@@ -16,10 +16,14 @@ define([
 		events: {
 			"click #dpd-colors a": "onClickDropdownColors",
 			"click #dpd-patterns a": "onClickDropdownPattenrs",
+			
 			"show.bs.modal #modal-create-pattern": "onShowCreateModal",
 			"shown.bs.modal #modal-create-pattern": "onCreateModalShown",
 			"hidden.bs.modal #modal-create-pattern": "onCreateModalHidden",
+			
 			"show.bs.modal #modal-manage-pattern": "onShowManageModal",
+			"shown.bs.modal #modal-manage-pattern": "onManageModalShown",
+			"hidden.bs.modal #modal-manage-pattern": "onManageModalHidden",
 
 			"click #btn-cmd-turnoff": "onClickTurnOff"
 		},
@@ -107,7 +111,14 @@ define([
 		 * Callback when the manage modal is shown. Build it before show.
 		 **/
 		onShowManageModal: function () {
+			var self = this;
 
+			self.currentModal = new ModalManageView({
+				el: "#modal-manage-pattern",
+				model: self.model
+			});
+
+			self.currentModal.render();
 		},
 
 		/**
