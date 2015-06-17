@@ -305,10 +305,6 @@ define([
 				$("#btn-cmd-turnoff").show();
 				$("#btn-cmd-color-set").show();
 
-				// Disabled button 'Set pattern' if no pattern available
-				$("#btn-cmd-pattern-set").prop("disabled", function () {
-					return false;
-				})
 			} else {
 				$("#btn-cmd-turnon-color").show();
 				$("#btn-cmd-turnon-pattern").show();
@@ -317,6 +313,18 @@ define([
 				$("#btn-cmd-color-set").hide();
 			}
 
+			// Disable pattern commands if no patterns
+			var objPatterns = self.model.get("patterns");
+			if (typeof objPatterns === 'string') {
+				objPatterns = $.parseJSON(objPatterns);
+			}
+			if (Object.keys(objPatterns).length > 0) {
+				$("#btn-cmd-pattern-set").removeClass("disabled");
+				$("#btn-manage-patterns").removeClass("disabled");
+			} else {
+				$("#btn-cmd-pattern-set").addClass("disabled");
+				$("#btn-manage-patterns").addClass("disabled");
+			}
 		},
 
 		buildFairylightWidget: function (idElementToBuild, isEditable) {
