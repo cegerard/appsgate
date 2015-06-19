@@ -125,14 +125,12 @@ define([
 					$mousebutton = 1;
 					$moving = "colors";
 					moveColor(a, ".create-modal");
-					self.colorchanged();
 				}
 				if ($(a.target).parents().andSelf().hasClass("picker-hues")) {
 					//a.preventDefault();
 					$mousebutton = 1;
 					$moving = "hues";
 					moveHue(a, ".create-modal");
-					self.colorchanged();
 				}
 			}).bind("mouseup", function (a) {
 				//a.preventDefault();
@@ -148,7 +146,6 @@ define([
 					} else if ($moving == "hues") {
 						moveHue(a, ".create-modal");
 					}
-					self.colorchanged();
 				}
 
 			});

@@ -28,8 +28,7 @@ define([
 			"click #btn-cmd-turnoff": "onClickTurnOff",
 
 			"click #btn-widget-select-all": "onClickSelectAll",
-			"click #btn-widget-deselect-all": "onClickDeselectAll",
-			"click #btn-widget-apply": "onClickApply",
+			"click #btn-widget-deselect-all": "onClickDeselectAll"
 		},
 
 		initialize: function () {
@@ -149,7 +148,7 @@ define([
 			this.currentSelectedLED = this.getJSONArrayLeds();
 			this.updateFairylightWidget();
 		},
-		
+
 		/**
 		 * Callback on click deselect all leds
 		 **/
@@ -157,14 +156,6 @@ define([
 			this.currentSelectedLED = [];
 			this.updateFairylightWidget();
 		},
-		
-		/**
-		 * Callback on click apply color
-		 **/
-		onClickApply: function () {
-			this.colorchanged();
-		},
-
 
 		autoupdate: function () {
 			FairyLightsView.__super__.autoupdate.apply(this);
@@ -251,6 +242,7 @@ define([
 				//a.preventDefault();
 				$mousebutton = 0;
 				$moving = "";
+				self.colorchanged();
 
 			}).bind("mousemove", function (a) {
 				//a.preventDefault();
@@ -425,9 +417,14 @@ define([
 		changeColorLEDs: function (LEDsChanged, color) {
 			var self = this;
 
-			_.each(LEDsChanged, function (led) {
-				self.model.setOneColorLight(led.id, color);
-			});
+			// Special case if we selected all leds, call setAllColor
+			if (LEDsChanged.length === self.getJSONArrayLeds().length) {
+				self.model.setAllColorLight(color);
+			} else {
+				_.each(LEDsChanged, function (led) {
+					self.model.setOneColorLight(led.id, color);
+				});
+			}
 		},
 
 		/**
@@ -449,7 +446,7 @@ define([
 				listPattern.append("<li><a href='#'>" + keyPattern + "</a></li>");
 			});
 		},
-			
+
 		getJSONArrayLeds: function () {
 			var arrayLed = this.model.get("leds");
 			if (!Array.isArray(arrayLed)) {
