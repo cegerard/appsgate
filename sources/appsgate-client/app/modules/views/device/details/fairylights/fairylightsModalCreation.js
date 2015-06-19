@@ -18,6 +18,7 @@ define([
 			var self = this;
 
 			self.currentSelectedLED = [];
+			self.stateColorChanged = false;
 			self.initialColor = "#000000";
 			self.model = options.model || {};
 			self.leds = self.cloneLEDs(self.model.get("leds"));
@@ -187,6 +188,12 @@ define([
 				.attr("cy", height / 2)
 				.attr("r", circleWidthFinal / 2)
 				.on("click", function (led) {
+					// Test if we have changed color. If true, we deselect the previous leds selection.
+					if (self.stateColorChanged) {
+						self.currentSelectedLED = [];
+						self.stateColorChanged = false;
+					}
+				
 					var ledInCurrentSelected = _.findWhere(self.currentSelectedLED, {
 						id: led.id
 					});
@@ -241,6 +248,9 @@ define([
 			_.each(LEDsChanged, function (led) {
 				led.color = color;
 			});
+			
+			// Color changed, if we select new led, reset selection
+			self.stateColorChanged = true;
 		},
 	});
 	return ModalCreationView

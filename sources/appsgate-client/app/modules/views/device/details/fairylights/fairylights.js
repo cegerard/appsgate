@@ -35,6 +35,11 @@ define([
 			var self = this;
 
 			self.currentSelectedLED = [];
+			/*
+			 * Boolean to know the current state in process of changing color.
+			 * First select all leds to change. Second, change color. You can change color some time to get the wanted color. When change color, this boolean go to true. If we select another led, we check it and deselect previous leds before make new selection. 
+			 */
+			self.stateColorChanged = false;
 
 			FairyLightsView.__super__.initialize.apply(self, arguments);
 			$.extend(self.__proto__.events, FairyLightsView.__super__.events);
@@ -52,7 +57,6 @@ define([
 		colorchanged: function () {
 			var rgb = $("#colorbg").css("background-color");
 			this.changeColorLEDs(this.currentSelectedLED, Raphael.getRGB(rgb).hex);
-
 		},
 
 		/**
@@ -378,14 +382,22 @@ define([
 				.attr("cy", height / 2)
 				.attr("r", circleWidthFinal / 2)
 				.on("click", function (led) {
+					// Test if we have changed color. If true, we deselect the previous leds selection.
+					if (self.stateColorChanged) {
+						self.currentSelectedLED = [];
+						self.stateColorChanged = false;
+					}
+
 					var ledInCurrentSelected = _.findWhere(self.currentSelectedLED, {
 						id: led.id
 					});
+
 					if (ledInCurrentSelected) {
 						self.currentSelectedLED.splice(_.indexOf(self.currentSelectedLED, ledInCurrentSelected), 1);
 					} else {
 						self.currentSelectedLED.push(led);
 					}
+
 					self.updateFairylightWidget();
 				});
 
@@ -425,6 +437,9 @@ define([
 					self.model.setOneColorLight(led.id, color);
 				});
 			}
+
+			// Color changed, if we select new led, reset selection
+			self.stateColorChanged = true;
 		},
 
 		/**
