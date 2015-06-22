@@ -117,12 +117,6 @@ define([
 			$moving = "colors";
 			$mousebutton = 0;
 
-			$("#luminositePickerInputRange").change(function (e) {
-				self.model.set("brightness", e.target.value)
-				self.model.sendBrightness();
-			});
-
-
 			$("#colorPickerLi.create-modal").bind("mousedown", function (a) {
 				if ($(a.target).parents().andSelf().hasClass("picker-colors")) {
 					//a.preventDefault();
@@ -155,14 +149,10 @@ define([
 			});
 
 			$(document).ready(function () {
-				var arrayLed = self.leds;
-				if (!Array.isArray(arrayLed)) {
-					arrayLed = $.parseJSON(arrayLed);
-				}
 				// Initialize widget to the color of the first LED 
-				if (arrayLed[0].color) {
+				if (self.leds[0].color) {
 					// Check if first led has color before
-					moveColorByHex(expandHex(arrayLed[0].color), ".create-modal");
+					moveColorByHex(expandHex(self.leds[0].color), ".create-modal");
 				} else {
 					moveColorByHex(expandHex("#ffffff"), ".create-modal");
 				}
@@ -197,7 +187,6 @@ define([
 			circleWidthDefault = 18;
 			circleWidthAvailable = widthDiv / (nbCircle + spacement);
 			circleWidthFinal = (circleWidthAvailable < circleWidthDefault) ? circleWidthAvailable : circleWidthDefault;
-			console.log("circlewidth build : " + circleWidthFinal);
 
 			nodesLED = svg.selectAll(".nodeLed")
 				.data(self.leds);
@@ -251,21 +240,8 @@ define([
 			circleWidthDefault = 18;
 			circleWidthAvailable = widthDiv / (nbCircle + spacement);
 			circleWidthFinal = (circleWidthAvailable < circleWidthDefault) ? circleWidthAvailable : circleWidthDefault;
-			console.log("circlewidth update : " + circleWidthFinal);
 
 			nodesLED.each(function (led) {
-				//				d3.select(this).select("circle")
-				//					.attr("fill", led.color)
-				//					.attr("stroke-width", function (led) {
-				//						if (_.findWhere(self.currentSelectedLED, {
-				//								id: led.id
-				//							})) {
-				//							return 3;
-				//						} else {
-				//							return 1;
-				//						}
-				//					})
-				//					.attr("stroke", "black");
 
 				// Selected element, if found. Test it like boolean..
 				var inSelection = _.findWhere(self.currentSelectedLED, {
