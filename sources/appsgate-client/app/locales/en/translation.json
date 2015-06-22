@@ -671,7 +671,8 @@
 		"manage" : {
 		  "title" : "Manage pattern",
 		  "label-select" : "Choose a pattern"
- 		}
+ 		},
+		"ignore-in-pattern" : "Ignore in pattern"
       },
 	  "color-widget": {
 	  	"select-all": "Select all LEDs",

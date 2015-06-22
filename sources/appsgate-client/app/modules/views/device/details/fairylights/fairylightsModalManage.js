@@ -13,7 +13,11 @@ define([
 		events: {
 			"click .valid-button": "onClickValidEdit",
 			"click .delete-button": "onClickDeletePattern",
-			"change #select-pattern": "onChangePattern"
+			"change #select-pattern": "onChangePattern",
+
+			"click .btn-widget-select-all.btn-manage": "onClickSelectAll",
+			"click .btn-widget-deselect-all.btn-manage": "onClickDeselectAll",
+			"click .btn-widget-ignore-pattern.btn-manage": "onClickIgnore"
 		},
 
 		initialize: function (options) {
@@ -60,6 +64,34 @@ define([
 
 			self.initColorLEDs();
 			self.applyPattern();
+		},
+
+		/**
+		 * Callback on click select all leds
+		 **/
+		onClickSelectAll: function () {
+			this.currentSelectedLED = this.leds;
+			this.updateFairylightWidget();
+		},
+
+		/**
+		 * Callback on click deselect all leds
+		 **/
+		onClickDeselectAll: function () {
+			this.currentSelectedLED = [];
+			this.updateFairylightWidget();
+		},
+
+		/**
+		 * Callback on click ignore leds in pattern
+		 **/
+		onClickIgnore: function () {
+			// Set 'inPattern' to false for all the selection
+			_.each(this.currentSelectedLED, function (led) {
+				led.inPattern = false;
+			});
+			this.currentSelectedLED = [];
+			this.updateFairylightWidget();
 		},
 
 		/**

@@ -27,8 +27,8 @@ define([
 
 			"click #btn-cmd-turnoff": "onClickTurnOff",
 
-			"click #btn-widget-select-all": "onClickSelectAll",
-			"click #btn-widget-deselect-all": "onClickDeselectAll"
+			"click .btn-widget-select-all.btn-command": "onClickSelectAll",
+			"click .btn-widget-deselect-all.btn-command": "onClickDeselectAll"
 		},
 
 		initialize: function () {
@@ -135,7 +135,7 @@ define([
 		 * Callback when the manage modal has been shown. Build the fairylights widget at this moment because elements width have been calculated.
 		 **/
 		onManageModalShown: function () {
-			this.currentModal.buildFairylightWidget("div-fairylight-widget-manage", false);
+			this.currentModal.buildFairylightWidget("div-fairylight-widget-manage");
 		},
 
 		/**

@@ -671,7 +671,8 @@
 		"manage" : {
 		  "title" : "Gestion des motifs",
 		  "label-select" : "Choisissez un motif"
- 		}
+ 		},
+		"ignore-in-pattern" : "Ignorer du motif"
 	  },
 	  "color-widget": {
 	  	"select-all": "Séléctionner toutes les LEDs",
