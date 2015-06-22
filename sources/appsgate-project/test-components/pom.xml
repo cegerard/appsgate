@@ -31,6 +31,7 @@
 <!-- 		<module>ExperimentaPrograms</module> -->
     <module>CoreTest</module>
     <module>EUDTest</module>
-  </modules>
+	 <module>exportMongo</module>
+	</modules>
 
 </project>
