@@ -397,7 +397,9 @@ define([
 				.append("circle")
 				.attr("class", "nodeLed")
 				.attr("cx", function (n) {
-					var index = _.indexOf(arrayLed, n);
+					var index = _.indexOf(arrayLed, _.findWhere(arrayLed, {
+						id: n.id
+					}));
 					return (spacement / 2) + (circleWidthFinal / 2) + ((spacement / 2) + circleWidthFinal) * index;
 				})
 				.attr("cy", height / 2)
@@ -436,7 +438,7 @@ define([
 				var inSelection = _.findWhere(self.currentSelectedLED, {
 					id: led.id
 				});
-				d3.select(this)
+				d3.select(this).select(".nodeLed")
 					.attr("stroke", "white")
 					.attr("fill", led.color)
 					.attr("stroke-width", 1);
