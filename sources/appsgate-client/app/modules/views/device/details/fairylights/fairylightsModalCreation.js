@@ -267,33 +267,37 @@ define([
 						.attr("stroke-width", 3)
 						.attr("stroke", "black");
 
-					d3.select(this).append("line")
-						.attr("opacity", 1)
-						.attr("x1", function (n) {
-							var index = _.indexOf(self.leds, n);
-							return ((spacement / 2) + (circleWidthFinal / 2) + ((spacement / 2) + circleWidthFinal) * index) - (circleWidthFinal / 2) + 2;
-						})
-						.attr("y1", height / 4)
-						.attr("x2", function (n) {
-							var index = _.indexOf(self.leds, n);
-							return ((spacement / 2) + (circleWidthFinal / 2) + ((spacement / 2) + circleWidthFinal) * index) + (circleWidthFinal / 2) - 2;
-						})
-						.attr("y2", (height / 4) * 3)
-						.attr("stroke", "black");
+					// Draw cross if no already drawn
+					if (d3.select(this).select("line").empty()) {
+						d3.select(this).append("line")
+							.attr("opacity", 1)
+							.attr("x1", function (n) {
+								var index = _.indexOf(self.leds, n);
+								return ((spacement / 2) + (circleWidthFinal / 2) + ((spacement / 2) + circleWidthFinal) * index) - (circleWidthFinal / 2) + 2;
+							})
+							.attr("y1", height / 4)
+							.attr("x2", function (n) {
+								var index = _.indexOf(self.leds, n);
+								return ((spacement / 2) + (circleWidthFinal / 2) + ((spacement / 2) + circleWidthFinal) * index) + (circleWidthFinal / 2) - 2;
+							})
+							.attr("y2", (height / 4) * 3)
+							.attr("stroke", "black");
 
-					d3.select(this).append("line")
-						.attr("opacity", 1)
-						.attr("x1", function (n) {
-							var index = _.indexOf(self.leds, n);
-							return ((spacement / 2) + (circleWidthFinal / 2) + ((spacement / 2) + circleWidthFinal) * index) - (circleWidthFinal / 2) + 2;
-						})
-						.attr("y1", (height / 4) * 3)
-						.attr("x2", function (n) {
-							var index = _.indexOf(self.leds, n);
-							return ((spacement / 2) + (circleWidthFinal / 2) + ((spacement / 2) + circleWidthFinal) * index) + (circleWidthFinal / 2) - 2;
-						})
-						.attr("y2", (height / 4))
-						.attr("stroke", "black");
+						d3.select(this).append("line")
+							.attr("opacity", 1)
+							.attr("x1", function (n) {
+								var index = _.indexOf(self.leds, n);
+								return ((spacement / 2) + (circleWidthFinal / 2) + ((spacement / 2) + circleWidthFinal) * index) - (circleWidthFinal / 2) + 2;
+							})
+							.attr("y1", (height / 4) * 3)
+							.attr("x2", function (n) {
+								var index = _.indexOf(self.leds, n);
+								return ((spacement / 2) + (circleWidthFinal / 2) + ((spacement / 2) + circleWidthFinal) * index) + (circleWidthFinal / 2) - 2;
+							})
+							.attr("y2", (height / 4))
+							.attr("stroke", "black");
+					}
+
 
 				} else if (!led.inPattern && !inSelection) {
 					// LED in !Pattern
@@ -302,33 +306,36 @@ define([
 						.attr("stroke-width", 1)
 						.attr("stroke", "black");
 
-					d3.select(this).append("line")
-						.attr("opacity", 1)
-						.attr("x1", function (n) {
-							var index = _.indexOf(self.leds, n);
-							return ((spacement / 2) + (circleWidthFinal / 2) + ((spacement / 2) + circleWidthFinal) * index) - (circleWidthFinal / 2) + 2;
-						})
-						.attr("y1", height / 4)
-						.attr("x2", function (n) {
-							var index = _.indexOf(self.leds, n);
-							return ((spacement / 2) + (circleWidthFinal / 2) + ((spacement / 2) + circleWidthFinal) * index) + (circleWidthFinal / 2) - 2;
-						})
-						.attr("y2", (height / 4) * 3)
-						.attr("stroke", "black");
+					// Draw cross if no already drawn
+					if (d3.select(this).select("line").empty()) {
+						d3.select(this).append("line")
+							.attr("opacity", 1)
+							.attr("x1", function (n) {
+								var index = _.indexOf(self.leds, n);
+								return ((spacement / 2) + (circleWidthFinal / 2) + ((spacement / 2) + circleWidthFinal) * index) - (circleWidthFinal / 2) + 2;
+							})
+							.attr("y1", height / 4)
+							.attr("x2", function (n) {
+								var index = _.indexOf(self.leds, n);
+								return ((spacement / 2) + (circleWidthFinal / 2) + ((spacement / 2) + circleWidthFinal) * index) + (circleWidthFinal / 2) - 2;
+							})
+							.attr("y2", (height / 4) * 3)
+							.attr("stroke", "black");
 
-					d3.select(this).append("line")
-						.attr("opacity", 1)
-						.attr("x1", function (n) {
-							var index = _.indexOf(self.leds, n);
-							return ((spacement / 2) + (circleWidthFinal / 2) + ((spacement / 2) + circleWidthFinal) * index) - (circleWidthFinal / 2) + 2;
-						})
-						.attr("y1", (height / 4) * 3)
-						.attr("x2", function (n) {
-							var index = _.indexOf(self.leds, n);
-							return ((spacement / 2) + (circleWidthFinal / 2) + ((spacement / 2) + circleWidthFinal) * index) + (circleWidthFinal / 2) - 2;
-						})
-						.attr("y2", (height / 4))
-						.attr("stroke", "black");
+						d3.select(this).append("line")
+							.attr("opacity", 1)
+							.attr("x1", function (n) {
+								var index = _.indexOf(self.leds, n);
+								return ((spacement / 2) + (circleWidthFinal / 2) + ((spacement / 2) + circleWidthFinal) * index) - (circleWidthFinal / 2) + 2;
+							})
+							.attr("y1", (height / 4) * 3)
+							.attr("x2", function (n) {
+								var index = _.indexOf(self.leds, n);
+								return ((spacement / 2) + (circleWidthFinal / 2) + ((spacement / 2) + circleWidthFinal) * index) + (circleWidthFinal / 2) - 2;
+							})
+							.attr("y2", (height / 4))
+							.attr("stroke", "black");
+					}
 				}
 
 			});
