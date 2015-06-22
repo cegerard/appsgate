@@ -69,7 +69,11 @@ define([
 		 * Callback on click select all leds
 		 **/
 		onClickSelectAll: function () {
-			this.currentSelectedLED = this.leds;
+			var self = this;
+			this.currentSelectedLED = [];
+			_.each(this.leds, function (led) {
+				self.currentSelectedLED.push(led);
+			});
 			this.updateFairylightWidget();
 		},
 
@@ -274,24 +278,62 @@ define([
 				});
 
 				if (led.inPattern && inSelection) {
-					d3.select(this).select("circle")
-						.attr("stroke-width", 3)
-						.attr("stroke", "black")
-						.attr("fill", led.color);
-					d3.select(this).selectAll("line").remove();
-				} else if (led.inPattern && !inSelection) {
-					d3.select(this).select("circle")
-						.attr("stroke-width", 1)
-						.attr("stroke", "black")
-						.attr("fill", led.color);
-					d3.select(this).selectAll("line").remove();
-				} else if (!led.inPattern && inSelection) {
-					// LED in !Pattern
-					d3.select(this).select("circle")
-						.attr("fill", "#ffffff")
-						.attr("stroke-width", 3)
-						.attr("stroke", "black");
 
+					// inPattern = No cross & color
+					if (!d3.select(this).selectAll("line").empty()) {
+						d3.select(this).selectAll("line").remove();
+					}
+					
+					d3.select(this).select(".nodeLed")
+						.attr("stroke", "white")
+						.attr("fill", led.color);
+
+					// inSelection = Aura selection
+					if (d3.select(this).selectAll(".auraSelection").empty()) {
+						d3.select(this).insert("circle", ".nodeLed")
+							.attr("class", "auraSelection")
+							.attr("fill", "#898989")
+							.attr("cx", function (n) {
+								var index = _.indexOf(self.leds, inSelection);
+								return (spacement / 2) + (circleWidthFinal / 2) + ((spacement / 2) + circleWidthFinal) * index;
+							})
+							.attr("cy", height / 2)
+							.attr("r", circleWidthFinal / 1.6);
+					}
+
+				} else if (led.inPattern && !inSelection) {
+					
+					// inPattern = No cross & color
+					if (!d3.select(this).selectAll("line").empty()) {
+						d3.select(this).selectAll("line").remove();
+					}
+					
+					d3.select(this).select(".nodeLed")
+						.attr("stroke", "white")
+						.attr("fill", led.color);
+
+					// !inSelection = No aura selection
+					if (!d3.select(this).selectAll(".auraSelection").empty()) {
+						d3.select(this).select(".auraSelection").remove();
+					}
+
+
+				} else if (!led.inPattern && inSelection) {
+
+					// inSelection = Aura selection
+					if (d3.select(this).selectAll(".auraSelection").empty()) {
+						d3.select(this).insert("circle", ".nodeLed")
+							.attr("class", "auraSelection")
+							.attr("fill", "#898989")
+							.attr("cx", function (n) {
+								var index = _.indexOf(self.leds, inSelection);
+								return (spacement / 2) + (circleWidthFinal / 2) + ((spacement / 2) + circleWidthFinal) * index;
+							})
+							.attr("cy", height / 2)
+							.attr("r", circleWidthFinal / 1.6);
+					}
+
+					// !inPattern = Cross & No Color & black stroke
 					if (d3.select(this).select("line").empty()) {
 						d3.select(this).append("line")
 							.attr("opacity", 1)
@@ -321,14 +363,15 @@ define([
 							.attr("y2", (height / 4))
 							.attr("stroke", "black");
 					}
-
-				} else if (!led.inPattern && !inSelection) {
-					// LED in !Pattern
-					d3.select(this).select("circle")
+					
+					d3.select(this).select(".nodeLed")
 						.attr("fill", "#ffffff")
-						.attr("stroke-width", 1)
 						.attr("stroke", "black");
 
+
+				} else if (!led.inPattern && !inSelection) {
+					
+					// !Pattern = Cross & No Color & black stroke
 					if (d3.select(this).select("line").empty()) {
 						d3.select(this).append("line")
 							.attr("opacity", 1)
@@ -357,6 +400,15 @@ define([
 							})
 							.attr("y2", (height / 4))
 							.attr("stroke", "black");
+					}
+					
+					d3.select(this).select(".nodeLed")
+						.attr("fill", "#ffffff")
+						.attr("stroke", "black");
+
+					// !inSelection = No aura selection
+					if (!d3.select(this).selectAll(".auraSelection").empty()) {
+						d3.select(this).select(".auraSelection").remove();
 					}
 				}
 

@@ -37,7 +37,7 @@ define([
 			self.currentSelectedLED = [];
 			/*
 			 * Boolean to know the current state in process of changing color.
-			 * First select all leds to change. Second, change color. You can change color some time to get the wanted color. When change color, this boolean go to true. If we select another led, we check it and deselect previous leds before make new selection. 
+			 * First select all leds to change. Second, change color. You can change color some time to get the wanted color. When change color, this boolean go to true. If we select another led, we check it and deselect previous leds before make new selection.
 			 */
 			self.stateColorChanged = false;
 
@@ -149,7 +149,11 @@ define([
 		 * Callback on click select all leds
 		 **/
 		onClickSelectAll: function () {
-			this.currentSelectedLED = this.getJSONArrayLeds();
+			var self = this;
+			this.currentSelectedLED = [];
+			_.each(this.getJSONArrayLeds(), function (led) {
+				self.currentSelectedLED.push(led);
+			});
 			this.updateFairylightWidget();
 		},
 
@@ -175,6 +179,7 @@ define([
 
 			this.buildFairylightState();
 			this.buildFairylightWidget("div-fairylight-widget", false);
+			//			this.updateFairylightWidget();
 			this.buildDropdownPatterns();
 			this.updateCmdButtonVisibilty();
 
@@ -222,12 +227,6 @@ define([
 			var self = this;
 			$moving = "colors";
 			$mousebutton = 0;
-
-			$("#luminositePickerInputRange").change(function (e) {
-				self.model.set("brightness", e.target.value)
-				self.model.sendBrightness();
-			});
-
 
 			$("#colorPickerLi").bind("mousedown", function (a) {
 				if ($(a.target).parents().andSelf().hasClass("picker-colors")) {
@@ -349,6 +348,7 @@ define([
 		buildFairylightWidget: function (idElementToBuild, isEditable) {
 			var self = this;
 
+			// Variables needed to place elements
 			var widthDiv, height, nbCircle, spacement, circleWidthDefault, circleWidthAvailable, circleWidthFinal, arrayLed;
 
 			widthDiv = $("#" + idElementToBuild).width();
@@ -369,18 +369,12 @@ define([
 				arrayLed = $.parseJSON(arrayLed);
 			}
 
-			nodesLED = svg.selectAll(".nodeLed")
-				.data(arrayLed);
+			nodesLED = svg.selectAll(".groupLed")
+				.data(this.getJSONArrayLeds());
 
 			nodesLED.enter()
-				.append("circle")
-				.attr("class", "nodeLed")
-				.attr("cx", function (n) {
-					var index = _.indexOf(arrayLed, n);
-					return (spacement / 2) + (circleWidthFinal / 2) + ((spacement / 2) + circleWidthFinal) * index;
-				})
-				.attr("cy", height / 2)
-				.attr("r", circleWidthFinal / 2)
+				.append("svg:g")
+				.attr("class", "groupLed")
 				.on("click", function (led) {
 					// Test if we have changed color. If true, we deselect the previous leds selection.
 					if (self.stateColorChanged) {
@@ -397,28 +391,81 @@ define([
 					} else {
 						self.currentSelectedLED.push(led);
 					}
-
+					console.log(self.currentSelectedLED);
 					self.updateFairylightWidget();
-				});
+				})
+				.append("circle")
+				.attr("class", "nodeLed")
+				.attr("cx", function (n) {
+					var index = _.indexOf(arrayLed, n);
+					return (spacement / 2) + (circleWidthFinal / 2) + ((spacement / 2) + circleWidthFinal) * index;
+				})
+				.attr("cy", height / 2)
+				.attr("r", circleWidthFinal / 2);
 
 			self.updateFairylightWidget();
 		},
 
 		updateFairylightWidget: function () {
 			var self = this;
+
+			// Variables needed to place elements
+			var widthDiv, height, nbCircle, spacement, circleWidthDefault, circleWidthAvailable, circleWidthFinal, arrayLed;
+
+			widthDiv = $("#div-fairylight-widget").width();
+			height = 25;
+
+			svg = d3.select("#div-fairylight-widget").select("svg")
+				.attr("width", widthDiv)
+				.attr("height", height);
+
+			nbCircle = 25;
+			spacement = 8;
+			circleWidthDefault = 18;
+			circleWidthAvailable = widthDiv / (nbCircle + spacement);
+			circleWidthFinal = (circleWidthAvailable < circleWidthDefault) ? circleWidthAvailable : circleWidthDefault;
+
+			arrayLed = self.model.get("leds");
+			if (!Array.isArray(arrayLed)) {
+				arrayLed = $.parseJSON(arrayLed);
+			}
+
 			nodesLED.each(function (led) {
+
+				//Selected element, if found. Test it like boolean..
+				var inSelection = _.findWhere(self.currentSelectedLED, {
+					id: led.id
+				});
 				d3.select(this)
+					.attr("stroke", "white")
 					.attr("fill", led.color)
-					.attr("stroke-width", function (led) {
-						if (_.findWhere(self.currentSelectedLED, {
-								id: led.id
-							})) {
-							return 3;
-						} else {
-							return 1;
-						}
-					})
-					.attr("stroke", "black");
+					.attr("stroke-width", 1);
+
+				if (_.findWhere(self.currentSelectedLED, {
+						id: led.id
+					})) {
+					// inSelection = Aura selection
+					if (d3.select(this).selectAll(".auraSelection").empty()) {
+						d3.select(this).insert("circle", ".nodeLed")
+							.attr("class", "auraSelection")
+							.attr("fill", "#898989")
+							.attr("cx", function (n) {
+								var index = led.id;
+								return (spacement / 2) + (circleWidthFinal / 2) + ((spacement / 2) + circleWidthFinal) * index;
+							})
+							.attr("cy", height / 2)
+							.attr("r", circleWidthFinal / 1.6);
+					}
+
+				} else {
+					// !inSelection = No aura selection
+					if (!d3.select(this).selectAll(".auraSelection").empty()) {
+						d3.select(this).selectAll(".auraSelection").remove();
+					}
+
+
+				}
+
 			});
 		},
 
