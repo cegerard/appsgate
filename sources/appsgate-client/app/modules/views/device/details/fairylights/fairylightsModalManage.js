@@ -36,12 +36,14 @@ define([
 		 * Callback on click validation
 		 **/
 		onClickValidEdit: function (event) {
-			var patternName = $("#select-pattern").val(),
-				patternLEDs = this.getPatternLEDs();
+			if (this.checkPatternValidation()) {
+				var patternName = $("#select-pattern").val(),
+					patternLEDs = this.getPatternLEDs();
 
-			// hide the modal
-			$("#modal-manage-pattern").modal("hide");
-			this.model.addPattern(patternName, patternLEDs);
+				// hide the modal
+				$("#modal-manage-pattern").modal("hide");
+				this.model.addPattern(patternName, patternLEDs);
+			}
 		},
 
 		/**
@@ -95,6 +97,26 @@ define([
 			});
 			this.currentSelectedLED = [];
 			this.updateFairylightWidget();
+		},
+
+		/**
+		 * Method to check if the pattern is valid
+		 * @return : true if at least one led in pattern
+		 **/
+		checkPatternValidation: function () {
+
+			// Check led in pattern
+			if (this.getPatternLEDs().length === 0) {
+				$("#modal-manage-pattern .valid-button").addClass("disabled");
+				$("#modal-manage-pattern .valid-button").addClass("valid-disabled");
+
+				return false;
+			}
+
+			$("#modal-manage-pattern .valid-button").removeClass("disabled");
+			$("#modal-manage-pattern .valid-button").removeClass("valid-disabled");
+
+			return true;
 		},
 
 		/**
@@ -199,6 +221,10 @@ define([
 			});
 		},
 
+		/**
+		 * Main method to build the widget of fairylights
+		 * @param : idElementToBuild String id of the element where build the widget. It will mainly create the svg element and the initial state of fairy
+		 **/
 		buildFairylightWidget: function (idElementToBuild) {
 			var self = this;
 
@@ -252,8 +278,14 @@ define([
 			self.updateFairylightWidget();
 		},
 
+		/**
+		 * Method that update the actual fairyligth widget. It will add the different dynamic element when update state of leds. Changing state when adding led to selection, adding led to pattern, etc.
+		 **/
 		updateFairylightWidget: function () {
 			var self = this;
+
+			// Check to update valid button
+			self.checkPatternValidation();
 
 			var widthDiv, height, nbCircle, spacement, circleWidthDefault, circleWidthAvailable, circleWidthFinal;
 
@@ -283,7 +315,7 @@ define([
 					if (!d3.select(this).selectAll("line").empty()) {
 						d3.select(this).selectAll("line").remove();
 					}
-					
+
 					d3.select(this).select(".nodeLed")
 						.attr("stroke", "white")
 						.attr("fill", led.color);
@@ -302,12 +334,12 @@ define([
 					}
 
 				} else if (led.inPattern && !inSelection) {
-					
+
 					// inPattern = No cross & color
 					if (!d3.select(this).selectAll("line").empty()) {
 						d3.select(this).selectAll("line").remove();
 					}
-					
+
 					d3.select(this).select(".nodeLed")
 						.attr("stroke", "white")
 						.attr("fill", led.color);
@@ -363,14 +395,14 @@ define([
 							.attr("y2", (height / 4))
 							.attr("stroke", "black");
 					}
-					
+
 					d3.select(this).select(".nodeLed")
 						.attr("fill", "#ffffff")
 						.attr("stroke", "black");
 
 
 				} else if (!led.inPattern && !inSelection) {
-					
+
 					// !Pattern = Cross & No Color & black stroke
 					if (d3.select(this).select("line").empty()) {
 						d3.select(this).append("line")
@@ -401,7 +433,7 @@ define([
 							.attr("y2", (height / 4))
 							.attr("stroke", "black");
 					}
-					
+
 					d3.select(this).select(".nodeLed")
 						.attr("fill", "#ffffff")
 						.attr("stroke", "black");

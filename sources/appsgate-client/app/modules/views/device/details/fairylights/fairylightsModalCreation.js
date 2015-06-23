@@ -15,7 +15,9 @@ define([
 
 			"click .btn-widget-select-all.btn-create": "onClickSelectAll",
 			"click .btn-widget-deselect-all.btn-create": "onClickDeselectAll",
-			"click .btn-widget-ignore-pattern.btn-create": "onClickIgnore"
+			"click .btn-widget-ignore-pattern.btn-create": "onClickIgnore",
+
+			"keyup #input-new-pattern": "checkPatternValidation",
 		},
 
 		initialize: function (options) {
@@ -34,12 +36,14 @@ define([
 		 * Callback on click validation
 		 **/
 		onClickValidCreation: function (event) {
-			var patternName = $("#input-new-pattern").val(),
-				patternLEDs = this.getPatternLEDs();
+			if (this.checkPatternValidation()) {
+				var patternName = $("#input-new-pattern").val(),
+					patternLEDs = this.getPatternLEDs();
 
-			// hide the modal
-			$("#modal-create-pattern").modal("hide");
-			this.model.addPattern(patternName, patternLEDs);
+				// hide the modal
+				$("#modal-create-pattern").modal("hide");
+				this.model.addPattern(patternName, patternLEDs);
+			}
 		},
 
 		/**
@@ -74,6 +78,53 @@ define([
 			this.updateFairylightWidget();
 		},
 
+
+		/**
+		 * Method to check if the pattern is valid
+		 * @return : true if pattern name no empty, no already existing and at least one led in pattern
+		 **/
+		checkPatternValidation: function () {
+
+			// Check if name already existing
+			if (this.checkNameAlreadyExist()) {
+				$("#modal-create-pattern .text-danger ").removeClass("hide");
+				$("#modal-create-pattern .valid-button").addClass("disabled");
+				$("#modal-create-pattern .valid-button").addClass("valid-disabled");
+
+				return false;
+			}
+
+			// Check the length / led in pattern
+			if ($("#input-new-pattern").val().length === 0 || this.getPatternLEDs().length === 0) {
+				$("#modal-create-pattern .text-danger ").addClass("hide");
+				$("#modal-create-pattern .valid-button").addClass("disabled");
+				$("#modal-create-pattern .valid-button").addClass("valid-disabled");
+
+				return false;
+			}
+
+			$("#modal-create-pattern .text-danger ").addClass("hide");
+			$("#modal-create-pattern .valid-button").removeClass("disabled");
+			$("#modal-create-pattern .valid-button").removeClass("valid-disabled");
+
+			return true;
+		},
+
+		/**
+		 * Method to the check if the pattern name already existing
+		 * @return : true if name already existing
+		 **/
+		checkNameAlreadyExist: function () {
+			var patternName = $("#input-new-pattern").val();
+
+			var objPatterns = this.model.get("patterns");
+			if (typeof objPatterns === 'string') {
+				objPatterns = $.parseJSON(objPatterns);
+			}
+
+			return _.contains(Object.keys(objPatterns), patternName);
+		},
+
 		/**
 		 * Function to clone the leds
 		 * @return Clone array of leds
@@ -100,6 +151,7 @@ define([
 			d3.select("#div-fairylight-widget-creation").select("svg").attr("height", 25);
 
 			this.renderColorWheel();
+			this.checkPatternValidation();
 
 			// translate the view
 			this.$el.i18n();
@@ -107,6 +159,9 @@ define([
 			return this;
 		},
 
+		/**
+		 * Callback when a color has changed -> Mouse up in the color widget
+		 **/
 		colorchanged: function () {
 			var rgb = $("#colorPickerLi.create-modal").children("#colorbg").css("background-color");
 			this.changeColorLEDs(this.currentSelectedLED, Raphael.getRGB(rgb).hex);
@@ -165,7 +220,7 @@ define([
 		},
 
 		/**
-		 * Method to initiate the color leds -> black
+		 * Method to initiate the state leds -> inPattern to false
 		 **/
 		initStateLEDs: function () {
 			var self = this;
@@ -174,6 +229,10 @@ define([
 			});
 		},
 
+		/**
+		 * Main method to build the widget of fairylights
+		 * @param : idElementToBuild String id of the element where build the widget. It will mainly create the svg element and the initial state of fairy
+		 **/
 		buildFairylightWidget: function (idElementToBuild) {
 			var self = this;
 
@@ -230,8 +289,14 @@ define([
 			self.updateFairylightWidget();
 		},
 
+		/**
+		 * Method that update the actual fairyligth widget. It will add the different dynamic element when update state of leds. Changing state when adding led to selection, adding led to pattern, etc.
+		 **/
 		updateFairylightWidget: function () {
 			var self = this;
+
+			// Check to update valid button
+			self.checkPatternValidation();
 
 			// Variables needed to place elements
 			var widthDiv, height, nbCircle, spacement, circleWidthDefault, circleWidthAvailable, circleWidthFinal;
@@ -249,6 +314,7 @@ define([
 			circleWidthAvailable = widthDiv / (nbCircle + spacement);
 			circleWidthFinal = (circleWidthAvailable < circleWidthDefault) ? circleWidthAvailable : circleWidthDefault;
 
+			// For each led node, draw the correct state. 
 			nodesLED.each(function (led) {
 
 				// Selected element, if found. Test it like boolean..
@@ -262,7 +328,7 @@ define([
 					if (!d3.select(this).selectAll("line").empty()) {
 						d3.select(this).selectAll("line").remove();
 					}
-					
+
 					d3.select(this).select(".nodeLed")
 						.attr("stroke", "white")
 						.attr("fill", led.color);
@@ -281,12 +347,12 @@ define([
 					}
 
 				} else if (led.inPattern && !inSelection) {
-					
+
 					// inPattern = No cross & color
 					if (!d3.select(this).selectAll("line").empty()) {
 						d3.select(this).selectAll("line").remove();
 					}
-					
+
 					d3.select(this).select(".nodeLed")
 						.attr("stroke", "white")
 						.attr("fill", led.color);
@@ -342,14 +408,14 @@ define([
 							.attr("y2", (height / 4))
 							.attr("stroke", "black");
 					}
-					
+
 					d3.select(this).select(".nodeLed")
 						.attr("fill", "#ffffff")
 						.attr("stroke", "black");
 
 
 				} else if (!led.inPattern && !inSelection) {
-					
+
 					// !Pattern = Cross & No Color & black stroke
 					if (d3.select(this).select("line").empty()) {
 						d3.select(this).append("line")
@@ -380,7 +446,7 @@ define([
 							.attr("y2", (height / 4))
 							.attr("stroke", "black");
 					}
-					
+
 					d3.select(this).select(".nodeLed")
 						.attr("fill", "#ffffff")
 						.attr("stroke", "black");

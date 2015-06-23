@@ -666,7 +666,8 @@
 	  "modal" : {
 	  	"new" : {
 		  "title" : "Nouveau motif",
-		  "input-name" : "Entrez le nom du nouveau motif"   
+		  "input-name" : "Entrez le nom du nouveau motif",
+		  "name-already-existing" : "Nom de motif déjà existant"
 		},
 		"manage" : {
 		  "title" : "Gestion des motifs",

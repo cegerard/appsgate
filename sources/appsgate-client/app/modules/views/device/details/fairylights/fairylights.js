@@ -143,6 +143,7 @@ define([
 		 **/
 		onManageModalHidden: function () {
 			$("#modal-manage-pattern").empty();
+			this.buildFairylightWidget("div-fairylight-widget", false);
 		},
 
 		/**
@@ -164,7 +165,7 @@ define([
 			this.currentSelectedLED = [];
 			this.updateFairylightWidget();
 		},
-
+		
 		autoupdate: function () {
 			FairyLightsView.__super__.autoupdate.apply(this);
 

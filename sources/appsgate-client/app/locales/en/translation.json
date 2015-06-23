@@ -666,7 +666,8 @@
 	  "modal" : {
 	  	"new" : {
 		  "title" : "New pattern",
-		  "input-name" : "Name of the new pattern"   
+		  "input-name" : "Name of the new pattern",
+		  "name-already-existing" : "Pattern name already existing"
 		},
 		"manage" : {
 		  "title" : "Manage pattern",
