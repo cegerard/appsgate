@@ -31,7 +31,7 @@ define([
 			self.initStateLEDs();
 
 		},
-
+		
 		/**
 		 * Callback on click validation
 		 **/

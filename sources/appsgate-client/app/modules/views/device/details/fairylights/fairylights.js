@@ -114,6 +114,7 @@ define([
 		 **/
 		onCreateModalHidden: function () {
 			$("#modal-create-pattern").empty();
+			this.currentModal.undelegateEvents();
 			this.buildFairylightWidget("div-fairylight-widget", false);
 		},
 
@@ -143,6 +144,7 @@ define([
 		 **/
 		onManageModalHidden: function () {
 			$("#modal-manage-pattern").empty();
+			this.currentModal.undelegateEvents();
 			this.buildFairylightWidget("div-fairylight-widget", false);
 		},
 
