@@ -11,8 +11,8 @@ define([
 		tplFairyLightsModalManage: _.template(fairyLightsModalManageTemplate),
 
 		events: {
-			"click .valid-button": "onClickValidEdit",
-			"click .delete-button": "onClickDeletePattern",
+			"click #btn-valid-manage-pattern.valid-button": "onClickValidEdit",
+			"click #btn-delete-manage-pattern.delete-button": "onClickDeletePattern",
 			"change #select-pattern": "onChangePattern",
 
 			"click .btn-widget-select-all.btn-manage": "onClickSelectAll",

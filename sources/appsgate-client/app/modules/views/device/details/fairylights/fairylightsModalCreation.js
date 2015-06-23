@@ -11,7 +11,7 @@ define([
 		tplFairyLightsModalCreation: _.template(fairyLightsModalCreationTemplate),
 
 		events: {
-			"click .valid-button": "onClickValidCreation",
+			"click #btn-valid-new-pattern.valid-button": "onClickValidCreation",
 
 			"click .btn-widget-select-all.btn-create": "onClickSelectAll",
 			"click .btn-widget-deselect-all.btn-create": "onClickDeselectAll",
