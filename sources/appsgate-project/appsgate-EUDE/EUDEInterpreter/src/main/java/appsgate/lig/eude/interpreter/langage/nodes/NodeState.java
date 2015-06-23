@@ -5,6 +5,7 @@
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import appsgate.lig.context.dependency.graph.Reference;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.references.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
@@ -274,7 +275,9 @@ abstract public class NodeState extends Node implements ICanBeEvaluated {
             eventStartNode.buildReferences(table, null);
         }
         if (this.objectNode != null) {
-            objectNode.buildReferences(table, null);
+            ReferenceDescription refData = new ReferenceDescription(Reference.REFERENCE_TYPE.READING, this.getName());
+
+            objectNode.buildReferences(table, refData);
         }
     }
 
