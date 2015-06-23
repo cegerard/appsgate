@@ -277,3 +277,5 @@ sources/debugger/lib/appsgate.debugger.dev.js
 sources/debugger/lib/appsgate.debugger.js
 sources/debugger/lib/appsgate.debugger.min.js
 sources/debugger/lib/appsgate.debugger.min.js.map
+
+documentation/apidocs/*
