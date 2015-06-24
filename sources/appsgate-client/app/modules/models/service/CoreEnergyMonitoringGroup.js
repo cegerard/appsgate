@@ -211,7 +211,7 @@ define([
           }));
           v.methodName = "getEnergyDuringTimePeriod";
           v.returnType = "number";
-          v.unit = "watt";
+          //v.unit = "watt";
           v.phrase = "services.energy-monitoring.language.getEnergyDuringTimePeriod";
           $(btn).attr("json", JSON.stringify(v));
           break;
@@ -221,7 +221,7 @@ define([
           }));
           v.methodName = "getRemainingBudget";
           v.returnType = "number";
-          v.unit = "watt";
+          //v.unit = "watt";
           v.phrase = "services.energy-monitoring.language.getRemainingBudget";
           $(btn).attr("json", JSON.stringify(v));
           break;
