@@ -374,7 +374,7 @@ define([
                     return _.template(StateTemplate)(param);
                 default:
                     console.error("unknown word: " + word+ ", for type: " + type);
-                    console.debug(param);
+                    console.log(param);
                     return "<span>unknown</span>";
             }
         },

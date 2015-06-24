@@ -94,7 +94,7 @@ define([
       * method that set the cursor and build keyboard
       */
       setCursorAndBuildKeyboard: function(id) {
-        console.debug("call to setCursorAndBuildKeyboard method");
+        //console.debug("call to setCursorAndBuildKeyboard method");
         this.setCurrentPos(id);
 		var n = this.Grammar.parse(this.programJSON, this.currentNode);
         this.ProgramKeyboardBuilder.buildKeyboard(n);
@@ -169,7 +169,7 @@ define([
             }
           };
         } else {
-		  console.debug("This event is not catched: "+ button);
+		  console.log("This event is not catched: "+ button);
 		}
 
         this.lastAddedNode = this.recursivelySetIidOfJson(n);
@@ -211,7 +211,7 @@ define([
       * Method that remove the selected node
       */
       removeNode: function(id) {
-        console.debug("removing node: " + id);
+        //("removing node: " + id);
         this.programJSON = this.recursivelyRemove(id, this.programJSON);
 		dispatcher.trigger("refreshDisplay");
       },
@@ -466,7 +466,7 @@ define([
       buildKeyboard: function() {
         var n = this.Grammar.parse(this.programJSON, this.currentNode);
 		if (n === null) {
-		  console.debug("Unable to parse the program");
+		  //console.debug("Unable to parse the program");
 		  return false;
 		}
           this.ProgramKeyboardBuilder.buildKeyboard(n);

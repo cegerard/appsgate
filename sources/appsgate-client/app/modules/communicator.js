@@ -132,7 +132,7 @@ define([
       handleMessage:function(message) {
         // rebuild the message for the application
         var jsonMessage = JSON.parse(message.data);
-        console.log("received", message);
+ //       console.log("received", message);
 
         if (jsonMessage.callId !== undefined && jsonMessage.callId!="system") {
           if (typeof jsonMessage.value === "string") {
@@ -161,7 +161,7 @@ define([
       * @param targetType Parameter used by the server to route the message. 0: AbstractObject, 1: ApAM component
       */
       sendMessage:function(message) {
-        console.log("sending", JSON.stringify(message));
+        //console.log("sending", JSON.stringify(message));
         this.webSocket.send(JSON.stringify(message));
       },
 
