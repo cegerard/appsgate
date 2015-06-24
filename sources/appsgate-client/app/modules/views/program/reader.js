@@ -468,8 +468,8 @@ define([
         $(".progress-true-false-indicator").each(function(index) {
           var span = $(this);
           var nodeCounter = self.model.get("nodesCounter");
-          var timeTrueNode = self.getLastItem(nodeCounter[span.attr("true-node")]);
-          var timeFalseNode = self.getLastItem(nodeCounter[span.attr("false-node")]);
+          var timeTrueNode = self.getLastTimestamp(nodeCounter[span.attr("true-node")]);
+          var timeFalseNode = self.getLastTimestamp(nodeCounter[span.attr("false-node")]);
                                                                  
           if(timeTrueNode !== 0 || timeFalseNode !== 0) {
             var time = Math.floor(Math.max(timeTrueNode, timeFalseNode)/ 1000);
@@ -502,11 +502,11 @@ define([
         $("#bubbleModal").modal("show");
 
       },
-      getLastItem: function(  arr) {
+      getLastTimestamp: function(  arr) {
         if (arr == undefined) {
           return 0;
         }
-        return arr[arr.length -1];
+        return arr.t;
       },
       /**
       * Render the editor view
