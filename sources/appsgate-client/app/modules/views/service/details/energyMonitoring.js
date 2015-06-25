@@ -534,19 +534,36 @@ define([
 				spanDateUntil.text("--/-- --:--:--");
 			} else {
 				var dateFrom = new Date(intDateFrom);
-				var dateTokens = dateFrom.toLocaleDateString().split("/");
-				var dateFromReformatted = dateTokens[0] + "/" + dateTokens[1];
-				spanDateFrom.text(dateFromReformatted + " " + dateFrom.toLocaleTimeString());
+				spanDateFrom.text(self.buildDate(dateFrom));
 
 				if (self.model.get('isMonitoring') === "true" || self.model.get('isMonitoring') === true) {
 					spanDateUntil.text($.i18n.t("services.energy-monitoring.date.now"));
 				} else {
 					var dateUntil = new Date(parseInt(self.model.get('stopDate')));
-					dateTokens = dateUntil.toLocaleDateString().split("/");
-					var dateUntilReformatted = dateTokens[0] + "/" + dateTokens[1];
-					spanDateUntil.text(dateUntilReformatted + " " + dateUntil.toLocaleTimeString());
+					spanDateUntil.text(self.buildDate(dateUntil));
 				}
 			}
+		},
+		
+		/**
+		 * Method to build date : dd/mm (fr) mm/dd (others) hh:mm:ss
+		 * @param date : Date to build
+		 **/
+		buildDate: function (date) {
+			var dateString = "";
+			if ($.i18n.lng() === "fr") {
+				dateString += date.getDate();
+				dateString += "/";
+				dateString += date.getMonth();
+			} else {
+				dateString += date.getMonth();
+				dateString += "/";
+				dateString += date.getDate();
+			}
+			dateString += " ";
+			dateString += date.toTimeString().split(" ")[0];
+
+			return dateString;
 		},
 
 		/*
