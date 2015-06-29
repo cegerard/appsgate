@@ -182,7 +182,6 @@ define([
 
 			this.buildFairylightState();
 			this.buildFairylightWidget("div-fairylight-widget", false);
-			//			this.updateFairylightWidget();
 			this.buildDropdownPatterns();
 			this.updateCmdButtonVisibilty();
 
@@ -394,7 +393,6 @@ define([
 					} else {
 						self.currentSelectedLED.push(led);
 					}
-					console.log(self.currentSelectedLED);
 					self.updateFairylightWidget();
 				})
 				.append("circle")

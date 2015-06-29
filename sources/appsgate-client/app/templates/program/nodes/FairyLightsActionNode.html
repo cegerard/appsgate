@@ -16,7 +16,7 @@
     colorIndex = 0;
     if (node.methodName == "setAllColorLight") {
         colorIndex = 0;
-    } else if (node.methodName == "setOneColorLight") {
+    } else if (node.methodName == "setOneColorLight" || node.methodName == "changeContiguousLights" ) {
         colorIndex = 1;
     } else if (node.methodName == "singleChaserAnimation" || node.methodName == "roundChaserAnimation" || node.methodName == "setColorAnimation") {
         colorIndex = 2;

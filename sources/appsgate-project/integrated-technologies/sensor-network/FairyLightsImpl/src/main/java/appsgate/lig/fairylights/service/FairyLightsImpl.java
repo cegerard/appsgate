@@ -275,10 +275,8 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 		synchronized (lock) {
 			int i = 0;
 			while(i < Math.abs(nb)) {
-				logger.trace("changeNextPreviousLights(...), i : {}, Math.abs(nb): {}", i, Math.abs(nb));
-				setOneColorLight(currentLight, color);
 				if(nb > 0 && (currentLight+1) >= LightManagement.FAIRYLIGHT_SIZE) {
-					currentLight = LightManagement.FAIRYLIGHT_SIZE;
+					currentLight = LightManagement.FAIRYLIGHT_SIZE - 1;
 					i = nb;
 				} else if (nb < 0 && currentLight <= 0 ) {
 					currentLight = 0;
@@ -289,6 +287,8 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 					currentLight--;
 				}
 				i++;
+                                logger.trace("changeNextPreviousLights(...), i : {}, Math.abs(nb): {}", i, Math.abs(nb));
+				setOneColorLight(currentLight, color);
 			}	
 		}
 	}
@@ -306,8 +306,11 @@ public class FairyLightsImpl extends CoreObjectBehavior implements CoreObjectSpe
 
 			logger.trace("setColorPattern(....), pattern successfully applied");
 			stateChanged(KEY_LEDS, null, response.toString(), getAbstractObjectId());
-			setCurrentColor(response.getJSONObject(response.length()-1).getString(KEY_COLOR));
-			setCurrentLightNumber(response.getJSONObject(response.length()-1).getInt(KEY_ID));	
+                        
+                        JSONObject lastPatternLight = pattern.getJSONObject(pattern.length() - 1);
+                        
+			setCurrentColor(lastPatternLight.getString(KEY_COLOR));
+			setCurrentLightNumber(lastPatternLight.getInt(KEY_ID));	
 			return response; 
 		} else {
 			logger.warn("setColorPattern(....), problem applying pattern");
