@@ -12,19 +12,9 @@
 	<packaging>bundle</packaging>
 	
     <properties>
-        <ical-version>2.0-beta1-SNAPSHOT</ical-version>
+        <ical-version>2.0-beta1</ical-version>
     </properties>	
 	
-	<!-- Repositories List -->
-	<repositories>
-		<repository>
-			<id>ical4j-repository</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
 	
 	
 	<!-- Dependencies Description -->
